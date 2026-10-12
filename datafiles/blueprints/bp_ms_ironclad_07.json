@@ -1,0 +1,172 @@
+{
+    "blueprint_id": "bp_ms_ironclad_07",
+    "name": "GHA-07 Ironclad",
+    "class": "Heavy Assault",
+    "role": "Sustained Linebreaker & Heavy Fire Support",
+    "tier": 2,
+    "manufacturer": "Vanguard Defense Systems",
+    "description": "A heavily armored siege-class mobile suit engineered for direct planetary assaults, urban containment, and frontal fortress penetration. Sacrifices mobility for layered composite plating and sustained kinetic firepower.",
+    "chassis": {
+        "frame_type": "Heavy Bipedal Reinforced",
+        "empty_mass_tonnes": 58.0,
+        "max_weight_capacity_tonnes": 115.0,
+        "base_armor_rating": 850,
+        "base_structure_hp": 1200,
+        "base_walk_speed_kph": 42.0,
+        "base_boost_speed_kph": 78.0,
+        "heat_dissipation_rate": 35.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_vanguard_sentry",
+            "name": "Vanguard Target-Lock Sensor Array",
+            "armor_hp": 160,
+            "sensor_range_m": 2400,
+            "lock_on_speed_sec": 0.8,
+            "power_drain_mw": 12.0,
+            "weight_tonnes": 2.5
+        },
+        "torso": {
+            "id": "cr_hyperion_heavy",
+            "name": "Hyperion Class-IV Heavy Core",
+            "armor_hp": 650,
+            "structure_hp": 500,
+            "reactor_type": "Compact Fusion Core",
+            "reactor_output_mw": 280.0,
+            "power_drain_mw": 35.0,
+            "internal_cooling_units": 4,
+            "weight_tonnes": 24.0
+        },
+        "arm_left": {
+            "id": "am_ironclad_left",
+            "name": "Ironclad Reinforced Left Arm",
+            "armor_hp": 400,
+            "load_capacity_tonnes": 18.0,
+            "equipped_weapon": {
+                "id": "wpn_cannon_120mm",
+                "name": "Type-77 120mm Solid-Slug Autocannon",
+                "type": "Kinetic Autocannon",
+                "damage_per_shot": 145.0,
+                "rate_of_fire_rpm": 180,
+                "effective_range_m": 950,
+                "ammo_type": "120mm APFSDS",
+                "ammo_loaded": 240,
+                "ammo_max": 240,
+                "heat_per_shot": 4.2,
+                "power_drain_mw": 8.0,
+                "weight_tonnes": 14.5,
+                "melee_alternate": {
+                    "id": "wpn_cannon_battering_club",
+                    "name": "Type-77 Breaching Gun-Club Strike",
+                    "type": "Blunt Kinetic Melee",
+                    "damage_per_strike": 280.0,
+                    "impact_force_kn": 840.0,
+                    "heat_per_strike": 12.0,
+                    "power_drain_mw": 25.0,
+                    "tactical_doctrine": "Leverages the 14.5-tonne hardened titanium breech and reinforced barrel shroud as a devastating kinetic war-club to crush enemy chassis and batter open fortified fortress blast doors."
+                }
+            }
+        },
+        "arm_right": {
+            "id": "am_ironclad_right",
+            "name": "Ironclad Reinforced Right Arm",
+            "armor_hp": 400,
+            "load_capacity_tonnes": 20.0,
+            "equipped_weapon": {
+                "id": "wpn_rotary_heavy",
+                "name": "GAU-88 Heavy Vulcan Rotary",
+                "type": "Rotary Ballistic",
+                "damage_per_shot": 38.0,
+                "rate_of_fire_rpm": 1200,
+                "effective_range_m": 650,
+                "ammo_type": "30mm Tungsten Sabot",
+                "ammo_loaded": 1800,
+                "ammo_max": 1800,
+                "heat_per_shot": 0.9,
+                "power_drain_mw": 15.0,
+                "weight_tonnes": 16.0
+            }
+        },
+        "legs": {
+            "id": "lg_ironclad_colossus",
+            "name": "Colossus Heavy Bipedal Hydraulic Legs",
+            "armor_hp": 650,
+            "structure_hp": 450,
+            "weight_tonnes": 26.0,
+            "load_capacity_tonnes": 115.0,
+            "turn_rate_deg_per_sec": 42.0,
+            "power_drain_mw": 22.0,
+            "recoil_absorption_pct": 0.65
+        },
+        "backpack": {
+            "id": "bp_ares_siege",
+            "name": "Ares Heavy Ordnance Pack",
+            "armor_hp": 220,
+            "weight_tonnes": 11.5,
+            "power_drain_mw": 28.0,
+            "booster_thrust_kn": 420.0,
+            "equipped_auxiliary": {
+                "id": "wpn_pod_swarm_16",
+                "name": "Swarm-16 Heavy Micro-Missile Pod",
+                "type": "Guided Missile Pod",
+                "salvo_size": 16,
+                "total_salvos": 6,
+                "damage_per_missile": 65.0,
+                "lock_range_m": 1500,
+                "heat_per_salvo": 35.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 94.5,
+        "max_weight_tonnes": 115.0,
+        "total_power_drain_mw": 120.0,
+        "total_power_output_mw": 280.0,
+        "net_power_surplus_mw": 160.0,
+        "total_armor_hp": 2480,
+        "total_structure_hp": 2150,
+        "recoil_absorption_pct": 0.65
+    },
+    "production": {
+        "base_fabrication_cost": 380000,
+        "fabrication_time_days": 12,
+        "maintenance_cost_per_sortie": 16500,
+        "required_tech_tier": 2,
+        "required_materials": {
+            "structural_alloys": 120,
+            "avionics_components": 45,
+            "rare_composites": 20
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "armor_rating": 850,
+            "damage_reduction_pct": 0.4,
+            "visual_effect": "AP solid slug impact, ricochet sparks, composite plate puncture"
+        },
+        "energy": {
+            "thermal_dissipation_mw": 35.0,
+            "damage_reduction_pct": 0.2,
+            "visual_effect": "Plasma beam vaporization, molten orange slag, chassis electrical arcing"
+        },
+        "rocket": {
+            "blast_absorption_pct": 0.65,
+            "concussive_damping": 0.5,
+            "visual_effect": "HE detonation fireball, concussive black smoke cloud, charred crater"
+        },
+        "melee": {
+            "bulkhead_shear_resistance_pct": 0.15,
+            "damage_reduction_pct": 0.1,
+            "visual_effect": "Thermal blade slice, hydraulic fluid breach, glowing molten scar"
+        }
+    },
+    "lore_dossier": {
+        "designation": "GHA-07 Ironclad",
+        "manufacturer": "Vanguard Defense Systems (Heavy Ordnance & Siege Division)",
+        "foundry_location": "Callisto Orbital Megafoundry & Jovian Periphery Complex",
+        "rollout_year": "UC 0084 (Block I Prototype)",
+        "mass_production_commission": "UC 0087 (Block II Standard Service Entry)",
+        "active_service_batch": "Batch-07E Refit (UC 0092)",
+        "historical_origin": "Engineered during the Jovian Outer Sphere Wars to resolve the Orbital Beachhead Crisis, where standard high-mobility bipedal units suffered catastrophic losses against heavy fortress railguns. Designed as a walking naval dreadnought sacrificing flight agility for impenetrable composite ceramite armor, dual-feed ballistic saturation, and brute-force gun-club breaching."
+    }
+}

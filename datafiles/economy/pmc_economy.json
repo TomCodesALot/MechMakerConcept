@@ -1,0 +1,44 @@
+{
+    "pmc_profile": {
+        "name": "Iron Ridge Tactical Operations",
+        "callsign": "IRON_RIDGE",
+        "license_tier": 2,
+        "tier_label": "Tier-2 Mercenary Guild Standard",
+        "standing": {
+            "corporate_conglomerate": 45,
+            "free_colonies_alliance": -20,
+            "orbital_union": 10
+        }
+    },
+    "treasury": {
+        "credits": 750000,
+        "escrow_withheld": 120000
+    },
+    "resources": {
+        "structural_alloys": 850,
+        "avionics_components": 240,
+        "rare_composites": 95,
+        "refined_reactor_fuel_liters": 4200,
+        "standard_munitions_crates": 180
+    },
+    "overhead_per_cycle": {
+        "pilot_salaries": 14000,
+        "mechanic_crew_salaries": 9500,
+        "facility_lease": 6000,
+        "insurance_premiums": 3500,
+        "total_daily_burn_rate": 33000
+    },
+    "facilities": {
+        "hangar_capacity": 4,
+        "stored_mechs_count": 2,
+        "active_pilots": 3,
+        "support_staff": 12
+    },
+    "financial_ledger": {
+        "current_cycle_day": 1,
+        "quarter_cycle_remaining_days": 29,
+        "lifetime_contracts_completed": 4,
+        "lifetime_gross_revenue": 1850000,
+        "lifetime_gross_expenses": 1100000
+    }
+}

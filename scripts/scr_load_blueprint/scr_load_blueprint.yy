@@ -1,0 +1,11 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_load_blueprint",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_load_blueprint",
+  "parent":{
+    "name":"MechMakerConcept",
+    "path":"MechMakerConcept.yyp"},
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0"}

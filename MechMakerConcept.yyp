@@ -1,0 +1,623 @@
+{
+  "$GMProject": "v1",
+  "%Name": "MechMakerConcept",
+  "AudioGroups": [
+    {
+      "$GMAudioGroup": "v1",
+      "%Name": "audiogroup_default",
+      "exportDir": "",
+      "name": "audiogroup_default",
+      "resourceType": "GMAudioGroup",
+      "resourceVersion": "2.0",
+      "targets": -1
+    }
+  ],
+  "configs": {
+    "children": [],
+    "name": "Default"
+  },
+  "defaultScriptType": 0,
+  "Folders": [],
+  "ForcedPrefabProjectReferences": [],
+  "IncludedFiles": [
+    {
+      "$GMIncludedFile": "",
+      "%Name": "bp_ms_ironclad_07.json",
+      "CopyToMask": -1,
+      "filePath": "datafiles/blueprints",
+      "name": "bp_ms_ironclad_07.json",
+      "resourceType": "GMIncludedFile",
+      "resourceVersion": "2.0"
+    },
+    {
+      "$GMIncludedFile": "",
+      "%Name": "heavy_assault_blueprint.json",
+      "CopyToMask": -1,
+      "filePath": "datafiles/blueprints",
+      "name": "heavy_assault_blueprint.json",
+      "resourceType": "GMIncludedFile",
+      "resourceVersion": "2.0"
+    },
+    {
+      "$GMIncludedFile": "",
+      "%Name": "bp_ms_ironclad_07.json",
+      "CopyToMask": -1,
+      "filePath": "datafiles",
+      "name": "bp_ms_ironclad_07.json",
+      "resourceType": "GMIncludedFile",
+      "resourceVersion": "2.0"
+    },
+    {
+      "$GMIncludedFile": "",
+      "%Name": "pmc_economy.json",
+      "CopyToMask": -1,
+      "filePath": "datafiles/economy",
+      "name": "pmc_economy.json",
+      "resourceType": "GMIncludedFile",
+      "resourceVersion": "2.0"
+    },
+    {
+      "$GMIncludedFile": "",
+      "%Name": "narrative_events.json",
+      "CopyToMask": -1,
+      "filePath": "datafiles",
+      "name": "narrative_events.json",
+      "resourceType": "GMIncludedFile",
+      "resourceVersion": "2.0"
+    }
+  ],
+  "isEcma": false,
+  "LibraryEmitters": [],
+  "MetaData": {
+    "IDEVersion": "2026.0.0.16"
+  },
+  "name": "MechMakerConcept",
+  "resources": [
+    {
+      "id": {
+        "name": "obj_GameManager",
+        "path": "objects/obj_GameManager/obj_GameManager.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_MobileSuit",
+        "path": "objects/obj_MobileSuit/obj_MobileSuit.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "Room1",
+        "path": "rooms/Room1/Room1.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_load_blueprint",
+        "path": "scripts/scr_load_blueprint/scr_load_blueprint.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_ms_state_machine",
+        "path": "scripts/scr_ms_state_machine/scr_ms_state_machine.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_idle",
+        "path": "sprites/spr_ms_ironclad_idle/spr_ms_ironclad_idle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_fire_rifle",
+        "path": "sprites/spr_ms_ironclad_fire_rifle/spr_ms_ironclad_fire_rifle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_fire_chaingun",
+        "path": "sprites/spr_ms_ironclad_fire_chaingun/spr_ms_ironclad_fire_chaingun.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_fire_missiles",
+        "path": "sprites/spr_ms_ironclad_fire_missiles/spr_ms_ironclad_fire_missiles.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_damage_left_arm",
+        "path": "sprites/spr_ms_ironclad_damage_left_arm/spr_ms_ironclad_damage_left_arm.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_damage_right_arm",
+        "path": "sprites/spr_ms_ironclad_damage_right_arm/spr_ms_ironclad_damage_right_arm.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_crippled",
+        "path": "sprites/spr_ms_ironclad_crippled/spr_ms_ironclad_crippled.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_destroyed",
+        "path": "sprites/spr_ms_ironclad_destroyed/spr_ms_ironclad_destroyed.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_damage_energy",
+        "path": "sprites/spr_ms_ironclad_damage_energy/spr_ms_ironclad_damage_energy.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_damage_kinetic",
+        "path": "sprites/spr_ms_ironclad_damage_kinetic/spr_ms_ironclad_damage_kinetic.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_damage_melee",
+        "path": "sprites/spr_ms_ironclad_damage_melee/spr_ms_ironclad_damage_melee.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_damage_rocket",
+        "path": "sprites/spr_ms_ironclad_damage_rocket/spr_ms_ironclad_damage_rocket.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_hit_energy",
+        "path": "sprites/spr_ms_ironclad_hit_energy/spr_ms_ironclad_hit_energy.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_hit_kinetic",
+        "path": "sprites/spr_ms_ironclad_hit_kinetic/spr_ms_ironclad_hit_kinetic.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_hit_melee",
+        "path": "sprites/spr_ms_ironclad_hit_melee/spr_ms_ironclad_hit_melee.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_hit_rocket",
+        "path": "sprites/spr_ms_ironclad_hit_rocket/spr_ms_ironclad_hit_rocket.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_crippled_idle",
+        "path": "sprites/spr_ms_ironclad_crippled_idle/spr_ms_ironclad_crippled_idle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_damage_both_arms",
+        "path": "sprites/spr_ms_ironclad_damage_both_arms/spr_ms_ironclad_damage_both_arms.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_hit_armless",
+        "path": "sprites/spr_ms_ironclad_hit_armless/spr_ms_ironclad_hit_armless.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_hit_crippled",
+        "path": "sprites/spr_ms_ironclad_hit_crippled/spr_ms_ironclad_hit_crippled.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_hit_left_arm_off",
+        "path": "sprites/spr_ms_ironclad_hit_left_arm_off/spr_ms_ironclad_hit_left_arm_off.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_hit_right_arm_off",
+        "path": "sprites/spr_ms_ironclad_hit_right_arm_off/spr_ms_ironclad_hit_right_arm_off.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_idle_critical",
+        "path": "sprites/spr_ms_ironclad_idle_critical/spr_ms_ironclad_idle_critical.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_idle_damaged",
+        "path": "sprites/spr_ms_ironclad_idle_damaged/spr_ms_ironclad_idle_damaged.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_attack_melee",
+        "path": "sprites/spr_ms_ironclad_attack_melee/spr_ms_ironclad_attack_melee.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_FactionManager",
+        "path": "objects/obj_FactionManager/obj_FactionManager.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_BlueprintManager",
+        "path": "objects/obj_BlueprintManager/obj_BlueprintManager.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_HQTerminal",
+        "path": "objects/obj_HQTerminal/obj_HQTerminal.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "rm_init",
+        "path": "rooms/rm_init/rm_init.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "rm_hq_terminal",
+        "path": "rooms/rm_hq_terminal/rm_hq_terminal.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_save_system",
+        "path": "scripts/scr_save_system/scr_save_system.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_BattleManager",
+        "path": "objects/obj_BattleManager/obj_BattleManager.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "rm_combat",
+        "path": "rooms/rm_combat/rm_combat.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_space_sector_map",
+        "path": "sprites/spr_space_sector_map/spr_space_sector_map.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mech_schematic",
+        "path": "sprites/spr_mech_schematic/spr_mech_schematic.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_icon_tungsten",
+        "path": "sprites/spr_icon_tungsten/spr_icon_tungsten.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_icon_silica",
+        "path": "sprites/spr_icon_silica/spr_icon_silica.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_icon_flux",
+        "path": "sprites/spr_icon_flux/spr_icon_flux.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_icon_tritium",
+        "path": "sprites/spr_icon_tritium/spr_icon_tritium.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_icon_slag",
+        "path": "sprites/spr_icon_slag/spr_icon_slag.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_icon_vanguard",
+        "path": "sprites/spr_icon_vanguard/spr_icon_vanguard.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_comp_reactor",
+        "path": "sprites/spr_comp_reactor/spr_comp_reactor.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_comp_legs",
+        "path": "sprites/spr_comp_legs/spr_comp_legs.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_comp_weapon",
+        "path": "sprites/spr_comp_weapon/spr_comp_weapon.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_comp_head",
+        "path": "sprites/spr_comp_head/spr_comp_head.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_comp_torso",
+        "path": "sprites/spr_comp_torso/spr_comp_torso.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_comp_thruster",
+        "path": "sprites/spr_comp_thruster/spr_comp_thruster.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_faction_lineup",
+        "path": "sprites/spr_faction_lineup/spr_faction_lineup.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_faction_portraits",
+        "path": "sprites/spr_faction_portraits/spr_faction_portraits.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_decade_evolution",
+        "path": "sprites/spr_decade_evolution/spr_decade_evolution.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_portrait_vance",
+        "path": "sprites/spr_portrait_vance/spr_portrait_vance.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_portrait_cole",
+        "path": "sprites/spr_portrait_cole/spr_portrait_cole.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_portrait_cassian",
+        "path": "sprites/spr_portrait_cassian/spr_portrait_cassian.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_portrait_sorren",
+        "path": "sprites/spr_portrait_sorren/spr_portrait_sorren.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_portrait_cruz",
+        "path": "sprites/spr_portrait_cruz/spr_portrait_cruz.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_portrait_nadia",
+        "path": "sprites/spr_portrait_nadia/spr_portrait_nadia.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_portrait_renzo",
+        "path": "sprites/spr_portrait_renzo/spr_portrait_renzo.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_portrait_null07",
+        "path": "sprites/spr_portrait_null07/spr_portrait_null07.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mech_terran_ironclad",
+        "path": "sprites/spr_mech_terran_ironclad/spr_mech_terran_ironclad.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mech_colony_aether",
+        "path": "sprites/spr_mech_colony_aether/spr_mech_colony_aether.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mech_syndicate_hyena",
+        "path": "sprites/spr_mech_syndicate_hyena/spr_mech_syndicate_hyena.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mech_zaibatsu_muramasa",
+        "path": "sprites/spr_mech_zaibatsu_muramasa/spr_mech_zaibatsu_muramasa.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_aether_idle",
+        "path": "sprites/spr_ms_aether_idle/spr_ms_aether_idle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_aether_boost",
+        "path": "sprites/spr_ms_aether_boost/spr_ms_aether_boost.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_aether_fire_beam",
+        "path": "sprites/spr_ms_aether_fire_beam/spr_ms_aether_fire_beam.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_aether_attack_saber",
+        "path": "sprites/spr_ms_aether_attack_saber/spr_ms_aether_attack_saber.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_hyena_idle",
+        "path": "sprites/spr_ms_hyena_idle/spr_ms_hyena_idle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_hyena_walk",
+        "path": "sprites/spr_ms_hyena_walk/spr_ms_hyena_walk.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_hyena_fire_flak",
+        "path": "sprites/spr_ms_hyena_fire_flak/spr_ms_hyena_fire_flak.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_hyena_attack_claw",
+        "path": "sprites/spr_ms_hyena_attack_claw/spr_ms_hyena_attack_claw.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_muramasa_idle",
+        "path": "sprites/spr_ms_muramasa_idle/spr_ms_muramasa_idle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_muramasa_sprint",
+        "path": "sprites/spr_ms_muramasa_sprint/spr_ms_muramasa_sprint.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_muramasa_attack_blade",
+        "path": "sprites/spr_ms_muramasa_attack_blade/spr_ms_muramasa_attack_blade.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_muramasa_fire_plasma",
+        "path": "sprites/spr_ms_muramasa_fire_plasma/spr_ms_muramasa_fire_plasma.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_siegebreaker_anchor",
+        "path": "sprites/spr_ms_siegebreaker_anchor/spr_ms_siegebreaker_anchor.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_siegebreaker_elevate",
+        "path": "sprites/spr_ms_siegebreaker_elevate/spr_ms_siegebreaker_elevate.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_siegebreaker_fire",
+        "path": "sprites/spr_ms_siegebreaker_fire/spr_ms_siegebreaker_fire.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_siegebreaker_eject",
+        "path": "sprites/spr_ms_siegebreaker_eject/spr_ms_siegebreaker_eject.yy"
+      }
+    }
+  ],
+  "resourceType": "GMProject",
+  "resourceVersion": "2.0",
+  "RoomOrderNodes": [
+    {
+      "roomId": {
+        "name": "rm_init",
+        "path": "rooms/rm_init/rm_init.yy"
+      }
+    },
+    {
+      "roomId": {
+        "name": "rm_hq_terminal",
+        "path": "rooms/rm_hq_terminal/rm_hq_terminal.yy"
+      }
+    },
+    {
+      "roomId": {
+        "name": "Room1",
+        "path": "rooms/Room1/Room1.yy"
+      }
+    },
+    {
+      "roomId": {
+        "name": "rm_combat",
+        "path": "rooms/rm_combat/rm_combat.yy"
+      }
+    }
+  ],
+  "templateType": "game",
+  "TextureGroups": [
+    {
+      "$GMTextureGroup": "",
+      "%Name": "Default",
+      "autocrop": true,
+      "border": 2,
+      "compressFormat": "bz2",
+      "customOptions": "",
+      "directory": "",
+      "groupParent": null,
+      "isScaled": true,
+      "loadType": "default",
+      "mipsToGenerate": 0,
+      "name": "Default",
+      "resourceType": "GMTextureGroup",
+      "resourceVersion": "2.0",
+      "targets": -1
+    }
+  ]
+}

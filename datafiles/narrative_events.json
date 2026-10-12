@@ -1,0 +1,104 @@
+{
+  "events": [
+    {
+      "id": "event_tritium_embargo",
+      "category": "MARKET_SHOCK",
+      "title": "TRANSMISSION: THE JOVIAN TRITIUM EMBARGO",
+      "sender": "Interstellar Commerce Guild & Outer Colonies Fleet",
+      "body": "Colony skirmish fleets have blockaded Jovian gas siphons, cutting off deep-space Tritium exports. Galactic market spot prices for Plasma-Charged Tritium have surged by +300% (from 1,200 Cr to 3,600 Cr). Commercial refineries are desperate for unrefined reserves.",
+      "choices": [
+        {
+          "label": "1. Liquidate Tritium Stockpile",
+          "desc": "Sell 5x Tritium on the open exchange for massive immediate liquidity (+18,000 Cr).",
+          "effect_type": "SELL_TRITIUM",
+          "req_material": "mat_tritium",
+          "req_amount": 5,
+          "credits_delta": 18000
+        },
+        {
+          "label": "2. Hoard Reserves for PMC R&D",
+          "desc": "Keep all Tritium secured for proprietary Hyperion fusion core synthesis.",
+          "effect_type": "HOARD_TRITIUM"
+        },
+        {
+          "label": "3. Deploy Blockade Runner Escort",
+          "desc": "Deploy PMC aces to escort Colony tankers. Boosts Colony standing (+25) but risks Terran sanctions.",
+          "effect_type": "ESCORT_BLOCKADE",
+          "standing_colony": 25,
+          "standing_terran": -15
+        }
+      ]
+    },
+    {
+      "id": "event_hazard_pay_strike",
+      "category": "PERSONNEL_DILEMMA",
+      "title": "URGENT DISPATCH: MINING CORPS HAZARD STRIKE",
+      "sender": "Iron Ridge PMC Pilots & Rigger Union",
+      "body": "Following heavy pirate skirmishes across Asteroid Belt C-14, mining riggers and deployed escort pilots are refusing sorties without an immediate emergency combat stipend. Morale is deteriorating rapidly.",
+      "choices": [
+        {
+          "label": "1. Approve Combat Bonus (-45,000 Cr)",
+          "desc": "Pay the emergency hazard bonus. Restores pilot morale (+20%) and increases extraction yield.",
+          "effect_type": "PAY_BONUS",
+          "credits_delta": -45000,
+          "morale_delta": 20
+        },
+        {
+          "label": "2. Enforce Mercenary Guild Protocol",
+          "desc": "Refuse demands. Pilots stay on standard contracts. Morale drops (-15%), risk of desertion.",
+          "effect_type": "REFUSE_PAY",
+          "morale_delta": -15
+        }
+      ]
+    },
+    {
+      "id": "event_syndicate_leak",
+      "category": "GEOPOLITICAL_SHIFT",
+      "title": "CLASSIFIED INTERCEPT: SYNDICATE BLACK MARKET LEAK",
+      "sender": "Terran Coalition Military Intelligence (T-MINT)",
+      "body": "Terran security forces seized a Syndicate smuggler barge carrying stripped GHA-07 Ironclad ordnance. Forensic serial stamps trace back to an unlogged sale from your manufacturing bays. Terran inspectors demand answers.",
+      "choices": [
+        {
+          "label": "1. Bribe Chief Inspector (-60,000 Cr)",
+          "desc": "Quietly transfer funds to classify the dossier as pirate salvage. Avoids faction sanctions.",
+          "effect_type": "BRIBE_INSPECTOR",
+          "credits_delta": -60000
+        },
+        {
+          "label": "2. Claim Corporate Theft & Scapegoat",
+          "desc": "Blame rogue smugglers. Standing with Terran Coalition drops (-25), but retains funds.",
+          "effect_type": "ACCEPT_SANCTIONS",
+          "standing_terran": -25
+        }
+      ]
+    },
+    {
+      "id": "event_ace_recruitment",
+      "category": "OPPORTUNITY",
+      "title": "PERSONNEL DOSSIER: VETERAN ACE FOR HIRE",
+      "sender": "Mercenary Guild Free Agent Registry",
+      "body": "Former Coalition frontline ace Captain Victor 'Ronin' Drake is seeking a PMC contract after refusing questionable orbital bombardment orders. Highly proficient in 120mm solid-slug cannons and hydraulic melee breaching.",
+      "choices": [
+        {
+          "label": "1. Hire Captain Drake (-75,000 Cr Signing Bonus)",
+          "desc": "Recruit top-tier ace (92% Accuracy, 84% Reflexes). Daily salary: 340 Cr.",
+          "effect_type": "HIRE_ACE",
+          "credits_delta": -75000,
+          "pilot": {
+            "name": "Capt. Victor 'Ronin' Drake",
+            "callsign": "RONIN-1",
+            "accuracy": 92,
+            "reflexes": 84,
+            "morale": 90,
+            "salary_daily": 340
+          }
+        },
+        {
+          "label": "2. Pass on Candidate",
+          "desc": "Maintain current payroll obligations.",
+          "effect_type": "PASS_ACE"
+        }
+      ]
+    }
+  ]
+}

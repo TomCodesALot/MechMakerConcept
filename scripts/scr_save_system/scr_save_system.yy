@@ -1,0 +1,11 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_save_system",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_save_system",
+  "parent":{
+    "name":"MechMakerConcept",
+    "path":"MechMakerConcept.yyp"},
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0"}
