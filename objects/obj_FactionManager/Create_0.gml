@@ -682,22 +682,30 @@ award_procurement_contract = function(_faction_id, _mech, _trial_result) {
     if (!variable_struct_exists(mass_production_contracts, _faction_id)) return false;
     var _mp = mass_production_contracts[$ _faction_id];
     var _f = factions[$ _faction_id];
+    var _is_upgrade = _mp.replaced;
 
     _mp.replaced = true;
     _mp.replacement_name = _mech.name;
     _mp.replacement_blueprint_id = _mech[$ "blueprint_id"] ?? "bp_custom";
-    _mp.combat_bonus = max(18, floor(_trial_result.composite_score / 5));
+    _mp.combat_bonus = max(_is_upgrade ? _mp.combat_bonus + 4 : 18, floor(_trial_result.composite_score / 5));
 
-    // Award Licensing Bounty
-    var _bounty = _mp.licensing_bounty;
+    // Award Licensing Bounty (Full on first win, 60% upgrade incentive on subsequent wins)
+    var _bounty = _is_upgrade ? floor(_mp.licensing_bounty * 0.6) : _mp.licensing_bounty;
+    if (_is_upgrade) {
+        _mp.royalty_per_turn = round(_mp.royalty_per_turn * 1.15); // +15% royalty boost for next-gen spec!
+    }
+
     if (instance_exists(obj_GameManager)) {
         obj_GameManager.funds += _bounty;
-        array_push(obj_GameManager.last_turn_events, "! DOCTRINE REPLACED: " + _f.name + " awarded Mass-Production Tender for " + _mech.name + "! Licensing Bounty: +" + string(_bounty) + " Cr (+" + string(_mp.royalty_per_turn) + " Cr/turn royalties)!");
+        var _log_msg = _is_upgrade ? 
+            ("! DOCTRINE UPGRADED: " + _f.name + " upgraded mass-production line to " + _mech.name + "! Upgrade Bounty: +" + string(_bounty) + " Cr (Royalties increased to +" + string(_mp.royalty_per_turn) + " Cr/turn)!") :
+            ("! DOCTRINE REPLACED: " + _f.name + " awarded Mass-Production Tender for " + _mech.name + "! Licensing Bounty: +" + string(_bounty) + " Cr (+" + string(_mp.royalty_per_turn) + " Cr/turn royalties)!");
+        array_push(obj_GameManager.last_turn_events, _log_msg);
     }
 
     // Boost Faction Military Rating & Standing
-    _f.military_strength_score = min(100, _f.military_strength_score + 20);
-    modify_standing(_faction_id, 25);
+    _f.military_strength_score = min(100, _f.military_strength_score + (_is_upgrade ? 10 : 20));
+    modify_standing(_faction_id, _is_upgrade ? 15 : 25);
 
     // Multi-Faction Arms Dealing Geopolitical Ripple Effect (docs/15)
     if (_faction_id == "faction_a") {
@@ -715,7 +723,10 @@ award_procurement_contract = function(_faction_id, _mech, _trial_result) {
     }
 
     if (instance_exists(obj_HQTerminal)) {
-        obj_HQTerminal.show_toast("TENDER WON! " + _f.name + " OFFICIALLY ADOPTS " + _mech.name + "! +" + string(_bounty) + " Cr!", c_lime);
+        var _toast_text = _is_upgrade ?
+            ("DOCTRINE UPGRADED! " + _f.name + " ADOPTS NEXT-GEN " + _mech.name + "! +" + string(_bounty) + " Cr!") :
+            ("TENDER WON! " + _f.name + " OFFICIALLY ADOPTS " + _mech.name + "! +" + string(_bounty) + " Cr!");
+        obj_HQTerminal.show_toast(_toast_text, c_lime);
     }
     return true;
 };

@@ -2650,8 +2650,15 @@ else if (active_tab == 2) {
                     draw_set_color(make_color_rgb(80, 255, 140));
                     draw_rectangle(_col2_x + 24, _rat_btn_y, _col2_x + 24 + _rat_btn_w, _rat_btn_y + _rat_btn_h, true);
 
+                    var _cur_mp_target = _fm.mass_production_contracts[$ trial_selected_faction];
+                    var _is_upg_tender = _cur_mp_target.replaced;
+                    var _bounty_val = _is_upg_tender ? floor(_cur_mp_target.licensing_bounty * 0.6) : _cur_mp_target.licensing_bounty;
                     draw_set_color(c_white);
-                    draw_text(_col2_x + 80, _rat_btn_y + 14, ">> RATIFY TENDER: REPLACE DOCTRINE // CLAIM +" + string(_fm.mass_production_contracts[$ trial_selected_faction].licensing_bounty) + " Cr & ROYALTIES <<");
+                    if (_is_upg_tender) {
+                        draw_text(_col2_x + 40, _rat_btn_y + 14, ">> RATIFY NEXT-GEN UPGRADE // CLAIM +" + string(_bounty_val) + " Cr & BOOST ROYALTIES <<");
+                    } else {
+                        draw_text(_col2_x + 60, _rat_btn_y + 14, ">> RATIFY TENDER: REPLACE DOCTRINE // CLAIM +" + string(_bounty_val) + " Cr & ROYALTIES <<");
+                    }
                 }
             }
         }
@@ -2737,9 +2744,10 @@ else if (active_tab == 2) {
 
             for (var i = 0; i < array_length(_filtered_items); i++) {
                 var _item = _filtered_items[i];
-                var _iy = _grid_y + i * 86;
+                var _iy = _grid_y + (i - trade_scroll_offset) * 86;
                 var _iw = 1160;
                 var _ih = 78;
+                if (_iy < _grid_y - 10 || _iy > _pan_y + _pan_h - 90) continue;
 
                 draw_set_color(make_color_rgb(12, 18, 26));
                 draw_rectangle(_td_x, _iy, _td_x + _iw, _iy + _ih, false);
