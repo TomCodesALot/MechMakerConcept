@@ -156,4 +156,44 @@ unlocked_blueprints[$ "bp_player_muramasa_spec_x"] = {
     description: "Experimental cyber-neural chassis forged with superconductor matrices and monomolecular beam blades. Directly replaces Apex Zaibatsu Muramasa doctrine."
 };
 
-show_debug_message("[obj_BlueprintManager] Registered 4 Player Mass-Production Doctrines. Initialization Complete.");
+show_debug_message("[obj_BlueprintManager] Registered 4 Player Mass-Production Doctrines.");
+
+// 8. Load & Register Canonical Faction Mobile Suit Blueprints from Timeline JSON
+if (file_exists("mobile_suits_timeline.json")) {
+    try {
+        var _f_bp = file_text_open_read("mobile_suits_timeline.json");
+        var _json_bp = "";
+        while (!file_text_eof(_f_bp)) {
+            _json_bp += file_text_readln(_f_bp);
+        }
+        file_text_close(_f_bp);
+        var _timeline_bp = json_parse(_json_bp);
+        if (variable_struct_exists(_timeline_bp, "mobile_suits")) {
+            var _ms_arr = _timeline_bp.mobile_suits;
+            for (var i = 0; i < array_length(_ms_arr); i++) {
+                var _suit = _ms_arr[i];
+                var _bid = _suit.id;
+
+                var _spr_asset = spr_ms_ironclad_mp;
+                if (_suit.faction_id == "faction_colony") _spr_asset = spr_ms_aether_idle;
+                else if (_suit.faction_id == "faction_syndicate") _spr_asset = spr_ms_hyena_idle;
+                else if (_suit.faction_id == "faction_zaibatsu") _spr_asset = spr_ms_muramasa_idle;
+                else if (string_pos("Siege", _suit.role) > 0 || string_pos("Artillery", _suit.role) > 0) _spr_asset = spr_ms_siegebreaker_fire;
+
+                _suit.associated_sprite = _spr_asset;
+                _suit.schematic_sprite = spr_mech_schematic;
+                _suit.blueprint_id = _bid;
+
+                unlocked_blueprints[$ _bid] = _suit;
+                if (variable_struct_exists(_suit, "model_code")) {
+                    unlocked_blueprints[$ _suit.model_code] = _suit;
+                }
+            }
+            show_debug_message("[obj_BlueprintManager] Loaded " + string(array_length(_ms_arr)) + " canonical mobile suit blueprints into registry.");
+        }
+    } catch (_ex_bp) {
+        show_debug_message("[obj_BlueprintManager] Warning loading timeline blueprints: " + string(_ex_bp));
+    }
+}
+
+show_debug_message("[obj_BlueprintManager] Registry Fully Populated. Ready for Prototyping & Field Assembly.");

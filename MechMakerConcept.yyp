@@ -570,6 +570,12 @@
         "name": "spr_ms_siegebreaker_eject",
         "path": "sprites/spr_ms_siegebreaker_eject/spr_ms_siegebreaker_eject.yy"
       }
+    },
+    {
+      "id": {
+        "name": "scr_alloy_color_synthesis",
+        "path": "scripts/scr_alloy_color_synthesis/scr_alloy_color_synthesis.yy"
+      }
     }
   ],
   "resourceType": "GMProject",
