@@ -678,6 +678,27 @@ craft_modular_part = function(_part_data, _alloy_key, _alloy_cost, _cr_cost) {
     return true;
 };
 
+add_part_to_inventory = function(_part_data) {
+    if (!is_struct(_part_data)) return false;
+    var _slot_key = _part_data[$ "slot"] ?? "heads";
+    if (!variable_struct_exists(inventory.parts, _slot_key)) {
+        inventory.parts[$ _slot_key] = [];
+    }
+    array_push(inventory.parts[$ _slot_key], _part_data);
+    return true;
+};
+
+remove_part_from_inventory = function(_slot_key, _index) {
+    if (variable_struct_exists(inventory.parts, _slot_key)) {
+        var _arr = inventory.parts[$ _slot_key];
+        if (_index >= 0 && _index < array_length(_arr)) {
+            array_delete(_arr, _index, 1);
+            return true;
+        }
+    }
+    return false;
+};
+
 // Modular Mobile Suit Assembly & Combinations Bay Method (docs/13)
 assemble_custom_mech = function(_name, _head_idx, _torso_idx, _arms_idx, _legs_idx, _bp_idx, _wp_idx) {
     var _pts = inventory.parts;

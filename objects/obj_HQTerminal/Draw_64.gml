@@ -2256,6 +2256,22 @@ else if (active_tab == 1) {
                 } else {
                     draw_text(_col2_x + 65, _com_y + 16, "[CANNOT COMMISSION: RESOLVE REACTOR OVERLOAD]");
                 }
+
+                // Quick Shortcut to Fly-Off Trials (docs/15)
+                var _fly_nav_y = _com_y + _com_h + 10;
+                var _fly_nav_h = 36;
+                var _fly_nav_hov = (_mx >= _col2_x + 18 && _mx <= _col2_x + 18 + _com_w && _my >= _fly_nav_y && _my <= _fly_nav_y + _fly_nav_h);
+                if (_fly_nav_hov && _click) {
+                    active_tab = 2;
+                    contracts_subtab = 1;
+                    show_toast("TRANSFERRED TO FLY-OFF PROCUREMENT ARENA!", c_aqua);
+                }
+                draw_set_color(_fly_nav_hov ? make_color_rgb(25, 55, 88) : make_color_rgb(16, 32, 52));
+                draw_rectangle(_col2_x + 18, _fly_nav_y, _col2_x + 18 + _com_w, _fly_nav_y + _fly_nav_h, false);
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_rectangle(_col2_x + 18, _fly_nav_y, _col2_x + 18 + _com_w, _fly_nav_y + _fly_nav_h, true);
+                draw_set_color(c_white);
+                draw_text(_col2_x + 60, _fly_nav_y + 10, ">> ENTER SUITS INTO FACTION PROCUREMENT FLY-OFF TRIALS (TAB 2) <<");
             } else {
                 draw_set_color(c_red);
                 draw_text(_col2_x + 18, _col1_y + 120, "PARTS MISSING: Must equip all 6 component slots to compute diagnostics!");
@@ -2264,14 +2280,15 @@ else if (active_tab == 1) {
     }
 }
 else if (active_tab == 2) {
-    // Dual Subtabs: Procurement Board (Doc 04) vs Mass-Production Replacement Doctrine (Doc 12)
-    var _csub_w = 460;
+    // 3 Subtabs: Contracts & Bounties (Doc 04), Fly-Off Procurement Trials (Doc 15), Commodity Trade Exchange (Doc 15)
+    var _csub_w = 370;
     var _csub_y = _pan_y + 8;
     var _csub_names = [
-        "[A. FACTION PROCUREMENT BOARD & DELIVERIES (DOC 04)]",
-        "[B. MASS-PRODUCTION REPLACEMENT & LICENSING DOCTRINE (DOC 12)]"
+        "[A. CONTRACTS & BOUNTIES]",
+        "[B. FLY-OFF PROCUREMENT TRIALS]",
+        "[C. INTERSTELLAR TRADE EXCHANGE]"
     ];
-    for (var cst = 0; cst < 2; cst++) {
+    for (var cst = 0; cst < 3; cst++) {
         var _csx = _pan_x + 30 + cst * (_csub_w + 14);
         var _cst_active = (contracts_subtab == cst);
         var _cst_hov = (_mx >= _csx && _mx <= _csx + _csub_w && _my >= _csub_y && _my <= _csub_y + 30);
@@ -2328,275 +2345,497 @@ else if (active_tab == 2) {
             draw_text(_cb_x, _c_disp_y, "AVAILABLE FACTION CONTRACT OFFERINGS:");
             for (var ac = 0; ac < array_length(_fm.available_contracts); ac++) {
                 var _cnt = _fm.available_contracts[ac];
-                var _acy = _c_disp_y + 22 + ac * 84;
+                var _cy = _c_disp_y + 24 + ac * 82;
+                var _cw = 1160;
 
-                draw_set_color(make_color_rgb(16, 24, 34));
-                draw_rectangle(_cb_x, _acy, _cb_x + 900, _acy + 74, false);
-                draw_set_color(make_color_rgb(45, 75, 110));
-                draw_rectangle(_cb_x, _acy, _cb_x + 900, _acy + 74, true);
+                draw_set_color(make_color_rgb(12, 18, 26));
+                draw_rectangle(_cb_x, _cy, _cb_x + _cw, _cy + 74, false);
+                draw_set_color(make_color_rgb(35, 60, 90));
+                draw_rectangle(_cb_x, _cy, _cb_x + _cw, _cy + 74, true);
 
-                draw_set_color(make_color_rgb(240, 210, 100));
-                draw_text(_cb_x + 16, _acy + 8, _cnt.title);
-                draw_set_color(make_color_rgb(100, 220, 255));
-                draw_text(_cb_x + 16, _acy + 26, "Employer: " + _cnt.faction_name + " | Type: " + _cnt.type);
-                draw_set_color(c_white);
-                draw_text(_cb_x + 16, _acy + 42, _cnt.briefing);
-                draw_set_color(make_color_rgb(80, 240, 120));
-                draw_text(_cb_x + 16, _acy + 56, "Payout: " + string(_cnt.payout_credits) + " Cr | Deadline: " + string(_cnt.deadline_days) + " Days");
+                draw_set_color(make_color_rgb(255, 215, 80));
+                draw_text(_cb_x + 14, _cy + 8, _cnt.title);
+                draw_set_color(make_color_rgb(160, 190, 220));
+                draw_text(_cb_x + 14, _cy + 28, _cnt.briefing);
+
+                draw_set_color(make_color_rgb(100, 255, 140));
+                draw_text(_cb_x + 14, _cy + 48, "Payout: " + string(_cnt.payout_credits) + " Cr | Standing: +" + string(_cnt.reputation_gain) + " | Deadline: " + string(_cnt.deadline_days) + " Days");
 
                 // Accept Button
-                var _ab_x = _cb_x + 720;
-                var _ab_y = _acy + 20;
-                var _ab_hov = (_mx >= _ab_x && _mx <= _ab_x + 160 && _my >= _ab_y && _my <= _ab_y + 36);
+                var _ab_x = _cb_x + _cw - 150;
+                var _ab_y = _cy + 16;
+                var _ab_w = 135;
+                var _ab_h = 42;
+                var _ab_hov = (_mx >= _ab_x && _mx <= _ab_x + _ab_w && _my >= _ab_y && _my <= _ab_y + _ab_h);
                 if (_ab_hov && _click) {
                     _fm.accept_contract(_cnt.id);
-                    break;
                 }
-                draw_set_color(_ab_hov ? make_color_rgb(20, 80, 40) : make_color_rgb(14, 45, 25));
-                draw_rectangle(_ab_x, _ab_y, _ab_x + 160, _ab_y + 36, false);
-                draw_set_color(make_color_rgb(60, 200, 100));
-                draw_rectangle(_ab_x, _ab_y, _ab_x + 160, _ab_y + 36, true);
+                draw_set_color(_ab_hov ? make_color_rgb(30, 80, 50) : make_color_rgb(18, 50, 32));
+                draw_rectangle(_ab_x, _ab_y, _ab_x + _ab_w, _ab_y + _ab_h, false);
+                draw_set_color(make_color_rgb(60, 240, 120));
+                draw_rectangle(_ab_x, _ab_y, _ab_x + _ab_w, _ab_y + _ab_h, true);
                 draw_set_color(c_white);
-                draw_text(_ab_x + 16, _ab_y + 10, "[ACCEPT CONTRACT]");
+                draw_text(_ab_x + 22, _ab_y + 12, "[ACCEPT]");
             }
 
-            // 2. Active Contracts Fulfillments
-            var _act_header_y = _c_disp_y + 22 + array_length(_fm.available_contracts) * 84 + 10;
-            draw_set_color(make_color_rgb(240, 210, 100));
-            draw_text(_cb_x, _act_header_y, "ACCEPTED CONTRACTS IN PROGRESS (FULFILL & DELIVER):");
+            // 2. Active Contracts Queue
+            var _act_y = _c_disp_y + 360;
+            draw_set_color(make_color_rgb(100, 220, 255));
+            draw_text(_cb_x, _act_y, "ACTIVE CONTRACT COMMITMENTS (ACCEPTED):");
+            if (array_length(_fm.active_contracts) == 0) {
+                draw_set_color(make_color_rgb(140, 160, 180));
+                draw_text(_cb_x, _act_y + 24, "No contracts currently accepted. Accept offerings above to deploy resources!");
+            } else {
+                for (var act = 0; act < array_length(_fm.active_contracts); act++) {
+                    var _acnt = _fm.active_contracts[act];
+                    var _acy = _act_y + 24 + act * 78;
+                    var _acw = 1160;
 
-            for (var act = 0; act < array_length(_fm.active_contracts); act++) {
-                var _acnt = _fm.active_contracts[act];
-                var _act_cy = _act_header_y + 22 + act * 76;
+                    draw_set_color(make_color_rgb(14, 22, 32));
+                    draw_rectangle(_cb_x, _acy, _cb_x + _acw, _acy + 70, false);
+                    draw_set_color(make_color_rgb(45, 75, 110));
+                    draw_rectangle(_cb_x, _acy, _cb_x + _acw, _acy + 70, true);
 
-                draw_set_color(make_color_rgb(20, 30, 42));
-                draw_rectangle(_cb_x, _act_cy, _cb_x + 900, _act_cy + 68, false);
-                draw_set_color(make_color_rgb(80, 140, 200));
-                draw_rectangle(_cb_x, _act_cy, _cb_x + 900, _act_cy + 68, true);
+                    draw_set_color(make_color_rgb(255, 215, 80));
+                    draw_text(_cb_x + 14, _acy + 8, _acnt.title + " [FACTION: " + _acnt.faction_name + "]");
+                    draw_set_color(c_white);
+                    draw_text(_cb_x + 14, _acy + 28, "Remaining: " + string(_acnt.days_remaining) + " Days | Payout: " + string(_acnt.payout_credits) + " Cr");
 
-                draw_set_color(c_white);
-                draw_text(_cb_x + 16, _act_cy + 8, _acnt.title + " (Deadline: " + string(_acnt.days_remaining) + " Days)");
-                draw_set_color(make_color_rgb(100, 255, 140));
-                draw_text(_cb_x + 16, _act_cy + 30, "Payout: " + string(_acnt.payout_credits) + " Cr | Standing Gain: +" + string(_acnt.reputation_gain));
-
-                // Deliver Button
-                var _dl_x = _cb_x + 690;
-                var _dl_y = _act_cy + 15;
-                var _dl_hov = (_mx >= _dl_x && _mx <= _dl_x + 190 && _my >= _dl_y && _my <= _dl_y + 38);
-                if (_dl_hov && _click) {
-                    _fm.fulfill_contract(_acnt.id);
-                    break;
+                    // Deliver / Fulfill Button
+                    var _ful_x = _cb_x + _acw - 160;
+                    var _ful_y = _acy + 14;
+                    var _ful_w = 145;
+                    var _ful_h = 42;
+                    var _ful_hov = (_mx >= _ful_x && _mx <= _ful_x + _ful_w && _my >= _ful_y && _my <= _ful_y + _ful_h);
+                    if (_ful_hov && _click) {
+                        _fm.fulfill_contract(_acnt.id);
+                    }
+                    draw_set_color(_ful_hov ? make_color_rgb(35, 95, 60) : make_color_rgb(20, 60, 38));
+                    draw_rectangle(_ful_x, _ful_y, _ful_x + _ful_w, _ful_y + _ful_h, false);
+                    draw_set_color(make_color_rgb(80, 255, 140));
+                    draw_rectangle(_ful_x, _ful_y, _ful_x + _ful_w, _ful_y + _ful_h, true);
+                    draw_set_color(c_white);
+                    draw_text(_ful_x + 20, _ful_y + 12, "[FULFILL ORDER]");
                 }
-                draw_set_color(_dl_hov ? make_color_rgb(30, 100, 60) : make_color_rgb(18, 55, 35));
-                draw_rectangle(_dl_x, _dl_y, _dl_x + 190, _dl_y + 38, false);
-                draw_set_color(make_color_rgb(80, 240, 140));
-                draw_rectangle(_dl_x, _dl_y, _dl_x + 190, _dl_y + 38, true);
-                draw_set_color(c_white);
-                draw_text(_dl_x + 14, _dl_y + 11, "[FULFILL & DELIVER]");
             }
         }
     }
 
     // =========================================================================
-    // SUBTAB 1: MASS-PRODUCTION REPLACEMENT DOCTRINE & MONOPOLY BOARD (docs/12)
+    // SUBTAB 1: FLY-OFF PROCUREMENT TRIALS & DOCTRINE REPLACEMENT (docs/15)
     // =========================================================================
     else if (contracts_subtab == 1) {
-        var _mp_x = _pan_x + 30;
-        var _mp_y = _pan_y + 44;
+        var _tr_x = _pan_x + 30;
+        var _tr_y = _pan_y + 44;
 
         draw_set_color(make_color_rgb(100, 220, 255));
-        draw_text(_mp_x, _mp_y, "== MASS-PRODUCTION REPLACEMENT & LICENSING DOCTRINE (docs/12) ==");
+        draw_text(_tr_x, _tr_y, "== FACTION PROCUREMENT TRIALS & COMPETITIVE FLY-OFF ARENA (docs/15) ==");
         draw_set_color(make_color_rgb(160, 190, 220));
-        draw_text(_mp_x, _mp_y + 18, "Displace superpower standard-issue grunt suits with proprietary player chassis to collect massive upfront bounties & continuous daily production royalties!");
+        draw_text(_tr_x, _tr_y + 18, "Submit custom mobile suits to competitive fly-offs against faction flagship models. Outperform the incumbent to REPLACE their doctrine, earning upfront bounties & daily royalties!");
 
-        if (instance_exists(obj_FactionManager)) {
+        if (instance_exists(obj_FactionManager) && instance_exists(obj_GameManager)) {
             var _fm = obj_FactionManager;
+            var _gm = obj_GameManager;
             var _mpc = _fm.mass_production_contracts;
             var _f_list = ["faction_a", "faction_b", "faction_c", "faction_d"];
-            var _f_card_w = 285;
-            var _f_card_h = 230;
+            var _f_card_w = 280;
+            var _f_card_h = 135;
 
-            // 1. The 4 Faction Doctrine Cards
+            // 1. The 4 Target Faction Cards
             for (var fc = 0; fc < 4; fc++) {
                 var _fid = _f_list[fc];
                 if (!variable_struct_exists(_mpc, _fid)) continue;
                 var _mp = _mpc[$ _fid];
                 var _std = _fm.get_standing(_fid);
-                var _card_x = _mp_x + fc * (_f_card_w + 14);
-                var _card_y = _mp_y + 42;
-                var _is_selected = (selected_pitch_faction == _fid);
+                var _card_x = _tr_x + fc * (_f_card_w + 13);
+                var _card_y = _tr_y + 40;
+                var _is_sel = (trial_selected_faction == _fid);
+                var _c_hov = (_mx >= _card_x && _mx <= _card_x + _f_card_w && _my >= _card_y && _my <= _card_y + _f_card_h);
+                if (_c_hov && _click) {
+                    trial_selected_faction = _fid;
+                    trial_last_result = undefined;
+                }
 
                 draw_set_color(make_color_rgb(14, 20, 28));
                 draw_rectangle(_card_x, _card_y, _card_x + _f_card_w, _card_y + _f_card_h, false);
-                draw_set_color(_is_selected ? make_color_rgb(255, 215, 80) : (_mp.replaced ? make_color_rgb(60, 220, 120) : make_color_rgb(45, 75, 110)));
+                draw_set_color(_is_sel ? make_color_rgb(255, 215, 80) : (_mp.replaced ? make_color_rgb(60, 220, 120) : make_color_rgb(45, 75, 110)));
                 draw_rectangle(_card_x, _card_y, _card_x + _f_card_w, _card_y + _f_card_h, true);
 
-                // Faction Title & Standing
                 draw_set_color(make_color_rgb(240, 215, 100));
-                draw_text(_card_x + 12, _card_y + 8, _mp.faction_name);
-                var _std_col = (_std >= 10) ? c_lime : ((_std < -10) ? c_red : c_yellow);
+                draw_text(_card_x + 10, _card_y + 8, _mp.faction_name);
+
+                var _std_col = (_std >= 20) ? c_lime : ((_std < -10) ? c_red : c_yellow);
                 draw_set_color(_std_col);
-                draw_text(_card_x + 12, _card_y + 26, "Standing: " + string(_std) + (_std >= 10 ? " [QUALIFIED]" : " [UNQUALIFIED]"));
+                draw_text(_card_x + 10, _card_y + 26, "Standing: " + string(_std));
 
-                // Original Suit
-                draw_set_color(make_color_rgb(160, 190, 220));
-                draw_text(_card_x + 12, _card_y + 44, "Standard Issue: " + _mp.baseline_suit_name);
-
-                // Replacement Status
                 if (_mp.replaced) {
-                    draw_set_color(make_color_rgb(18, 55, 30));
-                    draw_rectangle(_card_x + 10, _card_y + 64, _card_x + _f_card_w - 10, _card_y + 110, false);
                     draw_set_color(make_color_rgb(60, 240, 120));
-                    draw_rectangle(_card_x + 10, _card_y + 64, _card_x + _f_card_w - 10, _card_y + 110, true);
-                    draw_text(_card_x + 16, _card_y + 70, "STATUS: REPLACED BY PLAYER");
-                    draw_set_color(c_white);
-                    draw_text(_card_x + 16, _card_y + 88, "Model: " + _mp.replacement_name);
-
-                    draw_set_color(make_color_rgb(100, 255, 140));
-                    draw_text(_card_x + 12, _card_y + 120, "Turn Royalty: +" + string(_mp.royalty_per_turn) + " Cr / day");
-                    draw_text(_card_x + 12, _card_y + 138, "Total Royalties: " + string(_mp.cumulative_royalties_paid) + " Cr");
-                    draw_set_color(make_color_rgb(255, 200, 80));
-                    draw_text(_card_x + 12, _card_y + 156, "Tactical War Shift: +" + string(_mp.combat_bonus) + "% Roll");
+                    draw_text(_card_x + 10, _card_y + 46, "[DOCTRINE: " + _mp.replacement_name + "]");
+                    draw_set_color(make_color_rgb(100, 255, 160));
+                    draw_text(_card_x + 10, _card_y + 66, "Royalty: +" + string(_mp.royalty_per_turn) + " Cr/turn");
+                    draw_text(_card_x + 10, _card_y + 84, "Total Earned: " + string(_mp.cumulative_royalties_paid) + " Cr");
                 } else {
-                    draw_set_color(make_color_rgb(45, 30, 14));
-                    draw_rectangle(_card_x + 10, _card_y + 64, _card_x + _f_card_w - 10, _card_y + 110, false);
-                    draw_set_color(make_color_rgb(240, 150, 40));
-                    draw_rectangle(_card_x + 10, _card_y + 64, _card_x + _f_card_w - 10, _card_y + 110, true);
-                    draw_text(_card_x + 16, _card_y + 70, "STATUS: FACTION ISSUE");
-                    draw_set_color(make_color_rgb(200, 200, 200));
-                    draw_text(_card_x + 16, _card_y + 88, "Awaiting Player Chassis Pitch");
-
+                    draw_set_color(make_color_rgb(240, 160, 50));
+                    draw_text(_card_x + 10, _card_y + 46, "Incumbent: " + _mp.baseline_suit_name);
                     draw_set_color(make_color_rgb(80, 220, 255));
-                    draw_text(_card_x + 12, _card_y + 120, "Upfront Bounty: +" + string(_mp.licensing_bounty) + " Cr");
-                    draw_text(_card_x + 12, _card_y + 138, "Daily Royalty: +" + string(_mp.royalty_per_turn) + " Cr / day");
-                    draw_set_color(make_color_rgb(255, 200, 80));
-                    draw_text(_card_x + 12, _card_y + 156, "Min Req: Standing >= 10");
+                    draw_text(_card_x + 10, _card_y + 66, "License Bounty: +" + string(_mp.licensing_bounty) + " Cr");
+                    draw_text(_card_x + 10, _card_y + 84, "Daily Royalty: +" + string(_mp.royalty_per_turn) + " Cr/turn");
+                }
 
-                    // Select Button
-                    var _sel_btn_y = _card_y + 185;
-                    var _sel_hov = (_mx >= _card_x + 12 && _mx <= _card_x + _f_card_w - 12 && _my >= _sel_btn_y && _my <= _sel_btn_y + 34);
-                    if (_sel_hov && _click) {
-                        selected_pitch_faction = _fid;
+                draw_set_color(_is_sel ? make_color_rgb(255, 215, 80) : make_color_rgb(140, 170, 200));
+                draw_text(_card_x + 10, _card_y + 110, _is_sel ? ">> TARGET SELECTED <<" : "[CLICK TO SELECT]");
+            }
+
+            // 2. Candidate Selection (Left Column) vs Fly-Off Arena (Right Column)
+            var _arena_y = _tr_y + 185;
+            var _col1_w = 380;
+            var _col2_x = _tr_x + _col1_w + 18;
+            var _col2_w = 762;
+            var _arena_h = 425;
+
+            // Left Box: Hangar Mobile Suits
+            draw_set_color(make_color_rgb(10, 16, 24));
+            draw_rectangle(_tr_x, _arena_y, _tr_x + _col1_w, _arena_y + _arena_h, false);
+            draw_set_color(make_color_rgb(35, 60, 90));
+            draw_rectangle(_tr_x, _arena_y, _tr_x + _col1_w, _arena_y + _arena_h, true);
+
+            draw_set_color(make_color_rgb(255, 215, 80));
+            draw_text(_tr_x + 12, _arena_y + 10, "HANGAR MECHS (CHOOSE CANDIDATE):");
+
+            var _mechs = _gm.inventory.deployable_mechs;
+            if (array_length(_mechs) == 0) {
+                draw_set_color(make_color_rgb(160, 180, 200));
+                draw_text(_tr_x + 12, _arena_y + 36, "No deployable suits in hangar! Assemble in Factory.");
+            } else {
+                for (var m = 0; m < min(5, array_length(_mechs)); m++) {
+                    var _mitem = _mechs[m];
+                    var _my_box = _arena_y + 34 + m * 76;
+                    var _m_sel = (trial_selected_mech_idx == m);
+                    var _m_hov = (_mx >= _tr_x + 8 && _mx <= _tr_x + _col1_w - 8 && _my >= _my_box && _my <= _my_box + 70);
+                    if (_m_hov && _click) {
+                        trial_selected_mech_idx = m;
+                        trial_last_result = undefined;
                     }
-                    draw_set_color(_is_selected ? make_color_rgb(60, 48, 12) : (_sel_hov ? make_color_rgb(25, 45, 65) : make_color_rgb(16, 26, 38)));
-                    draw_rectangle(_card_x + 12, _sel_btn_y, _card_x + _f_card_w - 12, _sel_btn_y + 34, false);
-                    draw_set_color(_is_selected ? make_color_rgb(255, 215, 80) : make_color_rgb(60, 120, 180));
-                    draw_rectangle(_card_x + 12, _sel_btn_y, _card_x + _f_card_w - 12, _sel_btn_y + 34, true);
-                    draw_set_color(c_white);
-                    draw_text(_card_x + 28, _sel_btn_y + 9, _is_selected ? "[SELECTED TARGET]" : "[SELECT TO PITCH]");
+
+                    draw_set_color(_m_sel ? make_color_rgb(20, 50, 75) : (_m_hov ? make_color_rgb(16, 32, 48) : make_color_rgb(12, 18, 26)));
+                    draw_rectangle(_tr_x + 8, _my_box, _tr_x + _col1_w - 8, _my_box + 70, false);
+                    draw_set_color(_m_sel ? make_color_rgb(100, 220, 255) : make_color_rgb(40, 65, 95));
+                    draw_rectangle(_tr_x + 8, _my_box, _tr_x + _col1_w - 8, _my_box + 70, true);
+
+                    draw_set_color(_m_sel ? make_color_rgb(255, 220, 100) : c_white);
+                    draw_text(_tr_x + 14, _my_box + 6, _mitem.name);
+                    draw_set_color(make_color_rgb(160, 190, 220));
+                    draw_text(_tr_x + 14, _my_box + 24, "Class: " + (_mitem[$ "class"] ?? "Mobile Suit") + " | Status: " + _mitem.status);
+                    draw_set_color(make_color_rgb(80, 220, 140));
+                    draw_text(_tr_x + 14, _my_box + 44, "Armor: " + string(_mitem.armor_rating) + " | Output: +" + string(_mitem.power_output) + " MW | Spd: " + string(_mitem.speed) + " | CR: " + string(_mitem.combat_rating));
                 }
             }
 
-            // 2. The Ordnance Board Pitch & Ratification Terminal
-            var _pit_y = _mp_y + 285;
-            var _pit_w = 1180;
-            var _pit_h = 320;
+            // Right Box: Fly-Off Diagnostic & Benchmark Arena
             draw_set_color(make_color_rgb(10, 16, 24));
-            draw_rectangle(_mp_x, _pit_y, _mp_x + _pit_w, _pit_y + _pit_h, false);
+            draw_rectangle(_col2_x, _arena_y, _col2_x + _col2_w, _arena_y + _arena_h, false);
             draw_set_color(make_color_rgb(35, 60, 90));
-            draw_rectangle(_mp_x, _pit_y, _mp_x + _pit_w, _pit_y + _pit_h, true);
+            draw_rectangle(_col2_x, _arena_y, _col2_x + _col2_w, _arena_y + _arena_h, true);
 
-            var _cur_pitch_mp = _mpc[$ selected_pitch_faction];
+            var _inc = _fm.get_incumbent_specs(trial_selected_faction);
+            var _cur_cand = (trial_selected_mech_idx >= 0 && trial_selected_mech_idx < array_length(_mechs)) ? _mechs[trial_selected_mech_idx] : undefined;
+
             draw_set_color(make_color_rgb(255, 215, 80));
-            draw_text(_mp_x + 18, _pit_y + 12, "ORDNANCE BOARD PITCH TERMINAL // TARGET: " + string(_cur_pitch_mp.faction_name));
+            draw_text(_col2_x + 14, _arena_y + 10, "FLY-OFF BENCHMARK ARENA: " + _inc.faction_name);
+            draw_set_color(make_color_rgb(160, 190, 220));
+            draw_text(_col2_x + 14, _arena_y + 28, "Evaluator: " + _inc.evaluator + " | Doctrine: " + _inc.doctrine_focus);
 
-            // Blueprint Selector
+            // Side-by-side comparison table
+            var _cmp_y = _arena_y + 52;
+            draw_set_color(make_color_rgb(14, 24, 36));
+            draw_rectangle(_col2_x + 12, _cmp_y, _col2_x + _col2_w - 12, _cmp_y + 130, false);
+            draw_set_color(make_color_rgb(45, 75, 110));
+            draw_rectangle(_col2_x + 12, _cmp_y, _col2_x + _col2_w - 12, _cmp_y + 130, true);
+
+            // Column Headers
             draw_set_color(make_color_rgb(100, 220, 255));
-            draw_text(_mp_x + 18, _pit_y + 36, "SELECT PROPRIETARY BLUEPRINT CHASSIS TO PITCH:");
+            draw_text(_col2_x + 24, _cmp_y + 8, "METRIC");
+            draw_text(_col2_x + 240, _cmp_y + 8, "CANDIDATE: " + (!is_undefined(_cur_cand) ? _cur_cand.name : "None"));
+            draw_text(_col2_x + 500, _cmp_y + 8, "INCUMBENT: " + _inc.name);
 
-            var _bp_list = [
-                { id: "bp_player_vanguard_aegis", name: "Vanguard Aegis-MK1", role: "Heavy Linebreaker", armor: 880, power: 24, speed: 46 },
-                { id: "bp_player_valkyrie_ace", name: "Valkyrie Void-Striker", role: "Orbital Interceptor", armor: 640, power: 32, speed: 94 },
-                { id: "bp_player_chimera_modular", name: "Chimera Modular Raider", role: "Skirmish Guerrilla", armor: 720, power: 26, speed: 70 },
-                { id: "bp_player_muramasa_spec_x", name: "Kusanagi Cyber-Assault", role: "Cybernetic Ace", armor: 780, power: 36, speed: 86 }
+            // Metrics: Armor, Power, Speed, Combat Rating
+            var _cand_arm = !is_undefined(_cur_cand) ? _cur_cand.armor_rating : 0;
+            var _cand_pwr = !is_undefined(_cur_cand) ? _cur_cand.power_output : 0;
+            var _cand_spd = !is_undefined(_cur_cand) ? _cur_cand.speed : 0;
+            var _cand_cr = !is_undefined(_cur_cand) ? _cur_cand.combat_rating : 0;
+
+            var _rows = [
+                { label: "1. Armor Plating", c_val: string(_cand_arm) + " HP", i_val: string(_inc.armor) + " HP", pass: (_cand_arm >= _inc.armor) },
+                { label: "2. Reactor Surplus", c_val: "+" + string(_cand_pwr) + " MW", i_val: "+" + string(_inc.power) + " MW", pass: (_cand_pwr >= _inc.power) },
+                { label: "3. Maximum Speed", c_val: string(_cand_spd) + " kph", i_val: string(_inc.speed) + " kph", pass: (_cand_spd >= _inc.speed) },
+                { label: "4. Combat Rating", c_val: string(_cand_cr) + " PTS", i_val: string(_inc.combat_rating) + " PTS", pass: (_cand_cr >= _inc.combat_rating) }
             ];
 
-            var _bp_box_w = 275;
-            for (var b = 0; b < 4; b++) {
-                var _bitem = _bp_list[b];
-                var _bx = _mp_x + 18 + b * (_bp_box_w + 14);
-                var _by = _pit_y + 56;
-                var _b_active = (selected_pitch_bp == _bitem.id);
-                var _b_hov = (_mx >= _bx && _mx <= _bx + _bp_box_w && _my >= _by && _my <= _by + 115);
-                if (_b_hov && _click) selected_pitch_bp = _bitem.id;
-
-                draw_set_color(_b_active ? make_color_rgb(20, 48, 70) : (_b_hov ? make_color_rgb(16, 32, 48) : make_color_rgb(12, 18, 26)));
-                draw_rectangle(_bx, _by, _bx + _bp_box_w, _by + 115, false);
-                draw_set_color(_b_active ? make_color_rgb(100, 220, 255) : make_color_rgb(40, 65, 95));
-                draw_rectangle(_bx, _by, _bx + _bp_box_w, _by + 115, true);
-
-                draw_set_color(_b_active ? make_color_rgb(255, 220, 100) : c_white);
-                draw_text(_bx + 10, _by + 8, _bitem.name);
-                draw_set_color(make_color_rgb(160, 190, 220));
-                draw_text(_bx + 10, _by + 28, "Role: " + _bitem.role);
-                draw_set_color(c_white);
-                draw_text(_bx + 10, _by + 48, "Armor: " + string(_bitem.armor) + " | Surplus: " + string(_bitem.power) + " MW");
-                draw_text(_bx + 10, _by + 66, "Speed: " + string(_bitem.speed) + " kph");
-
-                draw_set_color(_b_active ? c_lime : make_color_rgb(120, 150, 180));
-                draw_text(_bx + 10, _by + 90, _b_active ? "[ACTIVE PROPOSAL]" : "[CLICK TO SELECT]");
+            for (var r = 0; r < 4; r++) {
+                var _ry = _cmp_y + 30 + r * 24;
+                var _rw = _rows[r];
+                draw_set_color(make_color_rgb(180, 200, 220));
+                draw_text(_col2_x + 24, _ry, _rw.label);
+                draw_set_color(_rw.pass ? c_lime : make_color_rgb(240, 160, 60));
+                draw_text(_col2_x + 240, _ry, _rw.c_val);
+                draw_set_color(make_color_rgb(200, 200, 200));
+                draw_text(_col2_x + 500, _ry, _rw.i_val);
             }
 
-            // Evaluation & Ratification Summary
-            var _eval_y = _pit_y + 185;
-            var _std_cur = _fm.get_standing(selected_pitch_faction);
-            var _has_mech = (instance_exists(obj_GameManager) && array_length(obj_GameManager.inventory.deployable_mechs) > 0);
-            var _is_replaced_already = _cur_pitch_mp.replaced;
+            // Fly-Off Test Simulation Button
+            var _fly_btn_y = _cmp_y + 140;
+            var _fly_btn_w = _col2_w - 24;
+            var _fly_btn_h = 44;
+            var _can_fly = (!is_undefined(_cur_cand));
+            var _fly_hov = (_mx >= _col2_x + 12 && _mx <= _col2_x + 12 + _fly_btn_w && _my >= _fly_btn_y && _my <= _fly_btn_y + _fly_btn_h);
 
-            draw_set_color(make_color_rgb(100, 220, 255));
-            draw_text(_mp_x + 18, _eval_y, "ORDNANCE BOARD FEASIBILITY AUDIT:");
-
-            draw_set_color((_std_cur >= 10) ? c_lime : c_red);
-            draw_text(_mp_x + 18, _eval_y + 22, "1. Diplomatic Standing: " + string(_std_cur) + "/10 Required (" + ((_std_cur >= 10) ? "VERIFIED" : "DISQUALIFIED") + ")");
-
-            draw_set_color(_has_mech ? c_lime : c_red);
-            draw_text(_mp_x + 18, _eval_y + 42, "2. Physical Prototype in Hangar: " + (_has_mech ? "Ready for Ordnance Field Trials (VERIFIED)" : "NO DEPLOYABLE MECHS IN HANGAR (FAILED)"));
-
-            draw_set_color(make_color_rgb(255, 200, 80));
-            draw_text(_mp_x + 18, _eval_y + 62, "3. Upfront License Bounty: +" + string(_cur_pitch_mp.licensing_bounty) + " Cr | Daily Production Royalty: +" + string(_cur_pitch_mp.royalty_per_turn) + " Cr/day");
-
-            // Ratify Button
-            var _rat_x = _mp_x + 650;
-            var _rat_y = _eval_y + 15;
-            var _rat_w = 480;
-            var _rat_h = 55;
-            var _can_ratify = (!_is_replaced_already && _std_cur >= 10 && _has_mech);
-            var _rat_hov = (_mx >= _rat_x && _mx <= _rat_x + _rat_w && _my >= _rat_y && _my <= _rat_y + _rat_h);
-
-            if (_rat_hov && _click) {
-                if (_is_replaced_already) {
-                    show_toast("ALREADY LICENSED: Faction already manufactures this chassis!", c_yellow);
-                } else if (!_can_ratify) {
-                    show_toast("ORDNANCE REJECTED: Ensure standing >= 10 and ready mech in hangar!", c_red);
-                } else {
-                    var _sel_bp_name = "Vanguard Aegis-MK1";
-                    for (var bp_i = 0; bp_i < 4; bp_i++) {
-                        if (_bp_list[bp_i].id == selected_pitch_bp) _sel_bp_name = _bp_list[bp_i].name;
+            if (_fly_hov && _click) {
+                if (_can_fly) {
+                    trial_last_result = _fm.run_procurement_trial(trial_selected_faction, _cur_cand);
+                    if (trial_last_result.passed) {
+                        show_toast("TRIAL SUCCESS: " + _cur_cand.name + " OUTPERFORMED " + _inc.name + "! (" + string(trial_last_result.composite_score) + "/100)", c_lime);
+                    } else {
+                        show_toast("TRIAL DEFICIT: Candidate scored " + string(trial_last_result.composite_score) + "/100. Requirements unmet!", c_red);
                     }
-                    _fm.pitch_mass_production_replacement(selected_pitch_faction, selected_pitch_bp, _sel_bp_name);
+                } else {
+                    show_toast("SELECT A CANDIDATE MECH IN HANGAR FIRST!", c_red);
                 }
             }
 
-            draw_set_color(_is_replaced_already ? make_color_rgb(18, 50, 28) : (_can_ratify ? (_rat_hov ? make_color_rgb(25, 95, 55) : make_color_rgb(16, 60, 34)) : make_color_rgb(45, 18, 18)));
-            draw_rectangle(_rat_x, _rat_y, _rat_x + _rat_w, _rat_y + _rat_h, false);
-            draw_set_color(_is_replaced_already ? make_color_rgb(60, 240, 120) : (_can_ratify ? make_color_rgb(60, 240, 120) : make_color_rgb(220, 60, 60)));
-            draw_rectangle(_rat_x, _rat_y, _rat_x + _rat_w, _rat_y + _rat_h, true);
+            draw_set_color(_can_fly ? (_fly_hov ? make_color_rgb(25, 75, 110) : make_color_rgb(18, 48, 72)) : make_color_rgb(30, 20, 20));
+            draw_rectangle(_col2_x + 12, _fly_btn_y, _col2_x + 12 + _fly_btn_w, _fly_btn_y + _fly_btn_h, false);
+            draw_set_color(_can_fly ? make_color_rgb(100, 220, 255) : make_color_rgb(140, 60, 60));
+            draw_rectangle(_col2_x + 12, _fly_btn_y, _col2_x + 12 + _fly_btn_w, _fly_btn_y + _fly_btn_h, true);
 
             draw_set_color(c_white);
-            if (_is_replaced_already) {
-                draw_text(_rat_x + 35, _rat_y + 18, "[DOCTRINE ALREADY ACTIVE & PRODUCING ROYALTIES]");
-            } else if (_can_ratify) {
-                draw_text(_rat_x + 20, _rat_y + 18, ">> RATIFY MP REPLACEMENT CONTRACT (+" + string(_cur_pitch_mp.licensing_bounty) + " Cr) <<");
-            } else {
-                draw_text(_rat_x + 45, _rat_y + 18, "[CRITERIA UNMET: CHECK STANDING & HANGAR MECHS]");
+            draw_text(_col2_x + 160, _fly_btn_y + 13, ">> COMMENCE COMPETITIVE FLY-OFF TRIAL // RUN 4 DIAGNOSTIC PHASES <<");
+
+            // Diagnostic Results Banner & Ratification
+            if (!is_undefined(trial_last_result)) {
+                var _res_y = _fly_btn_y + 52;
+                var _res_w = _col2_w - 24;
+                var _res_h = 175;
+
+                draw_set_color(trial_last_result.passed ? make_color_rgb(12, 36, 20) : make_color_rgb(36, 16, 16));
+                draw_rectangle(_col2_x + 12, _res_y, _col2_x + 12 + _res_w, _res_y + _res_h, false);
+                draw_set_color(trial_last_result.passed ? make_color_rgb(60, 240, 120) : make_color_rgb(240, 60, 60));
+                draw_rectangle(_col2_x + 12, _res_y, _col2_x + 12 + _res_w, _res_y + _res_h, true);
+
+                draw_set_color(trial_last_result.passed ? make_color_rgb(255, 220, 100) : make_color_rgb(255, 100, 100));
+                draw_text(_col2_x + 24, _res_y + 8, trial_last_result.passed ? "*** FLY-OFF VICTORY: DOCTRINE CANDIDACY QUALIFIED ***" : "!!! FLY-OFF DEFICIT: DOCTRINE CANDIDACY REJECTED !!!");
+
+                draw_set_color(c_white);
+                draw_text(_col2_x + 24, _res_y + 28, "Phase 1 Armor Stress: " + string(trial_last_result.score_armor) + "/100   |   Phase 2 Reactor Sustained: " + string(trial_last_result.score_power) + "/100");
+                draw_text(_col2_x + 24, _res_y + 46, "Phase 3 High-G Mobility: " + string(trial_last_result.score_speed) + "/100   |   Phase 4 Live-Fire Combat: " + string(trial_last_result.score_combat) + "/100");
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_col2_x + 24, _res_y + 66, "Faction Standing Bonus: +" + string(trial_last_result.standing_bonus) + " pts   ==>   COMPOSITE SCORE: " + string(trial_last_result.composite_score) + " / 100.0 PTS");
+
+                draw_set_color(trial_last_result.passed ? make_color_rgb(140, 255, 180) : make_color_rgb(255, 180, 180));
+                draw_text(_col2_x + 24, _res_y + 88, trial_last_result.report);
+
+                // Ratification Button if passed
+                if (trial_last_result.passed) {
+                    var _rat_btn_y = _res_y + 115;
+                    var _rat_btn_w = _res_w - 24;
+                    var _rat_btn_h = 48;
+                    var _rat_hov = (_mx >= _col2_x + 24 && _mx <= _col2_x + 24 + _rat_btn_w && _my >= _rat_btn_y && _my <= _rat_btn_y + _rat_btn_h);
+
+                    if (_rat_hov && _click) {
+                        _fm.award_procurement_contract(trial_selected_faction, _cur_cand, trial_last_result);
+                        trial_last_result = undefined;
+                    }
+
+                    draw_set_color(_rat_hov ? make_color_rgb(35, 115, 65) : make_color_rgb(22, 80, 44));
+                    draw_rectangle(_col2_x + 24, _rat_btn_y, _col2_x + 24 + _rat_btn_w, _rat_btn_y + _rat_btn_h, false);
+                    draw_set_color(make_color_rgb(80, 255, 140));
+                    draw_rectangle(_col2_x + 24, _rat_btn_y, _col2_x + 24 + _rat_btn_w, _rat_btn_y + _rat_btn_h, true);
+
+                    draw_set_color(c_white);
+                    draw_text(_col2_x + 80, _rat_btn_y + 14, ">> RATIFY TENDER: REPLACE DOCTRINE // CLAIM +" + string(_fm.mass_production_contracts[$ trial_selected_faction].licensing_bounty) + " Cr & ROYALTIES <<");
+                }
+            }
+        }
+    }
+
+    // =========================================================================
+    // SUBTAB 2: INTERSTELLAR COMMODITY TRADE EXCHANGE (docs/15)
+    // =========================================================================
+    else if (contracts_subtab == 2) {
+        var _td_x = _pan_x + 30;
+        var _td_y = _pan_y + 44;
+
+        draw_set_color(make_color_rgb(100, 220, 255));
+        draw_text(_td_x, _td_y, "== INTERSTELLAR COMMODITY TRADE EXCHANGE (docs/15) ==");
+        draw_set_color(make_color_rgb(160, 190, 220));
+        draw_text(_td_x, _td_y + 18, "Exchange raw minerals, synthesized alloys, and modular components across faction trade hubs. Prices reflect ideological doctrines and diplomatic standings.");
+
+        if (instance_exists(obj_FactionManager) && instance_exists(obj_GameManager)) {
+            var _fm = obj_FactionManager;
+            var _gm = obj_GameManager;
+            var _f_list = ["faction_a", "faction_b", "faction_c", "faction_d"];
+            var _f_tab_w = 280;
+
+            // 1. Faction Partner Tabs
+            for (var ft = 0; ft < 4; ft++) {
+                var _fid = _f_list[ft];
+                if (!variable_struct_exists(_fm.factions, _fid)) continue;
+                var _finfo = _fm.factions[$ _fid];
+                var _std = _fm.get_standing(_fid);
+                var _ft_x = _td_x + ft * (_f_tab_w + 13);
+                var _ft_y = _td_y + 40;
+                var _ft_sel = (trade_selected_faction == _fid);
+                var _ft_hov = (_mx >= _ft_x && _mx <= _ft_x + _f_tab_w && _my >= _ft_y && _my <= _ft_y + 52);
+                if (_ft_hov && _click) trade_selected_faction = _fid;
+
+                draw_set_color(_ft_sel ? make_color_rgb(25, 55, 88) : (_ft_hov ? make_color_rgb(18, 35, 55) : make_color_rgb(12, 20, 30)));
+                draw_rectangle(_ft_x, _ft_y, _ft_x + _f_tab_w, _ft_y + 52, false);
+                draw_set_color(_ft_sel ? make_color_rgb(100, 220, 255) : make_color_rgb(45, 75, 110));
+                draw_rectangle(_ft_x, _ft_y, _ft_x + _f_tab_w, _ft_y + 52, true);
+
+                draw_set_color(make_color_rgb(240, 215, 100));
+                draw_text(_ft_x + 10, _ft_y + 6, _finfo.name);
+
+                var _trade_status = (_std >= 30) ? "ALLY (-15% BUY / +15% SELL)" : ((_std < 0) ? "TARIFF (+25% EMBARGO)" : "STANDARD (PARITY)");
+                var _ts_col = (_std >= 30) ? c_lime : ((_std < 0) ? c_red : c_yellow);
+                draw_set_color(_ts_col);
+                draw_text(_ft_x + 10, _ft_y + 26, "Standing " + string(_std) + ": " + _trade_status);
+            }
+
+            // 2. Category Selector Buttons
+            var _cat_y = _td_y + 100;
+            var _cat_names = [
+                "[1. RAW STRATEGIC MINERALS]",
+                "[2. SYNTHESIZED ADVANCED ALLOYS]",
+                "[3. MODULAR SUIT COMPONENTS]"
+            ];
+            var _cat_w = 378;
+            for (var ct = 0; ct < 3; ct++) {
+                var _cx = _td_x + ct * (_cat_w + 13);
+                var _c_sel = (trade_selected_cat == ct);
+                var _c_hov = (_mx >= _cx && _mx <= _cx + _cat_w && _my >= _cat_y && _my <= _cat_y + 30);
+                if (_c_hov && _click) trade_selected_cat = ct;
+
+                draw_set_color(_c_sel ? make_color_rgb(20, 50, 75) : (_c_hov ? make_color_rgb(16, 32, 48) : make_color_rgb(12, 18, 26)));
+                draw_rectangle(_cx, _cat_y, _cx + _cat_w, _cat_y + 30, false);
+                draw_set_color(_c_sel ? make_color_rgb(100, 220, 255) : make_color_rgb(40, 65, 95));
+                draw_rectangle(_cx, _cat_y, _cx + _cat_w, _cat_y + 30, true);
+
+                draw_set_color(_c_sel ? c_white : make_color_rgb(160, 190, 220));
+                draw_text(_cx + 14, _cat_y + 7, _cat_names[ct]);
+            }
+
+            // 3. Commodity Cards Grid
+            var _grid_y = _cat_y + 38;
+            var _all_items = _fm.get_faction_trade_inventory(trade_selected_faction);
+            var _cat_filter = (trade_selected_cat == 0 ? "minerals" : (trade_selected_cat == 1 ? "alloys" : "parts"));
+            var _filtered_items = [];
+            for (var it = 0; it < array_length(_all_items); it++) {
+                if (_all_items[it].cat == _cat_filter) {
+                    array_push(_filtered_items, _all_items[it]);
+                }
+            }
+
+            for (var i = 0; i < array_length(_filtered_items); i++) {
+                var _item = _filtered_items[i];
+                var _iy = _grid_y + i * 86;
+                var _iw = 1160;
+                var _ih = 78;
+
+                draw_set_color(make_color_rgb(12, 18, 26));
+                draw_rectangle(_td_x, _iy, _td_x + _iw, _iy + _ih, false);
+                draw_set_color(make_color_rgb(35, 60, 90));
+                draw_rectangle(_td_x, _iy, _td_x + _iw, _iy + _ih, true);
+
+                // Player Stock Count
+                var _owned = 0;
+                if (_item.cat == "minerals") {
+                    _owned = _gm.get_raw_material(_item.id);
+                } else if (_item.cat == "alloys") {
+                    _owned = _gm.get_alloy(_item.id);
+                } else if (_item.cat == "parts") {
+                    var _slot_arr = _gm.inventory.parts[$ _item.slot] ?? [];
+                    for (var p = 0; p < array_length(_slot_arr); p++) {
+                        if (_slot_arr[p].id == _item.id) _owned++;
+                    }
+                }
+
+                // Item Name, Description, Demand
+                draw_set_color(make_color_rgb(255, 215, 80));
+                draw_text(_td_x + 14, _iy + 8, _item.name);
+                draw_set_color(make_color_rgb(160, 190, 220));
+                draw_text(_td_x + 14, _iy + 28, _item.desc);
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_td_x + 14, _iy + 48, "In Inventory: " + string(_owned) + " Units  |  Demand: " + string(round(_item.demand_mult * 100)) + "% Parity");
+
+                // Price Tags
+                draw_set_color(make_color_rgb(80, 220, 255));
+                draw_text(_td_x + 580, _iy + 16, "Buy Price: " + string(_item.buy_price) + " Cr");
+                draw_set_color(make_color_rgb(255, 200, 80));
+                draw_text(_td_x + 580, _iy + 42, "Sell Price: " + string(_item.sell_price) + " Cr");
+
+                // Buy 1 Button
+                var _b1_x = _td_x + 780;
+                var _b1_y = _iy + 16;
+                var _b1_w = 85;
+                var _b1_h = 44;
+                var _b1_hov = (_mx >= _b1_x && _mx <= _b1_x + _b1_w && _my >= _b1_y && _my <= _b1_y + _b1_h);
+                if (_b1_hov && _click) _fm.execute_trade_buy(trade_selected_faction, _item, 1);
+
+                draw_set_color(_b1_hov ? make_color_rgb(25, 75, 45) : make_color_rgb(16, 48, 30));
+                draw_rectangle(_b1_x, _b1_y, _b1_x + _b1_w, _b1_y + _b1_h, false);
+                draw_set_color(make_color_rgb(60, 220, 120));
+                draw_rectangle(_b1_x, _b1_y, _b1_x + _b1_w, _b1_y + _b1_h, true);
+                draw_set_color(c_white);
+                draw_text(_b1_x + 14, _b1_y + 14, "BUY 1");
+
+                // Buy 5 Button
+                var _b5_x = _b1_x + _b1_w + 8;
+                var _b5_w = 85;
+                var _b5_h = 44;
+                var _b5_hov = (_mx >= _b5_x && _mx <= _b5_x + _b5_w && _my >= _b1_y && _my <= _b1_y + _b5_h);
+                if (_b5_hov && _click) _fm.execute_trade_buy(trade_selected_faction, _item, 5);
+
+                draw_set_color(_b5_hov ? make_color_rgb(25, 75, 45) : make_color_rgb(16, 48, 30));
+                draw_rectangle(_b5_x, _b1_y, _b5_x + _b5_w, _b1_y + _b5_h, false);
+                draw_set_color(make_color_rgb(60, 220, 120));
+                draw_rectangle(_b5_x, _b1_y, _b5_x + _b5_w, _b1_y + _b5_h, true);
+                draw_set_color(c_white);
+                draw_text(_b5_x + 14, _b1_y + 14, "BUY 5");
+
+                // Sell 1 Button
+                var _s1_x = _b5_x + _b5_w + 14;
+                var _s1_w = 85;
+                var _s1_h = 44;
+                var _s1_hov = (_mx >= _s1_x && _mx <= _s1_x + _s1_w && _my >= _b1_y && _my <= _b1_y + _s1_h);
+                if (_s1_hov && _click) _fm.execute_trade_sell(trade_selected_faction, _item, 1);
+
+                draw_set_color(_s1_hov ? make_color_rgb(75, 55, 20) : make_color_rgb(48, 35, 14));
+                draw_rectangle(_s1_x, _b1_y, _s1_x + _s1_w, _b1_y + _s1_h, false);
+                draw_set_color(make_color_rgb(240, 180, 60));
+                draw_rectangle(_s1_x, _b1_y, _s1_x + _s1_w, _b1_y + _s1_h, true);
+                draw_set_color(c_white);
+                draw_text(_s1_x + 14, _b1_y + 14, "SELL 1");
+
+                // Sell All Button
+                var _sa_x = _s1_x + _s1_w + 8;
+                var _sa_w = 90;
+                var _sa_h = 44;
+                var _sa_hov = (_mx >= _sa_x && _mx <= _sa_x + _sa_w && _my >= _b1_y && _my <= _sa_y + _sa_h);
+                if (_sa_hov && _click) {
+                    if (_owned > 0) _fm.execute_trade_sell(trade_selected_faction, _item, _owned);
+                }
+
+                draw_set_color(_sa_hov ? make_color_rgb(75, 55, 20) : make_color_rgb(48, 35, 14));
+                draw_rectangle(_sa_x, _b1_y, _sa_x + _sa_w, _b1_y + _sa_h, false);
+                draw_set_color(make_color_rgb(240, 180, 60));
+                draw_rectangle(_sa_x, _b1_y, _sa_x + _sa_w, _b1_y + _sa_h, true);
+                draw_set_color(c_white);
+                draw_text(_sa_x + 10, _b1_y + 14, "SELL ALL");
             }
         }
     }
 }
 
-// -------------------------------------------------------------------------
-// TAB 3: STRATEGIC WAR MAP, FACTION DOSSIERS & DECADE MECHA LINEAGE
-// -------------------------------------------------------------------------
 else if (active_tab == 3) {
     var _sub_tabs_w = [
         "[A. SECTOR MAP & MINING (DOC 06)]",
@@ -2651,24 +2890,27 @@ else if (active_tab == 3) {
             draw_text(_m_x + 14, _wbox_y + 8, "INTERSTELLAR SECTOR INFLUENCE & 4-FACTION WAR BALANCE (docs/04):");
 
             // 1. Terran Coalition (Blue)
+            var _t_doc = _fm.mass_production_contracts.faction_a.replaced ? (" [DOCTRINE: " + _fm.mass_production_contracts.faction_a.replacement_name + "]") : " [DOCTRINE: GHA-07]";
             draw_set_color(make_color_rgb(180, 210, 255));
-            draw_text(_m_x + 14, _wbox_y + 28, "Terran Coalition: " + string(_tc.terran_pct) + "% | Military: " + string(_fm.factions.faction_a.military_strength_score));
+            draw_text(_m_x + 14, _wbox_y + 28, "Terran Coalition: " + string(_tc.terran_pct) + "% | Military: " + string(_fm.factions.faction_a.military_strength_score) + _t_doc);
             draw_set_color(make_color_rgb(18, 30, 48));
             draw_rectangle(_m_x + 14, _wbox_y + 44, _m_x + 500, _wbox_y + 52, false);
             draw_set_color(make_color_rgb(60, 130, 240));
             draw_rectangle(_m_x + 14, _wbox_y + 44, _m_x + 14 + (486 * (_tc.terran_pct / 100.0)), _wbox_y + 52, false);
 
             // 2. Outer Colonies (Cyan)
+            var _c_doc = _fm.mass_production_contracts.faction_b.replaced ? (" [DOCTRINE: " + _fm.mass_production_contracts.faction_b.replacement_name + "]") : " [DOCTRINE: AET-01]";
             draw_set_color(make_color_rgb(160, 255, 230));
-            draw_text(_m_x + 14, _wbox_y + 58, "Outer Colonies: " + string(_tc.colony_pct) + "% | Military: " + string(_fm.factions.faction_b.military_strength_score));
+            draw_text(_m_x + 14, _wbox_y + 58, "Outer Colonies: " + string(_tc.colony_pct) + "% | Military: " + string(_fm.factions.faction_b.military_strength_score) + _c_doc);
             draw_set_color(make_color_rgb(18, 30, 48));
             draw_rectangle(_m_x + 14, _wbox_y + 74, _m_x + 500, _wbox_y + 82, false);
             draw_set_color(make_color_rgb(40, 210, 180));
             draw_rectangle(_m_x + 14, _wbox_y + 74, _m_x + 14 + (486 * (_tc.colony_pct / 100.0)), _wbox_y + 82, false);
 
             // 3. Rogue Syndicates (Amber)
+            var _s_doc = _fm.mass_production_contracts.faction_c.replaced ? (" [DOCTRINE: " + _fm.mass_production_contracts.faction_c.replacement_name + "]") : " [DOCTRINE: SCR-12]";
             draw_set_color(make_color_rgb(255, 180, 100));
-            draw_text(_m_x + 14, _wbox_y + 88, "Rogue Syndicates: " + string(_tc.syndicate_pct) + "% | Pirate: " + string(_fm.factions.faction_c.military_strength_score));
+            draw_text(_m_x + 14, _wbox_y + 88, "Rogue Syndicates: " + string(_tc.syndicate_pct) + "% | Pirate: " + string(_fm.factions.faction_c.military_strength_score) + _s_doc);
             draw_set_color(make_color_rgb(18, 30, 48));
             draw_rectangle(_m_x + 14, _wbox_y + 104, _m_x + 500, _wbox_y + 112, false);
             draw_set_color(make_color_rgb(240, 140, 40));
@@ -2677,8 +2919,9 @@ else if (active_tab == 3) {
             // 4. Apex Zaibatsu (Purple)
             var _z_pct = variable_struct_exists(_tc, "zaibatsu_pct") ? _tc.zaibatsu_pct : 10;
             var _z_pwr = variable_struct_exists(_fm.factions, "faction_d") ? _fm.factions.faction_d.military_strength_score : 45;
+            var _z_doc = _fm.mass_production_contracts.faction_d.replaced ? (" [DOCTRINE: " + _fm.mass_production_contracts.faction_d.replacement_name + "]") : " [DOCTRINE: ZAI-03]";
             draw_set_color(make_color_rgb(210, 160, 255));
-            draw_text(_m_x + 14, _wbox_y + 118, "Apex Zaibatsu: " + string(_z_pct) + "% | Cyber-Pwr: " + string(_z_pwr));
+            draw_text(_m_x + 14, _wbox_y + 118, "Apex Zaibatsu: " + string(_z_pct) + "% | Cyber-Pwr: " + string(_z_pwr) + _z_doc);
             draw_set_color(make_color_rgb(18, 30, 48));
             draw_rectangle(_m_x + 14, _wbox_y + 134, _m_x + 500, _wbox_y + 142, false);
             draw_set_color(make_color_rgb(180, 90, 240));

@@ -35,6 +35,14 @@ assembly_bp_idx = 0;
 assembly_wp_idx = 0;
 assembly_custom_name = "Vanguard Chimera Spec-X";
 
+// 6. Fly-Off Procurement Trials & Interstellar Commodity Trade State (docs/15)
+trial_selected_faction = "faction_a";
+trial_selected_mech_idx = 0;
+trial_last_result = undefined;
+trade_selected_faction = "faction_a";
+trade_selected_cat = 0;
+trade_scroll_offset = 0;
+
 // 2. UI Toast Notifications
 toast_message = "WELCOME COMMANDER // ALL SYSTEMS NOMINAL";
 toast_color = make_color_rgb(100, 220, 255);

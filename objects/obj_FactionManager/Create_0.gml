@@ -554,3 +554,392 @@ if (file_exists("mobile_suits_timeline.json")) {
         show_debug_message("[obj_FactionManager] Warning: could not parse mobile_suits_timeline.json: " + string(_ex));
     }
 }
+
+// 10. Faction Procurement Trials & Competitive Fly-Off Arena (docs/15)
+incumbent_doctrines = {
+    faction_a: {
+        id: "GHA-07",
+        name: "GHA-07 Ironclad",
+        faction_name: "The Terran Coalition",
+        role: "Heavy Trench Assault & Frontline Wall",
+        armor: 850,
+        power: 12,
+        speed: 45,
+        mass: 92,
+        combat_rating: 480,
+        weights: [0.40, 0.15, 0.10, 0.35],
+        doctrine_focus: "Heavy Armor & Kinetic Slug Volume",
+        evaluator: "General Hector Vance (Terran Munitions Board)"
+    },
+    faction_b: {
+        id: "AET-01",
+        name: "AET-01 Aether",
+        faction_name: "The Outer Colonies",
+        role: "Orbital Interceptor & Energy Striker",
+        armor: 640,
+        power: 16,
+        speed: 120,
+        mass: 64,
+        combat_rating: 510,
+        weights: [0.10, 0.30, 0.40, 0.20],
+        doctrine_focus: "High-G Vernier Agility & Fusion Surplus",
+        evaluator: "Minister Jun Takahashi (Colony Defense Council)"
+    },
+    faction_c: {
+        id: "SCR-12",
+        name: "SCR-12 Hyena",
+        faction_name: "Rogue Mercenary Syndicates",
+        role: "Guerilla Raider & Resource Scavenger",
+        armor: 720,
+        power: 10,
+        speed: 75,
+        mass: 70,
+        combat_rating: 440,
+        weights: [0.25, 0.15, 0.25, 0.35],
+        doctrine_focus: "Cost Efficiency & Armor-Piercing Punch",
+        evaluator: "Kruger 'Iron-Eye' (Black Market Boss)"
+    },
+    faction_d: {
+        id: "ZAI-03",
+        name: "ZAI-03 Muramasa",
+        faction_name: "Apex Bio-Cybernetics Zaibatsu",
+        role: "Transhuman Cyber-Striker & Electronic Warfare",
+        armor: 780,
+        power: 18,
+        speed: 95,
+        mass: 78,
+        combat_rating: 560,
+        weights: [0.20, 0.25, 0.25, 0.30],
+        doctrine_focus: "Balanced Neural Response & Energy Precision",
+        evaluator: "Director Renzo Takahashi (Apex Procurement Bureau)"
+    }
+};
+
+get_incumbent_specs = function(_faction_id) {
+    if (variable_struct_exists(incumbent_doctrines, _faction_id)) {
+        return incumbent_doctrines[$ _faction_id];
+    }
+    return incumbent_doctrines.faction_a;
+};
+
+run_procurement_trial = function(_faction_id, _mech) {
+    var _inc = get_incumbent_specs(_faction_id);
+    if (is_undefined(_mech)) return undefined;
+
+    var _cand_armor = _mech[$ "armor_rating"] ?? 600;
+    var _cand_power = _mech[$ "power_output"] ?? 10;
+    var _cand_speed = _mech[$ "speed"] ?? 60;
+    var _cand_combat = _mech[$ "combat_rating"] ?? 400;
+
+    // 4 Diagnostic Phase Scores (Base 100 is exact parity with incumbent)
+    var _score_armor = clamp((_cand_armor / max(1, _inc.armor)) * 100.0, 20.0, 160.0);
+    var _score_power = clamp((_cand_power / max(1, _inc.power)) * 100.0, 20.0, 160.0);
+    var _score_speed = clamp((_cand_speed / max(1, _inc.speed)) * 100.0, 20.0, 160.0);
+    var _score_combat = clamp((_cand_combat / max(1, _inc.combat_rating)) * 100.0, 20.0, 160.0);
+
+    var _w = _inc.weights;
+    var _base_weighted = (_score_armor * _w[0]) + (_score_power * _w[1]) + (_score_speed * _w[2]) + (_score_combat * _w[3]);
+
+    // Faction Standing Bonus (-20 to +20)
+    var _st_bonus = get_standing(_faction_id) / 5.0;
+    var _composite_score = round((_base_weighted + _st_bonus) * 10.0) / 10.0;
+
+    var _passed = (_composite_score >= 100.0);
+
+    var _report = "";
+    if (_passed) {
+        _report = "TENDER APPROVED: " + _mech.name + " outperformed incumbent " + _inc.name + " (" + string(_composite_score) + "/100). Faction board recommends immediate mass-production contract!";
+    } else {
+        var _deficit = 100.0 - _composite_score;
+        _report = "TENDER REJECTED: Candidate fell short of doctrine standard by " + string(_deficit) + " pts. Improve components or boost faction standing!";
+    }
+
+    return {
+        faction_id: _faction_id,
+        incumbent_id: _inc.id,
+        incumbent_name: _inc.name,
+        candidate_name: _mech.name,
+        candidate_armor: _cand_armor,
+        candidate_power: _cand_power,
+        candidate_speed: _cand_speed,
+        candidate_combat: _cand_combat,
+        incumbent_armor: _inc.armor,
+        incumbent_power: _inc.power,
+        incumbent_speed: _inc.speed,
+        incumbent_combat: _inc.combat_rating,
+        score_armor: round(_score_armor),
+        score_power: round(_score_power),
+        score_speed: round(_score_speed),
+        score_combat: round(_score_combat),
+        standing_bonus: round(_st_bonus),
+        composite_score: _composite_score,
+        passed: _passed,
+        report: _report
+    };
+};
+
+award_procurement_contract = function(_faction_id, _mech, _trial_result) {
+    if (!variable_struct_exists(mass_production_contracts, _faction_id)) return false;
+    var _mp = mass_production_contracts[$ _faction_id];
+    var _f = factions[$ _faction_id];
+
+    _mp.replaced = true;
+    _mp.replacement_name = _mech.name;
+    _mp.replacement_blueprint_id = _mech[$ "blueprint_id"] ?? "bp_custom";
+    _mp.combat_bonus = max(18, floor(_trial_result.composite_score / 5));
+
+    // Award Licensing Bounty
+    var _bounty = _mp.licensing_bounty;
+    if (instance_exists(obj_GameManager)) {
+        obj_GameManager.funds += _bounty;
+        array_push(obj_GameManager.last_turn_events, "! DOCTRINE REPLACED: " + _f.name + " awarded Mass-Production Tender for " + _mech.name + "! Licensing Bounty: +" + string(_bounty) + " Cr (+" + string(_mp.royalty_per_turn) + " Cr/turn royalties)!");
+    }
+
+    // Boost Faction Military Rating & Standing
+    _f.military_strength_score = min(100, _f.military_strength_score + 20);
+    modify_standing(_faction_id, 25);
+
+    // Multi-Faction Arms Dealing Geopolitical Ripple Effect (docs/15)
+    if (_faction_id == "faction_a") {
+        modify_standing("faction_b", -25);
+        modify_standing("faction_c", -10);
+    } else if (_faction_id == "faction_b") {
+        modify_standing("faction_a", -30);
+        modify_standing("faction_c", -5);
+    } else if (_faction_id == "faction_c") {
+        modify_standing("faction_a", -15);
+        modify_standing("faction_d", -10);
+    } else if (_faction_id == "faction_d") {
+        modify_standing("faction_a", -10);
+        modify_standing("faction_b", -15);
+    }
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("TENDER WON! " + _f.name + " OFFICIALLY ADOPTS " + _mech.name + "! +" + string(_bounty) + " Cr!", c_lime);
+    }
+    return true;
+};
+
+// 11. Interstellar Commodity Trade System (docs/15)
+get_faction_trade_inventory = function(_faction_id) {
+    var _st = get_standing(_faction_id);
+    var _buy_mult = 1.0;
+    var _sell_mult = 1.0;
+
+    if (_st >= 30) {
+        _buy_mult = 0.85;  // 15% discount
+        _sell_mult = 1.15; // 15% bonus selling
+    } else if (_st < 0) {
+        _buy_mult = 1.25;  // 25% tariff surcharge
+        _sell_mult = 0.85; // 15% penalty selling
+    }
+
+    // Dynamic Demand Multipliers by Faction Doctrine
+    var _items = [
+        // Category 0: Raw Minerals
+        {
+            cat: "minerals",
+            id: "mat_tungsten",
+            name: "Refined Tungsten (W)",
+            desc: "Heavy ballistic refractory metal.",
+            base_price: 400,
+            demand_mult: (_faction_id == "faction_a" ? 1.4 : (_faction_id == "faction_b" ? 0.9 : 1.0)),
+            stock_faction: 50
+        },
+        {
+            cat: "minerals",
+            id: "mat_silica_carb",
+            name: "Silica-Carbon (SiC)",
+            desc: "Thermal insulator and ceramic base.",
+            base_price: 150,
+            demand_mult: (_faction_id == "faction_b" ? 1.3 : (_faction_id == "faction_a" ? 1.0 : 1.1)),
+            stock_faction: 80
+        },
+        {
+            cat: "minerals",
+            id: "mat_syn_flux",
+            name: "Synthetic Flux (Flux)",
+            desc: "Catalytic fusing agent for alloy smelting.",
+            base_price: 800,
+            demand_mult: (_faction_id == "faction_c" ? 1.4 : (_faction_id == "faction_d" ? 1.2 : 0.9)),
+            stock_faction: 30
+        },
+        {
+            cat: "minerals",
+            id: "mat_tritium",
+            name: "Plasma-Charged Tritium (T)",
+            desc: "High-energy fusion reactor fuel.",
+            base_price: 1200,
+            demand_mult: (_faction_id == "faction_b" ? 1.5 : (_faction_id == "faction_d" ? 1.3 : 1.0)),
+            stock_faction: 20
+        },
+
+        // Category 1: Synthesized Alloys
+        {
+            cat: "alloys",
+            id: "alloy_vanguard_comp",
+            name: "Vanguard Composite Plating",
+            desc: "Tier-1 heavy kinetic armor alloy.",
+            base_price: 5500,
+            demand_mult: (_faction_id == "faction_a" ? 1.5 : 1.0),
+            stock_faction: 15
+        },
+        {
+            cat: "alloys",
+            id: "alloy_hyperion_matrix",
+            name: "Hyperion Superconductor Matrix",
+            desc: "High-spec Tokamak magnetic liner.",
+            base_price: 8500,
+            demand_mult: (_faction_id == "faction_b" ? 1.5 : (_faction_id == "faction_d" ? 1.4 : 1.0)),
+            stock_faction: 10
+        },
+        {
+            cat: "alloys",
+            id: "alloy_aerosteel_flux",
+            name: "Aerosteel Vernier Alloy",
+            desc: "Ultra-lightweight high-thrust frame alloy.",
+            base_price: 7000,
+            demand_mult: (_faction_id == "faction_d" ? 1.4 : (_faction_id == "faction_b" ? 1.3 : 1.0)),
+            stock_faction: 12
+        },
+        {
+            cat: "alloys",
+            id: "alloy_adamantine_carbide",
+            name: "Adamantine Heavy Carbide",
+            desc: "Extreme density siege armor alloy.",
+            base_price: 11000,
+            demand_mult: (_faction_id == "faction_c" ? 1.5 : (_faction_id == "faction_a" ? 1.3 : 1.0)),
+            stock_faction: 8
+        },
+
+        // Category 2: Modular Components
+        {
+            cat: "parts",
+            slot: "weapons",
+            id: "wp_vulcan_01",
+            name: "WP-01 Rotary Vulcan (120mm)",
+            desc: "Rapid-fire solid kinetic autocannon.",
+            base_price: 45000,
+            demand_mult: (_faction_id == "faction_a" ? 1.3 : (_faction_id == "faction_c" ? 1.4 : 1.0)),
+            part_data: { id: "wp_vulcan_01", name: "WP-01 Rotary Vulcan (120mm)", slot: "weapons", armor: 100, mass: 12, power_draw: 3, damage: 180, bonus: "Sustained Fire" },
+            stock_faction: 4
+        },
+        {
+            cat: "parts",
+            slot: "weapons",
+            id: "wp_beam_02",
+            name: "WP-02 Particle Pulse Rifle",
+            desc: "High-AP coherent particle beam rifle.",
+            base_price: 60000,
+            demand_mult: (_faction_id == "faction_b" ? 1.4 : (_faction_id == "faction_d" ? 1.3 : 0.9)),
+            part_data: { id: "wp_beam_02", name: "WP-02 Particle Pulse Rifle", slot: "weapons", armor: 80, mass: 8, power_draw: 10, damage: 240, bonus: "Armor Piercing" },
+            stock_faction: 3
+        },
+        {
+            cat: "parts",
+            slot: "heads",
+            id: "hd_aether_02",
+            name: "HD-02 Aether EW-Dome",
+            desc: "Electronic warfare targeting head.",
+            base_price: 25000,
+            demand_mult: (_faction_id == "faction_b" ? 1.4 : 1.0),
+            part_data: { id: "hd_aether_02", name: "HD-02 Aether EW-Dome", slot: "heads", armor: 90, mass: 2, power_draw: 4, bonus: "+18% Evasion" },
+            stock_faction: 5
+        },
+        {
+            cat: "parts",
+            slot: "torsos",
+            id: "tr_hyperion_02",
+            name: "TR-02 Hyperion Tokamak Torso",
+            desc: "42 MW high-power fusion torso chassis.",
+            base_price: 95000,
+            demand_mult: (_faction_id == "faction_d" ? 1.4 : (_faction_id == "faction_b" ? 1.3 : 1.0)),
+            part_data: { id: "tr_hyperion_02", name: "TR-02 Hyperion Tokamak Torso", slot: "torsos", armor: 360, mass: 20, power_output: 42, bonus: "High-Spec Fusion Core" },
+            stock_faction: 2
+        }
+    ];
+
+    for (var i = 0; i < array_length(_items); i++) {
+        var _it = _items[i];
+        _it.buy_price = round(_it.base_price * _it.demand_mult * _buy_mult);
+        _it.sell_price = round(_it.base_price * _it.demand_mult * 0.70 * _sell_mult);
+    }
+
+    return _items;
+};
+
+execute_trade_buy = function(_faction_id, _item, _qty) {
+    if (!instance_exists(obj_GameManager)) return false;
+    var _cost = _item.buy_price * _qty;
+    if (obj_GameManager.funds < _cost) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT FUNDS: Needs " + string(_cost) + " Cr!", c_red);
+        return false;
+    }
+
+    obj_GameManager.funds -= _cost;
+
+    if (_item.cat == "minerals") {
+        obj_GameManager.add_raw_material(_item.id, _qty);
+    } else if (_item.cat == "alloys") {
+        obj_GameManager.add_alloy(_item.id, _qty);
+    } else if (_item.cat == "parts") {
+        for (var q = 0; q < _qty; q++) {
+            obj_GameManager.add_part_to_inventory(_item.part_data);
+        }
+    }
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("TRADE PURCHASE: +" + string(_qty) + "x " + _item.name + " (-" + string(_cost) + " Cr)", c_lime);
+    }
+    return true;
+};
+
+execute_trade_sell = function(_faction_id, _item, _qty) {
+    if (!instance_exists(obj_GameManager)) return false;
+
+    // Check player stock
+    var _available = 0;
+    if (_item.cat == "minerals") {
+        _available = obj_GameManager.get_raw_material(_item.id);
+    } else if (_item.cat == "alloys") {
+        _available = obj_GameManager.get_alloy(_item.id);
+    } else if (_item.cat == "parts") {
+        var _slot_arr = obj_GameManager.inventory.parts[$ _item.slot] ?? [];
+        for (var p = 0; p < array_length(_slot_arr); p++) {
+            if (_slot_arr[p].id == _item.id) _available++;
+        }
+    }
+
+    if (_available < _qty) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT STOCK TO SELL!", c_red);
+        return false;
+    }
+
+    // Deduct stock
+    if (_item.cat == "minerals") {
+        obj_GameManager.spend_raw_material(_item.id, _qty);
+    } else if (_item.cat == "alloys") {
+        obj_GameManager.spend_alloy(_item.id, _qty);
+    } else if (_item.cat == "parts") {
+        var _slot_arr2 = obj_GameManager.inventory.parts[$ _item.slot];
+        var _removed = 0;
+        for (var p2 = array_length(_slot_arr2) - 1; p2 >= 0; p2--) {
+            if (_slot_arr2[p2].id == _item.id) {
+                array_delete(_slot_arr2, p2, 1);
+                _removed++;
+                if (_removed >= _qty) break;
+            }
+        }
+    }
+
+    var _payout = _item.sell_price * _qty;
+    obj_GameManager.funds += _payout;
+
+    // Slight Standing Adjustment (+1 with buyer)
+    modify_standing(_faction_id, 1);
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("TRADE SALE: Sold " + string(_qty) + "x " + _item.name + " (+" + string(_payout) + " Cr)", c_yellow);
+    }
+    return true;
+};
