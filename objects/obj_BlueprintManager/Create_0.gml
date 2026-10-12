@@ -13,8 +13,9 @@ persistent = true;
 show_debug_message("[obj_BlueprintManager] Initializing Persistent Blueprint Manager Singleton...");
 
 // 2. Blueprint & Component Registries
-unlocked_blueprints = {};  // Keyed by blueprint_id -> blueprint struct
+unlocked_blueprints = {};  // Keyed by blueprint_id or model_code -> blueprint struct
 unlocked_components = {};  // Keyed by component_id -> component struct
+all_blueprint_list = [];   // Linear array containing all canonical & player blueprints for UI iteration
 
 // 3. Alloy Chemistry Recipe Formulas (docs/02_alloy_chemistry.md)
 unlocked_recipes = {
@@ -82,6 +83,28 @@ is_blueprint_unlocked = function(_blueprint_id) {
     return variable_struct_exists(unlocked_blueprints, _blueprint_id);
 };
 
+get_all_blueprints = function() {
+    return all_blueprint_list;
+};
+
+get_blueprints_by_faction = function(_fid) {
+    if (_fid == "all" || _fid == "") return all_blueprint_list;
+    var _filtered = [];
+    for (var i = 0; i < array_length(all_blueprint_list); i++) {
+        var _bp = all_blueprint_list[i];
+        if (variable_struct_exists(_bp, "faction_id") && _bp.faction_id == _fid) {
+            array_push(_filtered, _bp);
+        } else if (_fid == "player" && (string_pos("player", _bp.blueprint_id) > 0 || string_pos("Player", _bp[$ "class"] ?? "") > 0)) {
+            array_push(_filtered, _bp);
+        }
+    }
+    return _filtered;
+};
+
+get_blueprint_count = function() {
+    return array_length(all_blueprint_list);
+};
+
 register_component = function(_comp_id, _comp_struct) {
     if (is_string(_comp_id) && _comp_id != "" && is_struct(_comp_struct)) {
         unlocked_components[$ _comp_id] = _comp_struct;
@@ -97,66 +120,167 @@ get_component = function(_comp_id) {
     return undefined;
 };
 
-// 6. Preload Starter Blueprints
+// 6. Preload Starter Blueprint (GHA-07 Ironclad)
 var _ironclad = load_blueprint("bp_ms_ironclad_07.json");
 if (!is_undefined(_ironclad)) {
-    show_debug_message("[obj_BlueprintManager] GHA-07 Ironclad preloaded successfully into blueprint registry.");
+    _ironclad.id = "bp_ms_ironclad_07";
+    _ironclad.model_code = "GHA-07";
+    _ironclad.faction_id = "faction_terran";
+    _ironclad.associated_sprite = spr_ms_ironclad_mp;
+    _ironclad.schematic_sprite = spr_mech_schematic;
+    _ironclad.tier = 2;
+    _ironclad.armor_rating = 850;
+    _ironclad.structure_hp = 2480;
+    _ironclad.power_output_mw = 280;
+    _ironclad.heat_dispersion_rate = 35.0;
+    _ironclad.walk_speed_kph = 42.0;
+    _ironclad.boost_speed_kph = 78.0;
+    _ironclad.height_meters = 18.2;
+    _ironclad.empty_weight_tonnes = 58.0;
+    _ironclad.combat_weight_tonnes = 94.5;
+    _ironclad.reactor_type = "Hyperion Class-IV Magnetic Tokamak";
+    _ironclad.metal_type = "High-Density Tungsten-Carbide Ceramite Composite";
+    _ironclad.alloy_cost = { tungsten: 50, silica: 20, slag: 10, flux: 10, tritium: 5 };
+    _ironclad.armament = ["Type-77 120mm Solid-Slug Autocannon", "GAU-88 Heavy Vulcan Rotary", "Swarm-16 Heavy Micro-Missile Pod"];
+    _ironclad.variants = ["GHA-07 Block I Prototype", "GHA-07 Block II Standard Linebreaker", "GHA-07E Heavy Trench Refit", "GHA-07S Jovian Siege Pack"];
+    _ironclad.manufacturing_lore = "Engineered by Vanguard Defense Systems to resolve the Orbital Beachhead Crisis. Sacrifices flight agility for impenetrable composite plating and heavy kinetic saturation.";
+    _ironclad.battlefield_reputation = "Nicknamed 'The Walking Vault' - shrugs off solid slug fire and pulverizes enemy trench lines.";
+
+    unlocked_blueprints[$ "bp_ms_ironclad_07"] = _ironclad;
+    unlocked_blueprints[$ "GHA-07"] = _ironclad;
+    array_push(all_blueprint_list, _ironclad);
+    show_debug_message("[obj_BlueprintManager] GHA-07 Ironclad preloaded into registry & list.");
 }
 
 // 7. Register Player Proprietary Replacement Doctrines (docs/12)
-unlocked_blueprints[$ "bp_player_vanguard_aegis"] = {
+var _bp_player_1 = {
+    id: "bp_player_vanguard_aegis",
     blueprint_id: "bp_player_vanguard_aegis",
+    model_code: "PMC-AEGIS",
     name: "Vanguard Aegis-MK1",
+    faction_id: "player",
     class: "Heavy Assault Mass Production",
     role: "Frontline Linebreaker & Heavy Plating",
     tier: 2,
-    base_armor: 880,
-    base_power: 24,
-    base_speed: 46,
+    armor_rating: 880,
+    structure_hp: 2400,
+    power_output_mw: 1450,
+    heat_dispersion_rate: 32.0,
+    walk_speed_kph: 44.0,
+    boost_speed_kph: 80.0,
+    height_meters: 18.5,
+    empty_weight_tonnes: 60.0,
+    combat_weight_tonnes: 96.0,
+    reactor_type: "Hyperion-V Shielded Tokamak Core",
+    metal_type: "Tungsten-Ceramic Multi-Laminate Matrix",
+    alloy_cost: { tungsten: 35, silica: 15, flux: 10, slag: 5 },
+    armament: ["Twin 120mm Rotary Vulcans", "Aegis Reactive Shield", "Kevlar-Reinforced Pincer"],
+    variants: ["Aegis Standard", "Aegis Trench Shield", "Aegis Commander Pack"],
+    associated_sprite: spr_ms_ironclad_mp,
+    schematic_sprite: spr_mech_schematic,
     fabrication_cost_cr: 395000,
-    description: "Proprietary player heavy assault chassis designed with reinforced composite plating and dual rotary vulcan cannons. Directly replaces Terran Coalition Ironclad doctrine."
+    manufacturing_lore: "Proprietary player heavy assault chassis designed with reinforced composite plating and dual rotary vulcan cannons.",
+    battlefield_reputation: "Directly replaces Terran Coalition Ironclad doctrine across contract theaters."
 };
 
-unlocked_blueprints[$ "bp_player_valkyrie_ace"] = {
+var _bp_player_2 = {
+    id: "bp_player_valkyrie_ace",
     blueprint_id: "bp_player_valkyrie_ace",
+    model_code: "PMC-VALK",
     name: "Valkyrie Void-Striker",
+    faction_id: "player",
     class: "High Mobility Space Interceptor",
     role: "Orbital Superiority & Plasma Skirmisher",
     tier: 2,
-    base_armor: 640,
-    base_power: 32,
-    base_speed: 94,
+    armor_rating: 640,
+    structure_hp: 1750,
+    power_output_mw: 1850,
+    heat_dispersion_rate: 45.0,
+    walk_speed_kph: 52.0,
+    boost_speed_kph: 120.0,
+    height_meters: 17.0,
+    empty_weight_tonnes: 42.0,
+    combat_weight_tonnes: 68.0,
+    reactor_type: "Cryo-Tritium Superconducting Vector Core",
+    metal_type: "Aerosteel-Flux Ultra-Light Alloy",
+    alloy_cost: { tritium: 25, flux: 20, silica: 15, tungsten: 10 },
+    armament: ["Twin Particle Pulse Rifles", "Micro-Vernier Cluster", "Hyperion Beam Saber"],
+    variants: ["Void-Striker High-Mobility", "EW Electronic Jammer", "Long-Range Beam Sniper"],
+    associated_sprite: spr_ms_aether_idle,
+    schematic_sprite: spr_mech_schematic,
     fabrication_cost_cr: 440000,
-    description: "High-agility orbital fighter frame utilizing vector vernier thrusters and twin particle pulse rifles. Tailored to replace Outer Colonies Aether doctrine."
+    manufacturing_lore: "High-agility orbital fighter frame utilizing vector vernier thrusters and twin particle pulse rifles.",
+    battlefield_reputation: "Directly replaces Outer Colonies Aether doctrine in contested space sectors."
 };
 
-unlocked_blueprints[$ "bp_player_chimera_modular"] = {
+var _bp_player_3 = {
+    id: "bp_player_chimera_modular",
     blueprint_id: "bp_player_chimera_modular",
+    model_code: "PMC-CHIM",
     name: "Chimera Modular Raider",
+    faction_id: "player",
     class: "Omnipurpose Skirmish Chassis",
     role: "Scavenger Guerrilla & Black Market Linebreaker",
     tier: 2,
-    base_armor: 720,
-    base_power: 26,
-    base_speed: 70,
+    armor_rating: 720,
+    structure_hp: 2100,
+    power_output_mw: 1350,
+    heat_dispersion_rate: 28.0,
+    walk_speed_kph: 48.0,
+    boost_speed_kph: 92.0,
+    height_meters: 17.8,
+    empty_weight_tonnes: 50.0,
+    combat_weight_tonnes: 78.0,
+    reactor_type: "Overclocked Syndicate Fission-Turbine",
+    metal_type: "Reinforced Slag-Composite Armor",
+    alloy_cost: { tungsten: 25, silica: 20, slag: 20, flux: 10 },
+    armament: ["Scrap-Flak Heavy Cannon", "Pneumatic Harpoon Gun", "Smokescreen Ejectors"],
+    variants: ["Modular Raider Alpha", "Scavenger Salvage Arm", "Demolition Flak Rig"],
+    associated_sprite: spr_ms_hyena_idle,
+    schematic_sprite: spr_mech_schematic,
     fabrication_cost_cr: 325000,
-    description: "Cost-effective modular chassis engineered with high-impact kinetic flak arrays and fast-swap armor. Directly replaces Syndicate Hyena doctrine."
+    manufacturing_lore: "Cost-effective modular chassis engineered with high-impact kinetic flak arrays and fast-swap armor.",
+    battlefield_reputation: "Directly replaces Obsidian Syndicate Hyena doctrine in asteroid raids."
 };
 
-unlocked_blueprints[$ "bp_player_muramasa_spec_x"] = {
+var _bp_player_4 = {
+    id: "bp_player_muramasa_spec_x",
     blueprint_id: "bp_player_muramasa_spec_x",
+    model_code: "PMC-KUSA",
     name: "Kusanagi Cyber-Assault",
+    faction_id: "player",
     class: "Neural-Linked Precision Warform",
     role: "Cybernetic Ace & High-Frequency Infiltration",
     tier: 3,
-    base_armor: 780,
-    base_power: 36,
-    base_speed: 86,
+    armor_rating: 780,
+    structure_hp: 1950,
+    power_output_mw: 2200,
+    heat_dispersion_rate: 52.0,
+    walk_speed_kph: 56.0,
+    boost_speed_kph: 110.0,
+    height_meters: 17.5,
+    empty_weight_tonnes: 45.0,
+    combat_weight_tonnes: 72.0,
+    reactor_type: "Sub-Nanometer Quantum Tokamak",
+    metal_type: "Adamantine Carbide Superconductor Weave",
+    alloy_cost: { tritium: 35, flux: 30, tungsten: 15, silica: 10 },
+    armament: ["High-Frequency Nanoblade", "Linear Accelerator Rifle", "Active Optical Cloak"],
+    variants: ["Kusanagi Prototype", "Cyber-Ghost Infiltration", "Dual Monomolecular Edge"],
+    associated_sprite: spr_ms_muramasa_idle,
+    schematic_sprite: spr_mech_schematic,
     fabrication_cost_cr: 485000,
-    description: "Experimental cyber-neural chassis forged with superconductor matrices and monomolecular beam blades. Directly replaces Apex Zaibatsu Muramasa doctrine."
+    manufacturing_lore: "Experimental cyber-neural chassis forged with superconductor matrices and monomolecular beam blades.",
+    battlefield_reputation: "Directly replaces Apex Zaibatsu Muramasa doctrine in black-ops sectors."
 };
 
-show_debug_message("[obj_BlueprintManager] Registered 4 Player Mass-Production Doctrines.");
+var _p_docs = [_bp_player_1, _bp_player_2, _bp_player_3, _bp_player_4];
+for (var p = 0; p < array_length(_p_docs); p++) {
+    var _p_doc = _p_docs[p];
+    unlocked_blueprints[$ _p_doc.id] = _p_doc;
+    unlocked_blueprints[$ _p_doc.model_code] = _p_doc;
+    array_push(all_blueprint_list, _p_doc);
+}
+show_debug_message("[obj_BlueprintManager] Registered 4 Player Mass-Production Doctrines into registry & list.");
 
 // 8. Load & Register Canonical Faction Mobile Suit Blueprints from Timeline JSON
 if (file_exists("mobile_suits_timeline.json")) {
@@ -188,6 +312,7 @@ if (file_exists("mobile_suits_timeline.json")) {
                 if (variable_struct_exists(_suit, "model_code")) {
                     unlocked_blueprints[$ _suit.model_code] = _suit;
                 }
+                array_push(all_blueprint_list, _suit);
             }
             show_debug_message("[obj_BlueprintManager] Loaded " + string(array_length(_ms_arr)) + " canonical mobile suit blueprints into registry.");
         }
@@ -196,4 +321,4 @@ if (file_exists("mobile_suits_timeline.json")) {
     }
 }
 
-show_debug_message("[obj_BlueprintManager] Registry Fully Populated. Ready for Prototyping & Field Assembly.");
+show_debug_message("[obj_BlueprintManager] Total Blueprints Active: " + string(array_length(all_blueprint_list)) + ". Ready for Prototyping & Assembly.");

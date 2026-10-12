@@ -1,59 +1,116 @@
 /// @description Procedural Metallurgical Color & Chromatic Synthesis Engine
 // Generates unique, distinct programmatic colors and physical metallicity for thousands of alloy formulas.
-// Adheres to docs/02_alloy_chemistry.md and docs/13_modular_parts_and_assembly_system.md
+// Adheres to docs/02_alloy_chemistry.md, docs/13_modular_parts_and_assembly_system.md, and docs/14_procedural_materials_and_deep_metallurgy.md
 
 /// @function scr_get_alloy_procedural_color(_alloy_data_or_key, _opt_temp, _opt_pressure)
 function scr_get_alloy_procedural_color(_alloy_data_or_key, _opt_temp = 2500, _opt_pressure = 1000) {
     // 1. Direct Known Alloy Shortcuts
     if (is_string(_alloy_data_or_key)) {
         switch (_alloy_data_or_key) {
-            case "alloy_vanguard_comp":     return make_color_rgb(115, 135, 160); // Gunmetal Slate with cool steel luster
-            case "alloy_hyperion_matrix":   return make_color_rgb(60, 230, 255);  // Cherenkov Neon Plasma Cyan
-            case "alloy_aerosteel_flux":    return make_color_rgb(195, 150, 255); // Iridescent Vernier Violet
+            case "alloy_vanguard_comp":      return make_color_rgb(115, 135, 160); // Gunmetal Slate with cool steel luster
+            case "alloy_hyperion_matrix":    return make_color_rgb(60, 230, 255);  // Cherenkov Neon Plasma Cyan
+            case "alloy_aerosteel_flux":     return make_color_rgb(195, 150, 255); // Iridescent Vernier Violet
             case "alloy_adamantine_carbide": return make_color_rgb(255, 155, 60);  // High-Density Heavy Bronze/Amber
-            case "item_slag":               return make_color_rgb(65, 55, 50);    // Dull Carbonaceous Slag
+            case "alloy_titan_composite":    return make_color_rgb(180, 195, 210); // Silvery Titanium Champagne
+            case "alloy_void_glass":         return make_color_rgb(140, 220, 240); // Opaline Crystalline Translucent
+            case "item_slag":                return make_color_rgb(65, 55, 50);    // Dull Carbonaceous Slag
         }
     }
 
     // 2. Procedural Chromatic Synthesis for Custom / Infinite Compositions
-    // Element Spectral Chromatic Weights:
-    // Tungsten (W): Slate Blue-Gray (120, 135, 160)
-    // Silica-Carbon (C): Deep Obsidian (35, 45, 60)
-    // Tritium (Tr): Vibrant Plasma Cyan (0, 245, 255)
-    // Synthetic Flux (Fx): Radiant Amber Gold (255, 175, 40)
-    // Titanium (Ti): Silvery Champagne (225, 230, 240)
-    
-    var _w = 0;
-    var _c = 0;
-    var _tr = 0;
-    var _fx = 0;
+    var _tot_w = 0.0;
+    var _sum_r = 0.0;
+    var _sum_g = 0.0;
+    var _sum_b = 0.0;
 
     if (is_struct(_alloy_data_or_key)) {
-        _w  = variable_struct_exists(_alloy_data_or_key, "mat_tungsten")    ? _alloy_data_or_key.mat_tungsten : (_alloy_data_or_key[$ "tungsten"] ?? 0);
-        _c  = variable_struct_exists(_alloy_data_or_key, "mat_silica_carb") ? _alloy_data_or_key.mat_silica_carb : (_alloy_data_or_key[$ "silica"] ?? 0);
-        _tr = variable_struct_exists(_alloy_data_or_key, "mat_tritium")     ? _alloy_data_or_key.mat_tritium : (_alloy_data_or_key[$ "tritium"] ?? 0);
-        _fx = variable_struct_exists(_alloy_data_or_key, "mat_syn_flux")    ? _alloy_data_or_key.mat_syn_flux : (_alloy_data_or_key[$ "flux"] ?? 0);
+        var _keys = variable_struct_get_names(_alloy_data_or_key);
+        for (var k = 0; k < array_length(_keys); k++) {
+            var _kname = _keys[k];
+            var _qty = _alloy_data_or_key[$ _kname];
+            if (!is_numeric(_qty) || _qty <= 0) continue;
+
+            var _er = 128;
+            var _eg = 128;
+            var _eb = 128;
+
+            // Spectral Profiles for Known Elemental Families
+            switch (_kname) {
+                case "mat_tungsten":
+                case "tungsten":
+                    _er = 115; _eg = 135; _eb = 165; break; // Slate Blue-Gray
+                case "mat_silica_carb":
+                case "silica":
+                case "carbon":
+                    _er = 35;  _eg = 45;  _eb = 60;  break; // Deep Obsidian
+                case "mat_tritium":
+                case "tritium":
+                    _er = 0;   _eg = 245; _eb = 255; break; // Plasma Cherenkov Cyan
+                case "mat_syn_flux":
+                case "flux":
+                    _er = 255; _eg = 175; _eb = 40;  break; // Radiant Amber Gold
+                case "mat_titanium":
+                case "titanium":
+                    _er = 220; _eg = 230; _eb = 245; break; // Champagne Silver
+                case "mat_cobalt":
+                case "cobalt":
+                    _er = 30;  _eg = 90;  _eb = 225; break; // Royal Azure Steel
+                case "mat_osmium":
+                case "osmium":
+                    _er = 95;  _eg = 115; _eb = 145; break; // Ultra-Dense Bluish Platinum
+                case "mat_graphene":
+                case "graphene":
+                    _er = 25;  _eg = 30;  _eb = 38;  break; // Ultra-Matte Charcoal
+                case "mat_deuterium":
+                case "deuterium":
+                    _er = 40;  _eg = 160; _eb = 255; break; // Ionizing Electric Blue
+                case "mat_promethium":
+                case "promethium":
+                    _er = 185; _eg = 45;  _eb = 240; break; // Deep Ion Magenta
+                case "mat_thorium":
+                case "thorium":
+                    _er = 235; _eg = 130; _eb = 25;  break; // Toxic Radioactive Amber
+                case "mat_void_glass":
+                case "void_glass":
+                    _er = 160; _eg = 225; _eb = 240; break; // Opalescent Cyan
+                case "slag":
+                    _er = 65;  _eg = 55;  _eb = 50;  break; // Slag Gray
+                default:
+                    // Procedural Hash Fallback for 100+ Arbitrary Mining Minerals
+                    var _hash_val = 0;
+                    for (var c = 1; c <= string_length(_kname); c++) {
+                        _hash_val = (_hash_val * 31 + string_byte_at(_kname, c)) mod 256;
+                    }
+                    var _hsv_col = make_color_hsv(_hash_val, 160, 200);
+                    _er = color_get_red(_hsv_col);
+                    _eg = color_get_green(_hsv_col);
+                    _eb = color_get_blue(_hsv_col);
+                    break;
+            }
+
+            _sum_r += _er * _qty;
+            _sum_g += _eg * _qty;
+            _sum_b += _eb * _qty;
+            _tot_w += _qty;
+        }
     }
 
-    var _total_parts = _w + _c + _tr + _fx;
-    if (_total_parts <= 0) return make_color_rgb(128, 128, 128);
+    if (_tot_w <= 0.0) return make_color_rgb(128, 128, 128);
 
-    // Weighted additive spectrum
-    var _r = (_w * 120.0 + _c * 35.0 + _tr * 10.0 + _fx * 255.0) / _total_parts;
-    var _g = (_w * 135.0 + _c * 45.0 + _tr * 240.0 + _fx * 175.0) / _total_parts;
-    var _b = (_w * 165.0 + _c * 65.0 + _tr * 255.0 + _fx * 40.0) / _total_parts;
+    var _r = _sum_r / _tot_w;
+    var _g = _sum_g / _tot_w;
+    var _b = _sum_b / _tot_w;
 
-    // Thermal & Pressure Shifts:
-    // High heat adds incandescent gold/orange tone
-    var _heat_factor = clamp((_opt_temp - 1500) / 4000.0, 0.0, 0.4);
-    _r = lerp(_r, 255, _heat_factor * 0.4);
-    _g = lerp(_g, 200, _heat_factor * 0.2);
+    // Thermal Incandescent Shift: Higher smelting temperatures introduce glowing orange/gold tones
+    var _heat_factor = clamp((_opt_temp - 1500) / 4500.0, 0.0, 0.40);
+    _r = lerp(_r, 255, _heat_factor * 0.45);
+    _g = lerp(_g, 210, _heat_factor * 0.25);
 
-    // High pressure densifies and saturates the crystal structure
-    var _press_factor = clamp(_opt_pressure / 8000.0, 0.0, 0.35);
-    _r = clamp(_r * (1.0 - _press_factor * 0.2), 15, 255);
-    _g = clamp(_g * (1.0 - _press_factor * 0.15), 15, 255);
-    _b = clamp(_b * (1.0 - _press_factor * 0.1), 15, 255);
+    // Pressure Densification Shift: High pressure densifies the crystal matrix, deepening and saturating tones
+    var _press_factor = clamp(_opt_pressure / 8500.0, 0.0, 0.35);
+    _r = clamp(_r * (1.0 - _press_factor * 0.20), 12, 255);
+    _g = clamp(_g * (1.0 - _press_factor * 0.15), 12, 255);
+    _b = clamp(_b * (1.0 - _press_factor * 0.10), 12, 255);
 
     return make_color_rgb(floor(_r), floor(_g), floor(_b));
 }
@@ -70,4 +127,40 @@ function scr_alloy_get_hex(_alloy_data_or_key) {
     var _h_g = string_char_at(_hex_chars, (_g div 16) + 1) + string_char_at(_hex_chars, (_g mod 16) + 1);
     var _h_b = string_char_at(_hex_chars, (_b div 16) + 1) + string_char_at(_hex_chars, (_b mod 16) + 1);
     return "#" + _h_r + _h_g + _h_b;
+}
+
+/// @function scr_draw_alloy_swatch(_x, _y, _w, _h, _alloy_data_or_key, _label)
+function scr_draw_alloy_swatch(_x, _y, _w, _h, _alloy_data_or_key, _label = "") {
+    var _base_col = scr_get_alloy_procedural_color(_alloy_data_or_key);
+    var _hex_str = scr_alloy_get_hex(_alloy_data_or_key);
+
+    // Metallic Outer Bezel
+    draw_set_color(make_color_rgb(25, 32, 42));
+    draw_rectangle(_x, _y, _x + _w, _y + _h, false);
+
+    // Ingot Core Fill with Procedural Alloy Color
+    draw_set_color(_base_col);
+    draw_rectangle(_x + 2, _y + 2, _x + _w - 2, _y + _h - 2, false);
+
+    // Top Specular Highlight Line
+    draw_set_color(c_white);
+    draw_set_alpha(0.35);
+    draw_line(_x + 3, _y + 3, _x + _w - 3, _y + 3);
+    draw_line(_x + 3, _y + 4, _x + _w - 3, _y + 4);
+
+    // Bottom Ambient Shadow Line
+    draw_set_color(c_black);
+    draw_set_alpha(0.40);
+    draw_line(_x + 3, _y + _h - 3, _x + _w - 3, _y + _h - 3);
+    draw_set_alpha(1.0);
+
+    // Outer Crisp Border
+    draw_set_color(make_color_rgb(70, 95, 125));
+    draw_rectangle(_x, _y, _x + _w, _y + _h, true);
+
+    // Optional Label Text Below or Inside
+    if (_label != "") {
+        draw_set_color(c_white);
+        draw_text(_x + _w + 8, _y + (_h / 2) - 7, _label + " (" + _hex_str + ")");
+    }
 }

@@ -48,3 +48,9 @@ if (keyboard_check_pressed(vk_escape)) {
 if (active_tab == 0 && rd_subtab == 1 && active_minigame == 0) {
     reactor_alignment_pct = clamp(100.0 - (abs(slider_freq - wave_target_freq) * 32.0 + abs(slider_amp - wave_target_amp) * 1.1 + abs(slider_phase - wave_target_phase) * 0.32), 0.0, 100.0);
 }
+
+// 6. Blueprint Archive Mouse Wheel Scrolling
+if (active_tab == 0 && rd_subtab == 2) {
+    if (mouse_wheel_up()) bp_archive_scroll = max(0, bp_archive_scroll - 1);
+    if (mouse_wheel_down()) bp_archive_scroll += 1;
+}

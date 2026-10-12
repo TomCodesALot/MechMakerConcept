@@ -414,7 +414,13 @@ spark_particles = [];
 
 // 7. Modular Component Specifications Database (docs/01, 09)
 spec_view_mode = 0;       // 0 = Full Mech Blueprint, 1 = Modular Component Inspector
-selected_comp_idx = 0;    // 0 = Reactor, 1 = Legs, 2 = Cannon, 3 = Head, 4 = Torso, 5 = Thruster
+
+// 7b. Mobile Suit Blueprint Archive & Inventory Schematics Browser (Docs 01, 12, 13)
+bp_archive_source = 0;             // 0 = Active Fleet Inventory, 1 = Canonical Blueprint Database
+bp_archive_faction_filter = "all"; // "all", "faction_terran", "faction_colony", "faction_syndicate", "faction_zaibatsu", "player"
+bp_archive_selected_idx = 0;       // Index in currently filtered list
+bp_archive_view_mode = 0;          // 0 = Tactical Sprite & Alloy Tint, 1 = Technical Schematics, 2 = Modular Components, 3 = Production Variants
+bp_archive_scroll = 0;             // Scroll offset for left list
 
 comp_specs_data = [
     {
