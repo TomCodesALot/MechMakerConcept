@@ -753,3 +753,87 @@ get_blueprint = function(_blueprint_id) {
 };
 
 show_debug_message("[obj_GameManager] Initialized with calendar day " + string(current_cycle_day) + ", funds: " + string(funds) + " Cr.");
+
+// 11. Periodic Table of Materials & Solar Mining Network Integration (docs/06, 14)
+periodic_table_materials = [];
+periodic_table_dict = {};
+
+if (file_exists("materials_periodic_table.json")) {
+    try {
+        var _f_pt = file_text_open_read("materials_periodic_table.json");
+        var _json_pt = "";
+        while (!file_text_eof(_f_pt)) {
+            _json_pt += file_text_readln(_f_pt);
+        }
+        file_text_close(_f_pt);
+        var _pt_parsed = json_parse(_json_pt);
+        if (variable_struct_exists(_pt_parsed, "materials")) {
+            periodic_table_materials = _pt_parsed.materials;
+            for (var m = 0; m < array_length(periodic_table_materials); m++) {
+                var _mat = periodic_table_materials[m];
+                periodic_table_dict[$ _mat.id] = _mat;
+                periodic_table_dict[$ _mat.symbol] = _mat;
+            }
+            show_debug_message("[obj_GameManager] Loaded " + string(array_length(periodic_table_materials)) + " elements into Periodic Table Database.");
+        }
+    } catch (_ex_pt) {
+        show_debug_message("[obj_GameManager] Warning loading periodic table: " + string(_ex_pt));
+    }
+}
+
+if (file_exists("solar_mining_nodes.json")) {
+    try {
+        var _f_sn = file_text_open_read("solar_mining_nodes.json");
+        var _json_sn = "";
+        while (!file_text_eof(_f_sn)) {
+            _json_sn += file_text_readln(_f_sn);
+        }
+        file_text_close(_f_sn);
+        var _sn_parsed = json_parse(_json_sn);
+        if (variable_struct_exists(_sn_parsed, "mining_nodes")) {
+            var _sn_arr = _sn_parsed.mining_nodes;
+            for (var sn = 0; sn < array_length(_sn_arr); sn++) {
+                var _snode = _sn_arr[sn];
+                _snode.current_storage = {};
+                _snode.assigned_mech_id = "Unassigned";
+                _snode.assigned_pilot_name = "Unassigned";
+                _snode.status = "UNCLAIMED";
+                _snode.threat_level_pct = 25;
+
+                var _res_keys = variable_struct_get_names(_snode.primary_resources);
+                _snode.primary_yield = (array_length(_res_keys) > 0) ? _res_keys[0] : "mat_tungsten";
+                _snode.secondary_yield = (array_length(_res_keys) > 1) ? _res_keys[1] : "none";
+                _snode.yield_rate_primary = max(2, floor(_snode.base_daily_yield_kg / 1000.0));
+                _snode.yield_rate_secondary = max(1, floor(_snode.base_daily_yield_kg / 2000.0));
+
+                array_push(nodes, _snode);
+            }
+            show_debug_message("[obj_GameManager] Integrated " + string(array_length(_sn_arr)) + " Solar System mining nodes across 5 planetary spheres.");
+        }
+    } catch (_ex_sn) {
+        show_debug_message("[obj_GameManager] Warning loading solar mining nodes: " + string(_ex_sn));
+    }
+}
+
+get_material_data = function(_mat_id) {
+    if (variable_struct_exists(periodic_table_dict, _mat_id)) {
+        return periodic_table_dict[$ _mat_id];
+    }
+    return undefined;
+};
+
+get_all_materials = function() {
+    return periodic_table_materials;
+};
+
+get_mining_nodes_by_sphere = function(_sphere) {
+    if (_sphere == "all" || _sphere == "") return nodes;
+    var _filtered = [];
+    for (var i = 0; i < array_length(nodes); i++) {
+        var _nd = nodes[i];
+        if (variable_struct_exists(_nd, "sphere") && _nd.sphere == _sphere) {
+            array_push(_filtered, _nd);
+        }
+    }
+    return _filtered;
+};

@@ -322,3 +322,73 @@ if (file_exists("mobile_suits_timeline.json")) {
 }
 
 show_debug_message("[obj_BlueprintManager] Total Blueprints Active: " + string(array_length(all_blueprint_list)) + ". Ready for Prototyping & Assembly.");
+
+// 9. Pre-populate Discovered Alloy Codex with Canonical Standards (docs/02 & 14)
+discovered_alloy_codex = [
+    {
+        name: "Vanguard Composite Armor Plating",
+        code: "AL-W74-C6-MK1",
+        tier: 1,
+        armor_hp: 850,
+        thermal_rate: 35.0,
+        density_g_cm3: 13.5,
+        superconductivity: 0.1,
+        radar_absorb_pct: 0.15,
+        is_failure: false,
+        failure_reason: "",
+        color: make_color_rgb(115, 135, 160),
+        hex: "#7387A0",
+        formula_summary: "2x Tungsten + 1x Silica-Carbon",
+        raw_inputs: { mat_tungsten: 2, mat_silica_carb: 1 }
+    },
+    {
+        name: "Hyperion Core Superconductor Matrix",
+        code: "AL-H1-W74-MK2",
+        tier: 2,
+        armor_hp: 580,
+        thermal_rate: 65.0,
+        density_g_cm3: 6.2,
+        superconductivity: 1.8,
+        radar_absorb_pct: 0.05,
+        is_failure: false,
+        failure_reason: "",
+        color: make_color_rgb(60, 230, 255),
+        hex: "#3CE6FF",
+        formula_summary: "1x Tungsten + 2x Tritium + 1x Flux",
+        raw_inputs: { mat_tungsten: 1, mat_tritium: 2, mat_syn_flux: 1 }
+    },
+    {
+        name: "Aerosteel Vernier Flux",
+        code: "AL-TI22-H1-MK2",
+        tier: 2,
+        armor_hp: 620,
+        thermal_rate: 55.0,
+        density_g_cm3: 3.8,
+        superconductivity: 1.2,
+        radar_absorb_pct: 0.20,
+        is_failure: false,
+        failure_reason: "",
+        color: make_color_rgb(195, 150, 255),
+        hex: "#C396FF",
+        formula_summary: "2x Flux + 1x Tritium + 1x Silica",
+        raw_inputs: { mat_syn_flux: 2, mat_tritium: 1, mat_silica_carb: 1 }
+    },
+    {
+        name: "Adamantine Carbide Plating",
+        code: "AL-W74-C6-OS76-MK3",
+        tier: 3,
+        armor_hp: 1150,
+        thermal_rate: 42.0,
+        density_g_cm3: 16.8,
+        superconductivity: 0.3,
+        radar_absorb_pct: 0.10,
+        is_failure: false,
+        failure_reason: "",
+        color: make_color_rgb(255, 155, 60),
+        hex: "#FF9B3C",
+        formula_summary: "3x Tungsten + 2x Silica + 1x Flux",
+        raw_inputs: { mat_tungsten: 3, mat_silica_carb: 2, mat_syn_flux: 1 }
+    }
+];
+
+show_debug_message("[obj_BlueprintManager] Initialized Discovered Alloy Codex with " + string(array_length(discovered_alloy_codex)) + " canonical masterworks.");

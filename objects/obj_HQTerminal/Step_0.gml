@@ -54,3 +54,17 @@ if (active_tab == 0 && rd_subtab == 2) {
     if (mouse_wheel_up()) bp_archive_scroll = max(0, bp_archive_scroll - 1);
     if (mouse_wheel_down()) bp_archive_scroll += 1;
 }
+
+// 7. Metallurgy Codex, Periodic Table & Mining Nodes Mouse Wheel Scrolling
+if (active_tab == 0 && rd_subtab == 0) {
+    if (crucible_subview == 1) {
+        if (mouse_wheel_up()) codex_scroll_offset = max(0, codex_scroll_offset - 1);
+        if (mouse_wheel_down()) codex_scroll_offset += 1;
+    } else if (crucible_subview == 2) {
+        if (mouse_wheel_up()) pt_scroll_offset = max(0, pt_scroll_offset - 1);
+        if (mouse_wheel_down()) pt_scroll_offset += 1;
+    }
+} else if (active_tab == 3 && war_subtab == 0) {
+    if (mouse_wheel_up()) mining_scroll_offset = max(0, mining_scroll_offset - 1);
+    if (mouse_wheel_down()) mining_scroll_offset += 1;
+}

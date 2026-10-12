@@ -1,0 +1,302 @@
+{
+  "system": "MechMaker Solar System Planetary Mining Network",
+  "version": "1.0.0",
+  "total_nodes": 16,
+  "mining_nodes": [
+    {
+      "id": "node_earth_marianas",
+      "name": "Marianas Abyss Extraction Rig",
+      "celestial_body": "Earth (Pacific Ocean)",
+      "sphere": "Earth Sphere",
+      "territory_controller": "faction_terran",
+      "hazard_rating": "CRITICAL_PRESSURE",
+      "required_tech_tier": 2,
+      "base_daily_yield_kg": 4200,
+      "max_storage_capacity_kg": 35000,
+      "primary_resources": {
+        "mat_025_mn": 1400,
+        "mat_029_cu": 1100,
+        "mat_027_co": 850,
+        "mat_030_zn": 550,
+        "mat_028_ni": 300
+      },
+      "description": "Deep ocean seabed crawls at 11,000 meters depth extracting polymetallic nodules and high-purity cobalt-azure crusts under extreme hydrostatic pressure."
+    },
+    {
+      "id": "node_earth_baikal",
+      "name": "Lake Baikal Sub-Rift Sills",
+      "celestial_body": "Earth (Siberia)",
+      "sphere": "Earth Sphere",
+      "territory_controller": "faction_terran",
+      "hazard_rating": "STABLE",
+      "required_tech_tier": 1,
+      "base_daily_yield_kg": 6500,
+      "max_storage_capacity_kg": 50000,
+      "primary_resources": {
+        "mat_026_fe": 3200,
+        "mat_022_ti": 1600,
+        "mat_024_cr": 950,
+        "mat_074_w": 750
+      },
+      "description": "Terran Hegemony foundational metallurgical strip mines tapping continental rift magma sills rich in dense structural iron, chrome, and tungsten."
+    },
+    {
+      "id": "node_luna_shackleton",
+      "name": "Shackleton Crater Cryo-Rim",
+      "celestial_body": "Luna (South Pole)",
+      "sphere": "Earth Sphere",
+      "territory_controller": "faction_colony",
+      "hazard_rating": "PERMANENT_SHADOW",
+      "required_tech_tier": 1,
+      "base_daily_yield_kg": 3800,
+      "max_storage_capacity_kg": 30000,
+      "primary_resources": {
+        "mat_002_he": 120,
+        "mat_001_h": 1200,
+        "mat_022_ti": 1400,
+        "mat_014_si": 1080
+      },
+      "description": "Permanently shadowed crater trap harboring ancient volatile ice and solar-wind implanted Helium-3 aneutronic fusion fuel."
+    },
+    {
+      "id": "node_luna_oceanus",
+      "name": "Oceanus Procellarum Thorium Shelf",
+      "celestial_body": "Luna (Near Side)",
+      "sphere": "Earth Sphere",
+      "territory_controller": "faction_colony",
+      "hazard_rating": "THERMAL_CYCLING",
+      "required_tech_tier": 2,
+      "base_daily_yield_kg": 4600,
+      "max_storage_capacity_kg": 40000,
+      "primary_resources": {
+        "mat_090_th": 450,
+        "mat_039_y": 620,
+        "mat_060_nd": 580,
+        "mat_014_si": 1800,
+        "mat_013_al": 1150
+      },
+      "description": "KREEP-rich basalt terrain yielding immense reserves of Thorium-232 and rare earth yttrium flux for high-temp superconductor matrices."
+    },
+    {
+      "id": "node_mars_olympus",
+      "name": "Olympus Mons Magma Conduit",
+      "celestial_body": "Mars (Tharsis)",
+      "sphere": "Martian Sphere",
+      "territory_controller": "faction_syndicate",
+      "hazard_rating": "VOLCANIC_SEISMIC",
+      "required_tech_tier": 2,
+      "base_daily_yield_kg": 5800,
+      "max_storage_capacity_kg": 45000,
+      "primary_resources": {
+        "mat_023_v": 1200,
+        "mat_016_s": 1500,
+        "mat_026_fe": 2100,
+        "mat_028_ni": 1000
+      },
+      "description": "Massive geothermal tap descending into the throat of the Solar System tallest volcano; rich in heavy chrome-vanadium and vulcanizing sulfur."
+    },
+    {
+      "id": "node_mars_marineris",
+      "name": "Valles Marineris Fault Trench",
+      "celestial_body": "Mars (Equatorial)",
+      "sphere": "Martian Sphere",
+      "territory_controller": "faction_syndicate",
+      "hazard_rating": "DUST_STORMS",
+      "required_tech_tier": 1,
+      "base_daily_yield_kg": 4900,
+      "max_storage_capacity_kg": 38000,
+      "primary_resources": {
+        "mat_029_cu": 1600,
+        "mat_003_li": 950,
+        "mat_005_b": 850,
+        "mat_006_c": 1500
+      },
+      "description": "Deep tectonic canyon walls exposing billions of years of mineral stratification, yielding high-grade copper, lithium salars, and boron nitrides."
+    },
+    {
+      "id": "node_phobos_depot",
+      "name": "Phobos Stickney Crater Foundry",
+      "celestial_body": "Phobos (Mars Orbit)",
+      "sphere": "Martian Sphere",
+      "territory_controller": "faction_syndicate",
+      "hazard_rating": "MICROGRAVITY",
+      "required_tech_tier": 2,
+      "base_daily_yield_kg": 3200,
+      "max_storage_capacity_kg": 25000,
+      "primary_resources": {
+        "mat_006_c": 1400,
+        "mat_014_si": 900,
+        "mat_026_fe": 700,
+        "mat_001_h": 200
+      },
+      "description": "Low-gravity slag processing center capturing passing Martian orbital freighters; produces pure carbonaceous graphene nanotubes."
+    },
+    {
+      "id": "node_ast_psyche",
+      "name": "16 Psyche Protoplanetary Core",
+      "celestial_body": "Main Asteroid Belt",
+      "sphere": "Asteroid Belt",
+      "territory_controller": "unclaimed",
+      "hazard_rating": "HIGH_RADIATION",
+      "required_tech_tier": 3,
+      "base_daily_yield_kg": 8500,
+      "max_storage_capacity_kg": 80000,
+      "primary_resources": {
+        "mat_026_fe": 4200,
+        "mat_028_ni": 2400,
+        "mat_076_os": 420,
+        "mat_077_ir": 380,
+        "mat_078_pt": 600,
+        "mat_079_au": 500
+      },
+      "description": "An exposed metallic planetary core worth quadrillions; solid iron-nickel alloy intergrown with ultra-dense osmiridium and platinum group slabs."
+    },
+    {
+      "id": "node_ast_ceres",
+      "name": "Ceres Occator Brine Cryo-Geyser",
+      "celestial_body": "Ceres (Belt Center)",
+      "sphere": "Asteroid Belt",
+      "territory_controller": "unclaimed",
+      "hazard_rating": "CRYO_EXPLOSIVE",
+      "required_tech_tier": 2,
+      "base_daily_yield_kg": 5200,
+      "max_storage_capacity_kg": 42000,
+      "primary_resources": {
+        "mat_011_na": 1800,
+        "mat_003_li": 1100,
+        "mat_017_cl": 900,
+        "mat_001_h": 1400
+      },
+      "description": "Sodium carbonate salt domes and bright faculae fed by sub-surface hydrothermal brine chambers; primary source of synthetic flux bases."
+    },
+    {
+      "id": "node_ast_vesta",
+      "name": "Vesta Rheasilvia Central Peak",
+      "celestial_body": "4 Vesta (Inner Belt)",
+      "sphere": "Asteroid Belt",
+      "territory_controller": "faction_zaibatsu",
+      "hazard_rating": "STEEP_CRAGS",
+      "required_tech_tier": 2,
+      "base_daily_yield_kg": 5600,
+      "max_storage_capacity_kg": 48000,
+      "primary_resources": {
+        "mat_024_cr": 1600,
+        "mat_042_mo": 1100,
+        "mat_022_ti": 1400,
+        "mat_074_w": 1500
+      },
+      "description": "Differentiated asteroid peak exposing deep crustal pyroxenes and high-tensile molybdenum-tungsten reserves for heavy ballistic chassis."
+    },
+    {
+      "id": "node_jov_io_caldera",
+      "name": "Io Pele Hyper-Caldera Tap",
+      "celestial_body": "Io (Jovian System)",
+      "sphere": "Jovian Outer Sphere",
+      "territory_controller": "faction_terran",
+      "hazard_rating": "EXTREME_RADIATION_JUPITER",
+      "required_tech_tier": 4,
+      "base_daily_yield_kg": 4800,
+      "max_storage_capacity_kg": 36000,
+      "primary_resources": {
+        "mat_072_hf": 550,
+        "mat_073_ta": 650,
+        "mat_016_s": 2200,
+        "mat_075_re": 400,
+        "mat_041_nb": 1000
+      },
+      "description": "Lethal radiation belts bathe robotic rigs extracting refractory hafnium, tantalum, and rhenium from molten silicate volcanic vents."
+    },
+    {
+      "id": "node_jov_europa_vent",
+      "name": "Europa Conamara Chaos Sub-Vent",
+      "celestial_body": "Europa (Jovian System)",
+      "sphere": "Jovian Outer Sphere",
+      "territory_controller": "faction_colony",
+      "hazard_rating": "ICE_SHEAR_TECTONICS",
+      "required_tech_tier": 3,
+      "base_daily_yield_kg": 4100,
+      "max_storage_capacity_kg": 32000,
+      "primary_resources": {
+        "mat_001_h": 1800,
+        "mat_054_xe": 350,
+        "mat_002_he": 180,
+        "mat_031_ga": 850,
+        "mat_049_in": 920
+      },
+      "description": "Thermal drill probes breach 20 kilometers of ice crust to tap abyssal hydrothermals rich in heavy xenon propellant and gallium-indium alloys."
+    },
+    {
+      "id": "node_jov_callisto_foundry",
+      "name": "Callisto Valhalla Outer Rings",
+      "celestial_body": "Callisto (Jovian System)",
+      "sphere": "Jovian Outer Sphere",
+      "territory_controller": "faction_zaibatsu",
+      "hazard_rating": "LOW_RADIATION",
+      "required_tech_tier": 2,
+      "base_daily_yield_kg": 6800,
+      "max_storage_capacity_kg": 60000,
+      "primary_resources": {
+        "mat_074_w": 2400,
+        "mat_014_si": 1800,
+        "mat_092_u": 650,
+        "mat_022_ti": 1950
+      },
+      "description": "Apex Zaibatsu heavily fortified deep-space logistics megafoundry, strip-mining ancient multi-ring impact basins for military tungsten and uranium."
+    },
+    {
+      "id": "node_sat_titan_kraken",
+      "name": "Titan Kraken Mare Liquid Harvester",
+      "celestial_body": "Titan (Saturnian System)",
+      "sphere": "Saturnian Outer Sphere",
+      "territory_controller": "faction_colony",
+      "hazard_rating": "CRYOGENIC_METHANE",
+      "required_tech_tier": 3,
+      "base_daily_yield_kg": 7200,
+      "max_storage_capacity_kg": 65000,
+      "primary_resources": {
+        "mat_006_c": 3600,
+        "mat_007_n": 2200,
+        "mat_001_h": 1400
+      },
+      "description": "Offshore semi-submersible rigs refining endless seas of liquid hydrocarbons into ultra-dense graphene sheets and cryo-nitrogen coolant."
+    },
+    {
+      "id": "node_sat_rings_ice",
+      "name": "Saturn B-Ring Ice-Barge Sieve",
+      "celestial_body": "Saturn Rings",
+      "sphere": "Saturnian Outer Sphere",
+      "territory_controller": "unclaimed",
+      "hazard_rating": "HYPERVELOCITY_DEBRIS",
+      "required_tech_tier": 3,
+      "base_daily_yield_kg": 5400,
+      "max_storage_capacity_kg": 45000,
+      "primary_resources": {
+        "mat_001_h": 2800,
+        "mat_002_he": 220,
+        "mat_010_ne": 450,
+        "mat_018_ar": 1930
+      },
+      "description": "Automated sieve-dredges filtering ring particles for deuterium-rich water-ice and solar wind noble gases in planetary shadow."
+    },
+    {
+      "id": "node_kuiper_sedna",
+      "name": "Sedna Deep-Mantle Void Anomaly",
+      "celestial_body": "Sedna (Oort Cloud Frontier)",
+      "sphere": "Deep Solar Frontier",
+      "territory_controller": "unclaimed",
+      "hazard_rating": "DEEP_COLD_ISOLATION",
+      "required_tech_tier": 5,
+      "base_daily_yield_kg": 2200,
+      "max_storage_capacity_kg": 18000,
+      "primary_resources": {
+        "mat_114_fl": 180,
+        "mat_118_og": 80,
+        "mat_115_mc": 140,
+        "mat_076_os": 850,
+        "mat_098_cf": 250,
+        "mat_061_pm": 700
+      },
+      "description": "At the freezing edge of interstellar space, a primordial trans-Neptunian anomaly yields ultra-rare Island of Stability super-heavy elements."
+    }
+  ]
+}

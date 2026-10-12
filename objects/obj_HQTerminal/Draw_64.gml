@@ -421,79 +421,237 @@ if (active_tab == 0) {
         draw_set_color(make_color_rgb(40, 65, 95));
         draw_rectangle(_met_x + _sx, _met_y + _sy, _met_x + _met_w + _sx, _met_y + _met_h + _sy, true);
 
-        draw_set_color(make_color_rgb(100, 210, 255));
-        draw_text(_met_x + 16, _met_y + 12, "== PROCEDURAL CHROMATIC METALLURGY LAB (DOCS 02 & 14) ==");
-
-        // 1. Current Batch Ingot Real-Time Color Preview
-        var _bw_y = _met_y + 44;
-        draw_set_color(make_color_rgb(14, 20, 28));
-        draw_rectangle(_met_x + 16, _bw_y, _met_x + _met_w - 16, _bw_y + 110, false);
-        draw_set_color(make_color_rgb(35, 55, 80));
-        draw_rectangle(_met_x + 16, _bw_y, _met_x + _met_w - 16, _bw_y + 110, true);
-
-        draw_set_color(make_color_rgb(240, 210, 100));
-        draw_text(_met_x + 28, _bw_y + 10, "LIVE HOPPER ALLOY CHROMATIC SYNTHESIS:");
-
-        scr_draw_alloy_swatch(_met_x + 28, _bw_y + 36, 120, 56, crucible_batch);
-
-        var _cur_hex = scr_alloy_get_hex(crucible_batch);
-        draw_set_color(c_white);
-        draw_text(_met_x + 164, _bw_y + 36, "Synthesized Color: " + _cur_hex);
-        var _batch_tot = crucible_batch.mat_tungsten + crucible_batch.mat_silica_carb + crucible_batch.mat_tritium + crucible_batch.mat_syn_flux;
-        draw_set_color(make_color_rgb(160, 200, 230));
-        draw_text(_met_x + 164, _bw_y + 56, "Composition Ratio: W:" + string(crucible_batch.mat_tungsten) + " | C:" + string(crucible_batch.mat_silica_carb) + " | Tr:" + string(crucible_batch.mat_tritium) + " | Fx:" + string(crucible_batch.mat_syn_flux) + " (Total: " + string(_batch_tot) + ")");
-        draw_set_color(make_color_rgb(100, 220, 255));
-        draw_text(_met_x + 164, _bw_y + 76, "Thermal Glow Shift: " + string(floor(crucible_temp_c)) + "°C | Crystal Densification: " + string(floor(crucible_pressure_psi)) + " PSI");
-
-        // 2. Known Master Alloy Codex Grid
-        var _cdx_y = _bw_y + 125;
-        draw_set_color(make_color_rgb(100, 210, 255));
-        draw_text(_met_x + 16, _cdx_y, "MASTER METALLURGICAL ALLOY CODEX (ENGINEERING STANDARDS):");
-
-        var _known_alloys = [
-            { id: "alloy_vanguard_comp", name: "Vanguard Composite Plating", formula: "2x Tungsten + 1x Silica-Carbon", role: "Heavy Ballistic Plating" },
-            { id: "alloy_hyperion_matrix", name: "Hyperion Superconductor Matrix", formula: "1x Tungsten + 2x Tritium + 1x Flux", role: "Tokamak Core Superconductor" },
-            { id: "alloy_aerosteel_flux", name: "Aerosteel Vernier Flux", formula: "2x Flux + 1x Tritium + 1x Silica", role: "High-G Orbital Thrusters" },
-            { id: "alloy_adamantine_carbide", name: "Adamantine Carbide", formula: "3x Tungsten + 2x Silica + 1x Flux", role: "AP Kinetic Shells & Pincer Blades" }
+        // TOP SUBVIEW SELECTOR: [1. FURNACE PREVIEW] | [2. DISCOVERED ALLOY CODEX] | [3. PERIODIC TABLE (118)]
+        var _c_views = [
+            "[1. FURNACE & BATCH PREVIEW]",
+            "[2. DISCOVERED CODEX (" + string(array_length(scr_alloy_codex_get_all())) + ")]",
+            "[3. PERIODIC TABLE (118 ELEMENTS)]"
         ];
+        var _cv_w = (_met_w - 40) / 3;
+        for (var cv = 0; cv < 3; cv++) {
+            var _cvx = _met_x + 16 + cv * (_cv_w + 8);
+            var _cv_active = (crucible_subview == cv);
+            var _cv_hov = (_mx >= _cvx && _mx <= _cvx + _cv_w && _my >= _met_y + 8 && _my <= _met_y + 34);
+            if (_cv_hov && _click) crucible_subview = cv;
 
-        var _al_box_w = (_met_w - 48) / 2;
-        var _al_box_h = 80;
-
-        for (var ai = 0; ai < 4; ai++) {
-            var _al = _known_alloys[ai];
-            var _ax = _met_x + 16 + (ai mod 2) * (_al_box_w + 16);
-            var _ay = _cdx_y + 24 + (ai div 2) * (_al_box_h + 12);
-
-            draw_set_color(make_color_rgb(12, 18, 26));
-            draw_rectangle(_ax, _ay, _ax + _al_box_w, _ay + _al_box_h, false);
-            draw_set_color(make_color_rgb(35, 60, 90));
-            draw_rectangle(_ax, _ay, _ax + _al_box_w, _ay + _al_box_h, true);
-
-            scr_draw_alloy_swatch(_ax + 12, _ay + 14, 48, 52, _al.id);
-
-            draw_set_color(make_color_rgb(240, 215, 100));
-            draw_text(_ax + 70, _ay + 10, _al.name);
-            draw_set_color(c_white);
-            draw_text(_ax + 70, _ay + 30, "Recipe: " + _al.formula);
-            draw_set_color(make_color_rgb(100, 220, 255));
-            draw_text(_ax + 70, _ay + 50, "Class: " + _al.role + " (" + scr_alloy_get_hex(_al.id) + ")");
+            draw_set_color(_cv_active ? make_color_rgb(35, 75, 120) : (_cv_hov ? make_color_rgb(20, 40, 65) : make_color_rgb(12, 18, 26)));
+            draw_rectangle(_cvx, _met_y + 8, _cvx + _cv_w, _met_y + 34, false);
+            draw_set_color(_cv_active ? make_color_rgb(100, 220, 255) : make_color_rgb(45, 75, 105));
+            draw_rectangle(_cvx, _met_y + 8, _cvx + _cv_w, _met_y + 34, true);
+            draw_set_color(_cv_active ? c_white : make_color_rgb(160, 190, 220));
+            draw_text(_cvx + 10, _met_y + 13, _c_views[cv]);
         }
 
-        // 3. Technical Notes & Art Shader Pipeline Architecture
-        var _art_note_y = _cdx_y + 205;
-        draw_set_color(make_color_rgb(10, 16, 24));
-        draw_rectangle(_met_x + 16, _art_note_y, _met_x + _met_w - 16, _met_y + _met_h - 16, false);
-        draw_set_color(make_color_rgb(30, 50, 75));
-        draw_rectangle(_met_x + 16, _art_note_y, _met_x + _met_w - 16, _met_y + _met_h - 16, true);
+        // --- SUBVIEW 0: FURNACE LIVE PREVIEW & MASTER CODEX ---
+        if (crucible_subview == 0) {
+            // 1. Current Batch Ingot Real-Time Color Preview
+            var _bw_y = _met_y + 44;
+            draw_set_color(make_color_rgb(14, 20, 28));
+            draw_rectangle(_met_x + 16, _bw_y, _met_x + _met_w - 16, _bw_y + 110, false);
+            draw_set_color(make_color_rgb(35, 55, 80));
+            draw_rectangle(_met_x + 16, _bw_y, _met_x + _met_w - 16, _bw_y + 110, true);
 
-        draw_set_color(make_color_rgb(220, 180, 80));
-        draw_text(_met_x + 28, _art_note_y + 10, "TECHNICAL ARCHITECTURE // PROGRAMMATIC ALLOY SHADER PIPELINE:");
-        draw_set_color(make_color_rgb(180, 205, 230));
-        draw_text(_met_x + 28, _art_note_y + 32, "* Art Pipeline: Mobile Suits use grayscale master specular masks (Neutral Albedo, Specular Gloss, Emission).");
-        draw_text(_met_x + 28, _art_note_y + 52, "* Procedural Engine: scr_get_alloy_procedural_color() performs weighted spectral synthesis across elemental vectors.");
-        draw_text(_met_x + 28, _art_note_y + 72, "* Thermal & Pressure Shift: Real-time incandescence (1500-6000°C) and crystal compaction (0-10,000 PSI) tinting.");
-        draw_text(_met_x + 28, _art_note_y + 92, "* Scaling: Generates infinite distinct visual metallic finishes for 100+ raw ores & 1,000+ custom alloys with 0 artist crunch.");
+            draw_set_color(make_color_rgb(240, 210, 100));
+            draw_text(_met_x + 28, _bw_y + 10, "LIVE HOPPER ALLOY CHROMATIC SYNTHESIS:");
+
+            scr_draw_alloy_swatch(_met_x + 28, _bw_y + 36, 120, 56, crucible_batch);
+
+            var _cur_hex = scr_alloy_get_hex(crucible_batch);
+            draw_set_color(c_white);
+            draw_text(_met_x + 164, _bw_y + 36, "Synthesized Color: " + _cur_hex);
+            var _batch_tot = crucible_batch.mat_tungsten + crucible_batch.mat_silica_carb + crucible_batch.mat_tritium + crucible_batch.mat_syn_flux;
+            draw_set_color(make_color_rgb(160, 200, 230));
+            draw_text(_met_x + 164, _bw_y + 56, "Composition Ratio: W:" + string(crucible_batch.mat_tungsten) + " | C:" + string(crucible_batch.mat_silica_carb) + " | Tr:" + string(crucible_batch.mat_tritium) + " | Fx:" + string(crucible_batch.mat_syn_flux) + " (Total: " + string(_batch_tot) + ")");
+            draw_set_color(make_color_rgb(100, 220, 255));
+            draw_text(_met_x + 164, _bw_y + 76, "Thermal Glow Shift: " + string(floor(crucible_temp_c)) + "°C | Crystal Densification: " + string(floor(crucible_pressure_psi)) + " PSI");
+
+            // 2. Known Master Alloy Codex Grid
+            var _cdx_y = _bw_y + 125;
+            draw_set_color(make_color_rgb(100, 210, 255));
+            draw_text(_met_x + 16, _cdx_y, "MASTER METALLURGICAL ALLOY CODEX (ENGINEERING STANDARDS):");
+
+            var _known_alloys = [
+                { id: "alloy_vanguard_comp", name: "Vanguard Composite Plating", formula: "2x Tungsten + 1x Silica-Carbon", role: "Heavy Ballistic Plating" },
+                { id: "alloy_hyperion_matrix", name: "Hyperion Superconductor Matrix", formula: "1x Tungsten + 2x Tritium + 1x Flux", role: "Tokamak Core Superconductor" },
+                { id: "alloy_aerosteel_flux", name: "Aerosteel Vernier Flux", formula: "2x Flux + 1x Tritium + 1x Silica", role: "High-G Orbital Thrusters" },
+                { id: "alloy_adamantine_carbide", name: "Adamantine Carbide", formula: "3x Tungsten + 2x Silica + 1x Flux", role: "AP Kinetic Shells & Pincer Blades" }
+            ];
+
+            var _al_box_w = (_met_w - 48) / 2;
+            var _al_box_h = 80;
+
+            for (var ai = 0; ai < 4; ai++) {
+                var _al = _known_alloys[ai];
+                var _ax = _met_x + 16 + (ai mod 2) * (_al_box_w + 16);
+                var _ay = _cdx_y + 24 + (ai div 2) * (_al_box_h + 12);
+
+                draw_set_color(make_color_rgb(12, 18, 26));
+                draw_rectangle(_ax, _ay, _ax + _al_box_w, _ay + _al_box_h, false);
+                draw_set_color(make_color_rgb(35, 60, 90));
+                draw_rectangle(_ax, _ay, _ax + _al_box_w, _ay + _al_box_h, true);
+
+                scr_draw_alloy_swatch(_ax + 12, _ay + 14, 48, 52, _al.id);
+
+                draw_set_color(make_color_rgb(240, 215, 100));
+                draw_text(_ax + 70, _ay + 10, _al.name);
+                draw_set_color(c_white);
+                draw_text(_ax + 70, _ay + 30, "Recipe: " + _al.formula);
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_ax + 70, _ay + 50, "Class: " + _al.role + " (" + scr_alloy_get_hex(_al.id) + ")");
+            }
+
+            // 3. Technical Notes & Art Shader Pipeline Architecture
+            var _art_note_y = _cdx_y + 205;
+            draw_set_color(make_color_rgb(10, 16, 24));
+            draw_rectangle(_met_x + 16, _art_note_y, _met_x + _met_w - 16, _met_y + _met_h - 16, false);
+            draw_set_color(make_color_rgb(30, 50, 75));
+            draw_rectangle(_met_x + 16, _art_note_y, _met_x + _met_w - 16, _met_y + _met_h - 16, true);
+
+            draw_set_color(make_color_rgb(220, 180, 80));
+            draw_text(_met_x + 28, _art_note_y + 10, "TECHNICAL ARCHITECTURE // PROGRAMMATIC ALLOY SHADER PIPELINE:");
+            draw_set_color(make_color_rgb(180, 205, 230));
+            draw_text(_met_x + 28, _art_note_y + 32, "* Art Pipeline: Mobile Suits use grayscale master specular masks (Neutral Albedo, Specular Gloss, Emission).");
+            draw_text(_met_x + 28, _art_note_y + 52, "* Procedural Engine: scr_get_alloy_procedural_color() performs weighted spectral synthesis across elemental vectors.");
+            draw_text(_met_x + 28, _art_note_y + 72, "* Thermal & Pressure Shift: Real-time incandescence (1500-6000°C) and crystal compaction (0-10,000 PSI) tinting.");
+            draw_text(_met_x + 28, _art_note_y + 92, "* Scaling: Generates infinite distinct visual metallic finishes for 100+ raw ores & 1,000+ custom alloys with 0 artist crunch.");
+        }
+        // --- SUBVIEW 1: DISCOVERED ALLOY CODEX LOG ---
+        else if (crucible_subview == 1) {
+            var _codex_list = scr_alloy_codex_get_all();
+            var _cdx_len = array_length(_codex_list);
+
+            draw_set_color(make_color_rgb(100, 220, 255));
+            draw_text(_met_x + 16, _met_y + 44, "DISCOVERED ALLOY CODEX // CATALOGED PROCEDURAL FORMULAS (" + string(_cdx_len) + "):");
+
+            var _cdx_card_h = 76;
+            var _cdx_y_start = _met_y + 68;
+
+            for (var ci = 0; ci < min(5, _cdx_len); ci++) {
+                var _cidx = ci + codex_scroll_offset;
+                if (_cidx >= _cdx_len) break;
+                var _al_item = _codex_list[_cidx];
+                var _cy = _cdx_y_start + ci * (_cdx_card_h + 8);
+
+                draw_set_color(make_color_rgb(14, 20, 30));
+                draw_rectangle(_met_x + 16, _cy, _met_x + _met_w - 16, _cy + _cdx_card_h, false);
+                draw_set_color(make_color_rgb(35, 60, 90));
+                draw_rectangle(_met_x + 16, _cy, _met_x + _met_w - 16, _cy + _cdx_card_h, true);
+
+                scr_draw_alloy_swatch(_met_x + 26, _cy + 12, 54, 52, _al_item.hex);
+
+                draw_set_color(make_color_rgb(240, 215, 100));
+                draw_text(_met_x + 92, _cy + 8, _al_item.name + " [" + _al_item.code + "]");
+                draw_set_color(c_white);
+                draw_text(_met_x + 92, _cy + 26, "Armor HP: " + string(_al_item.armor_hp) + " | Dissipation: " + string(_al_item.thermal_rate) + " °C/s | Density: " + string(_al_item.density_g_cm3) + " g/cm³");
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_met_x + 92, _cy + 44, "Formula: " + _al_item.formula_summary + " (Color: " + _al_item.hex + ")");
+            }
+
+            if (_cdx_len > 5) {
+                var _sc_y = _met_y + _met_h - 36;
+                var _can_prev = (codex_scroll_offset > 0);
+                var _can_next = (codex_scroll_offset + 5 < _cdx_len);
+                if (_can_prev && _click && _mx >= _met_x + 16 && _mx <= _met_x + 140 && _my >= _sc_y && _my <= _sc_y + 24) codex_scroll_offset -= 1;
+                if (_can_next && _click && _mx >= _met_x + 160 && _mx <= _met_x + 280 && _my >= _sc_y && _my <= _sc_y + 24) codex_scroll_offset += 1;
+
+                draw_set_color(_can_prev ? make_color_rgb(30, 70, 110) : make_color_rgb(14, 20, 28));
+                draw_rectangle(_met_x + 16, _sc_y, _met_x + 140, _sc_y + 24, false);
+                draw_set_color(make_color_rgb(80, 180, 255));
+                draw_rectangle(_met_x + 16, _sc_y, _met_x + 140, _sc_y + 24, true);
+                draw_set_color(c_white);
+                draw_text(_met_x + 30, _sc_y + 4, "[PREV PAGE]");
+
+                draw_set_color(_can_next ? make_color_rgb(30, 70, 110) : make_color_rgb(14, 20, 28));
+                draw_rectangle(_met_x + 160, _sc_y, _met_x + 280, _sc_y + 24, false);
+                draw_set_color(make_color_rgb(80, 180, 255));
+                draw_rectangle(_met_x + 160, _sc_y, _met_x + 280, _sc_y + 24, true);
+                draw_set_color(c_white);
+                draw_text(_met_x + 175, _sc_y + 4, "[NEXT PAGE]");
+            }
+        }
+        // --- SUBVIEW 2: 118-ELEMENT PERIODIC TABLE DATABASE ---
+        else if (crucible_subview == 2) {
+            var _pt_list = [];
+            if (instance_exists(obj_GameManager)) _pt_list = obj_GameManager.get_all_materials();
+            var _pt_len = array_length(_pt_list);
+
+            draw_set_color(make_color_rgb(100, 220, 255));
+            draw_text(_met_x + 16, _met_y + 44, "PERIODIC TABLE OF MINING MINERALS (" + string(_pt_len) + " ELEMENTS REGISTERED):");
+
+            // Element list on left half of subview
+            var _pt_box_w = 420;
+            var _pt_box_h = _met_h - 80;
+            var _pt_x = _met_x + 16;
+            var _pt_y = _met_y + 68;
+
+            draw_set_color(make_color_rgb(12, 18, 26));
+            draw_rectangle(_pt_x, _pt_y, _pt_x + _pt_box_w, _pt_y + _pt_box_h, false);
+            draw_set_color(make_color_rgb(35, 55, 80));
+            draw_rectangle(_pt_x, _pt_y, _pt_x + _pt_box_w, _pt_y + _pt_box_h, true);
+
+            var _pt_vis = 8;
+            for (var pi = 0; pi < min(_pt_vis, _pt_len); pi++) {
+                var _pidx = pi + pt_scroll_offset;
+                if (_pidx >= _pt_len) break;
+                var _elem = _pt_list[_pidx];
+                var _ey = _pt_y + 8 + pi * 44;
+                var _is_sel = (pt_selected_idx == _pidx);
+                var _e_hov = (_mx >= _pt_x + 6 && _mx <= _pt_x + _pt_box_w - 6 && _my >= _ey && _my <= _ey + 40);
+                if (_e_hov && _click) pt_selected_idx = _pidx;
+
+                draw_set_color(_is_sel ? make_color_rgb(30, 65, 105) : (_e_hov ? make_color_rgb(20, 36, 55) : make_color_rgb(14, 20, 28)));
+                draw_rectangle(_pt_x + 6, _ey, _pt_x + _pt_box_w - 6, _ey + 40, false);
+                draw_set_color(_is_sel ? make_color_rgb(100, 220, 255) : make_color_rgb(35, 55, 80));
+                draw_rectangle(_pt_x + 6, _ey, _pt_x + _pt_box_w - 6, _ey + 40, true);
+
+                scr_draw_alloy_swatch(_pt_x + 12, _ey + 8, 26, 24, _elem.base_color_hex);
+
+                draw_set_color(c_white);
+                draw_text(_pt_x + 46, _ey + 6, "#" + string(_elem.atomic_number) + " " + _elem.symbol + " - " + _elem.name);
+                draw_set_color(make_color_rgb(160, 190, 220));
+                draw_text(_pt_x + 46, _ey + 22, _elem.category);
+            }
+
+            // Element Detail Dossier on Right side of subview
+            var _dtl_x = _pt_x + _pt_box_w + 16;
+            var _dtl_w = _met_w - (_pt_box_w + 48);
+            var _dtl_y = _pt_y;
+            draw_set_color(make_color_rgb(12, 18, 26));
+            draw_rectangle(_dtl_x, _dtl_y, _dtl_x + _dtl_w, _dtl_y + _pt_box_h, false);
+            draw_set_color(make_color_rgb(35, 55, 80));
+            draw_rectangle(_dtl_x, _dtl_y, _dtl_x + _dtl_w, _dtl_y + _pt_box_h, true);
+
+            if (_pt_len > 0 && pt_selected_idx < _pt_len) {
+                var _sel_elem = _pt_list[pt_selected_idx];
+                draw_set_color(make_color_rgb(240, 215, 100));
+                draw_text(_dtl_x + 16, _dtl_y + 12, "#" + string(_sel_elem.atomic_number) + " " + _sel_elem.name + " (" + _sel_elem.symbol + ")");
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_dtl_x + 16, _dtl_y + 32, "Category: " + _sel_elem.category + " | Tier: " + string(_sel_elem.tier));
+
+                scr_draw_alloy_swatch(_dtl_x + 16, _dtl_y + 56, 80, 50, _sel_elem.base_color_hex);
+
+                draw_set_color(c_white);
+                draw_text(_dtl_x + 108, _dtl_y + 56, "* Density: " + string(_sel_elem.density_g_cm3) + " g/cm³");
+                draw_text(_dtl_x + 108, _dtl_y + 74, "* Tensile Strength: " + string(_sel_elem.tensile_mpa) + " MPa");
+                draw_text(_dtl_x + 108, _dtl_y + 92, "* Melting Point: " + string(_sel_elem.melting_point_c) + " °C");
+
+                draw_set_color(make_color_rgb(240, 210, 100));
+                draw_text(_dtl_x + 16, _dtl_y + 120, "SOLAR HARVESTING LOCATIONS:");
+                draw_set_color(make_color_rgb(180, 210, 240));
+                var _dist_arr = _sel_elem.solar_distribution;
+                for (var d = 0; d < min(3, array_length(_dist_arr)); d++) {
+                    draw_text(_dtl_x + 24, _dtl_y + 140 + d * 18, "> " + string(_dist_arr[d]));
+                }
+
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_dtl_x + 16, _dtl_y + 205, "INDUSTRIAL MOBILE SUIT ROLE:");
+                draw_set_color(c_white);
+                draw_text_ext(_dtl_x + 16, _dtl_y + 225, _sel_elem.industrial_role, 16, _dtl_w - 32);
+
+                draw_set_color(make_color_rgb(200, 205, 215));
+                draw_text_ext(_dtl_x + 16, _dtl_y + 270, _sel_elem.lore_description, 16, _dtl_w - 32);
+            }
+        }
     }
 else if (rd_subtab == 1) {
         var _m_pan_x = _pan_x + 20;
@@ -2541,71 +2699,153 @@ else if (active_tab == 3) {
             draw_text(_m_x + 14, _wbox_y + 182, "FRONTLINE: " + _tc.contested_sector);
         }
 
-        // Interactive Mining Node Cards on Right
+        // Interactive Mining Node Cards on Right (docs/06, 14)
         var _nc_x = _m_x + 560;
-        var _nc_y = _m_y + 24;
+        var _nc_y = _m_y + 10;
+        var _nc_w = _pan_w - (_nc_x - _pan_x) - 24;
 
         if (instance_exists(obj_GameManager)) {
             var _gm = obj_GameManager;
-            for (var n = 0; n < array_length(_gm.nodes); n++) {
-                var _nd = _gm.nodes[n];
-                var _ny = _nc_y + n * 115;
+
+            // Solar Sphere Filter Tabs
+            var _spheres = [
+                { id: "all", label: "ALL (16)" },
+                { id: "Earth Sphere", label: "EARTH" },
+                { id: "Martian Sphere", label: "MARS" },
+                { id: "Asteroid Belt", label: "BELT" },
+                { id: "Jovian Outer Sphere", label: "JUPITER" },
+                { id: "Saturnian Outer Sphere", label: "SATURN" },
+                { id: "Deep Solar Frontier", label: "VOID" }
+            ];
+            var _sph_w = 84;
+            for (var sp = 0; sp < array_length(_spheres); sp++) {
+                var _sph = _spheres[sp];
+                var _spx = _nc_x + sp * (_sph_w + 6);
+                var _sp_active = (mining_sphere_filter == _sph.id);
+                var _sp_hov = (_mx >= _spx && _mx <= _spx + _sph_w && _my >= _nc_y && _my <= _nc_y + 24);
+                if (_sp_hov && _click) {
+                    mining_sphere_filter = _sph.id;
+                    mining_scroll_offset = 0;
+                }
+
+                draw_set_color(_sp_active ? make_color_rgb(35, 75, 120) : (_sp_hov ? make_color_rgb(20, 40, 65) : make_color_rgb(12, 18, 26)));
+                draw_rectangle(_spx, _nc_y, _spx + _sph_w, _nc_y + 24, false);
+                draw_set_color(_sp_active ? make_color_rgb(100, 220, 255) : make_color_rgb(45, 70, 100));
+                draw_rectangle(_spx, _nc_y, _spx + _sph_w, _nc_y + 24, true);
+                draw_set_color(_sp_active ? c_white : make_color_rgb(160, 180, 200));
+                draw_text(_spx + 6, _nc_y + 4, _sph.label);
+            }
+
+            var _filtered_nodes = _gm.get_mining_nodes_by_sphere(mining_sphere_filter);
+            var _num_nodes = array_length(_filtered_nodes);
+            var _card_y_start = _nc_y + 32;
+            var _card_h = 104;
+            var _max_vis_nodes = 4;
+
+            for (var n = 0; n < min(_max_vis_nodes, _num_nodes); n++) {
+                var _n_idx = n + mining_scroll_offset;
+                if (_n_idx >= _num_nodes) break;
+                var _nd = _filtered_nodes[_n_idx];
+                var _ny = _card_y_start + n * (_card_h + 8);
                 var _is_active = (_nd.status == "ACTIVE_MINING");
 
-                draw_set_color(make_color_rgb(16, 24, 34));
-                draw_rectangle(_nc_x, _ny, _nc_x + 580, _ny + 104, false);
+                draw_set_color(make_color_rgb(14, 20, 30));
+                draw_rectangle(_nc_x, _ny, _nc_x + _nc_w, _ny + _card_h, false);
                 draw_set_color(_is_active ? make_color_rgb(80, 220, 120) : make_color_rgb(45, 75, 110));
-                draw_rectangle(_nc_x, _ny, _nc_x + 580, _ny + 104, true);
+                draw_rectangle(_nc_x, _ny, _nc_x + _nc_w, _ny + _card_h, true);
 
                 draw_set_color(make_color_rgb(240, 210, 100));
-                draw_text(_nc_x + 16, _ny + 8, _nd.name + " [" + (_is_active ? "ACTIVE HARVESTING" : "IDLE CONCESSION") + "]");
-                draw_set_color(c_white);
-                draw_text(_nc_x + 16, _ny + 28, "Primary: " + _nd.primary_yield + " (+" + string(_nd.yield_rate_primary) + "/turn) | Secondary: " + _nd.secondary_yield + " (+" + string(_nd.yield_rate_secondary) + "/turn)");
-                draw_set_color(make_color_rgb(255, 140, 120));
-                draw_text(_nc_x + 16, _ny + 48, "Pirate Raid Threat: " + string(_nd.threat_level_pct) + "% | Escort Mech: " + _nd.assigned_mech_name + " (Pilot: " + _nd.assigned_pilot_name + ")");
+                var _body_tag = variable_struct_exists(_nd, "celestial_body") ? (" (" + _nd.celestial_body + ")") : "";
+                draw_text(_nc_x + 16, _ny + 8, _nd.name + _body_tag + " [" + (_is_active ? "ACTIVE HARVESTING" : "IDLE CONCESSION") + "]");
 
-                // Harvest Button
+                // Mineral Yield Swatches & Counters
+                var _res_keys = variable_struct_get_names(_nd.current_storage);
+                var _storage_str = "";
+                for (var rk = 0; rk < min(3, array_length(_res_keys)); rk++) {
+                    var _rkname = _res_keys[rk];
+                    var _ramt = _nd.current_storage[$ _rkname];
+                    _storage_str += string_upper(_rkname) + ": " + string(_ramt) + "kg  ";
+                }
+                if (_storage_str == "") _storage_str = "Storage Bin Empty";
+
+                draw_set_color(c_white);
+                draw_text(_nc_x + 16, _ny + 28, "Stored Ore: " + _storage_str);
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_nc_x + 16, _ny + 46, "Daily Extraction: +" + string(_nd.yield_rate_primary) + "kg Primary | Threat Risk: " + string(_nd.threat_level_pct) + "%");
+
+                // Harvest / Extract to Storage Button
                 var _hb_x = _nc_x + 16;
                 var _hb_y = _ny + 68;
-                var _h_hov = (_mx >= _hb_x && _mx <= _hb_x + 180 && _my >= _hb_y && _my <= _hb_y + 28);
+                var _h_hov = (_mx >= _hb_x && _mx <= _hb_x + 180 && _my >= _hb_y && _my <= _hb_y + 26);
                 if (_h_hov && _click) {
-                    _gm.extract_node_storage(n);
+                    for (var mi = 0; mi < array_length(_gm.nodes); mi++) {
+                        if (_gm.nodes[mi].id == _nd.id) { _gm.extract_node_storage(mi); break; }
+                    }
+                    show_toast("ORE EXTRACTED FROM " + _nd.name + " INTO FLEET STORAGE!", c_lime);
                 }
                 draw_set_color(_h_hov ? make_color_rgb(30, 70, 50) : make_color_rgb(18, 40, 28));
-                draw_rectangle(_hb_x, _hb_y, _hb_x + 180, _hb_y + 28, false);
+                draw_rectangle(_hb_x, _hb_y, _hb_x + 180, _hb_y + 26, false);
                 draw_set_color(make_color_rgb(80, 220, 120));
-                draw_rectangle(_hb_x, _hb_y, _hb_x + 180, _hb_y + 28, true);
+                draw_rectangle(_hb_x, _hb_y, _hb_x + 180, _hb_y + 26, true);
                 draw_set_color(c_white);
-                draw_text(_hb_x + 10, _hb_y + 6, "[EXTRACT TO CARGO]");
+                draw_text(_hb_x + 10, _hb_y + 5, "[EXTRACT TO CARGO]");
 
                 // Deploy / Recall Escort Button
                 var _db_x = _hb_x + 195;
                 var _db_y = _hb_y;
-                var _d_hov = (_mx >= _db_x && _mx <= _db_x + 160 && _my >= _db_y && _my <= _db_y + 28);
+                var _d_hov = (_mx >= _db_x && _mx <= _db_x + 180 && _my >= _db_y && _my <= _db_y + 26);
                 if (_d_hov && _click) {
+                    var _master_idx = 0;
+                    for (var mi = 0; mi < array_length(_gm.nodes); mi++) {
+                        if (_gm.nodes[mi].id == _nd.id) { _master_idx = mi; break; }
+                    }
                     if (_is_active) {
-                        _gm.recall_from_node(n);
-                        show_toast("SORTIE RECALLED FROM " + _nd.name + "!", c_yellow);
+                        _gm.recall_from_node(_master_idx);
+                        show_toast("ESCORT RECALLED FROM " + _nd.name + "!", c_yellow);
                     } else {
                         var _dep_found = false;
                         for (var dm = 0; dm < array_length(_gm.inventory.deployable_mechs); dm++) {
                             if (_gm.inventory.deployable_mechs[dm].status == "READY") {
                                 var _plt_name = (array_length(_gm.facilities.roster_pilots) > 0) ? _gm.facilities.roster_pilots[0].name : "Marcus Vance";
-                                _gm.deploy_to_node(n, _gm.inventory.deployable_mechs[dm].id, _plt_name);
+                                _gm.deploy_to_node(_master_idx, _gm.inventory.deployable_mechs[dm].id, _plt_name);
                                 _dep_found = true;
-                                show_toast("SORTIE DEPLOYED TO " + _nd.name + "!", c_lime);
+                                show_toast("ESCORT DEPLOYED TO " + _nd.name + "!", c_lime);
                                 break;
                             }
                         }
                         if (!_dep_found) show_toast("NO READY MECHS IN HANGAR TO DEPLOY!", c_red);
                     }
                 }
-                draw_set_color(_d_hov ? make_color_rgb(60, 40, 20) : make_color_rgb(32, 22, 12));
-                draw_rectangle(_db_x, _db_y, _db_x + 160, _db_y + 28, false);
-                draw_set_color(make_color_rgb(240, 140, 40));
-                draw_rectangle(_db_x, _db_y, _db_x + 160, _db_y + 28, true);
+                draw_set_color(_d_hov ? make_color_rgb(70, 50, 25) : make_color_rgb(38, 28, 14));
+                draw_rectangle(_db_x, _db_y, _db_x + 180, _db_y + 26, false);
+                draw_set_color(make_color_rgb(255, 180, 60));
+                draw_rectangle(_db_x, _db_y, _db_x + 180, _db_y + 26, true);
                 draw_set_color(c_white);
-                draw_text(_db_x + 10, _db_y + 6, _is_active ? "[RECALL UNIT]" : "[DEPLOY TO NODE]");
+                draw_text(_db_x + 10, _db_y + 5, _is_active ? "[RECALL ESCORT]" : "[ASSIGN MECH ESCORT]");
+            }
+
+            // Paging Buttons for Solar Mining Nodes
+            if (_num_nodes > _max_vis_nodes) {
+                var _np_y = _card_y_start + _max_vis_nodes * (_card_h + 8) + 4;
+                var _can_p_prev = (mining_scroll_offset > 0);
+                var _can_p_next = (mining_scroll_offset + _max_vis_nodes < _num_nodes);
+
+                if (_can_p_prev && _click && _mx >= _nc_x && _mx <= _nc_x + 140 && _my >= _np_y && _my <= _np_y + 24) mining_scroll_offset -= 1;
+                if (_can_p_next && _click && _mx >= _nc_x + 160 && _mx <= _nc_x + 300 && _my >= _np_y && _my <= _np_y + 24) mining_scroll_offset += 1;
+
+                draw_set_color(_can_p_prev ? make_color_rgb(30, 70, 110) : make_color_rgb(14, 20, 28));
+                draw_rectangle(_nc_x, _np_y, _nc_x + 140, _np_y + 24, false);
+                draw_set_color(make_color_rgb(80, 180, 255));
+                draw_rectangle(_nc_x, _np_y, _nc_x + 140, _np_y + 24, true);
+                draw_set_color(c_white);
+                draw_text(_nc_x + 24, _np_y + 4, "[PREV NODES]");
+
+                draw_set_color(_can_p_next ? make_color_rgb(30, 70, 110) : make_color_rgb(14, 20, 28));
+                draw_rectangle(_nc_x + 160, _np_y, _nc_x + 300, _np_y + 24, false);
+                draw_set_color(make_color_rgb(80, 180, 255));
+                draw_rectangle(_nc_x + 160, _np_y, _nc_x + 300, _np_y + 24, true);
+                draw_set_color(c_white);
+                draw_text(_nc_x + 185, _np_y + 4, "[NEXT NODES]");
             }
         }
     }

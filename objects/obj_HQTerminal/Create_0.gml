@@ -247,7 +247,22 @@ crucible_execute_synthesis = function() {
         return;
     }
 
-    show_toast("INVALID BATCH: Material ratio does not match any known formula!", c_orange);
+    // 5. Procedural Combinatorial Metallurgy Engine (docs/14)
+    var _discovery = scr_alloy_discovery_analyze(crucible_batch, crucible_temp_c, crucible_pressure_psi);
+    if (_discovery.is_failure) {
+        crucible_shake = 18.0;
+        crucible_purge_hopper();
+        obj_GameManager.add_raw_material("item_slag", 2);
+        show_toast("SYNTHESIS FAILED (" + _discovery.name + "): " + _discovery.failure_reason, c_red);
+        return;
+    } else {
+        crucible_shake = 12.0;
+        scr_alloy_codex_register_discovery(_discovery);
+        obj_GameManager.add_alloy(_discovery.code, 1);
+        crucible_purge_hopper();
+        show_toast("DISCOVERY FORGED: " + _discovery.name + " (" + _discovery.hex + ") added to inventory!", c_lime);
+        return;
+    }
 };
 
 // 6. Prototyping Minigames State (docs/03_prototyping_minigames.md)
@@ -421,6 +436,17 @@ bp_archive_faction_filter = "all"; // "all", "faction_terran", "faction_colony",
 bp_archive_selected_idx = 0;       // Index in currently filtered list
 bp_archive_view_mode = 0;          // 0 = Tactical Sprite & Alloy Tint, 1 = Technical Schematics, 2 = Modular Components, 3 = Production Variants
 bp_archive_scroll = 0;             // Scroll offset for left list
+
+// 7c. Metallurgy Codex, Periodic Table & Solar Mining UI State (Docs 02, 06, 14)
+crucible_subview = 0;              // 0 = Furnace & Batch Preview, 1 = Discovered Alloy Codex, 2 = 118-Element Periodic Table
+pt_view_category = "all";          // Category filter for 118 elements
+pt_selected_idx = 0;               // Selected element index in periodic table
+pt_scroll_offset = 0;              // Scroll offset for periodic table
+codex_selected_idx = 0;            // Selected discovered alloy in codex
+codex_scroll_offset = 0;           // Scroll offset for codex
+mining_sphere_filter = "all";      // Solar sphere filter for mining nodes
+mining_scroll_offset = 0;          // Scroll offset for solar mining nodes
+
 
 comp_specs_data = [
     {

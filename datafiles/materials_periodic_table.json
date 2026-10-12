@@ -1,0 +1,2780 @@
+{
+  "system": "MechMaker Periodic Table of Mining Minerals",
+  "version": "1.0.0",
+  "total_elements": 118,
+  "materials": [
+    {
+      "atomic_number": 1,
+      "id": "mat_001_h",
+      "symbol": "H",
+      "name": "Hydrogen / Tritium",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 1,
+      "density_g_cm3": 8.9e-05,
+      "tensile_mpa": 0,
+      "melting_point_c": -259.2,
+      "thermal_conductivity_w_mk": 0.18,
+      "base_color_rgb": [
+        0,
+        245,
+        255
+      ],
+      "base_color_hex": "#00F5FF",
+      "solar_distribution": [
+        "Jovian Atmosphere",
+        "Saturnian Rings",
+        "Lunar Ice Depots"
+      ],
+      "industrial_role": "Tokamak Plasma Injection & Cryogenic Vernier Propellant",
+      "lore_description": "The lifeblood of tactical thermonuclear propulsion and Cherenkov ignition."
+    },
+    {
+      "atomic_number": 2,
+      "id": "mat_002_he",
+      "symbol": "He",
+      "name": "Helium-3",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 1,
+      "density_g_cm3": 0.000178,
+      "tensile_mpa": 0,
+      "melting_point_c": -272.2,
+      "thermal_conductivity_w_mk": 0.15,
+      "base_color_rgb": [
+        140,
+        230,
+        255
+      ],
+      "base_color_hex": "#8CE6FF",
+      "solar_distribution": [
+        "Lunar Regolith",
+        "Uranian Atmosphere",
+        "Asteroid Solar Sails"
+      ],
+      "industrial_role": "Aneutronic Fusion Fuel for Minovsky-class magnetic containment",
+      "lore_description": "Harvested from billions of years of solar wind trapped in lunar titanium soils."
+    },
+    {
+      "atomic_number": 3,
+      "id": "mat_003_li",
+      "symbol": "Li",
+      "name": "Lithium-6",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 1,
+      "density_g_cm3": 0.534,
+      "tensile_mpa": 15,
+      "melting_point_c": 180.5,
+      "thermal_conductivity_w_mk": 85.0,
+      "base_color_rgb": [
+        230,
+        180,
+        200
+      ],
+      "base_color_hex": "#E6B4C8",
+      "solar_distribution": [
+        "Earth Salars",
+        "Martian Dry Lakes",
+        "Trojan Asteroids"
+      ],
+      "industrial_role": "Tritium Breeding Blankets & High-Rate Capacitor Plates",
+      "lore_description": "Ultra-light alkali metal critical for breeding weapon-grade tritium in orbital reactors."
+    },
+    {
+      "atomic_number": 4,
+      "id": "mat_004_be",
+      "symbol": "Be",
+      "name": "Beryllium",
+      "category": "Base Structural Metals",
+      "tier": 2,
+      "density_g_cm3": 1.85,
+      "tensile_mpa": 450,
+      "melting_point_c": 1287.0,
+      "thermal_conductivity_w_mk": 200.0,
+      "base_color_rgb": [
+        190,
+        210,
+        215
+      ],
+      "base_color_hex": "#BED2D7",
+      "solar_distribution": [
+        "Asteroid Silicates",
+        "Lunar Anorthosite"
+      ],
+      "industrial_role": "Neutron Reflector Mirrors & Lightweight Aerospace Avionics Rigs",
+      "lore_description": "Rigid, non-magnetic, and extremely toxic in dust form; indispensable for aerospace cockpits."
+    },
+    {
+      "atomic_number": 5,
+      "id": "mat_005_b",
+      "symbol": "B",
+      "name": "Boron (Boron-Nitride)",
+      "category": "Crystalline Semiconductors & Nanomatrices",
+      "tier": 2,
+      "density_g_cm3": 2.34,
+      "tensile_mpa": 1100,
+      "melting_point_c": 2076.0,
+      "thermal_conductivity_w_mk": 27.0,
+      "base_color_rgb": [
+        170,
+        160,
+        140
+      ],
+      "base_color_hex": "#AAA08C",
+      "solar_distribution": [
+        "Martian Evaporites",
+        "Main Belt Carbonaceous Chondrites"
+      ],
+      "industrial_role": "High-Heat Ablative Ceramic Tile Matrices & Neutron Absorption Rods",
+      "lore_description": "Forms cubic boron nitride, the second hardest known structural armor material."
+    },
+    {
+      "atomic_number": 6,
+      "id": "mat_006_c",
+      "symbol": "C",
+      "name": "Carbon (Graphene/Diamondoid)",
+      "category": "Crystalline Semiconductors & Nanomatrices",
+      "tier": 1,
+      "density_g_cm3": 2.26,
+      "tensile_mpa": 1800,
+      "melting_point_c": 3550.0,
+      "thermal_conductivity_w_mk": 140.0,
+      "base_color_rgb": [
+        35,
+        45,
+        60
+      ],
+      "base_color_hex": "#232D3C",
+      "solar_distribution": [
+        "Carbonaceous Asteroids",
+        "Earth Biosphere Residuals",
+        "Titan Crust"
+      ],
+      "industrial_role": "Carbon-Nanotube Actuator Weave, Reactive Armor Mesh & Heat Radiators",
+      "lore_description": "The structural backbone of modern mobile suit muscle bundles and anti-ballistic armor."
+    },
+    {
+      "atomic_number": 7,
+      "id": "mat_007_n",
+      "symbol": "N",
+      "name": "Nitrogen (Cryo-Liquid)",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 1,
+      "density_g_cm3": 0.00125,
+      "tensile_mpa": 0,
+      "melting_point_c": -210.0,
+      "thermal_conductivity_w_mk": 0.026,
+      "base_color_rgb": [
+        90,
+        140,
+        220
+      ],
+      "base_color_hex": "#5A8CDC",
+      "solar_distribution": [
+        "Earth Atmosphere",
+        "Titan Surface Seas",
+        "Kuiper Comets"
+      ],
+      "industrial_role": "Superconductor Cryo-Coolant Loops & Thruster Gas Expansion",
+      "lore_description": "Pressurized liquid coolant pumped directly over glowing tokamak core coils."
+    },
+    {
+      "atomic_number": 8,
+      "id": "mat_008_o",
+      "symbol": "O",
+      "name": "Oxygen (Liquid O2)",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 1,
+      "density_g_cm3": 0.00143,
+      "tensile_mpa": 0,
+      "melting_point_c": -218.8,
+      "thermal_conductivity_w_mk": 0.027,
+      "base_color_rgb": [
+        180,
+        220,
+        255
+      ],
+      "base_color_hex": "#B4DCFF",
+      "solar_distribution": [
+        "Lunar Ilmenite",
+        "Martian Ice Caps",
+        "Asteroid Clays"
+      ],
+      "industrial_role": "Pilot Life Support & Chemical Afterburner Hypergolic Oxidizer",
+      "lore_description": "Electrolyzed directly from lunar oxide minerals to keep mercenary pilots breathing."
+    },
+    {
+      "atomic_number": 9,
+      "id": "mat_009_f",
+      "symbol": "F",
+      "name": "Fluorine",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 0.0017,
+      "tensile_mpa": 0,
+      "melting_point_c": -219.6,
+      "thermal_conductivity_w_mk": 0.028,
+      "base_color_rgb": [
+        180,
+        255,
+        160
+      ],
+      "base_color_hex": "#B4FFA0",
+      "solar_distribution": [
+        "Deep Crustal Granites",
+        "Europa Thermal Vents"
+      ],
+      "industrial_role": "Dielectric Insulating Gas & Uranium Hexafluoride Centrifuge Enrichment",
+      "lore_description": "Violently reactive halogen essential for processing rare actinide fuels."
+    },
+    {
+      "atomic_number": 10,
+      "id": "mat_010_ne",
+      "symbol": "Ne",
+      "name": "Neon",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 1,
+      "density_g_cm3": 0.0009,
+      "tensile_mpa": 0,
+      "melting_point_c": -248.6,
+      "thermal_conductivity_w_mk": 0.049,
+      "base_color_rgb": [
+        255,
+        80,
+        60
+      ],
+      "base_color_hex": "#FF503C",
+      "solar_distribution": [
+        "Gas Giant Upper Stratospheres"
+      ],
+      "industrial_role": "Cryogenic Laser Pulse Cavities & Plasma Discharge Sights",
+      "lore_description": "Emits brilliant orange-red discharge used in targeting alignment lasers."
+    },
+    {
+      "atomic_number": 11,
+      "id": "mat_011_na",
+      "symbol": "Na",
+      "name": "Sodium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 1,
+      "density_g_cm3": 0.97,
+      "tensile_mpa": 10,
+      "melting_point_c": 97.8,
+      "thermal_conductivity_w_mk": 142.0,
+      "base_color_rgb": [
+        210,
+        205,
+        170
+      ],
+      "base_color_hex": "#D2CDAA",
+      "solar_distribution": [
+        "Earth Salars",
+        "Europa Brine Fractures"
+      ],
+      "industrial_role": "Liquid Metal Reactor Coolant Loops for High-Flux Cores",
+      "lore_description": "Carries immense thermal loads from compact cores to secondary turbines without boiling."
+    },
+    {
+      "atomic_number": 12,
+      "id": "mat_012_mg",
+      "symbol": "Mg",
+      "name": "Magnesium",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 1.74,
+      "tensile_mpa": 280,
+      "melting_point_c": 650.0,
+      "thermal_conductivity_w_mk": 156.0,
+      "base_color_rgb": [
+        215,
+        225,
+        235
+      ],
+      "base_color_hex": "#D7E1EB",
+      "solar_distribution": [
+        "Lunar Pyroxene",
+        "Asteroid Chondrites"
+      ],
+      "industrial_role": "Ultra-Lightweight Casting Alloys for Leg Vernier Bells",
+      "lore_description": "Reduces total chassis dry weight to increase high-G orbital dash velocity."
+    },
+    {
+      "atomic_number": 13,
+      "id": "mat_013_al",
+      "symbol": "Al",
+      "name": "Aluminum (Alumino-Alloy)",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 2.7,
+      "tensile_mpa": 310,
+      "melting_point_c": 660.3,
+      "thermal_conductivity_w_mk": 237.0,
+      "base_color_rgb": [
+        210,
+        220,
+        230
+      ],
+      "base_color_hex": "#D2DCE6",
+      "solar_distribution": [
+        "Earth Bauxite",
+        "Lunar Highlands Anorthosite"
+      ],
+      "industrial_role": "Structural Bulkhead Subframes & Cockpit Escape Pod Shells",
+      "lore_description": "Cheap, malleable, and universally available across every planetary outpost."
+    },
+    {
+      "atomic_number": 14,
+      "id": "mat_014_si",
+      "symbol": "Si",
+      "name": "Silicon (Silicon-Carbide)",
+      "category": "Crystalline Semiconductors & Nanomatrices",
+      "tier": 1,
+      "density_g_cm3": 2.33,
+      "tensile_mpa": 550,
+      "melting_point_c": 1414.0,
+      "thermal_conductivity_w_mk": 150.0,
+      "base_color_rgb": [
+        80,
+        95,
+        115
+      ],
+      "base_color_hex": "#505F73",
+      "solar_distribution": [
+        "Planetary Crusts Everywhere",
+        "Lunar Mare Basalts"
+      ],
+      "industrial_role": "Sub-Nanometer Avionics Chips & High-Voltage Power Inverter Gates",
+      "lore_description": "The foundation of all targeting sensors, HUD overlays, and cybernetic links."
+    },
+    {
+      "atomic_number": 15,
+      "id": "mat_015_p",
+      "symbol": "P",
+      "name": "Phosphorus",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 1.82,
+      "tensile_mpa": 12,
+      "melting_point_c": 44.2,
+      "thermal_conductivity_w_mk": 0.24,
+      "base_color_rgb": [
+        210,
+        140,
+        70
+      ],
+      "base_color_hex": "#D28C46",
+      "solar_distribution": [
+        "Phosphorite Asteroids",
+        "Earth Deposits"
+      ],
+      "industrial_role": "Semiconductor Dopant & Incendiary Flechette Warhead Cores",
+      "lore_description": "Infused into silicon to create high-speed P-N junctions for fire-control radar."
+    },
+    {
+      "atomic_number": 16,
+      "id": "mat_016_s",
+      "symbol": "S",
+      "name": "Sulfur",
+      "category": "Crystalline Semiconductors & Nanomatrices",
+      "tier": 1,
+      "density_g_cm3": 2.07,
+      "tensile_mpa": 20,
+      "melting_point_c": 115.2,
+      "thermal_conductivity_w_mk": 0.21,
+      "base_color_rgb": [
+        230,
+        210,
+        50
+      ],
+      "base_color_hex": "#E6D232",
+      "solar_distribution": [
+        "Io Volcanic Plumes",
+        "Venusian Clouds"
+      ],
+      "industrial_role": "Extreme-Pressure Lubricants & Solid-State Lithium-Sulfur Batteries",
+      "lore_description": "Mined by robotic skimmers diving into Io sulfur geysers; lubricates heavy knee joints."
+    },
+    {
+      "atomic_number": 17,
+      "id": "mat_017_cl",
+      "symbol": "Cl",
+      "name": "Chlorine",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 1,
+      "density_g_cm3": 0.0032,
+      "tensile_mpa": 0,
+      "melting_point_c": -101.5,
+      "thermal_conductivity_w_mk": 0.009,
+      "base_color_rgb": [
+        160,
+        230,
+        140
+      ],
+      "base_color_hex": "#A0E68C",
+      "solar_distribution": [
+        "Planetary Brines",
+        "Europa Geysers"
+      ],
+      "industrial_role": "High-Purity Chemical Vapor Deposition & Metal Etching Agent",
+      "lore_description": "Essential for cleaning vacuum-deposited titanium armors during manufacturing."
+    },
+    {
+      "atomic_number": 18,
+      "id": "mat_018_ar",
+      "symbol": "Ar",
+      "name": "Argon",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 1,
+      "density_g_cm3": 0.00178,
+      "tensile_mpa": 0,
+      "melting_point_c": -189.3,
+      "thermal_conductivity_w_mk": 0.018,
+      "base_color_rgb": [
+        160,
+        120,
+        240
+      ],
+      "base_color_hex": "#A078F0",
+      "solar_distribution": [
+        "Atmospheric Separation Plants"
+      ],
+      "industrial_role": "Inert Gas Shielding for Electron-Beam Welding & Ion Propulsion",
+      "lore_description": "Inert buffer gas used when welding reactive titanium-tungsten chassis in zero-g."
+    },
+    {
+      "atomic_number": 19,
+      "id": "mat_019_k",
+      "symbol": "K",
+      "name": "Potassium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 0.89,
+      "tensile_mpa": 8,
+      "melting_point_c": 63.5,
+      "thermal_conductivity_w_mk": 102.0,
+      "base_color_rgb": [
+        195,
+        190,
+        210
+      ],
+      "base_color_hex": "#C3BED2",
+      "solar_distribution": [
+        "Earth Potash",
+        "Martian Regolith"
+      ],
+      "industrial_role": "NaK Eutectic Liquid Metal Reactor Coolant",
+      "lore_description": "Remains liquid down to -12\u00b0C, preventing cooling lines from freezing in deep vacuum."
+    },
+    {
+      "atomic_number": 20,
+      "id": "mat_020_ca",
+      "symbol": "Ca",
+      "name": "Calcium",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 1.54,
+      "tensile_mpa": 70,
+      "melting_point_c": 842.0,
+      "thermal_conductivity_w_mk": 201.0,
+      "base_color_rgb": [
+        200,
+        205,
+        190
+      ],
+      "base_color_hex": "#C8CDBE",
+      "solar_distribution": [
+        "Lunar Highlands",
+        "Earth Limestone"
+      ],
+      "industrial_role": "Metallurgical Reducing Agent for Uranium and Rare Earth Oxides",
+      "lore_description": "Used in high-temperature flux crucibles to strip oxygen from raw actinide ores."
+    },
+    {
+      "atomic_number": 21,
+      "id": "mat_021_sc",
+      "symbol": "Sc",
+      "name": "Scandium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 2.99,
+      "tensile_mpa": 390,
+      "melting_point_c": 1541.0,
+      "thermal_conductivity_w_mk": 16.0,
+      "base_color_rgb": [
+        190,
+        195,
+        185
+      ],
+      "base_color_hex": "#BEC3B9",
+      "solar_distribution": [
+        "Rare Earth Minerals",
+        "Uranian Rings"
+      ],
+      "industrial_role": "Scandium-Aluminum Welded Ribs for Atmospheric Jet Intakes",
+      "lore_description": "Prevents recrystallization cracking in high-stress mobile suit wing surfaces."
+    },
+    {
+      "atomic_number": 22,
+      "id": "mat_022_ti",
+      "symbol": "Ti",
+      "name": "Titanium (Titan-Matrix)",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 4.51,
+      "tensile_mpa": 950,
+      "melting_point_c": 1668.0,
+      "thermal_conductivity_w_mk": 22.0,
+      "base_color_rgb": [
+        220,
+        230,
+        245
+      ],
+      "base_color_hex": "#DCE6F5",
+      "solar_distribution": [
+        "Lunar Ilmenite",
+        "Earth Beach Sands",
+        "Asteroid Belts"
+      ],
+      "industrial_role": "Primary Lightweight High-Strength Armor Plating & Hydraulic Shafts",
+      "lore_description": "The gold standard for mobile suit limbs, balancing impact resilience and low inertia."
+    },
+    {
+      "atomic_number": 23,
+      "id": "mat_023_v",
+      "symbol": "V",
+      "name": "Vanadium",
+      "category": "Base Structural Metals",
+      "tier": 2,
+      "density_g_cm3": 6.11,
+      "tensile_mpa": 720,
+      "melting_point_c": 1910.0,
+      "thermal_conductivity_w_mk": 31.0,
+      "base_color_rgb": [
+        140,
+        155,
+        175
+      ],
+      "base_color_hex": "#8C9BAF",
+      "solar_distribution": [
+        "Magnetite Ores",
+        "Titanium Sands"
+      ],
+      "industrial_role": "Chrome-Vanadium High-Torque Gearsets & Shock-Absorber Springs",
+      "lore_description": "Prevents heavy hydraulic foot-pads from shattering upon high-altitude orbital drop."
+    },
+    {
+      "atomic_number": 24,
+      "id": "mat_024_cr",
+      "symbol": "Cr",
+      "name": "Chromium",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 7.19,
+      "tensile_mpa": 680,
+      "melting_point_c": 1907.0,
+      "thermal_conductivity_w_mk": 94.0,
+      "base_color_rgb": [
+        190,
+        205,
+        220
+      ],
+      "base_color_hex": "#BECDDC",
+      "solar_distribution": [
+        "Chromite Ores",
+        "Bushveld-type Intrusions in Asteroids"
+      ],
+      "industrial_role": "Corrosion-Proof Mirror Plating & Laser Reflector Shrouds",
+      "lore_description": "Gives chassis components their high-specular chrome sheen and beam-deflection polish."
+    },
+    {
+      "atomic_number": 25,
+      "id": "mat_025_mn",
+      "symbol": "Mn",
+      "name": "Manganese",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 7.47,
+      "tensile_mpa": 450,
+      "melting_point_c": 1246.0,
+      "thermal_conductivity_w_mk": 7.8,
+      "base_color_rgb": [
+        150,
+        140,
+        155
+      ],
+      "base_color_hex": "#968C9B",
+      "solar_distribution": [
+        "Oceanic Nodules",
+        "Martian Surface Dust"
+      ],
+      "industrial_role": "Deoxidizer for Heavy Tank-Tread Steel & Recoil Brake Liners",
+      "lore_description": "Increases steel hardness and abrasion resistance against sandstorms and regolith."
+    },
+    {
+      "atomic_number": 26,
+      "id": "mat_026_fe",
+      "symbol": "Fe",
+      "name": "Iron (Ferrum / Armored Steel)",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 7.87,
+      "tensile_mpa": 520,
+      "melting_point_c": 1538.0,
+      "thermal_conductivity_w_mk": 80.0,
+      "base_color_rgb": [
+        130,
+        135,
+        145
+      ],
+      "base_color_hex": "#828791",
+      "solar_distribution": [
+        "M-Type Metallic Asteroids",
+        "Earth Ores",
+        "Lunar Mare"
+      ],
+      "industrial_role": "Heavy Low-Cost Structural Steel Frames & Kinetic Slug Ammunition",
+      "lore_description": "The workhorse element of all war economies; Psyche 16 contains billions of tons."
+    },
+    {
+      "atomic_number": 27,
+      "id": "mat_027_co",
+      "symbol": "Co",
+      "name": "Cobalt (Cobalt-Azure)",
+      "category": "Base Structural Metals",
+      "tier": 2,
+      "density_g_cm3": 8.9,
+      "tensile_mpa": 880,
+      "melting_point_c": 1495.0,
+      "thermal_conductivity_w_mk": 100.0,
+      "base_color_rgb": [
+        30,
+        90,
+        225
+      ],
+      "base_color_hex": "#1E5AE1",
+      "solar_distribution": [
+        "Asteroid Kamacite",
+        "Deep Sea Crusts"
+      ],
+      "industrial_role": "High-Temperature Turbine Blades, Superalloys & Samarium-Cobalt Magnets",
+      "lore_description": "Retains tensile strength at temperatures that turn ordinary steels into glowing taffy."
+    },
+    {
+      "atomic_number": 28,
+      "id": "mat_028_ni",
+      "symbol": "Ni",
+      "name": "Nickel (Inconel-Grade)",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 8.91,
+      "tensile_mpa": 750,
+      "melting_point_c": 1455.0,
+      "thermal_conductivity_w_mk": 91.0,
+      "base_color_rgb": [
+        185,
+        190,
+        175
+      ],
+      "base_color_hex": "#B9BEAF",
+      "solar_distribution": [
+        "Iron-Nickel Asteroids",
+        "Sudbury-type Impact Basins"
+      ],
+      "industrial_role": "Inconel Heat Shields & Monel Anti-Acid Thruster Injectors",
+      "lore_description": "Impervious to corrosive propellant vapors and scorching atmospheric re-entry heat."
+    },
+    {
+      "atomic_number": 29,
+      "id": "mat_029_cu",
+      "symbol": "Cu",
+      "name": "Copper",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 8.96,
+      "tensile_mpa": 220,
+      "melting_point_c": 1085.0,
+      "thermal_conductivity_w_mk": 401.0,
+      "base_color_rgb": [
+        215,
+        125,
+        75
+      ],
+      "base_color_hex": "#D77D4B",
+      "solar_distribution": [
+        "Porphyry Deposits",
+        "Metallic Asteroid Core Remnants"
+      ],
+      "industrial_role": "High-Current Reactor Busbars & Railgun Linear Acceleration Rails",
+      "lore_description": "Carries thousands of mega-amperes into railgun barrel stators during firing."
+    },
+    {
+      "atomic_number": 30,
+      "id": "mat_030_zn",
+      "symbol": "Zn",
+      "name": "Zinc",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 7.14,
+      "tensile_mpa": 140,
+      "melting_point_c": 419.5,
+      "thermal_conductivity_w_mk": 116.0,
+      "base_color_rgb": [
+        170,
+        180,
+        190
+      ],
+      "base_color_hex": "#AAB4BE",
+      "solar_distribution": [
+        "Sphalerite Ores",
+        "Hydrothermal Vents"
+      ],
+      "industrial_role": "Galvanic Sacrificial Anodes & Precision Die-Cast Bushings",
+      "lore_description": "Prevents galvanic corrosion between dissimilar metals in damp planetary combat zones."
+    },
+    {
+      "atomic_number": 31,
+      "id": "mat_031_ga",
+      "symbol": "Ga",
+      "name": "Gallium (Gallium-Arsenide)",
+      "category": "Crystalline Semiconductors & Nanomatrices",
+      "tier": 2,
+      "density_g_cm3": 5.91,
+      "tensile_mpa": 50,
+      "melting_point_c": 29.8,
+      "thermal_conductivity_w_mk": 40.6,
+      "base_color_rgb": [
+        175,
+        190,
+        210
+      ],
+      "base_color_hex": "#AFBED2",
+      "solar_distribution": [
+        "Bauxite Byproducts",
+        "Zinc Refineries"
+      ],
+      "industrial_role": "Ultra-High Frequency Radar Arrays & Liquid Metal Thermal Paste",
+      "lore_description": "Melts in human hands; provides thermal interface between reactor cores and heat sinks."
+    },
+    {
+      "atomic_number": 32,
+      "id": "mat_032_ge",
+      "symbol": "Ge",
+      "name": "Germanium",
+      "category": "Crystalline Semiconductors & Nanomatrices",
+      "tier": 2,
+      "density_g_cm3": 5.32,
+      "tensile_mpa": 280,
+      "melting_point_c": 938.2,
+      "thermal_conductivity_w_mk": 60.0,
+      "base_color_rgb": [
+        110,
+        125,
+        145
+      ],
+      "base_color_hex": "#6E7D91",
+      "solar_distribution": [
+        "Coal Ash Concentrates",
+        "Asteroid Zinc Silicates"
+      ],
+      "industrial_role": "Infrared Night-Vision Lenses & High-Speed Optical Modulators",
+      "lore_description": "Transparent to long-wave thermal IR; lets snipers spot enemy mechs through smoke."
+    },
+    {
+      "atomic_number": 33,
+      "id": "mat_033_as",
+      "symbol": "As",
+      "name": "Arsenic",
+      "category": "Crystalline Semiconductors & Nanomatrices",
+      "tier": 2,
+      "density_g_cm3": 5.73,
+      "tensile_mpa": 80,
+      "melting_point_c": 817.0,
+      "thermal_conductivity_w_mk": 50.0,
+      "base_color_rgb": [
+        140,
+        145,
+        135
+      ],
+      "base_color_hex": "#8C9187",
+      "solar_distribution": [
+        "Sulfur-Arsenic Veins",
+        "Cometary Dust"
+      ],
+      "industrial_role": "Semiconductor Dopant for Gallium-Arsenide Laser Diodes",
+      "lore_description": "Highly toxic metalloid essential for military laser guidance and lidar targeting."
+    },
+    {
+      "atomic_number": 34,
+      "id": "mat_034_se",
+      "symbol": "Se",
+      "name": "Selenium",
+      "category": "Crystalline Semiconductors & Nanomatrices",
+      "tier": 2,
+      "density_g_cm3": 4.82,
+      "tensile_mpa": 40,
+      "melting_point_c": 221.0,
+      "thermal_conductivity_w_mk": 0.52,
+      "base_color_rgb": [
+        130,
+        95,
+        100
+      ],
+      "base_color_hex": "#825F64",
+      "solar_distribution": [
+        "Anode Slimes",
+        "Volcanic Sublimates"
+      ],
+      "industrial_role": "Photoreceptor Drums & Rectifiers for Laser Weapon Power Conditioners",
+      "lore_description": "Converts optical photons directly into electronic triggers with zero latency."
+    },
+    {
+      "atomic_number": 35,
+      "id": "mat_035_br",
+      "symbol": "Br",
+      "name": "Bromine",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 3.12,
+      "tensile_mpa": 0,
+      "melting_point_c": -7.2,
+      "thermal_conductivity_w_mk": 0.12,
+      "base_color_rgb": [
+        150,
+        50,
+        40
+      ],
+      "base_color_hex": "#963228",
+      "solar_distribution": [
+        "Deep Salt Wells",
+        "Dead Sea Evaporites"
+      ],
+      "industrial_role": "Fire-Retardant Cockpit Foam & Heavy Halon Suppression Systems",
+      "lore_description": "Extinguishes electrical and plasma fires in cockpits before pilots are consumed."
+    },
+    {
+      "atomic_number": 36,
+      "id": "mat_036_kr",
+      "symbol": "Kr",
+      "name": "Krypton",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 2,
+      "density_g_cm3": 0.0037,
+      "tensile_mpa": 0,
+      "melting_point_c": -157.4,
+      "thermal_conductivity_w_mk": 0.009,
+      "base_color_rgb": [
+        140,
+        180,
+        220
+      ],
+      "base_color_hex": "#8CB4DC",
+      "solar_distribution": [
+        "Gas Giant Atmosphere Extraction"
+      ],
+      "industrial_role": "High-Intensity Airfield Runway Flashers & Excimer Beam Resonators",
+      "lore_description": "Produces ultraviolet excimer laser pulses capable of blinding optical sensor domes."
+    },
+    {
+      "atomic_number": 37,
+      "id": "mat_037_rb",
+      "symbol": "Rb",
+      "name": "Rubidium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 1.53,
+      "tensile_mpa": 15,
+      "melting_point_c": 39.3,
+      "thermal_conductivity_w_mk": 58.0,
+      "base_color_rgb": [
+        210,
+        185,
+        200
+      ],
+      "base_color_hex": "#D2B9C8",
+      "solar_distribution": [
+        "Lepidolite Pegmatites"
+      ],
+      "industrial_role": "Rubidium Atomic Clocks for Tactical Fleet Frequency Synchronization",
+      "lore_description": "Ensures sub-nanosecond clock sync so ECM frequency hopping cannot be jammed."
+    },
+    {
+      "atomic_number": 38,
+      "id": "mat_038_sr",
+      "symbol": "Sr",
+      "name": "Strontium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 2.64,
+      "tensile_mpa": 85,
+      "melting_point_c": 777.0,
+      "thermal_conductivity_w_mk": 35.0,
+      "base_color_rgb": [
+        205,
+        195,
+        180
+      ],
+      "base_color_hex": "#CDC3B4",
+      "solar_distribution": [
+        "Celestine Deposits"
+      ],
+      "industrial_role": "Ferrite Magnets & Optical Lattice Atomic Frequency Standards",
+      "lore_description": "Used in radar emitter beam-steering magnets to sweep targets without moving parts."
+    },
+    {
+      "atomic_number": 39,
+      "id": "mat_039_y",
+      "symbol": "Y",
+      "name": "Yttrium (YBCO Super-Flux)",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 4.47,
+      "tensile_mpa": 450,
+      "melting_point_c": 1526.0,
+      "thermal_conductivity_w_mk": 17.0,
+      "base_color_rgb": [
+        160,
+        190,
+        170
+      ],
+      "base_color_hex": "#A0BEAA",
+      "solar_distribution": [
+        "Bastnasite Ores",
+        "Lunar Xenotime"
+      ],
+      "industrial_role": "High-Temperature Superconducting YBCO Coils & Laser YAG Crystals",
+      "lore_description": "Enables zero-resistance power distribution to plasma cannons without meltdown."
+    },
+    {
+      "atomic_number": 40,
+      "id": "mat_040_zr",
+      "symbol": "Zr",
+      "name": "Zirconium",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 2,
+      "density_g_cm3": 6.52,
+      "tensile_mpa": 620,
+      "melting_point_c": 1855.0,
+      "thermal_conductivity_w_mk": 22.0,
+      "base_color_rgb": [
+        175,
+        185,
+        195
+      ],
+      "base_color_hex": "#AFB9C3",
+      "solar_distribution": [
+        "Zircon Sands",
+        "Lunar Breccias"
+      ],
+      "industrial_role": "Nuclear Fuel Cladding & High-Impact Ceramic Knife Blades",
+      "lore_description": "Almost transparent to thermal neutrons; ideal cladding for compact reactor fuel rods."
+    },
+    {
+      "atomic_number": 41,
+      "id": "mat_041_nb",
+      "symbol": "Nb",
+      "name": "Niobium",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 2,
+      "density_g_cm3": 8.57,
+      "tensile_mpa": 580,
+      "melting_point_c": 2477.0,
+      "thermal_conductivity_w_mk": 54.0,
+      "base_color_rgb": [
+        150,
+        170,
+        190
+      ],
+      "base_color_hex": "#96AABE",
+      "solar_distribution": [
+        "Pyrochlore Deposits",
+        "Asteroid Carbonatites"
+      ],
+      "industrial_role": "Niobium-Titanium Superconducting Wire & Rocket Nozzle Bells",
+      "lore_description": "Withstands glowing rocket exhaust plume erosion in liquid-fuel thruster throats."
+    },
+    {
+      "atomic_number": 42,
+      "id": "mat_042_mo",
+      "symbol": "Mo",
+      "name": "Molybdenum",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 2,
+      "density_g_cm3": 10.28,
+      "tensile_mpa": 850,
+      "melting_point_c": 2623.0,
+      "thermal_conductivity_w_mk": 138.0,
+      "base_color_rgb": [
+        140,
+        150,
+        165
+      ],
+      "base_color_hex": "#8C96A5",
+      "solar_distribution": [
+        "Porphyry Moly Veins",
+        "M-Type Asteroids"
+      ],
+      "industrial_role": "Ultra-High Temperature Armored Grids & Tank Armor Alloying",
+      "lore_description": "Prevents steel temper embrittlement; essential for armor intended to take repetitive kinetic hits."
+    },
+    {
+      "atomic_number": 43,
+      "id": "mat_043_tc",
+      "symbol": "Tc",
+      "name": "Technetium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 3,
+      "density_g_cm3": 11.5,
+      "tensile_mpa": 500,
+      "melting_point_c": 2157.0,
+      "thermal_conductivity_w_mk": 50.0,
+      "base_color_rgb": [
+        180,
+        160,
+        190
+      ],
+      "base_color_hex": "#B4A0BE",
+      "solar_distribution": [
+        "Nuclear Spent Fuel Reprocessing"
+      ],
+      "industrial_role": "Beta-Emitting Corrosion-Resistant Plating & Radiation Tracers",
+      "lore_description": "Artificially synthesized radioactive metal with extreme resistance to chemical oxidation."
+    },
+    {
+      "atomic_number": 44,
+      "id": "mat_044_ru",
+      "symbol": "Ru",
+      "name": "Ruthenium",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 3,
+      "density_g_cm3": 12.45,
+      "tensile_mpa": 950,
+      "melting_point_c": 2334.0,
+      "thermal_conductivity_w_mk": 117.0,
+      "base_color_rgb": [
+        170,
+        180,
+        195
+      ],
+      "base_color_hex": "#AAB4C3",
+      "solar_distribution": [
+        "Platinum Group Placer Depots"
+      ],
+      "industrial_role": "Electrical Switch Contacts & Hard Disk Nanomagnetic Underlayers",
+      "lore_description": "Immense wear resistance; handles millions of high-voltage contact closures without pitting."
+    },
+    {
+      "atomic_number": 45,
+      "id": "mat_045_rh",
+      "symbol": "Rh",
+      "name": "Rhodium",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 3,
+      "density_g_cm3": 12.41,
+      "tensile_mpa": 1100,
+      "melting_point_c": 1964.0,
+      "thermal_conductivity_w_mk": 150.0,
+      "base_color_rgb": [
+        210,
+        220,
+        230
+      ],
+      "base_color_hex": "#D2DCE6",
+      "solar_distribution": [
+        "Sudbury-Type Asteroids"
+      ],
+      "industrial_role": "Searchlight Reflectors & Catalyst for Hydrocarbon Synthesis",
+      "lore_description": "Reflects up to 80% of incident laser energy, acting as mirror coating on cockpits."
+    },
+    {
+      "atomic_number": 46,
+      "id": "mat_046_pd",
+      "symbol": "Pd",
+      "name": "Palladium",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 2,
+      "density_g_cm3": 12.02,
+      "tensile_mpa": 450,
+      "melting_point_c": 1554.9,
+      "thermal_conductivity_w_mk": 71.8,
+      "base_color_rgb": [
+        195,
+        205,
+        215
+      ],
+      "base_color_hex": "#C3CDD7",
+      "solar_distribution": [
+        "Norilsk-Type Mantle Sills"
+      ],
+      "industrial_role": "Cold Hydrogen Sponge Storage & Micro-Electronics Capacitors",
+      "lore_description": "Can absorb 900 times its own volume of hydrogen gas, acting as a compact solid fuel tank."
+    },
+    {
+      "atomic_number": 47,
+      "id": "mat_047_ag",
+      "symbol": "Ag",
+      "name": "Silver",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 10.49,
+      "tensile_mpa": 170,
+      "melting_point_c": 961.8,
+      "thermal_conductivity_w_mk": 429.0,
+      "base_color_rgb": [
+        230,
+        235,
+        240
+      ],
+      "base_color_hex": "#E6EBF0",
+      "solar_distribution": [
+        "Epithermal Veins",
+        "Silver-Lead Asteroids"
+      ],
+      "industrial_role": "Highest Electrical Conductivity Wire & Antimicrobial Water Systems",
+      "lore_description": "Used in high-speed micro-vias where nano-second signal delay cannot be tolerated."
+    },
+    {
+      "atomic_number": 48,
+      "id": "mat_048_cd",
+      "symbol": "Cd",
+      "name": "Cadmium",
+      "category": "Base Structural Metals",
+      "tier": 2,
+      "density_g_cm3": 8.65,
+      "tensile_mpa": 75,
+      "melting_point_c": 321.1,
+      "thermal_conductivity_w_mk": 96.6,
+      "base_color_rgb": [
+        175,
+        180,
+        170
+      ],
+      "base_color_hex": "#AFB4AA",
+      "solar_distribution": [
+        "Zinc Refining Slags"
+      ],
+      "industrial_role": "Reactor Emergency Control Rods & Nickel-Cadmium Buffer Cells",
+      "lore_description": "Captures runaway thermal neutrons instantly to prevent Chernobyl-class meltdowns."
+    },
+    {
+      "atomic_number": 49,
+      "id": "mat_049_in",
+      "symbol": "In",
+      "name": "Indium",
+      "category": "Crystalline Semiconductors & Nanomatrices",
+      "tier": 2,
+      "density_g_cm3": 7.31,
+      "tensile_mpa": 20,
+      "melting_point_c": 156.6,
+      "thermal_conductivity_w_mk": 81.8,
+      "base_color_rgb": [
+        185,
+        195,
+        210
+      ],
+      "base_color_hex": "#B9C3D2",
+      "solar_distribution": [
+        "Zinc Ores",
+        "Polymetallic Nodules"
+      ],
+      "industrial_role": "Indium-Tin-Oxide (ITO) Heads-Up Display Screens & Cryogenic Gaskets",
+      "lore_description": "Forms transparent conductive films on cockpit canopies to project tactical flight HUDs."
+    },
+    {
+      "atomic_number": 50,
+      "id": "mat_050_sn",
+      "symbol": "Sn",
+      "name": "Tin",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 7.31,
+      "tensile_mpa": 110,
+      "melting_point_c": 231.9,
+      "thermal_conductivity_w_mk": 66.8,
+      "base_color_rgb": [
+        190,
+        195,
+        200
+      ],
+      "base_color_hex": "#BEC3C8",
+      "solar_distribution": [
+        "Cassiterite Asteroids",
+        "Earth Pegmatites"
+      ],
+      "industrial_role": "Lead-Free Micro-Soldering & Niobium-Tin (Nb3Sn) Superconductors",
+      "lore_description": "Essential for wave soldering thousands of logic boards across every mobile suit sub-rack."
+    },
+    {
+      "atomic_number": 51,
+      "id": "mat_051_sb",
+      "symbol": "Sb",
+      "name": "Antimony",
+      "category": "Crystalline Semiconductors & Nanomatrices",
+      "tier": 2,
+      "density_g_cm3": 6.69,
+      "tensile_mpa": 140,
+      "melting_point_c": 630.6,
+      "thermal_conductivity_w_mk": 24.4,
+      "base_color_rgb": [
+        160,
+        165,
+        175
+      ],
+      "base_color_hex": "#A0A5AF",
+      "solar_distribution": [
+        "Stibnite Veins"
+      ],
+      "industrial_role": "Lead-Acid Hardener & Infrared Focal Plane Array Detectors",
+      "lore_description": "Expands slightly upon cooling, enabling razor-sharp replication in precision casting molds."
+    },
+    {
+      "atomic_number": 52,
+      "id": "mat_052_te",
+      "symbol": "Te",
+      "name": "Tellurium",
+      "category": "Crystalline Semiconductors & Nanomatrices",
+      "tier": 2,
+      "density_g_cm3": 6.24,
+      "tensile_mpa": 80,
+      "melting_point_c": 449.5,
+      "thermal_conductivity_w_mk": 2.0,
+      "base_color_rgb": [
+        150,
+        155,
+        160
+      ],
+      "base_color_hex": "#969BA0",
+      "solar_distribution": [
+        "Copper Refining Anode Slimes"
+      ],
+      "industrial_role": "Cadmium-Telluride Solar Collector Arrays & Machinability Additive",
+      "lore_description": "Improves steel cutting speeds so manufacturing bays can churn out more chassis per shift."
+    },
+    {
+      "atomic_number": 53,
+      "id": "mat_053_i",
+      "symbol": "I",
+      "name": "Iodine",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 4.93,
+      "tensile_mpa": 10,
+      "melting_point_c": 113.7,
+      "thermal_conductivity_w_mk": 0.45,
+      "base_color_rgb": [
+        110,
+        70,
+        130
+      ],
+      "base_color_hex": "#6E4682",
+      "solar_distribution": [
+        "Caliche Nitrates",
+        "Sea Brines"
+      ],
+      "industrial_role": "Iodine Plasma Ion Thrusters & Van Arkel Metal Purification",
+      "lore_description": "High atomic mass enables high thrust efficiency in satellite station-keeping verniers."
+    },
+    {
+      "atomic_number": 54,
+      "id": "mat_054_xe",
+      "symbol": "Xe",
+      "name": "Xenon",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 2,
+      "density_g_cm3": 0.0059,
+      "tensile_mpa": 0,
+      "melting_point_c": -111.8,
+      "thermal_conductivity_w_mk": 0.005,
+      "base_color_rgb": [
+        130,
+        170,
+        230
+      ],
+      "base_color_hex": "#82AAE6",
+      "solar_distribution": [
+        "Gas Giant Skimming Plants"
+      ],
+      "industrial_role": "Heavy Ion Propellant for Long-Range Planetary Transit Craft",
+      "lore_description": "Dense noble gas providing tremendous specific impulse in electrostatic ion thrusters."
+    },
+    {
+      "atomic_number": 55,
+      "id": "mat_055_cs",
+      "symbol": "Cs",
+      "name": "Cesium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 1.93,
+      "tensile_mpa": 10,
+      "melting_point_c": 28.5,
+      "thermal_conductivity_w_mk": 35.9,
+      "base_color_rgb": [
+        205,
+        190,
+        140
+      ],
+      "base_color_hex": "#CDBE8C",
+      "solar_distribution": [
+        "Pollucite Pegmatites"
+      ],
+      "industrial_role": "Primary SI Unit Cesium Atomic Clocks & Magnetohydrodynamic Generators",
+      "lore_description": "Ionizes under mere optical light; used in direct thermal-to-electric plasma turbines."
+    },
+    {
+      "atomic_number": 56,
+      "id": "mat_056_ba",
+      "symbol": "Ba",
+      "name": "Barium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 3.51,
+      "tensile_mpa": 60,
+      "melting_point_c": 727.0,
+      "thermal_conductivity_w_mk": 18.4,
+      "base_color_rgb": [
+        190,
+        195,
+        180
+      ],
+      "base_color_hex": "#BEC3B4",
+      "solar_distribution": [
+        "Baryte Veins"
+      ],
+      "industrial_role": "High-Temperature YBCO Superconductor Matrices & Spark Plugs",
+      "lore_description": "Anchors oxygen atoms inside copper-oxide crystal planes in zero-loss superconductor tapes."
+    },
+    {
+      "atomic_number": 57,
+      "id": "mat_057_la",
+      "symbol": "La",
+      "name": "Lanthanum",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 6.16,
+      "tensile_mpa": 180,
+      "melting_point_c": 920.0,
+      "thermal_conductivity_w_mk": 13.4,
+      "base_color_rgb": [
+        180,
+        190,
+        195
+      ],
+      "base_color_hex": "#B4BEC3",
+      "solar_distribution": [
+        "Monazite Sands",
+        "Bastnasite Carbonatites"
+      ],
+      "industrial_role": "Lanthanum-Hexaboride (LaB6) Cathodes for Electron-Beam Guns",
+      "lore_description": "Emits floods of electrons with minimal heat; powers precision welding electron guns."
+    },
+    {
+      "atomic_number": 58,
+      "id": "mat_058_ce",
+      "symbol": "Ce",
+      "name": "Cerium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 6.77,
+      "tensile_mpa": 210,
+      "melting_point_c": 795.0,
+      "thermal_conductivity_w_mk": 11.3,
+      "base_color_rgb": [
+        185,
+        180,
+        170
+      ],
+      "base_color_hex": "#B9B4AA",
+      "solar_distribution": [
+        "Monazite Placer Deposits"
+      ],
+      "industrial_role": "Mischmetal Spark Igniters & Optical Lens Polishing Slurries",
+      "lore_description": "Polishes telescopic sniper optics to sub-angstrom optical smoothness."
+    },
+    {
+      "atomic_number": 59,
+      "id": "mat_059_pr",
+      "symbol": "Pr",
+      "name": "Praseodymium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 3,
+      "density_g_cm3": 6.77,
+      "tensile_mpa": 240,
+      "melting_point_c": 931.0,
+      "thermal_conductivity_w_mk": 12.5,
+      "base_color_rgb": [
+        160,
+        185,
+        160
+      ],
+      "base_color_hex": "#A0B9A0",
+      "solar_distribution": [
+        "Carbonatite Complexes"
+      ],
+      "industrial_role": "Didymium Pilot Visor Glass & Ultra-High Magnetic Field Coils",
+      "lore_description": "Filters out blinding sodium flares from rocket engines so pilots retain combat vision."
+    },
+    {
+      "atomic_number": 60,
+      "id": "mat_060_nd",
+      "symbol": "Nd",
+      "name": "Neodymium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 7.01,
+      "tensile_mpa": 290,
+      "melting_point_c": 1024.0,
+      "thermal_conductivity_w_mk": 16.5,
+      "base_color_rgb": [
+        170,
+        190,
+        175
+      ],
+      "base_color_hex": "#AABEAF",
+      "solar_distribution": [
+        "Bayan Obo-Type Complexes"
+      ],
+      "industrial_role": "NdFeB Permanent Servo Magnets for Robotic Joint Motors",
+      "lore_description": "Produces immense magnetic torque inside mobile suit elbow and shoulder rotary servos."
+    },
+    {
+      "atomic_number": 61,
+      "id": "mat_061_pm",
+      "symbol": "Pm",
+      "name": "Promethium",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 3,
+      "density_g_cm3": 7.26,
+      "tensile_mpa": 320,
+      "melting_point_c": 1042.0,
+      "thermal_conductivity_w_mk": 17.9,
+      "base_color_rgb": [
+        185,
+        45,
+        240
+      ],
+      "base_color_hex": "#B92DF0",
+      "solar_distribution": [
+        "Reactor Actinide Transmutation"
+      ],
+      "industrial_role": "Atomic Radioisotope Thermoelectric Batteries for Deep Space Beacons",
+      "lore_description": "Glows with eerie green-violet radioluminescence; powers recon probes for 20 years."
+    },
+    {
+      "atomic_number": 62,
+      "id": "mat_062_sm",
+      "symbol": "Sm",
+      "name": "Samarium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 3,
+      "density_g_cm3": 7.52,
+      "tensile_mpa": 310,
+      "melting_point_c": 1072.0,
+      "thermal_conductivity_w_mk": 13.3,
+      "base_color_rgb": [
+        175,
+        180,
+        165
+      ],
+      "base_color_hex": "#AFB4A5",
+      "solar_distribution": [
+        "Monazite Heavy Mineral Sands"
+      ],
+      "industrial_role": "SmCo Magnets for Cryogenic and High-Heat Joint Actuators",
+      "lore_description": "Maintains magnetic coherence up to 350\u00b0C, where neodymium magnets completely demagnetize."
+    },
+    {
+      "atomic_number": 63,
+      "id": "mat_063_eu",
+      "symbol": "Eu",
+      "name": "Europium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 3,
+      "density_g_cm3": 5.24,
+      "tensile_mpa": 150,
+      "melting_point_c": 822.0,
+      "thermal_conductivity_w_mk": 13.9,
+      "base_color_rgb": [
+        195,
+        175,
+        190
+      ],
+      "base_color_hex": "#C3AFBE",
+      "solar_distribution": [
+        "Bastnasite Veins"
+      ],
+      "industrial_role": "Neutron Poison Control Blades & Red Phosphor Tactical Displays",
+      "lore_description": "Strongest neutron absorption cross-section of all common rare earth elements."
+    },
+    {
+      "atomic_number": 64,
+      "id": "mat_064_gd",
+      "symbol": "Gd",
+      "name": "Gadolinium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 3,
+      "density_g_cm3": 7.9,
+      "tensile_mpa": 430,
+      "melting_point_c": 1312.0,
+      "thermal_conductivity_w_mk": 10.5,
+      "base_color_rgb": [
+        180,
+        185,
+        175
+      ],
+      "base_color_hex": "#B4B9AF",
+      "solar_distribution": [
+        "Xenotime Minerals"
+      ],
+      "industrial_role": "Magnetic Refrigeration Alloys & Extreme MRI Diagnostic Telemetry",
+      "lore_description": "Undergoes giant magnetocaloric effect, cooling reactor coils without moving fluids."
+    },
+    {
+      "atomic_number": 65,
+      "id": "mat_065_tb",
+      "symbol": "Tb",
+      "name": "Terbium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 3,
+      "density_g_cm3": 8.23,
+      "tensile_mpa": 400,
+      "melting_point_c": 1356.0,
+      "thermal_conductivity_w_mk": 11.1,
+      "base_color_rgb": [
+        170,
+        175,
+        160
+      ],
+      "base_color_hex": "#AAAFA0",
+      "solar_distribution": [
+        "Heavy Rare Earth Clays"
+      ],
+      "industrial_role": "Terfenol-D Magnetostrictive Sonar Actuators & Sonic Hull Disruptors",
+      "lore_description": "Changes physical length in magnetic fields to generate high-power acoustic shockwaves."
+    },
+    {
+      "atomic_number": 66,
+      "id": "mat_066_dy",
+      "symbol": "Dy",
+      "name": "Dysprosium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 3,
+      "density_g_cm3": 8.54,
+      "tensile_mpa": 450,
+      "melting_point_c": 1412.0,
+      "thermal_conductivity_w_mk": 10.7,
+      "base_color_rgb": [
+        165,
+        170,
+        175
+      ],
+      "base_color_hex": "#A5AAAF",
+      "solar_distribution": [
+        "Ion-Adsorption Clays"
+      ],
+      "industrial_role": "Thermal Stabilizer for High-Speed Motor Magnets & Nuclear Rods",
+      "lore_description": "Added to neodymium magnets to stop high-speed maneuvering servos from burning out."
+    },
+    {
+      "atomic_number": 67,
+      "id": "mat_067_ho",
+      "symbol": "Ho",
+      "name": "Holmium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 3,
+      "density_g_cm3": 8.79,
+      "tensile_mpa": 390,
+      "melting_point_c": 1474.0,
+      "thermal_conductivity_w_mk": 16.2,
+      "base_color_rgb": [
+        175,
+        165,
+        170
+      ],
+      "base_color_hex": "#AFA5AA",
+      "solar_distribution": [
+        "Heavy Monazite Clays"
+      ],
+      "industrial_role": "Highest Magnetic Flux Concentrator Pole Pieces & Holmium Lasers",
+      "lore_description": "Focuses magnetic lines of force into dense bundles to constrain runaway fusion arcs."
+    },
+    {
+      "atomic_number": 68,
+      "id": "mat_068_er",
+      "symbol": "Er",
+      "name": "Erbium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 3,
+      "density_g_cm3": 9.07,
+      "tensile_mpa": 420,
+      "melting_point_c": 1529.0,
+      "thermal_conductivity_w_mk": 14.5,
+      "base_color_rgb": [
+        180,
+        170,
+        175
+      ],
+      "base_color_hex": "#B4AAAF",
+      "solar_distribution": [
+        "Xenotime Depots"
+      ],
+      "industrial_role": "Erbium-Doped Fiber Amplifiers (EDFA) for Secure Laser Comms",
+      "lore_description": "Boosts laser communications through planetary dust storms without electronic decryption."
+    },
+    {
+      "atomic_number": 69,
+      "id": "mat_069_tm",
+      "symbol": "Tm",
+      "name": "Thulium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 3,
+      "density_g_cm3": 9.32,
+      "tensile_mpa": 440,
+      "melting_point_c": 1545.0,
+      "thermal_conductivity_w_mk": 16.9,
+      "base_color_rgb": [
+        170,
+        160,
+        165
+      ],
+      "base_color_hex": "#AAA0A5",
+      "solar_distribution": [
+        "Deep Alkaline Intrusions"
+      ],
+      "industrial_role": "Portable Portable X-Ray Inspection Sources for Weld Flaws",
+      "lore_description": "Lets armorers inspect internal chassis weld cracks right on the combat flight deck."
+    },
+    {
+      "atomic_number": 70,
+      "id": "mat_070_yb",
+      "symbol": "Yb",
+      "name": "Ytterbium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 3,
+      "density_g_cm3": 6.9,
+      "tensile_mpa": 250,
+      "melting_point_c": 819.0,
+      "thermal_conductivity_w_mk": 38.5,
+      "base_color_rgb": [
+        190,
+        185,
+        175
+      ],
+      "base_color_hex": "#BEB9AF",
+      "solar_distribution": [
+        "Monazite Placer Deposits"
+      ],
+      "industrial_role": "High-Power Fiber Laser Weapon Resonators & Stress Gauges",
+      "lore_description": "Powers 50-kilowatt point-defense fiber lasers used to disintegrate incoming swarm missiles."
+    },
+    {
+      "atomic_number": 71,
+      "id": "mat_071_lu",
+      "symbol": "Lu",
+      "name": "Lutetium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 4,
+      "density_g_cm3": 9.84,
+      "tensile_mpa": 520,
+      "melting_point_c": 1663.0,
+      "thermal_conductivity_w_mk": 16.4,
+      "base_color_rgb": [
+        180,
+        175,
+        185
+      ],
+      "base_color_hex": "#B4AFB9",
+      "solar_distribution": [
+        "Rare Earth Tailings"
+      ],
+      "industrial_role": "Cerium-Doped Lutetium Silicate (LSO) Scintillators for Gamma Detectors",
+      "lore_description": "Detects enemy thermonuclear reactor ignition signatures across planetary orbital bands."
+    },
+    {
+      "atomic_number": 72,
+      "id": "mat_072_hf",
+      "symbol": "Hf",
+      "name": "Hafnium",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 3,
+      "density_g_cm3": 13.31,
+      "tensile_mpa": 890,
+      "melting_point_c": 2233.0,
+      "thermal_conductivity_w_mk": 23.0,
+      "base_color_rgb": [
+        145,
+        155,
+        165
+      ],
+      "base_color_hex": "#919BA5",
+      "solar_distribution": [
+        "Zircon Byproducts",
+        "M-Type Asteroid Sills"
+      ],
+      "industrial_role": "Extreme-Temperature Rocket Plasma Nozzles & Nuclear Control Rods",
+      "lore_description": "Forms hafnium carbide, withstanding scorching 3,900\u00b0C plasma torch blasts without erosion."
+    },
+    {
+      "atomic_number": 73,
+      "id": "mat_073_ta",
+      "symbol": "Ta",
+      "name": "Tantalum",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 3,
+      "density_g_cm3": 16.69,
+      "tensile_mpa": 920,
+      "melting_point_c": 3017.0,
+      "thermal_conductivity_w_mk": 57.5,
+      "base_color_rgb": [
+        135,
+        145,
+        160
+      ],
+      "base_color_hex": "#8791A0",
+      "solar_distribution": [
+        "Coltan Deposits",
+        "Pegmatite Veins"
+      ],
+      "industrial_role": "Tantalum Micro-Capacitors & Acid-Resistant Chemical Liners",
+      "lore_description": "Immune to almost all chemical acids; houses unstable rocket propellants in combat droptanks."
+    },
+    {
+      "atomic_number": 74,
+      "id": "mat_074_w",
+      "symbol": "W",
+      "name": "Tungsten (Wolfram / Vanguard-Grade)",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 19.25,
+      "tensile_mpa": 1510,
+      "melting_point_c": 3422.0,
+      "thermal_conductivity_w_mk": 173.0,
+      "base_color_rgb": [
+        115,
+        135,
+        165
+      ],
+      "base_color_hex": "#7387A5",
+      "solar_distribution": [
+        "Scheelite Deposits",
+        "Asteroid Heavy Silicates"
+      ],
+      "industrial_role": "APFSDS Kinetic Penetrator Darts, Heavy Armor Plate & Railgun Slugs",
+      "lore_description": "Dense, unyielding, and heavy; the ultimate kinetic penetrator core against thick armor."
+    },
+    {
+      "atomic_number": 75,
+      "id": "mat_075_re",
+      "symbol": "Re",
+      "name": "Rhenium",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 3,
+      "density_g_cm3": 21.02,
+      "tensile_mpa": 1170,
+      "melting_point_c": 3186.0,
+      "thermal_conductivity_w_mk": 48.0,
+      "base_color_rgb": [
+        155,
+        165,
+        175
+      ],
+      "base_color_hex": "#9BA5AF",
+      "solar_distribution": [
+        "Porphyry Copper Tailings"
+      ],
+      "industrial_role": "Single-Crystal Turbine Blades for Overclocked Afterburners",
+      "lore_description": "Prevents creep deformation in single-crystal turbine blades operating above their melting point."
+    },
+    {
+      "atomic_number": 76,
+      "id": "mat_076_os",
+      "symbol": "Os",
+      "name": "Osmium (Ultra-Dense Osmiridium)",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 4,
+      "density_g_cm3": 22.59,
+      "tensile_mpa": 1750,
+      "melting_point_c": 3033.0,
+      "thermal_conductivity_w_mk": 87.0,
+      "base_color_rgb": [
+        95,
+        115,
+        145
+      ],
+      "base_color_hex": "#5F7391",
+      "solar_distribution": [
+        "Deep Mantle Ultramafics",
+        "Asteroid Impact Roots"
+      ],
+      "industrial_role": "The Densest Known Structural Armor Slab & Pivot Pin Bearings",
+      "lore_description": "Twice as dense as lead; shrugs off direct kinetic hypervelocity impact spikes."
+    },
+    {
+      "atomic_number": 77,
+      "id": "mat_077_ir",
+      "symbol": "Ir",
+      "name": "Iridium",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 4,
+      "density_g_cm3": 22.56,
+      "tensile_mpa": 1600,
+      "melting_point_c": 2466.0,
+      "thermal_conductivity_w_mk": 147.0,
+      "base_color_rgb": [
+        180,
+        190,
+        205
+      ],
+      "base_color_hex": "#B4BECD",
+      "solar_distribution": [
+        "K-Pg Boundary Asteroid Layers",
+        "Psyche 16 Core Material"
+      ],
+      "industrial_role": "High-Temperature Crucible Liners & Plasma Discharge Electrodes",
+      "lore_description": "Most corrosion-resistant metal known; survives inside raging 3,000\u00b0C molten alloy crucibles."
+    },
+    {
+      "atomic_number": 78,
+      "id": "mat_078_pt",
+      "symbol": "Pt",
+      "name": "Platinum",
+      "category": "Refractory & Heavy Transition Metals",
+      "tier": 2,
+      "density_g_cm3": 21.45,
+      "tensile_mpa": 480,
+      "melting_point_c": 1768.3,
+      "thermal_conductivity_w_mk": 71.6,
+      "base_color_rgb": [
+        210,
+        215,
+        225
+      ],
+      "base_color_hex": "#D2D7E1",
+      "solar_distribution": [
+        "Bushveld Complex Asteroids"
+      ],
+      "industrial_role": "Catalytic Recombiners & Oxygen Sensors for Closed-Loop Cockpits",
+      "lore_description": "Catalyzes volatile hydrogen gas leakage before explosive concentrations accumulate in hangars."
+    },
+    {
+      "atomic_number": 79,
+      "id": "mat_079_au",
+      "symbol": "Au",
+      "name": "Gold",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 19.3,
+      "tensile_mpa": 220,
+      "melting_point_c": 1064.2,
+      "thermal_conductivity_w_mk": 318.0,
+      "base_color_rgb": [
+        255,
+        205,
+        50
+      ],
+      "base_color_hex": "#FFCD32",
+      "solar_distribution": [
+        "Hydrothermal Quartz Veins",
+        "M-Type Asteroid Crusts"
+      ],
+      "industrial_role": "Infrared Radiant Heat Foil Blankets & Gold-Coated Visor Glass",
+      "lore_description": "Reflects 99% of infrared thermal flash from nuclear detonations away from pilot cockpits."
+    },
+    {
+      "atomic_number": 80,
+      "id": "mat_080_hg",
+      "symbol": "Hg",
+      "name": "Mercury",
+      "category": "Base Structural Metals",
+      "tier": 2,
+      "density_g_cm3": 13.53,
+      "tensile_mpa": 0,
+      "melting_point_c": -38.8,
+      "thermal_conductivity_w_mk": 8.3,
+      "base_color_rgb": [
+        190,
+        195,
+        205
+      ],
+      "base_color_hex": "#BEC3CD",
+      "solar_distribution": [
+        "Cinnabar Veins"
+      ],
+      "industrial_role": "Liquid Metal Slip Rings for Rotating Turret Mounts & Ion Thrust",
+      "lore_description": "Maintains continuous electrical contact across rotating gun turret rings with zero friction."
+    },
+    {
+      "atomic_number": 81,
+      "id": "mat_081_tl",
+      "symbol": "Tl",
+      "name": "Thallium",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 3,
+      "density_g_cm3": 11.85,
+      "tensile_mpa": 90,
+      "melting_point_c": 304.0,
+      "thermal_conductivity_w_mk": 46.1,
+      "base_color_rgb": [
+        165,
+        170,
+        175
+      ],
+      "base_color_hex": "#A5AAAF",
+      "solar_distribution": [
+        "Sulfide Ores"
+      ],
+      "industrial_role": "Low-Melting Optical Glasses & High-Critical-Temperature Superconductors",
+      "lore_description": "Thallium-barium-calcium-copper oxide superconductors operate at up to 138 Kelvin."
+    },
+    {
+      "atomic_number": 82,
+      "id": "mat_082_pb",
+      "symbol": "Pb",
+      "name": "Lead",
+      "category": "Base Structural Metals",
+      "tier": 1,
+      "density_g_cm3": 11.34,
+      "tensile_mpa": 18,
+      "melting_point_c": 327.5,
+      "thermal_conductivity_w_mk": 35.3,
+      "base_color_rgb": [
+        110,
+        115,
+        125
+      ],
+      "base_color_hex": "#6E737D",
+      "solar_distribution": [
+        "Galena Veins",
+        "Asteroid Belt Sediments"
+      ],
+      "industrial_role": "Radiation Shielding Blankets & Ballast Weight Counterbalances",
+      "lore_description": "Lined around pilot cockpits to stop lethal cosmic rays and gamma bursts from enemy beams."
+    },
+    {
+      "atomic_number": 83,
+      "id": "mat_083_bi",
+      "symbol": "Bi",
+      "name": "Bismuth",
+      "category": "Superconductors & Catalytic Rare Earths",
+      "tier": 2,
+      "density_g_cm3": 9.78,
+      "tensile_mpa": 30,
+      "melting_point_c": 271.4,
+      "thermal_conductivity_w_mk": 7.9,
+      "base_color_rgb": [
+        215,
+        180,
+        195
+      ],
+      "base_color_hex": "#D7B4C3",
+      "solar_distribution": [
+        "Bismuthinite Ores"
+      ],
+      "industrial_role": "Low-Melting Safety Release Plugs & Non-Toxic Shotgun Pellets",
+      "lore_description": "Expands on solidifying; melts rapidly at 271\u00b0C to vent overpressurized reactor coolant tanks."
+    },
+    {
+      "atomic_number": 84,
+      "id": "mat_084_po",
+      "symbol": "Po",
+      "name": "Polonium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 4,
+      "density_g_cm3": 9.2,
+      "tensile_mpa": 40,
+      "melting_point_c": 254.0,
+      "thermal_conductivity_w_mk": 20.0,
+      "base_color_rgb": [
+        195,
+        150,
+        170
+      ],
+      "base_color_hex": "#C396AA",
+      "solar_distribution": [
+        "Bismuth Neutron Irradiation"
+      ],
+      "industrial_role": "High-Heat Alpha Emitter Heat Sources for Stealth Thermal Lures",
+      "lore_description": "Decays with intense alpha energy, creating incandescent decoy flares that misguide IR missiles."
+    },
+    {
+      "atomic_number": 85,
+      "id": "mat_085_at",
+      "symbol": "At",
+      "name": "Astatine",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 4,
+      "density_g_cm3": 7.0,
+      "tensile_mpa": 0,
+      "melting_point_c": 302.0,
+      "thermal_conductivity_w_mk": 1.7,
+      "base_color_rgb": [
+        140,
+        90,
+        110
+      ],
+      "base_color_hex": "#8C5A6E",
+      "solar_distribution": [
+        "Cyclotron Alpha Bombardment"
+      ],
+      "industrial_role": "Targeted Alpha Radiation Emitter for Electronic Disruption Dust",
+      "lore_description": "Short-lived halogen used in electronic-warfare aerosol grenades to blind thermal cameras."
+    },
+    {
+      "atomic_number": 86,
+      "id": "mat_086_rn",
+      "symbol": "Rn",
+      "name": "Radon",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 4,
+      "density_g_cm3": 0.0097,
+      "tensile_mpa": 0,
+      "melting_point_c": -71.0,
+      "thermal_conductivity_w_mk": 0.003,
+      "base_color_rgb": [
+        160,
+        130,
+        180
+      ],
+      "base_color_hex": "#A082B4",
+      "solar_distribution": [
+        "Deep Geothermal Vents"
+      ],
+      "industrial_role": "Radiological Minefield Dispersion Gas for Area Denial Zones",
+      "lore_description": "Heavy radioactive gas pooling in craters and trench lines to poison invading infantry sappers."
+    },
+    {
+      "atomic_number": 87,
+      "id": "mat_087_fr",
+      "symbol": "Fr",
+      "name": "Francium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 2.48,
+      "tensile_mpa": 0,
+      "melting_point_c": 27.0,
+      "thermal_conductivity_w_mk": 15.0,
+      "base_color_rgb": [
+        220,
+        140,
+        160
+      ],
+      "base_color_hex": "#DC8CA0",
+      "solar_distribution": [
+        "Uranium Decay Chains"
+      ],
+      "industrial_role": "Exotic High-Activity Atomic Sensor Physics Calibration",
+      "lore_description": "The most unstable natural metal; decays in minutes, used in exotic quantum sensor labs."
+    },
+    {
+      "atomic_number": 88,
+      "id": "mat_088_ra",
+      "symbol": "Ra",
+      "name": "Radium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 4,
+      "density_g_cm3": 5.5,
+      "tensile_mpa": 120,
+      "melting_point_c": 700.0,
+      "thermal_conductivity_w_mk": 18.6,
+      "base_color_rgb": [
+        210,
+        220,
+        200
+      ],
+      "base_color_hex": "#D2DCC8",
+      "solar_distribution": [
+        "Uraninite Tailings"
+      ],
+      "industrial_role": "Self-Luminous Tritium-Free Emergency Dials & Radiometric Calibrators",
+      "lore_description": "Glows in the pitch dark of damaged cockpits even after complete electrical bus blackout."
+    },
+    {
+      "atomic_number": 89,
+      "id": "mat_089_ac",
+      "symbol": "Ac",
+      "name": "Actinium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 4,
+      "density_g_cm3": 10.07,
+      "tensile_mpa": 240,
+      "melting_point_c": 1050.0,
+      "thermal_conductivity_w_mk": 12.0,
+      "base_color_rgb": [
+        180,
+        190,
+        185
+      ],
+      "base_color_hex": "#B4BEB9",
+      "solar_distribution": [
+        "Uranium Ore Residues"
+      ],
+      "industrial_role": "Alpha Radiation Emitter for Exotic Directed Energy Warheads",
+      "lore_description": "Intensely radioactive actinide used in dirty kinetic cluster munitions."
+    },
+    {
+      "atomic_number": 90,
+      "id": "mat_090_th",
+      "symbol": "Th",
+      "name": "Thorium (Thorium-232)",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 2,
+      "density_g_cm3": 11.72,
+      "tensile_mpa": 420,
+      "melting_point_c": 1750.0,
+      "thermal_conductivity_w_mk": 54.0,
+      "base_color_rgb": [
+        235,
+        130,
+        25
+      ],
+      "base_color_hex": "#EB8219",
+      "solar_distribution": [
+        "Monazite Placer Sands",
+        "Lunar Thorium Hotspots"
+      ],
+      "industrial_role": "Proliferation-Resistant Molten Salt Breeder Reactors & TIG Welding",
+      "lore_description": "Abundant fuel for civilian and mercenary power plants; impossible to melt down catastrophically."
+    },
+    {
+      "atomic_number": 91,
+      "id": "mat_091_pa",
+      "symbol": "Pa",
+      "name": "Protactinium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 4,
+      "density_g_cm3": 15.37,
+      "tensile_mpa": 380,
+      "melting_point_c": 1568.0,
+      "thermal_conductivity_w_mk": 47.0,
+      "base_color_rgb": [
+        170,
+        160,
+        155
+      ],
+      "base_color_hex": "#AAA09B",
+      "solar_distribution": [
+        "Spent Nuclear Fuel"
+      ],
+      "industrial_role": "Nuclear Fuel Intermediary & High-Flux Physics Targets",
+      "lore_description": "Intermediate actinide formed during thorium breeder reactor cycles."
+    },
+    {
+      "atomic_number": 92,
+      "id": "mat_092_u",
+      "symbol": "U",
+      "name": "Uranium (Depleted U-238 / Enriched U-235)",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 2,
+      "density_g_cm3": 19.05,
+      "tensile_mpa": 950,
+      "melting_point_c": 1132.2,
+      "thermal_conductivity_w_mk": 27.5,
+      "base_color_rgb": [
+        75,
+        115,
+        65
+      ],
+      "base_color_hex": "#4B7341",
+      "solar_distribution": [
+        "Pitchblende Veins",
+        "Lunar Mare Basalts"
+      ],
+      "industrial_role": "Depleted Uranium Kinetic Tank Dart Sabots & Fission Cores",
+      "lore_description": "Self-sharpening pyrophoric kinetic sabot; ignites into white-hot sparks upon armor penetration."
+    },
+    {
+      "atomic_number": 93,
+      "id": "mat_093_np",
+      "symbol": "Np",
+      "name": "Neptunium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 4,
+      "density_g_cm3": 20.45,
+      "tensile_mpa": 620,
+      "melting_point_c": 644.0,
+      "thermal_conductivity_w_mk": 6.3,
+      "base_color_rgb": [
+        140,
+        155,
+        145
+      ],
+      "base_color_hex": "#8C9B91",
+      "solar_distribution": [
+        "Reactor Transuranic Waste"
+      ],
+      "industrial_role": "Precursor for Plutonium-238 Deep Space Power Batteries",
+      "lore_description": "Heavy transuranic metal isolated from spent fuel rods to fuel scout probes."
+    },
+    {
+      "atomic_number": 94,
+      "id": "mat_094_pu",
+      "symbol": "Pu",
+      "name": "Plutonium (Pu-239)",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 3,
+      "density_g_cm3": 19.84,
+      "tensile_mpa": 820,
+      "melting_point_c": 640.0,
+      "thermal_conductivity_w_mk": 6.7,
+      "base_color_rgb": [
+        165,
+        145,
+        130
+      ],
+      "base_color_hex": "#A59182",
+      "solar_distribution": [
+        "Breeder Reactor Reprocessing"
+      ],
+      "industrial_role": "Thermonuclear Trigger Pits & Compact Radioisotope Generators",
+      "lore_description": "Warm to the touch from continuous alpha decay; the trigger for civilization-ending warheads."
+    },
+    {
+      "atomic_number": 95,
+      "id": "mat_095_am",
+      "symbol": "Am",
+      "name": "Americium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 3,
+      "density_g_cm3": 13.67,
+      "tensile_mpa": 340,
+      "melting_point_c": 1176.0,
+      "thermal_conductivity_w_mk": 10.0,
+      "base_color_rgb": [
+        185,
+        160,
+        175
+      ],
+      "base_color_hex": "#B9A0AF",
+      "solar_distribution": [
+        "Aged Plutonium Stockpiles"
+      ],
+      "industrial_role": "Neutron Moisture Gauges & Ionization Cockpit Smoke Detectors",
+      "lore_description": "Detects toxic smoke and smoldering wire insulation in cockpits within fractions of a second."
+    },
+    {
+      "atomic_number": 96,
+      "id": "mat_096_cm",
+      "symbol": "Cm",
+      "name": "Curium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 4,
+      "density_g_cm3": 13.51,
+      "tensile_mpa": 410,
+      "melting_point_c": 1345.0,
+      "thermal_conductivity_w_mk": 10.0,
+      "base_color_rgb": [
+        195,
+        170,
+        160
+      ],
+      "base_color_hex": "#C3AAA0",
+      "solar_distribution": [
+        "Intense Neutron Bombardment"
+      ],
+      "industrial_role": "Alpha-Particle X-Ray Spectrometer Sources for Planetary Rovers",
+      "lore_description": "Mounted on rover robotic arms to identify rich alloy ore veins in uncharted asteroid belts."
+    },
+    {
+      "atomic_number": 97,
+      "id": "mat_097_bk",
+      "symbol": "Bk",
+      "name": "Berkelium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 14.78,
+      "tensile_mpa": 380,
+      "melting_point_c": 986.0,
+      "thermal_conductivity_w_mk": 10.0,
+      "base_color_rgb": [
+        180,
+        155,
+        170
+      ],
+      "base_color_hex": "#B49BAA",
+      "solar_distribution": [
+        "High-Flux Isotope Reactors"
+      ],
+      "industrial_role": "Target Element for Synthesizing Super-Heavy Transactinide Armors",
+      "lore_description": "Costs millions per microgram; synthesized in planetary cyclotrons to create artificial elements."
+    },
+    {
+      "atomic_number": 98,
+      "id": "mat_098_cf",
+      "symbol": "Cf",
+      "name": "Californium (Cf-252)",
+      "category": "High-Energy Fusion Isotopes & Plasmatics",
+      "tier": 4,
+      "density_g_cm3": 15.1,
+      "tensile_mpa": 480,
+      "melting_point_c": 900.0,
+      "thermal_conductivity_w_mk": 10.0,
+      "base_color_rgb": [
+        205,
+        140,
+        90
+      ],
+      "base_color_hex": "#CD8C5A",
+      "solar_distribution": [
+        "High-Flux Reactor Transmutation"
+      ],
+      "industrial_role": "Spontaneous Neutron Emitter for Scanning Welds & Starting Reactors",
+      "lore_description": "Pumps millions of neutrons per second; initiates startup chain reactions in dormant mecha cores."
+    },
+    {
+      "atomic_number": 99,
+      "id": "mat_099_es",
+      "symbol": "Es",
+      "name": "Einsteinium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 8.84,
+      "tensile_mpa": 200,
+      "melting_point_c": 860.0,
+      "thermal_conductivity_w_mk": 10.0,
+      "base_color_rgb": [
+        200,
+        160,
+        180
+      ],
+      "base_color_hex": "#C8A0B4",
+      "solar_distribution": [
+        "Thermonuclear Debris Catchers"
+      ],
+      "industrial_role": "High-Radiation Experimental Physics Research",
+      "lore_description": "First discovered in the fallout of multi-megaton hydrogen bomb tests."
+    },
+    {
+      "atomic_number": 100,
+      "id": "mat_100_fm",
+      "symbol": "Fm",
+      "name": "Fermium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 9.7,
+      "tensile_mpa": 210,
+      "melting_point_c": 1527.0,
+      "thermal_conductivity_w_mk": 10.0,
+      "base_color_rgb": [
+        190,
+        150,
+        170
+      ],
+      "base_color_hex": "#BE96AA",
+      "solar_distribution": [
+        "Transuranic Synthesis Reactors"
+      ],
+      "industrial_role": "The Heaviest Element Produced via Neutron Bombardment",
+      "lore_description": "The final boundary of neutron-capture synthesis before nuclear fission tears the nucleus apart."
+    },
+    {
+      "atomic_number": 101,
+      "id": "mat_101_md",
+      "symbol": "Md",
+      "name": "Mendelevium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 10.3,
+      "tensile_mpa": 220,
+      "melting_point_c": 827.0,
+      "thermal_conductivity_w_mk": 10.0,
+      "base_color_rgb": [
+        175,
+        140,
+        160
+      ],
+      "base_color_hex": "#AF8CA0",
+      "solar_distribution": [
+        "Heavy Ion Cyclotrons"
+      ],
+      "industrial_role": "Heavy Actinide Chemistry Calibration",
+      "lore_description": "Produced one atom at a time; used to verify exotic heavy actinide sub-shell properties."
+    },
+    {
+      "atomic_number": 102,
+      "id": "mat_102_no",
+      "symbol": "No",
+      "name": "Nobelium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 9.9,
+      "tensile_mpa": 230,
+      "melting_point_c": 827.0,
+      "thermal_conductivity_w_mk": 10.0,
+      "base_color_rgb": [
+        185,
+        150,
+        165
+      ],
+      "base_color_hex": "#B996A5",
+      "solar_distribution": [
+        "Cyclotron Fusion Reactions"
+      ],
+      "industrial_role": "Relativistic D-Shell Shielding Research",
+      "lore_description": "Exhibits strange relativistic electron contraction effects in high-gravity environments."
+    },
+    {
+      "atomic_number": 103,
+      "id": "mat_103_lr",
+      "symbol": "Lr",
+      "name": "Lawrencium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 15.6,
+      "tensile_mpa": 290,
+      "melting_point_c": 1627.0,
+      "thermal_conductivity_w_mk": 10.0,
+      "base_color_rgb": [
+        170,
+        145,
+        155
+      ],
+      "base_color_hex": "#AA919B",
+      "solar_distribution": [
+        "Linear Particle Accelerators"
+      ],
+      "industrial_role": "Final Element of the Actinide Series",
+      "lore_description": "Behaves like a heavy transition metal, bridging actinides to super-heavy transuranic armors."
+    },
+    {
+      "atomic_number": 104,
+      "id": "mat_104_rf",
+      "symbol": "Rf",
+      "name": "Rutherfordium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 23.2,
+      "tensile_mpa": 1100,
+      "melting_point_c": 2100.0,
+      "thermal_conductivity_w_mk": 15.0,
+      "base_color_rgb": [
+        155,
+        135,
+        145
+      ],
+      "base_color_hex": "#9B8791",
+      "solar_distribution": [
+        "Exotic Particle Synthesizers"
+      ],
+      "industrial_role": "Super-Heavy Transactinide Armor Matrix Precursor",
+      "lore_description": "First transactinide element; exhibits abnormal crystal density in orbital particle crucibles."
+    },
+    {
+      "atomic_number": 105,
+      "id": "mat_105_db",
+      "symbol": "Db",
+      "name": "Dubnium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 29.3,
+      "tensile_mpa": 1250,
+      "melting_point_c": 2600.0,
+      "thermal_conductivity_w_mk": 18.0,
+      "base_color_rgb": [
+        145,
+        130,
+        140
+      ],
+      "base_color_hex": "#91828C",
+      "solar_distribution": [
+        "Dubna-Type Heavy Ion Colliders"
+      ],
+      "industrial_role": "Heavy High-Density Ballistic Core Infusion",
+      "lore_description": "Synthesized in high-energy cyclotrons; stabilizes dense super-alloys under high pressure."
+    },
+    {
+      "atomic_number": 106,
+      "id": "mat_106_sg",
+      "symbol": "Sg",
+      "name": "Seaborgium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 35.0,
+      "tensile_mpa": 1400,
+      "melting_point_c": 2800.0,
+      "thermal_conductivity_w_mk": 20.0,
+      "base_color_rgb": [
+        135,
+        125,
+        135
+      ],
+      "base_color_hex": "#877D87",
+      "solar_distribution": [
+        "Linear Accelerator Laboratories"
+      ],
+      "industrial_role": "Hexacarbonyl Transuranic Gas Enrichment",
+      "lore_description": "Forms volatile carbonyl gases used to deposit ultra-dense atomic armor coatings."
+    },
+    {
+      "atomic_number": 107,
+      "id": "mat_107_bh",
+      "symbol": "Bh",
+      "name": "Bohrium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 37.1,
+      "tensile_mpa": 1500,
+      "melting_point_c": 2900.0,
+      "thermal_conductivity_w_mk": 22.0,
+      "base_color_rgb": [
+        140,
+        120,
+        130
+      ],
+      "base_color_hex": "#8C7882",
+      "solar_distribution": [
+        "Relativistic Ion Bombardment"
+      ],
+      "industrial_role": "High-Z Atomic Shielding for Antimatter Injection Tubes",
+      "lore_description": "Absorbs secondary bremsstrahlung radiation inside antimatter-catalyzed propulsion engines."
+    },
+    {
+      "atomic_number": 108,
+      "id": "mat_108_hs",
+      "symbol": "Hs",
+      "name": "Hassium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 40.9,
+      "tensile_mpa": 1650,
+      "melting_point_c": 3100.0,
+      "thermal_conductivity_w_mk": 25.0,
+      "base_color_rgb": [
+        125,
+        110,
+        125
+      ],
+      "base_color_hex": "#7D6E7D",
+      "solar_distribution": [
+        "Heavy Ion Crucible Reactors"
+      ],
+      "industrial_role": "The Heaviest Group 8 Transition Metal Known",
+      "lore_description": "Theoretical density exceeds 40 g/cm\u00b3, offering unprecedented stopping power against railguns."
+    },
+    {
+      "atomic_number": 109,
+      "id": "mat_109_mt",
+      "symbol": "Mt",
+      "name": "Meitnerium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 37.4,
+      "tensile_mpa": 1550,
+      "melting_point_c": 3000.0,
+      "thermal_conductivity_w_mk": 24.0,
+      "base_color_rgb": [
+        130,
+        115,
+        130
+      ],
+      "base_color_hex": "#827382",
+      "solar_distribution": [
+        "Synchrotron Antimatter Forges"
+      ],
+      "industrial_role": "Exotic High-Field Superconducting Grid Sputtering",
+      "lore_description": "Named after Lise Meitner; provides anomalous field expulsion in pulsed magnetic shields."
+    },
+    {
+      "atomic_number": 110,
+      "id": "mat_110_ds",
+      "symbol": "Ds",
+      "name": "Darmstadtium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 34.8,
+      "tensile_mpa": 1480,
+      "melting_point_c": 2900.0,
+      "thermal_conductivity_w_mk": 22.0,
+      "base_color_rgb": [
+        135,
+        120,
+        135
+      ],
+      "base_color_hex": "#877887",
+      "solar_distribution": [
+        "High-Energy Relativistic Accelerators"
+      ],
+      "industrial_role": "Platinum-Group Transuranic Catalytic Matrix",
+      "lore_description": "Catalyzes dense exotic hydrogen isotope fusion at room temperature for fleeting milliseconds."
+    },
+    {
+      "atomic_number": 111,
+      "id": "mat_111_rg",
+      "symbol": "Rg",
+      "name": "Roentgenium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 28.7,
+      "tensile_mpa": 1300,
+      "melting_point_c": 2600.0,
+      "thermal_conductivity_w_mk": 20.0,
+      "base_color_rgb": [
+        220,
+        180,
+        60
+      ],
+      "base_color_hex": "#DCB43C",
+      "solar_distribution": [
+        "Heavy Ion Linear Colliders"
+      ],
+      "industrial_role": "Super-Heavy Golden-Bronze Plating for Sensor Cloaking",
+      "lore_description": "Relativistic gold congener reflecting exotic radar and tachyon sensor wavelengths."
+    },
+    {
+      "atomic_number": 112,
+      "id": "mat_112_cn",
+      "symbol": "Cn",
+      "name": "Copernicium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 14.0,
+      "tensile_mpa": 200,
+      "melting_point_c": 280.0,
+      "thermal_conductivity_w_mk": 15.0,
+      "base_color_rgb": [
+        160,
+        175,
+        190
+      ],
+      "base_color_hex": "#A0AFBE",
+      "solar_distribution": [
+        "GSI-Type Heavy Accelerator Forges"
+      ],
+      "industrial_role": "Volatile Liquid Transuranic Solder for Cyber-Neural Cores",
+      "lore_description": "Behaves like an ultra-dense noble liquid metal; interfaces synthetic neurons with quantum processors."
+    },
+    {
+      "atomic_number": 113,
+      "id": "mat_113_nh",
+      "symbol": "Nh",
+      "name": "Nihonium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 16.0,
+      "tensile_mpa": 350,
+      "melting_point_c": 430.0,
+      "thermal_conductivity_w_mk": 16.0,
+      "base_color_rgb": [
+        170,
+        160,
+        180
+      ],
+      "base_color_hex": "#AAA0B4",
+      "solar_distribution": [
+        "RIKEN Heavy Ion Beam Facilities"
+      ],
+      "industrial_role": "Super-Heavy P-Block Semiconductor Dopant",
+      "lore_description": "Creates exotic bandgap semiconductors for zero-latency neural reflex bridges."
+    },
+    {
+      "atomic_number": 114,
+      "id": "mat_114_fl",
+      "symbol": "Fl",
+      "name": "Flerovium (Island of Stability Metal)",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 14.0,
+      "tensile_mpa": 650,
+      "melting_point_c": 284.0,
+      "thermal_conductivity_w_mk": 18.0,
+      "base_color_rgb": [
+        120,
+        190,
+        220
+      ],
+      "base_color_hex": "#78BEDC",
+      "solar_distribution": [
+        "Deep Space Orbital Synchrotrons"
+      ],
+      "industrial_role": "Island of Stability Super-Armor & Graviton Deflection Matrix",
+      "lore_description": "Lies on the theoretical Island of Stability; long-lived transuranic metal with bizarre inertial dampening."
+    },
+    {
+      "atomic_number": 115,
+      "id": "mat_115_mc",
+      "symbol": "Mc",
+      "name": "Moscovium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 13.5,
+      "tensile_mpa": 420,
+      "melting_point_c": 400.0,
+      "thermal_conductivity_w_mk": 15.0,
+      "base_color_rgb": [
+        180,
+        140,
+        165
+      ],
+      "base_color_hex": "#B48CA5",
+      "solar_distribution": [
+        "Relativistic Gas Phase Labs"
+      ],
+      "industrial_role": "High-Z Antigravity Propulsion Waveguide Alloy",
+      "lore_description": "Famous in military lore; generates micro-gravitational field distortions when bombarded with protons."
+    },
+    {
+      "atomic_number": 116,
+      "id": "mat_116_lv",
+      "symbol": "Lv",
+      "name": "Livermorium",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 12.9,
+      "tensile_mpa": 390,
+      "melting_point_c": 435.0,
+      "thermal_conductivity_w_mk": 14.0,
+      "base_color_rgb": [
+        165,
+        135,
+        155
+      ],
+      "base_color_hex": "#A5879B",
+      "solar_distribution": [
+        "Livermore Heavy Element Forges"
+      ],
+      "industrial_role": "Chalcogen Transuranic Radiation Absorber Blanket",
+      "lore_description": "Absorbs extreme neutron flux from exploding matter-antimatter warheads."
+    },
+    {
+      "atomic_number": 117,
+      "id": "mat_117_ts",
+      "symbol": "Ts",
+      "name": "Tennessine",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 7.2,
+      "tensile_mpa": 100,
+      "melting_point_c": 450.0,
+      "thermal_conductivity_w_mk": 10.0,
+      "base_color_rgb": [
+        150,
+        110,
+        130
+      ],
+      "base_color_hex": "#966E82",
+      "solar_distribution": [
+        "Oak Ridge Super-Flux Facilities"
+      ],
+      "industrial_role": "Super-Heavy Halogen Flux for Quantum Crucible Smelting",
+      "lore_description": "Lowers the melting threshold of exotic actinide alloys during planetary field forging."
+    },
+    {
+      "atomic_number": 118,
+      "id": "mat_118_og",
+      "symbol": "Og",
+      "name": "Oganesson (Void-Gas / Monolithium Base)",
+      "category": "Exotic Mantle Minerals & Transuranics",
+      "tier": 5,
+      "density_g_cm3": 5.0,
+      "tensile_mpa": 0,
+      "melting_point_c": 80.0,
+      "thermal_conductivity_w_mk": 8.0,
+      "base_color_rgb": [
+        140,
+        220,
+        240
+      ],
+      "base_color_hex": "#8CDCF0",
+      "solar_distribution": [
+        "Deep Void Relativistic Gas Synthesizers"
+      ],
+      "industrial_role": "Super-Heavy Polarizable Noble Solid & Void-Shield Emitter Core",
+      "lore_description": "The apex of the periodic table; a relativistic noble semiconductor powering experimental void barrier shielding."
+    }
+  ]
+}

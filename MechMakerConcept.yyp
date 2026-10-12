@@ -576,6 +576,12 @@
         "name": "scr_alloy_color_synthesis",
         "path": "scripts/scr_alloy_color_synthesis/scr_alloy_color_synthesis.yy"
       }
+    },
+    {
+      "id": {
+        "name": "scr_alloy_discovery_codex",
+        "path": "scripts/scr_alloy_discovery_codex/scr_alloy_discovery_codex.yy"
+      }
     }
   ],
   "resourceType": "GMProject",
