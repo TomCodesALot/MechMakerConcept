@@ -582,6 +582,84 @@
         "name": "scr_alloy_discovery_codex",
         "path": "scripts/scr_alloy_discovery_codex/scr_alloy_discovery_codex.yy"
       }
+    },
+    {
+      "id": {
+        "name": "spr_ms_ironclad_back_idle",
+        "path": "sprites/spr_ms_ironclad_back_idle/spr_ms_ironclad_back_idle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_aether_back_idle",
+        "path": "sprites/spr_ms_aether_back_idle/spr_ms_aether_back_idle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_hyena_back_idle",
+        "path": "sprites/spr_ms_hyena_back_idle/spr_ms_hyena_back_idle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ms_muramasa_back_idle",
+        "path": "sprites/spr_ms_muramasa_back_idle/spr_ms_muramasa_back_idle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_proj_cannon_120mm",
+        "path": "sprites/spr_proj_cannon_120mm/spr_proj_cannon_120mm.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_proj_vulcan",
+        "path": "sprites/spr_proj_vulcan/spr_proj_vulcan.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_proj_beam",
+        "path": "sprites/spr_proj_beam/spr_proj_beam.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_proj_missile",
+        "path": "sprites/spr_proj_missile/spr_proj_missile.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_proj_railgun",
+        "path": "sprites/spr_proj_railgun/spr_proj_railgun.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_fx_explosion",
+        "path": "sprites/spr_fx_explosion/spr_fx_explosion.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_fx_spark",
+        "path": "sprites/spr_fx_spark/spr_fx_spark.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_isometric_math",
+        "path": "scripts/scr_isometric_math/scr_isometric_math.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_combat_projectiles",
+        "path": "scripts/scr_combat_projectiles/scr_combat_projectiles.yy"
+      }
     }
   ],
   "resourceType": "GMProject",

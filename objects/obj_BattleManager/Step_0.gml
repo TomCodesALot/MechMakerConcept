@@ -1,71 +1,209 @@
 /// @description obj_BattleManager Step Event
-// Drives Turn-Based Tactical Combat State Machine, Pathfinding & Duel Resolution
-// Strictly implements docs/05_tactical_combat.md
+// Drives Turn-Based Isometric Tactical Combat State Machine, Physical Projectile Simulation & Platoon AI
+// Strictly implements docs/17_grand_scale_isometric_combat_system.md & docs/05_tactical_combat.md
 
-// 1. Shake & Timer Recovery
-screen_shake = max(0.0, screen_shake - 0.7);
+// 1. Screen Shake & Dampening
+screen_shake = max(0.0, screen_shake - 0.65);
 
-// Update Floating Combat Texts (docs/05)
+// 2. Update Floating Combat Texts
 for (var i = array_length(floating_texts) - 1; i >= 0; i--) {
     var _ft = floating_texts[i];
     _ft.y += _ft.vy;
     _ft.timer--;
-    _ft.alpha = _ft.timer / 55.0;
+    _ft.alpha = _ft.timer / 60.0;
     if (_ft.timer <= 0) {
         array_delete(floating_texts, i, 1);
     }
 }
 
-// 2. Smooth Visual Interpolation (Lerp to grid positions)
-var _target_px = grid_to_world_x(player_unit.grid_c);
-var _target_py = grid_to_world_y(player_unit.grid_r);
-player_unit.visual_x = lerp(player_unit.visual_x, _target_px, 0.18);
-player_unit.visual_y = lerp(player_unit.visual_y, _target_py, 0.18);
-
-var _target_ex = grid_to_world_x(enemy_unit.grid_c);
-var _target_ey = grid_to_world_y(enemy_unit.grid_r);
-enemy_unit.visual_x = lerp(enemy_unit.visual_x, _target_ex, 0.18);
-enemy_unit.visual_y = lerp(enemy_unit.visual_y, _target_ey, 0.18);
-
-// 3. Physical Recoil Spring Dampening
-player_unit.recoil_x = lerp(player_unit.recoil_x, 0, 0.12);
-player_unit.recoil_y = lerp(player_unit.recoil_y, 0, 0.12);
-player_unit.recoil_shake = max(0, player_unit.recoil_shake - 0.6);
-
-enemy_unit.recoil_x = lerp(enemy_unit.recoil_x, 0, 0.12);
-enemy_unit.recoil_y = lerp(enemy_unit.recoil_y, 0, 0.12);
-enemy_unit.recoil_shake = max(0, enemy_unit.recoil_shake - 0.6);
-
-// 4. Update Unit Action State Timers
-if (player_unit.state_timer > 0) {
-    player_unit.state_timer--;
-    if (player_unit.state_timer <= 0) {
-        player_unit.state = player_unit.components.legs.intact ? MS_STATE.IDLE : MS_STATE.CRIPPLED;
-    }
-}
-if (enemy_unit.state_timer > 0) {
-    enemy_unit.state_timer--;
-    if (enemy_unit.state_timer <= 0) {
-        enemy_unit.state = enemy_unit.components.legs.intact ? MS_STATE.IDLE : MS_STATE.CRIPPLED;
+// 3. Update Combat Particle Explosions & Sparks
+for (var i = array_length(combat_fx) - 1; i >= 0; i--) {
+    var _fx = combat_fx[i];
+    _fx.frame += _fx.speed;
+    var _max_f = sprite_get_number(_fx.sprite);
+    if (_fx.frame >= _max_f) {
+        array_delete(combat_fx, i, 1);
     }
 }
 
-// 5. Update Mouse Coordinates & Grid Hover
-var _mx = device_mouse_x_to_gui(0);
-var _my = device_mouse_y_to_gui(0);
+// 4. Update Physical Projectiles Trajectory Simulation
+for (var i = array_length(projectiles) - 1; i >= 0; i--) {
+    var _p = projectiles[i];
+    _p.t += _p.step_rate;
+
+    // Linear world interpolation
+    _p.cur_x = lerp(_p.x1, _p.x2, _p.t);
+    var _arc_y = (_p.z_peak * sin(pi * _p.t)) * zoom;
+    _p.cur_y = lerp(_p.y1, _p.y2, _p.t) - _arc_y;
+
+    // Update angle to match flight vector
+    var _dx = _p.x2 - _p.x1;
+    var _dy = (_p.y2 - _p.y1) - ((_p.z_peak * cos(pi * _p.t) * pi) * zoom);
+    _p.angle = point_direction(0, 0, _dx, _dy);
+
+    // Emit smoke / sparks along flight path
+    if (_p.trail_type == "smoke" || _p.trail_type == "missile_plume") {
+        if (irandom(2) == 0) {
+            array_push(combat_fx, {
+                sprite: spr_fx_spark,
+                x: _p.cur_x + irandom_range(-3, 3),
+                y: _p.cur_y + irandom_range(-3, 3),
+                frame: 0.0,
+                speed: 0.45,
+                scale: 0.5 * zoom
+            });
+        }
+    }
+
+    // Impact Trigger
+    if (_p.t >= 1.0) {
+        _p.is_finished = true;
+        if (is_callable(_p.on_hit)) {
+            _p.on_hit();
+        }
+        array_delete(projectiles, i, 1);
+    }
+}
+
+// 5. Camera Navigation (WASD / Drag / Wheel Zoom)
+var _pan_spd = 14.0 / max(0.5, zoom);
+if (keyboard_check(ord("W")) || keyboard_check(vk_up)) cam_target_y += _pan_spd;
+if (keyboard_check(ord("S")) || keyboard_check(vk_down)) cam_target_y -= _pan_spd;
+if (keyboard_check(ord("A")) || keyboard_check(vk_left)) cam_target_x += _pan_spd;
+if (keyboard_check(ord("D")) || keyboard_check(vk_right)) cam_target_x -= _pan_spd;
+
+// Mouse Drag Navigation
+var _raw_mx = mouse_x;
+var _raw_my = mouse_y;
+if (mouse_check_button_pressed(mb_middle) || (mouse_check_button_pressed(mb_right) && state == COMBAT_STATE.PLAYER_PHASE)) {
+    is_dragging = true;
+    drag_start_mx = _raw_mx;
+    drag_start_my = _raw_my;
+    drag_start_cam_x = cam_target_x;
+    drag_start_cam_y = cam_target_y;
+}
+if (is_dragging) {
+    cam_target_x = drag_start_cam_x + (_raw_mx - drag_start_mx);
+    cam_target_y = drag_start_cam_y + (_raw_my - drag_start_my);
+    if (!mouse_check_button(mb_middle) && !mouse_check_button(mb_right)) {
+        is_dragging = false;
+    }
+}
+
+// Mouse Wheel Zoom (Clamped 0.60x to 1.35x)
+if (mouse_wheel_up()) zoom_target = clamp(zoom_target + 0.08, 0.60, 1.35);
+if (mouse_wheel_down()) zoom_target = clamp(zoom_target - 0.08, 0.60, 1.35);
+
+// Reset Camera Key [R]
+if (keyboard_check_pressed(ord("R"))) {
+    select_unit(selected_unit_idx);
+}
+
+// Camera Lerp
+cam_x = lerp(cam_x, cam_target_x, 0.18);
+cam_y = lerp(cam_y, cam_target_y, 0.18);
+zoom = lerp(zoom, zoom_target, 0.18);
+
+// 6. Unit Visual Position Lerp & Springs
+for (var i = 0; i < array_length(units); i++) {
+    var _u = units[i];
+    var _target_sx = iso_to_screen_x(_u.grid_c, _u.grid_r, _u.elev, cam_x, cam_y, zoom);
+    var _target_sy = iso_to_screen_y(_u.grid_c, _u.grid_r, _u.elev, cam_x, cam_y, zoom);
+
+    _u.visual_x = lerp(_u.visual_x, _target_sx, 0.20);
+    _u.visual_y = lerp(_u.visual_y, _target_sy, 0.20);
+
+    // Spring Recoil Dampening
+    _u.recoil_x = lerp(_u.recoil_x, 0, 0.15);
+    _u.recoil_y = lerp(_u.recoil_y, 0, 0.15);
+    _u.recoil_shake = max(0, _u.recoil_shake - 0.5);
+
+    // Animation Frame Progress
+    _u.anim_frame += _u.anim_speed;
+
+    // Action State Timer Countdown
+    if (_u.anim_timer > 0) {
+        _u.anim_timer--;
+        if (_u.anim_timer <= 0) {
+            _u.anim_state = "idle";
+        }
+    }
+}
+
+// 7. Mouse Coordinates & Grid Unprojection
+var _gui_mx = device_mouse_x_to_gui(0);
+var _gui_my = device_mouse_y_to_gui(0);
 var _click = mouse_check_button_pressed(mb_left);
 var _rclick = mouse_check_button_pressed(mb_right);
 
-hover_c = world_to_grid_c(_mx);
-hover_r = world_to_grid_r(_my);
+hover_c = screen_to_iso_col(_raw_mx, _raw_my, cam_x, cam_y, zoom);
+hover_r = screen_to_iso_row(_raw_mx, _raw_my, cam_x, cam_y, zoom);
+
+// Check if mouse is hovering over interactive HUD regions
+var _hud_blocked = (_gui_my > 570) || (_gui_mx > 930) || (_gui_my < 95);
 
 // =========================================================================
-// 6. COMBAT STATE MACHINE
+// 8. COMBAT STATE MACHINE
 // =========================================================================
 switch (state) {
 
     // ---------------------------------------------------------------------
-    // A. MOVE MODE: Selecting destination cell on grid
+    // A. PLAYER PHASE: Commander Orders
+    // ---------------------------------------------------------------------
+    case COMBAT_STATE.PLAYER_PHASE:
+        // Clicking units on the isometric battlefield
+        if (_click && !_hud_blocked) {
+            var _clicked_unit = false;
+            for (var u = 0; u < array_length(units); u++) {
+                var _chk = units[u];
+                if (!_chk.is_destroyed && _chk.grid_c == hover_c && _chk.grid_r == hover_r) {
+                    if (_chk.team == "ALLIED") {
+                        select_unit(u);
+                        add_log("[UNIT SELECTED] Switched focus to " + _chk.callsign);
+                        _clicked_unit = true;
+                        break;
+                    } else {
+                        target_unit_idx = u;
+                        add_log("[TARGET ACQUIRED] Diagnostics locked on " + _chk.callsign);
+                        _clicked_unit = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Hotkeys
+        if (keyboard_check_pressed(vk_tab)) cycle_allied_unit();
+        if (keyboard_check_pressed(ord("F"))) cycle_unit_facing(units[selected_unit_idx]);
+        if (keyboard_check_pressed(ord("M"))) { recalculate_moves(); state = COMBAT_STATE.MOVE_MODE; }
+        if (keyboard_check_pressed(ord("1"))) { selected_weapon = 0; state = COMBAT_STATE.TARGET_MODE; }
+        if (keyboard_check_pressed(ord("2"))) { selected_weapon = 1; state = COMBAT_STATE.TARGET_MODE; }
+        if (keyboard_check_pressed(ord("3"))) { selected_weapon = 2; state = COMBAT_STATE.TARGET_MODE; }
+        if (keyboard_check_pressed(ord("4"))) { selected_weapon = 3; state = COMBAT_STATE.TARGET_MODE; }
+        if (keyboard_check_pressed(ord("B"))) {
+            var _cur_u = units[selected_unit_idx];
+            if (_cur_u.current_ap >= 2) {
+                _cur_u.current_ap -= 2;
+                _cur_u.braced = true;
+                _cur_u.current_heat = max(0, _cur_u.current_heat - 25);
+                add_log("[TACTICAL DEFENSE] " + _cur_u.callsign + " braced! +35% Evasion, -25% Heat vented.");
+            }
+        }
+        if (keyboard_check_pressed(vk_space)) {
+            add_log("[TURN PASSED] Initiative passed to hostile battlegroup.");
+            state = COMBAT_STATE.AI_PHASE;
+            ai_action_timer = 0;
+            ai_unit_index = 0;
+        }
+        if (keyboard_check_pressed(ord("A"))) {
+            auto_combat_enabled = !auto_combat_enabled;
+            if (auto_combat_enabled) state = COMBAT_STATE.AUTO_SIM;
+            add_log("[AUTO-COMBAT] Autonomous Battle Simulation: " + (auto_combat_enabled ? "ENGAGED" : "DISENGAGED"));
+        }
+        break;
+
+    // ---------------------------------------------------------------------
+    // B. MOVE MODE: Selecting Destination Tile on Isometric Grid
     // ---------------------------------------------------------------------
     case COMBAT_STATE.MOVE_MODE:
         if (_rclick) {
@@ -73,15 +211,20 @@ switch (state) {
             exit;
         }
 
-        if (_click && hover_c >= 0 && hover_c < grid_cols && hover_r >= 0 && hover_r < grid_rows) {
-            // Check if hovered tile is in valid_move_tiles
+        if (_click && !_hud_blocked && hover_c >= 0 && hover_c < grid_cols && hover_r >= 0 && hover_r < grid_rows) {
+            var _cur_u = units[selected_unit_idx];
             for (var m = 0; m < array_length(valid_move_tiles); m++) {
                 var _tile = valid_move_tiles[m];
                 if (_tile.col == hover_c && _tile.row == hover_r) {
-                    player_unit.grid_c = _tile.col;
-                    player_unit.grid_r = _tile.row;
-                    player_unit.current_ap -= _tile.cost;
-                    add_log("[TACTICAL MOVE] Warhammer relocated to (" + string(_tile.col) + ", " + string(_tile.row) + ") [- " + string(_tile.cost) + " AP]");
+                    _cur_u.facing = iso_get_facing(_cur_u.grid_c, _cur_u.grid_r, hover_c, hover_r);
+                    _cur_u.grid_c = hover_c;
+                    _cur_u.grid_r = hover_r;
+                    _cur_u.elev = grid_elev[hover_c][hover_r];
+                    _cur_u.current_ap -= _tile.cost;
+                    _cur_u.anim_state = (_cur_u.mech_type == "hyena") ? "walk" : ((_cur_u.mech_type == "aether") ? "boost" : "idle");
+                    _cur_u.anim_timer = 20;
+
+                    add_log("[TACTICAL MOVE] " + _cur_u.callsign + " relocated to (" + string(hover_c) + ", " + string(hover_r) + ") [- " + string(_tile.cost) + " AP]");
                     state = COMBAT_STATE.PLAYER_PHASE;
                     exit;
                 }
@@ -90,7 +233,7 @@ switch (state) {
         break;
 
     // ---------------------------------------------------------------------
-    // B. TARGET MODE: Targeting enemy with active weapon
+    // C. TARGET MODE: Selecting Enemy Target Within Weapon Range
     // ---------------------------------------------------------------------
     case COMBAT_STATE.TARGET_MODE:
         if (_rclick) {
@@ -98,213 +241,218 @@ switch (state) {
             exit;
         }
 
-        var _wpn = weapons[selected_weapon];
-        var _dist = calculate_distance(player_unit.grid_c, player_unit.grid_r, enemy_unit.grid_c, enemy_unit.grid_r);
-        var _in_range = (_dist >= _wpn.range_min && _dist <= _wpn.range_max);
-        var _can_afford = (player_unit.current_ap >= _wpn.ap_cost);
-        var _part_intact = player_unit.components[$ _wpn.req_part].intact;
+        if (_click && !_hud_blocked) {
+            var _cur_u = units[selected_unit_idx];
+            if (selected_weapon >= array_length(_cur_u.weapons)) exit;
+            var _w = _cur_u.weapons[selected_weapon];
 
-        if (_click && hover_c == enemy_unit.grid_c && hover_r == enemy_unit.grid_r) {
-            if (!_part_intact) {
-                add_log("[ERROR] Cannot fire: Required mount (" + string(_wpn.req_part) + ") is DESTROYED!");
-            } else if (!_can_afford) {
-                add_log("[ERROR] Insufficient AP! (Requires " + string(_wpn.ap_cost) + " AP, Available: " + string(player_unit.current_ap) + ")");
-            } else if (!_in_range) {
-                add_log("[ERROR] Target out of weapon range! (Range: " + string(_wpn.range_min) + "-" + string(_wpn.range_max) + " cells)");
-            } else {
-                // Execute attack!
-                player_unit.current_ap -= _wpn.ap_cost;
-                player_unit.current_heat += _wpn.heat_cost;
-                player_unit.state = _wpn.anim_state;
-                player_unit.state_timer = 32;
-                player_unit.recoil_x = -12 * player_unit.facing;
-                screen_shake = 6.0;
+            for (var u = 0; u < array_length(units); u++) {
+                var _target = units[u];
+                if (_target.team == "HOSTILE" && !_target.is_destroyed && _target.grid_c == hover_c && _target.grid_r == hover_r) {
+                    var _dist = calculate_distance(_cur_u.grid_c, _cur_u.grid_r, _target.grid_c, _target.grid_r);
 
-                pending_attack.attacker = player_unit;
-                pending_attack.defender = enemy_unit;
-                pending_attack.weapon_index = selected_weapon;
-                pending_attack.timer = 32;
+                    if (_dist >= _w.range_min && _dist <= _w.range_max) {
+                        if (_cur_u.current_ap >= _w.ap_cost) {
+                            _cur_u.facing = iso_get_facing(_cur_u.grid_c, _cur_u.grid_r, _target.grid_c, _target.grid_r);
+                            _cur_u.current_ap -= _w.ap_cost;
+                            _cur_u.current_heat += _w.heat_cost;
+                            _cur_u.anim_state = _w.anim_state;
+                            _cur_u.anim_timer = 28;
 
-                add_log("[ENGAGING TARGET] Firing " + _wpn.name + "!");
-                state = COMBAT_STATE.ATTACK_EXECUTION;
-            }
-        }
-        break;
+                            var _recoil_dir = (_cur_u.facing == 0 || _cur_u.facing == 2) ? -12 : 12;
+                            _cur_u.recoil_x = _recoil_dir;
 
-    // ---------------------------------------------------------------------
-    // C. ATTACK EXECUTION: Recoil, projectile impact, damage roll & part sever
-    // ---------------------------------------------------------------------
-    case COMBAT_STATE.ATTACK_EXECUTION:
-        pending_attack.timer--;
-
-        // Impact Frame (~halfway through animation)
-        if (pending_attack.timer == 16) {
-            var _atk = pending_attack.attacker;
-            var _def = pending_attack.defender;
-            var _w = weapons[pending_attack.weapon_index];
-            var _d = calculate_distance(_atk.grid_c, _atk.grid_r, _def.grid_c, _def.grid_r);
-            var _hit_pct = calculate_hit_chance(_atk, _def, _d);
-            var _roll = random(100);
-
-            if (_roll <= _hit_pct) {
-                // HIT LANDS! Roll Front Mission localized component damage
-                var _part_roll = random(100);
-                var _hit_part = "torso";
-                if (_part_roll < 40) _hit_part = "torso";
-                else if (_part_roll < 60) _hit_part = "arm_left";
-                else if (_part_roll < 80) _hit_part = "arm_right";
-                else if (_part_roll < 95) _hit_part = "legs";
-                else _hit_part = "head";
-
-                var _comp = _def.components[$ _hit_part];
-                _comp.cur = max(0, _comp.cur - _w.damage);
-
-                // Defender Hit Reaction Physics
-                _def.recoil_x = 18 * _atk.facing;
-                _def.recoil_shake = 16;
-                screen_shake = 12.0;
-
-                add_log("[DIRECT IMPACT] " + string_upper(_hit_part) + " hit for " + string(_w.damage) + " damage!");
-
-                // Floating Damage Readout
-                add_floating_text(_def.visual_x, _def.visual_y - 40, "-" + string(_w.damage) + " [" + string_upper(_hit_part) + "]", c_yellow);
-
-                // Check Component Destruction
-                if (_comp.cur <= 0 && _comp.intact) {
-                    _comp.intact = false;
-                    add_log("[CRITICAL HIT] " + _def.callsign + " " + string_upper(_hit_part) + " SEVERED!");
-                    add_floating_text(_def.visual_x, _def.visual_y - 65, "CRITICAL: " + string_upper(_hit_part) + " SEVERED!", c_red);
-
-                    if (_hit_part == "torso") {
-                        _def.is_destroyed = true;
-                        _def.state = MS_STATE.DESTROYED;
-                        screen_shake = 24.0;
-                        add_log("[CATASTROPHIC BREACH] " + _def.callsign + " TORSO CORE BREACHED! UNIT DESTROYED!");
-
-                        // Check Ejection Survival vs Permadeath if Player Mech (docs/05, 07)
-                        if (_def.is_player && !casualty_data.pilot_ejected) {
-                            casualty_data.pilot_ejected = true;
-                            var _eject_roll = random(100);
-                            var _eject_threshold = clamp(35 + (_def.evasion * 0.45), 25, 90);
-                            if (_eject_roll < _eject_threshold) {
-                                casualty_data.pilot_survived = true;
-                                casualty_data.pilot_kia = false;
-                                add_log("[EJECTION SYSTEM ENGAGED] Emergency escape thrusters cleared blast zone! Pilot survived.");
-                                add_floating_text(_def.visual_x, _def.visual_y - 95, "COCKPIT EJECTED // PILOT SURVIVED", c_lime);
-                            } else {
-                                casualty_data.pilot_survived = false;
-                                casualty_data.pilot_kia = true;
-                                add_log("[FATAL CORE DETONATION] Escape hatch jammed! Pilot KIA confirmed.");
-                                add_floating_text(_def.visual_x, _def.visual_y - 95, "FATAL DETONATION // PILOT KIA", c_red);
-                            }
+                            spawn_combat_projectile(_cur_u, _target, _w);
+                            add_log("[FIRING SALVO] " + _cur_u.callsign + " engaged " + _target.callsign + " with " + _w.name + "!");
+                            state = COMBAT_STATE.ATTACK_EXECUTION;
+                            exit;
+                        } else {
+                            add_log("[INSUFFICIENT AP] Need " + string(_w.ap_cost) + " AP to fire " + _w.short_name + "!");
                         }
-                    } else if (_hit_part == "legs") {
-                        _def.state = MS_STATE.CRIPPLED;
-                        add_log("[MOBILITY KILL] " + _def.callsign + " HYDRAULIC LEGS CRUSHED!");
                     }
                 }
-            } else {
-                add_log("[MISS] Attack glancing deflection! No critical damage.");
-            }
-        }
-
-        // Animation finishes
-        if (pending_attack.timer <= 0) {
-            if (enemy_unit.is_destroyed) {
-                state = COMBAT_STATE.VICTORY_AAR;
-                add_log("[MISSION ACCOMPLISHED] Tactical Sector Cleared! Reaver neutralized.");
-            } else if (player_unit.is_destroyed) {
-                state = COMBAT_STATE.DEFEAT_AAR;
-                add_log("[UNIT LOST] Vanguard chassis destroyed in combat!");
-            } else {
-                // If player attacked, check if player has AP left
-                if (pending_attack.attacker.is_player) {
-                    state = COMBAT_STATE.PLAYER_PHASE;
-                } else {
-                    // Enemy finished turn, return to player
-                    state = COMBAT_STATE.PLAYER_PHASE;
-                }
             }
         }
         break;
 
     // ---------------------------------------------------------------------
-    // D. AI PHASE: Hostile Syndicate Outlaw Turn
+    // D. ATTACK EXECUTION: Waiting for In-Flight Projectiles to Resolve
     // ---------------------------------------------------------------------
-    case COMBAT_STATE.AI_PHASE:
-        state_timer++;
-        if (state_timer >= 35) {
-            state_timer = 0;
-            var _dist = calculate_distance(enemy_unit.grid_c, enemy_unit.grid_r, player_unit.grid_c, player_unit.grid_r);
-
-            // 1. AI Movement: Step closer if outside favored engagement range
-            if (_dist > 4 && enemy_unit.current_ap >= 2 && enemy_unit.components.legs.intact) {
-                if (enemy_unit.grid_c > player_unit.grid_c + 2) {
-                    enemy_unit.grid_c -= 2;
-                    enemy_unit.current_ap -= 2;
-                    add_log("[HOSTILE MANEUVER] Reaver closes distance along trench line!");
+    case COMBAT_STATE.ATTACK_EXECUTION:
+        if (array_length(projectiles) == 0) {
+            // Check Victory Condition (All Hostile Units Destroyed)
+            var _any_hostile = false;
+            for (var u = 0; u < array_length(units); u++) {
+                if (units[u].team == "HOSTILE" && !units[u].is_destroyed) {
+                    _any_hostile = true;
+                    break;
                 }
             }
-
-            // 2. AI Weapon Selection
-            var _ai_wpn_idx = -1;
-            if (enemy_unit.components.arm_left.intact && enemy_unit.current_ap >= 3 && _dist <= 6) {
-                _ai_wpn_idx = 0; // Fire 120mm Autocannon
-            } else if (enemy_unit.components.arm_right.intact && enemy_unit.current_ap >= 2 && _dist <= 4) {
-                _ai_wpn_idx = 1; // Fire Vulcan
+            if (!_any_hostile) {
+                state = COMBAT_STATE.VICTORY_AAR;
+                add_log("[SECTOR SECURED] ALL HOSTILE FORCES NEUTRALIZED! Mission accomplished.");
+                exit;
             }
 
-            if (_ai_wpn_idx != -1) {
-                var _ai_w = weapons[_ai_wpn_idx];
-                enemy_unit.current_ap -= _ai_w.ap_cost;
-                enemy_unit.current_heat += _ai_w.heat_cost;
-                enemy_unit.state = _ai_w.anim_state;
-                enemy_unit.state_timer = 32;
-                enemy_unit.recoil_x = -12 * enemy_unit.facing;
-                screen_shake = 6.0;
+            // Check Defeat Condition (All Allied Units Destroyed)
+            var _any_allied = false;
+            for (var u = 0; u < array_length(units); u++) {
+                if (units[u].team == "ALLIED" && !units[u].is_destroyed) {
+                    _any_allied = true;
+                    break;
+                }
+            }
+            if (!_any_allied) {
+                state = COMBAT_STATE.DEFEAT_AAR;
+                add_log("[CRITICAL FAILURE] ALL ALLIED MOBILE SUITS DESTROYED!");
+                exit;
+            }
 
-                pending_attack.attacker = enemy_unit;
-                pending_attack.defender = player_unit;
-                pending_attack.weapon_index = _ai_wpn_idx;
-                pending_attack.timer = 32;
-
-                add_log("[INCOMING FIRE] Reaver attacks with " + _ai_w.name + "!");
-                state = COMBAT_STATE.ATTACK_EXECUTION;
+            // Return to prior phase
+            if (auto_combat_enabled) {
+                state = COMBAT_STATE.AUTO_SIM;
+            } else if (state_timer > 0) {
+                state = COMBAT_STATE.AI_PHASE;
             } else {
-                // End AI Turn and start New Player Turn
-                turn_number++;
-                enemy_unit.current_ap = enemy_unit.max_ap;
-                enemy_unit.current_heat = max(0, enemy_unit.current_heat - enemy_unit.heat_dissipation);
-
-                // Refresh Player Turn
-                player_unit.current_ap = player_unit.max_ap;
-                player_unit.current_heat = max(0, player_unit.current_heat - player_unit.heat_dissipation);
-                player_unit.braced = false;
-
-                // Overheat Check for Player
-                if (player_unit.current_heat > 100) {
-                    player_unit.components.torso.cur = max(0, player_unit.components.torso.cur - 35);
-                    player_unit.current_ap = max(2, player_unit.current_ap - 2);
-                    screen_shake = 8.0;
-                    add_log("[OVERHEAT WARNING] Core heat limit exceeded! -35 Torso HP, AP restricted!");
-                }
-
-                add_log("[TACTICAL TURN " + string(turn_number) + "] Player Initiative Refreshed (+6 AP)!");
                 state = COMBAT_STATE.PLAYER_PHASE;
             }
         }
         break;
-}
 
-// 7. Global Keyboard Shortcuts in Battle
-if (keyboard_check_pressed(vk_space) && state == COMBAT_STATE.PLAYER_PHASE) {
-    // End Turn -> Pass to Enemy AI
-    add_log("[TURN PASSED] Ending vanguard turn. Initiative passed to hostile forces.");
-    state = COMBAT_STATE.AI_PHASE;
-    state_timer = 0;
+    // ---------------------------------------------------------------------
+    // E. AI PHASE: Hostile Syndicate Battlegroup Sequencing
+    // ---------------------------------------------------------------------
+    case COMBAT_STATE.AI_PHASE:
+        ai_action_timer++;
+        if (ai_action_timer >= 28) {
+            ai_action_timer = 0;
+
+            // Find next active hostile unit with actions
+            var _found_actor = false;
+            while (ai_unit_index < array_length(units)) {
+                var _ai_u = units[ai_unit_index];
+                if (_ai_u.team == "HOSTILE" && !_ai_u.is_destroyed && _ai_u.current_ap >= 2) {
+                    _found_actor = true;
+                    break;
+                }
+                ai_unit_index++;
+            }
+
+            if (_found_actor) {
+                var _ai_u = units[ai_unit_index];
+
+                // Find closest living allied unit
+                var _best_target = undefined;
+                var _best_dist = 999;
+                for (var u = 0; u < array_length(units); u++) {
+                    var _allied_chk = units[u];
+                    if (_allied_chk.team == "ALLIED" && !_allied_chk.is_destroyed) {
+                        var _d = calculate_distance(_ai_u.grid_c, _ai_u.grid_r, _allied_chk.grid_c, _allied_chk.grid_r);
+                        if (_d < _best_dist) {
+                            _best_dist = _d;
+                            _best_target = _allied_chk;
+                        }
+                    }
+                }
+
+                if (_best_target != undefined) {
+                    // Try to fire weapon
+                    var _fired = false;
+                    for (var w = 0; w < array_length(_ai_u.weapons); w++) {
+                        var _ai_w = _ai_u.weapons[w];
+                        if (_best_dist >= _ai_w.range_min && _best_dist <= _ai_w.range_max && _ai_u.current_ap >= _ai_w.ap_cost) {
+                            _ai_u.facing = iso_get_facing(_ai_u.grid_c, _ai_u.grid_r, _best_target.grid_c, _best_target.grid_r);
+                            _ai_u.current_ap -= _ai_w.ap_cost;
+                            _ai_u.current_heat += _ai_w.heat_cost;
+                            _ai_u.anim_state = _ai_w.anim_state;
+                            _ai_u.anim_timer = 28;
+                            _ai_u.recoil_x = (_ai_u.facing == 0 || _ai_u.facing == 2) ? -12 : 12;
+
+                            spawn_combat_projectile(_ai_u, _best_target, _ai_w);
+                            add_log("[HOSTILE ENGAGEMENT] " + _ai_u.callsign + " fires " + _ai_w.name + " at " + _best_target.callsign + "!");
+                            state = COMBAT_STATE.ATTACK_EXECUTION;
+                            state_timer = 1;
+                            _fired = true;
+                            break;
+                        }
+                    }
+
+                    // If couldn't fire, advance closer
+                    if (!_fired && _ai_u.current_ap >= 2 && _ai_u.components.legs.intact) {
+                        var _step_c = sign(_best_target.grid_c - _ai_u.grid_c);
+                        var _step_r = sign(_best_target.grid_r - _ai_u.grid_r);
+                        var _new_c = clamp(_ai_u.grid_c + _step_c, 0, grid_cols - 1);
+                        var _new_r = clamp(_ai_u.grid_r + _step_r, 0, grid_rows - 1);
+
+                        // Check elevation difference
+                        if (abs(grid_elev[_new_c][_new_r] - _ai_u.elev) <= 1) {
+                            _ai_u.facing = iso_get_facing(_ai_u.grid_c, _ai_u.grid_r, _new_c, _new_r);
+                            _ai_u.grid_c = _new_c;
+                            _ai_u.grid_r = _new_r;
+                            _ai_u.elev = grid_elev[_new_c][_new_r];
+                            _ai_u.current_ap -= 2;
+                            add_log("[HOSTILE ADVANCE] " + _ai_u.callsign + " maneuvers along trench line!");
+                        }
+                    }
+                }
+
+                ai_unit_index++;
+            } else {
+                // Hostile Phase Complete -> Refresh Next Turn
+                turn_number++;
+                for (var u = 0; u < array_length(units); u++) {
+                    var _u = units[u];
+                    _u.current_ap = _u.max_ap;
+                    _u.current_heat = max(0, _u.current_heat - _u.heat_dissipation);
+                    _u.braced = false;
+                }
+
+                ai_unit_index = 0;
+                state_timer = 0;
+                select_unit(0);
+                add_log("[INITIATIVE RESET // TURN " + string(turn_number) + "] Player Platoon Initiative Restored (+AP)!");
+                state = COMBAT_STATE.PLAYER_PHASE;
+            }
+        }
+        break;
+
+    // ---------------------------------------------------------------------
+    // F. AUTO SIMULATION: Autonomous Test Salvos Between Battlegroups
+    // ---------------------------------------------------------------------
+    case COMBAT_STATE.AUTO_SIM:
+        auto_combat_timer++;
+        if (auto_combat_timer >= 35) {
+            auto_combat_timer = 0;
+
+            // Pick random living allied unit
+            var _living_allies = [];
+            for (var u = 0; u < array_length(units); u++) if (units[u].team == "ALLIED" && !units[u].is_destroyed) array_push(_living_allies, units[u]);
+
+            // Pick random living hostile unit
+            var _living_hostiles = [];
+            for (var u = 0; u < array_length(units); u++) if (units[u].team == "HOSTILE" && !units[u].is_destroyed) array_push(_living_hostiles, units[u]);
+
+            if (array_length(_living_allies) > 0 && array_length(_living_hostiles) > 0) {
+                var _a_unit = _living_allies[irandom(array_length(_living_allies) - 1)];
+                var _h_unit = _living_hostiles[irandom(array_length(_living_hostiles) - 1)];
+
+                // 50% chance ally attacks hostile, 50% chance hostile attacks ally
+                if (irandom(1) == 0) {
+                    var _w = _a_unit.weapons[irandom(array_length(_a_unit.weapons) - 1)];
+                    _a_unit.facing = iso_get_facing(_a_unit.grid_c, _a_unit.grid_r, _h_unit.grid_c, _h_unit.grid_r);
+                    _a_unit.anim_state = _w.anim_state;
+                    _a_unit.anim_timer = 28;
+                    spawn_combat_projectile(_a_unit, _h_unit, _w);
+                    state = COMBAT_STATE.ATTACK_EXECUTION;
+                } else {
+                    var _w = _h_unit.weapons[irandom(array_length(_h_unit.weapons) - 1)];
+                    _h_unit.facing = iso_get_facing(_h_unit.grid_c, _h_unit.grid_r, _a_unit.grid_c, _a_unit.grid_r);
+                    _h_unit.anim_state = _w.anim_state;
+                    _h_unit.anim_timer = 28;
+                    spawn_combat_projectile(_h_unit, _a_unit, _w);
+                    state = COMBAT_STATE.ATTACK_EXECUTION;
+                }
+            }
+        }
+        break;
 }
-if (keyboard_check_pressed(ord("1"))) { selected_weapon = 0; state = COMBAT_STATE.TARGET_MODE; }
-if (keyboard_check_pressed(ord("2"))) { selected_weapon = 1; state = COMBAT_STATE.TARGET_MODE; }
-if (keyboard_check_pressed(ord("3"))) { selected_weapon = 2; state = COMBAT_STATE.TARGET_MODE; }
-if (keyboard_check_pressed(ord("4"))) { selected_weapon = 3; state = COMBAT_STATE.TARGET_MODE; }
-if (keyboard_check_pressed(ord("M"))) { recalculate_moves(); state = COMBAT_STATE.MOVE_MODE; }
