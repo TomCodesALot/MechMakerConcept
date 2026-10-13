@@ -459,12 +459,8 @@ if (state == COMBAT_STATE.NEMESIS_INCURSION) {
         draw_set_color(make_color_rgb(90, 100, 115));
         draw_rectangle(_port_x, _port_y, _port_x + 128, _port_y + 128, true);
 
-        if (sprite_exists(incursion_data.portrait_asset)) {
-            draw_sprite_stretched(incursion_data.portrait_asset, 0, _port_x + 2, _port_y + 2, 124, 124);
-        } else {
-            draw_set_color(make_color_rgb(180, 50, 40));
-            draw_text(_port_x + 16, _port_y + 54, "[NEMESIS]");
-        }
+        // Layered 5-Stack Procedural Portrait Compositor (Document 19, Phase 5)
+        scr_draw_composite_portrait(incursion_data.nemesis_id, _port_x, _port_y, 128, true, "enraged");
 
         // Header Information
         var _info_x = _box_x + 168;

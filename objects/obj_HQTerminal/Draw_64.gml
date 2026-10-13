@@ -1811,9 +1811,11 @@ else if (active_tab == 1) {
             for (var p = 0; p < array_length(_gm.facilities.roster_pilots); p++) {
                 var _plt = _gm.facilities.roster_pilots[p];
                 var _p_stat = _plt[$ "status"] ?? "ACTIVE";
+                var _plt_ref = _plt[$ "character_id"] ?? (_plt[$ "id"] ?? _plt);
+                scr_draw_composite_portrait(_plt_ref, _col2_x + 16, _py_start + p * 30, 24, true, "");
                 draw_set_color(_p_stat == "HOSPITALIZED" ? make_color_rgb(255, 180, 80) : c_white);
                 var _stat_tag = (_p_stat == "HOSPITALIZED") ? " [HOSPITALIZED - " + string(_plt.recovery_days_left) + "d]" : "";
-                draw_text(_col2_x + 16, _py_start + p * 30, string(p + 1) + ". " + _plt.name + " (" + _plt.callsign + ")" + _stat_tag + " - Acc: " + string(_plt.combat_stat * 10) + "% | Sal: " + string(_plt.salary_daily) + " Cr");
+                draw_text(_col2_x + 46, _py_start + p * 30 + 4, string(p + 1) + ". " + _plt.name + " (" + _plt.callsign + ")" + _stat_tag + " - Acc: " + string(_plt.combat_stat * 10) + "% | Sal: " + string(_plt.salary_daily) + " Cr");
             }
 
             // Available Hire Candidates
@@ -1821,27 +1823,38 @@ else if (active_tab == 1) {
             draw_set_color(make_color_rgb(100, 220, 255));
             draw_text(_col2_x + 16, _hire_y, "FREE AGENT PILOT REGISTRY (HIRE MARKET):");
 
+            var _hovered_cand = undefined;
             for (var h = 0; h < array_length(_gm.facilities.available_hire_pilots); h++) {
                 var _cand = _gm.facilities.available_hire_pilots[h];
-                var _cy = _hire_y + 26 + h * 68;
+                var _cy = _hire_y + 26 + h * 74;
+                var _c_h = 66;
 
                 draw_set_color(make_color_rgb(16, 24, 34));
-                draw_rectangle(_col2_x + 16, _cy, _col2_x + _col2_w - 16, _cy + 60, false);
+                draw_rectangle(_col2_x + 16, _cy, _col2_x + _col2_w - 16, _cy + _c_h, false);
                 draw_set_color(make_color_rgb(45, 75, 110));
-                draw_rectangle(_col2_x + 16, _cy, _col2_x + _col2_w - 16, _cy + 60, true);
+                draw_rectangle(_col2_x + 16, _cy, _col2_x + _col2_w - 16, _cy + _c_h, true);
+
+                // Layered 5-Stack Procedural Portrait Compositor (54x54 px)
+                var _cand_ref = _cand[$ "character_id"] ?? (_cand[$ "id"] ?? _cand);
+                scr_draw_composite_portrait(_cand_ref, _col2_x + 22, _cy + 6, 54, true, "");
 
                 draw_set_color(make_color_rgb(240, 210, 100));
-                draw_text(_col2_x + 24, _cy + 8, _cand.name + " [" + _cand.callsign + "] - " + _cand.background);
+                draw_text(_col2_x + 84, _cy + 8, _cand.name + " [" + _cand.callsign + "] - " + _cand.background);
                 draw_set_color(c_white);
-                draw_text(_col2_x + 24, _cy + 24, "Combat Rating: " + string(_cand.combat_stat) + " | Tactics Rating: " + string(_cand.tactics_stat) + " | Salary: " + string(_cand.salary_daily) + " Cr/day");
+                draw_text(_col2_x + 84, _cy + 26, "Combat Rating: " + string(_cand.combat_stat) + " | Tactics: " + string(_cand.tactics_stat) + " | Salary: " + string(_cand.salary_daily) + " Cr/day");
                 draw_set_color(make_color_rgb(100, 220, 255));
                 var _disc_tag = (_cand[$ "referral_discount"] ?? 0 > 0) ? " [FRIEND REFERRAL -25%]" : "";
-                draw_text(_col2_x + 24, _cy + 40, "Signing Bonus: " + string(_cand.signing_bonus) + " Cr" + _disc_tag);
+                draw_text(_col2_x + 84, _cy + 44, "Signing Bonus: " + string(_cand.signing_bonus) + " Cr" + _disc_tag);
+
+                // Check Card Hover for floating dossier
+                if (_mx >= _col2_x + 16 && _mx <= _col2_x + _col2_w - 160 && _my >= _cy && _my <= _cy + _c_h) {
+                    _hovered_cand = _cand;
+                }
 
                 // Hire Button
                 var _hbtn_x = _col2_x + _col2_w - 150;
-                var _hbtn_y = _cy + 14;
-                var _h_hov = (_mx >= _hbtn_x && _mx <= _hbtn_x + 130 && _my >= _hbtn_y && _my <= _hbtn_y + 32);
+                var _hbtn_y = _cy + 16;
+                var _h_hov = (_mx >= _hbtn_x && _mx <= _hbtn_x + 130 && _my >= _hbtn_y && _my <= _hbtn_y + 34);
                 if (_h_hov && _click) {
                     if (_gm.spend_funds(_cand.signing_bonus)) {
                         array_push(_gm.facilities.roster_pilots, _cand);
@@ -1853,11 +1866,51 @@ else if (active_tab == 1) {
                     }
                 }
                 draw_set_color(_h_hov ? make_color_rgb(20, 80, 40) : make_color_rgb(12, 45, 22));
-                draw_rectangle(_hbtn_x, _hbtn_y, _hbtn_x + 130, _hbtn_y + 32, false);
+                draw_rectangle(_hbtn_x, _hbtn_y, _hbtn_x + 130, _hbtn_y + 34, false);
                 draw_set_color(make_color_rgb(80, 220, 120));
-                draw_rectangle(_hbtn_x, _hbtn_y, _hbtn_x + 130, _hbtn_y + 32, true);
+                draw_rectangle(_hbtn_x, _hbtn_y, _hbtn_x + 130, _hbtn_y + 34, true);
                 draw_set_color(c_white);
-                draw_text(_hbtn_x + 12, _hbtn_y + 8, "[HIRE PILOT]");
+                draw_text(_hbtn_x + 12, _hbtn_y + 9, "[HIRE PILOT]");
+            }
+
+            // Floating Character Dossier Tooltip
+            if (!is_undefined(_hovered_cand) && instance_exists(obj_NemesisManager)) {
+                var _hov_char = obj_NemesisManager.get_character(_hovered_cand[$ "character_id"] ?? _hovered_cand[$ "id"]);
+                if (!is_undefined(_hov_char)) {
+                    var _tt_w = 420;
+                    var _tt_h = 130;
+                    var _tt_x = clamp(_mx + 16, 50, _gw - _tt_w - 20);
+                    var _tt_y = clamp(_my - 65, 80, _gh - _tt_h - 20);
+
+                    draw_set_color(make_color_rgb(8, 12, 18));
+                    draw_rectangle(_tt_x, _tt_y, _tt_x + _tt_w, _tt_y + _tt_h, false);
+                    draw_set_color(make_color_rgb(70, 130, 190));
+                    draw_rectangle(_tt_x, _tt_y, _tt_x + _tt_w, _tt_y + _tt_h, true);
+
+                    scr_draw_composite_portrait(_hov_char.id, _tt_x + 10, _tt_y + 10, 110, true, "stoic");
+
+                    draw_set_color(make_color_rgb(240, 210, 100));
+                    draw_text(_tt_x + 130, _tt_y + 10, _hov_char.name + " [" + _hov_char.callsign + "]");
+                    draw_set_color(make_color_rgb(100, 220, 255));
+                    draw_text(_tt_x + 130, _tt_y + 30, "Loyalty Tier: " + _hov_char.loyalty_tier + " | Grudge: " + string(_hov_char.grudge));
+
+                    var _li = _hov_char.love_interest;
+                    var _li_str = "None";
+                    if (!is_undefined(_li) && _li.target_id != "") {
+                        _li_str = _li.target_name + " (" + _li.archetype + ")";
+                    }
+                    draw_set_color(make_color_rgb(255, 150, 180));
+                    draw_text(_tt_x + 130, _tt_y + 50, "Romance: " + _li_str);
+
+                    var _fr_count = array_length(_hov_char.friendships);
+                    draw_set_color(make_color_rgb(130, 220, 150));
+                    draw_text(_tt_x + 130, _tt_y + 70, "Comrades: " + string(_fr_count) + " affiliated pilots");
+
+                    if (_hov_char.active_defection_hook != "") {
+                        draw_set_color(make_color_rgb(255, 200, 80));
+                        draw_text_ext(_tt_x + 130, _tt_y + 90, "History: " + _hov_char.active_defection_hook, 14, _tt_w - 140);
+                    }
+                }
             }
         }
     }
@@ -3190,7 +3243,7 @@ else if (active_tab == 3) {
 
             // Major Leader Card
             var _l_y = _d_y + 86;
-            if (sprite_exists(spr_portrait_vance)) draw_sprite_ext(spr_portrait_vance, 0, _col2_x + 20, _l_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("char_vance", _col2_x + 20, _l_y, 72, true, "stoic");
             draw_set_color(make_color_rgb(240, 210, 100));
             draw_text(_col2_x + 120, _l_y, "GENERAL DEBORAH VANCE // SUPREME LOGISTICS DIRECTOR");
             draw_set_color(c_white);
@@ -3198,7 +3251,7 @@ else if (active_tab == 3) {
 
             // Recruitable Ace 1: Marcus Cole
             var _a1_y = _l_y + 115;
-            if (sprite_exists(spr_portrait_cole)) draw_sprite_ext(spr_portrait_cole, 0, _col2_x + 20, _a1_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("plt_terran_01", _col2_x + 20, _a1_y, 72, true, "stoic");
             draw_set_color(make_color_rgb(100, 220, 255));
             draw_text(_col2_x + 120, _a1_y, "LT. MARCUS 'BREAKER' COLE [RECRUITABLE HEAVY ACE]");
             draw_set_color(c_white);
@@ -3225,7 +3278,7 @@ else if (active_tab == 3) {
 
             // Recruitable Ace 2: Elena Rostova
             var _a2_y = _a1_y + 95;
-            if (sprite_exists(spr_portrait_vance)) draw_sprite_ext(spr_portrait_vance, 0, _col2_x + 20, _a2_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("plt_terran_02", _col2_x + 20, _a2_y, 72, true, "neutral");
             draw_set_color(make_color_rgb(100, 220, 255));
             draw_text(_col2_x + 120, _a2_y, "ENSIGN ELENA ROSTOVA [RECRUITABLE SNIPER]");
             draw_set_color(c_white);
@@ -3267,14 +3320,14 @@ else if (active_tab == 3) {
             draw_text_ext(_col2_x + 20, _d_y + 36, "Doctrine: High agility vernier thrust, directed-energy beam weapons, and electronic jamming. Revolutionary spacenoid communal defense bypassing heavy armor.", 20, _col2_w - 40);
 
             var _l_y = _d_y + 86;
-            if (sprite_exists(spr_portrait_cassian)) draw_sprite_ext(spr_portrait_cassian, 0, _col2_x + 20, _l_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("char_vane", _col2_x + 20, _l_y, 72, true, "stoic");
             draw_set_color(make_color_rgb(240, 210, 100));
             draw_text(_col2_x + 120, _l_y, "FLEET COMMANDER CASSIAN VANE // LIBERATION FLOTILLA");
             draw_set_color(c_white);
             draw_text_ext(_col2_x + 120, _l_y + 22, "'Earth treats our people as indentured ore-miners while breathing the oxygen our solar scrubbers produce. Every beam rifle we forge is an invoice for two centuries of colonial tribute.'", 18, _col2_w - 140);
 
             var _a1_y = _l_y + 115;
-            if (sprite_exists(spr_portrait_sorren)) draw_sprite_ext(spr_portrait_sorren, 0, _col2_x + 20, _a1_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("plt_colony_01", _col2_x + 20, _a1_y, 72, true, "stoic");
             draw_set_color(make_color_rgb(40, 210, 180));
             draw_text(_col2_x + 120, _a1_y, "SORREN 'GHOST' LIN [RECRUITABLE INTERCEPTOR ACE]");
             draw_set_color(c_white);
@@ -3300,7 +3353,7 @@ else if (active_tab == 3) {
             draw_text(_hb1_x + 14, _hb1_y + 10, "[HIRE: 52,000 Cr]");
 
             var _a2_y = _a1_y + 95;
-            if (sprite_exists(spr_portrait_sorren)) draw_sprite_ext(spr_portrait_sorren, 0, _col2_x + 20, _a2_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("plt_colony_02", _col2_x + 20, _a2_y, 72, true, "neutral");
             draw_set_color(make_color_rgb(40, 210, 180));
             draw_text(_col2_x + 120, _a2_y, "KIRA DAHL [RECRUITABLE ELECTRONIC WARFARE]");
             draw_set_color(c_white);
@@ -3342,14 +3395,14 @@ else if (active_tab == 3) {
             draw_text_ext(_col2_x + 20, _d_y + 36, "Doctrine: Asymmetrical ambushes, scrap-welded hybrid chimeras, thermite cutters, and magnetic harpoons. Outlaw brokers trading stolen blueprints for rare isotopes.", 20, _col2_w - 40);
 
             var _l_y = _d_y + 86;
-            if (sprite_exists(spr_portrait_cruz)) draw_sprite_ext(spr_portrait_cruz, 0, _col2_x + 20, _l_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("char_cruz", _col2_x + 20, _l_y, 72, true, "stoic");
             draw_set_color(make_color_rgb(240, 210, 100));
             draw_text(_col2_x + 120, _l_y, "MADAME ROSALIND CRUZ // MATRIARCH OF SCRAP DEPOT 9");
             draw_set_color(c_white);
             draw_text_ext(_col2_x + 120, _l_y + 22, "'Earth and the Colonies have been burning each other's fleets for ten years, darling. And every time a million-dollar cockpit pops in vacuum, my boys are there with blowtorches. War is the only reliable commodity.'", 18, _col2_w - 140);
 
             var _a1_y = _l_y + 115;
-            if (sprite_exists(spr_portrait_nadia)) draw_sprite_ext(spr_portrait_nadia, 0, _col2_x + 20, _a1_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("plt_syndicate_01", _col2_x + 20, _a1_y, 72, true, "neutral");
             draw_set_color(make_color_rgb(240, 140, 40));
             draw_text(_col2_x + 120, _a1_y, "NADIA 'SPARK' ORTIZ [RECRUITABLE SCRAP MECHANIC]");
             draw_set_color(c_white);
@@ -3375,7 +3428,7 @@ else if (active_tab == 3) {
             draw_text(_hb1_x + 14, _hb1_y + 10, "[HIRE: 31,000 Cr]");
 
             var _a2_y = _a1_y + 95;
-            if (sprite_exists(spr_portrait_cole)) draw_sprite_ext(spr_portrait_cole, 0, _col2_x + 20, _a2_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("plt_syndicate_02", _col2_x + 20, _a2_y, 72, true, "enraged");
             draw_set_color(make_color_rgb(240, 140, 40));
             draw_text(_col2_x + 120, _a2_y, "'JACKAL' JAX VANCE [RECRUITABLE HARPOONER]");
             draw_set_color(c_white);
@@ -3417,14 +3470,14 @@ else if (active_tab == 3) {
             draw_text_ext(_col2_x + 20, _d_y + 36, "Doctrine: Sub-millisecond latency, carbon-nanotube musculature, monomolecular blades, and illegal direct-neural pilot man-machine interfaces.", 20, _col2_w - 40);
 
             var _l_y = _d_y + 86;
-            if (sprite_exists(spr_portrait_renzo)) draw_sprite_ext(spr_portrait_renzo, 0, _col2_x + 20, _l_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("char_takahashi", _col2_x + 20, _l_y, 72, true, "stoic");
             draw_set_color(make_color_rgb(240, 210, 100));
             draw_text(_col2_x + 120, _l_y, "DIRECTOR RENZO TAKAHASHI // VP SPECIAL WEAPONS");
             draw_set_color(c_white);
             draw_text_ext(_col2_x + 120, _l_y + 22, "'Human reaction time is limited to two hundred milliseconds. Our neural-interface bypasses ocular processing entirely, cutting weapon discharge latency to twelve. Progress requires shedding biological sentiment.'", 18, _col2_w - 140);
 
             var _a1_y = _l_y + 115;
-            if (sprite_exists(spr_portrait_null07)) draw_sprite_ext(spr_portrait_null07, 0, _col2_x + 20, _a1_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("plt_zaibatsu_01", _col2_x + 20, _a1_y, 72, true, "stoic");
             draw_set_color(make_color_rgb(180, 90, 240));
             draw_text(_col2_x + 120, _a1_y, "NULL-07 (REN) [RECRUITABLE NEURAL ACE]");
             draw_set_color(c_white);
@@ -3450,7 +3503,7 @@ else if (active_tab == 3) {
             draw_text(_hb1_x + 14, _hb1_y + 10, "[HIRE: 65,000 Cr]");
 
             var _a2_y = _a1_y + 95;
-            if (sprite_exists(spr_portrait_nadia)) draw_sprite_ext(spr_portrait_nadia, 0, _col2_x + 20, _a2_y, 0.45, 0.45, 0, c_white, 1.0);
+            scr_draw_composite_portrait("plt_zaibatsu_02", _col2_x + 20, _a2_y, 72, true, "neutral");
             draw_set_color(make_color_rgb(180, 90, 240));
             draw_text(_col2_x + 120, _a2_y, "MAYA 'KESTREL' ZHAO [RECRUITABLE DRONE TACTICIAN]");
             draw_set_color(c_white);
@@ -3922,13 +3975,16 @@ else if (active_tab == 3) {
             draw_rectangle(_col2_x + 18, _col1_y + 178, _col2_x + _col2_w - 18, _col1_y + 252, true);
 
             if (!is_undefined(_assigned_pilot)) {
+                var _p_ref = _assigned_pilot[$ "character_id"] ?? (_assigned_pilot[$ "id"] ?? _assigned_pilot);
+                scr_draw_composite_portrait(_p_ref, _col2_x + 28, _col1_y + 183, 62, true, "");
+
                 draw_set_color(c_white);
-                draw_text(_col2_x + 30, _col1_y + 188, "Pilot: " + _assigned_pilot.name + " (" + _assigned_pilot.callsign + ")");
+                draw_text(_col2_x + 98, _col1_y + 188, "Pilot: " + _assigned_pilot.name + " (" + _assigned_pilot.callsign + ")");
                 draw_set_color(make_color_rgb(160, 190, 220));
-                draw_text(_col2_x + 30, _col1_y + 208, "Combat Rating: " + string(_assigned_pilot.combat_stat) + " | Tactics Rating: " + string(_assigned_pilot.tactics_stat));
+                draw_text(_col2_x + 98, _col1_y + 208, "Combat Rating: " + string(_assigned_pilot.combat_stat) + " | Tactics Rating: " + string(_assigned_pilot.tactics_stat));
                 var _p_status_col = (_assigned_pilot.status == "ACTIVE") ? c_lime : c_red;
                 draw_set_color(_p_status_col);
-                draw_text(_col2_x + 30, _col1_y + 228, "Deployment Status: " + _assigned_pilot.status);
+                draw_text(_col2_x + 98, _col1_y + 228, "Deployment Status: " + _assigned_pilot.status);
             } else {
                 draw_set_color(c_red);
                 draw_text(_col2_x + 30, _col1_y + 208, "NO MERCENARY PILOTS IN ROSTER!");
