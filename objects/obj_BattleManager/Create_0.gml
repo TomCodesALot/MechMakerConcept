@@ -859,6 +859,13 @@ resolve_combat_impact = function(_atk, _def, _wpn, _hit_chance) {
                 screen_shake = 14.0;
                 add_floating_text(_def_sx, _def_sy - 80, "REACTOR DETONATION // CHASSIS DESTROYED", c_red);
                 add_log("[CATASTROPHIC KILL] " + _def.callsign + " REACTOR BREACH! Unit neutralized.");
+
+                // Nemesis System Event Dispatch Hook (Document 19)
+                if (instance_exists(obj_NemesisManager)) {
+                    var _vic_id = _def[$ "character_id"] ?? _def[$ "pilot_name"] ?? _def.id;
+                    var _atk_id = _atk[$ "character_id"] ?? _atk[$ "pilot_name"] ?? "player";
+                    scr_nemesis_event_dispatch(_vic_id, _atk_id, "combat_kill");
+                }
             } else if (_hit_part == "legs") {
                 _def.current_ap = min(_def.current_ap, 1);
                 add_log("[MOBILITY KILL] " + _def.callsign + " hydraulic bipedal limbs crippled!");

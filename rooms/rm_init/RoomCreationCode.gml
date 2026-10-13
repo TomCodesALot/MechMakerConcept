@@ -23,5 +23,11 @@ if (!instance_exists(obj_BlueprintManager)) {
     show_debug_message("[rm_init] Created obj_BlueprintManager");
 }
 
+// 4. Instantiate persistent obj_NemesisManager if not already created
+if (!instance_exists(obj_NemesisManager)) {
+    instance_create_depth(0, 0, 0, obj_NemesisManager);
+    show_debug_message("[rm_init] Created obj_NemesisManager");
+}
+
 show_debug_message("[rm_init] Core managers initialized. Transitioning to rm_hq_terminal...");
 room_goto(rm_hq_terminal);

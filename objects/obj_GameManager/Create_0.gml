@@ -858,3 +858,52 @@ get_mining_nodes_by_sphere = function(_sphere) {
     }
     return _filtered;
 };
+
+// =============================================================================
+// 12. Nemesis System & Pilot Relational Roster Integration (Document 19)
+// =============================================================================
+player_pilots = facilities.roster_pilots;
+
+populate_market_from_nemesis = function() {
+    if (!instance_exists(obj_NemesisManager)) return;
+    var _nem = obj_NemesisManager;
+    var _hire_candidates = [];
+
+    var _factions = ["faction_terran", "faction_colony", "faction_syndicate", "faction_zaibatsu", "independent"];
+    for (var f = 0; f < array_length(_factions); f++) {
+        var _pilots = _nem.get_faction_pilots(_factions[f], true);
+        var _take = min(2, array_length(_pilots));
+        for (var p = 0; p < _take; p++) {
+            var _c = _pilots[p];
+            var _disc = scr_get_friendship_referral_discount(_c.id);
+            var _cost = max(10000, floor(_c.hiring_cost_cr * (1.0 - _disc)));
+            var _cand = {
+                id: _c.id,
+                name: _c.name,
+                callsign: _c.callsign,
+                character_id: _c.id,
+                background: _c.role + (_c.active_defection_hook != "" ? " [" + _c.active_defection_hook + "]" : ""),
+                combat_stat: _c.tier * 3,
+                tactics_stat: _c.tier * 2 + 3,
+                salary_daily: max(150, floor(_c.salary_per_cycle_cr / 30.0)),
+                signing_bonus: _cost,
+                referral_discount: _disc,
+                love_interest_info: _c.love_interest,
+                friendship_info: _c.friendships,
+                tier: _c.tier,
+                preferred_chassis: _c.preferred_chassis
+            };
+            array_push(_hire_candidates, _cand);
+        }
+    }
+
+    if (array_length(_hire_candidates) > 0) {
+        facilities.available_hire_pilots = _hire_candidates;
+        show_debug_message("[obj_GameManager] Populated hiring market with " + string(array_length(_hire_candidates)) + " pilots from obj_NemesisManager.");
+    }
+};
+
+// Attempt initial population if NemesisManager is already instantiated
+if (instance_exists(obj_NemesisManager)) {
+    populate_market_from_nemesis();
+}

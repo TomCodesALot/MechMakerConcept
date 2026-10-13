@@ -660,6 +660,18 @@
         "name": "scr_combat_projectiles",
         "path": "scripts/scr_combat_projectiles/scr_combat_projectiles.yy"
       }
+    },
+    {
+      "id": {
+        "name": "obj_NemesisManager",
+        "path": "objects/obj_NemesisManager/obj_NemesisManager.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_nemesis_system",
+        "path": "scripts/scr_nemesis_system/scr_nemesis_system.yy"
+      }
     }
   ],
   "resourceType": "GMProject",

@@ -1835,7 +1835,8 @@ else if (active_tab == 1) {
                 draw_set_color(c_white);
                 draw_text(_col2_x + 24, _cy + 24, "Combat Rating: " + string(_cand.combat_stat) + " | Tactics Rating: " + string(_cand.tactics_stat) + " | Salary: " + string(_cand.salary_daily) + " Cr/day");
                 draw_set_color(make_color_rgb(100, 220, 255));
-                draw_text(_col2_x + 24, _cy + 40, "Signing Bonus: " + string(_cand.signing_bonus) + " Cr");
+                var _disc_tag = (_cand[$ "referral_discount"] ?? 0 > 0) ? " [FRIEND REFERRAL -25%]" : "";
+                draw_text(_col2_x + 24, _cy + 40, "Signing Bonus: " + string(_cand.signing_bonus) + " Cr" + _disc_tag);
 
                 // Hire Button
                 var _hbtn_x = _col2_x + _col2_w - 150;
