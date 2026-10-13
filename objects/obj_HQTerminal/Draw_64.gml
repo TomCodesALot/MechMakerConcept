@@ -872,8 +872,17 @@ else if (rd_subtab == 1) {
             var _diag_y = _stat_y + 195;
             draw_set_color(c_white);
             draw_text(_stat_x + 16, _diag_y, "RATED OUTPUT: 1,850 MW");
-            draw_set_color(make_color_rgb(170, 200, 230));
-            draw_text(_stat_x + 16, _diag_y + 20, "TARGET SYNC: >= 90.0% REQUIRED");
+
+            var _r_grd = reactor_last_grade;
+            var _grd_col = make_color_rgb(100, 220, 255);
+            if (_r_grd == "S") _grd_col = c_lime;
+            else if (_r_grd == "A") _grd_col = make_color_rgb(140, 255, 160);
+            else if (_r_grd == "B") _grd_col = make_color_rgb(255, 215, 80);
+            else if (_r_grd == "C") _grd_col = make_color_rgb(255, 160, 60);
+            else if (_r_grd == "D") _grd_col = c_red;
+
+            draw_set_color(_grd_col);
+            draw_text(_stat_x + 16, _diag_y + 20, "CURRENT GRADE: [" + _r_grd + "-RANK] (" + string_format(reactor_last_score, 1, 1) + "%)");
 
             // Live alignment gauge
             draw_set_color(make_color_rgb(20, 30, 44));
@@ -1016,6 +1025,12 @@ else if (rd_subtab == 1) {
             // Selected Joint Details
             var _cur_j = limb_joints[selected_limb_joint];
             var _j_band_ok = (_cur_j.stress >= 25.0 && _cur_j.stress <= 45.0);
+            var _lg_grd = limb_last_grade;
+            var _lg_lim = 115;
+            if (instance_exists(obj_BlueprintManager)) _lg_lim = obj_BlueprintManager.active_prototype_tuning.hydraulics.pilot_limit_pct;
+            draw_set_color(make_color_rgb(255, 215, 80));
+            draw_text(_info_x + 20, _info_y + 26, "BENCH GRADE: [" + _lg_grd + "-RANK] | LIMIT (GENKAI): " + string(_lg_lim) + "%");
+
             draw_set_color(make_color_rgb(100, 220, 255));
             draw_text(_info_x + 20, _info_y + 46, "TARGET JOINT: " + _cur_j.name);
             draw_set_color(c_white);
@@ -1643,8 +1658,20 @@ else if (rd_subtab == 1) {
             draw_text(_rx, _ry + 108, "* Mobility: Walk " + string(_active_suit[$ "walk_speed_kph"] ?? 40) + " km/h | Boost " + string(_active_suit[$ "boost_speed_kph"] ?? 80) + " km/h");
             draw_text(_rx, _ry + 128, "* Dimensions: Height " + string(_active_suit[$ "height_meters"] ?? 18.0) + "m | Weight " + string(_active_suit[$ "combat_weight_tonnes"] ?? 85.0) + "t");
 
+            // Gihren's Greed & Front Mission Hybrid Telemetry (Doc 20)
+            var _c_stats = undefined;
+            if (instance_exists(obj_BlueprintManager)) {
+                _c_stats = obj_BlueprintManager.get_comprehensive_stats(_active_suit);
+            }
+            if (!is_undefined(_c_stats)) {
+                draw_set_color(make_color_rgb(255, 215, 80));
+                draw_text(_rx, _ry + 148, "* Pilot Limit (Genkai): " + string(_c_stats.pilot_limit_pct) + "% | Propellant: " + string(_c_stats.propellant_max) + " EN");
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_rx, _ry + 168, "* Terrains: G:" + _c_stats.terrain.ground + " S:" + _c_stats.terrain.space + " U:" + _c_stats.terrain.urban + " T:" + _c_stats.terrain.trench + " | ECM: " + string(_c_stats.ecm_dispersion_pct) + "% | Search: " + _c_stats.sensor_search_grade);
+            }
+
             // Equipped Weapons
-            var _arms_y = _ry + 158;
+            var _arms_y = _ry + 195;
             draw_set_color(make_color_rgb(100, 220, 255));
             draw_text(_rx, _arms_y, "ARMAMENT LOADOUT:");
             var _arms = _active_suit[$ "armament"] ?? ["Autocannon", "Vulcan"];
