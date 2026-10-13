@@ -312,6 +312,56 @@ for (var b = 0; b < array_length(_btn_defs); b++) {
 }
 
 // =========================================================================
+// 4b. FLAGSHIP ORBITAL FIRE SUPPORT (Doc 23)
+// =========================================================================
+if (instance_exists(obj_GameManager) && obj_GameManager.flagship.upgrades.weapons_tier >= 2) {
+    var _fs = obj_GameManager.flagship;
+    var _orb_x = _act_x;
+    var _orb_y = _act_y - 34;
+    var _orb_w = 340;
+    var _orb_h = 28;
+    var _orb_rdy = (_fs.orbital_strike_available && state == COMBAT_STATE.PLAYER_PHASE);
+    var _orb_hov = (_mx >= _orb_x && _mx <= _orb_x + _orb_w && _my >= _orb_y && _my <= _orb_y + _orb_h);
+
+    if (_orb_rdy && _orb_hov && _click) {
+        _fs.orbital_strike_available = false;
+        _fs.orbital_strike_cooldown = 3;
+        screen_shake = 18.0;
+
+        var _targets_hit = 0;
+        for (var u = 0; u < array_length(units); u++) {
+            var _un = units[u];
+            if (_un.team == 1 && _un.is_alive) {
+                var _dmg = irandom_range(600, 1100);
+                _un.current_hp = max(0, _un.current_hp - _dmg);
+                _targets_hit++;
+                array_push(floating_texts, {
+                    x: _un.grid_c * 48,
+                    y: _un.grid_r * 48 - 20,
+                    text: "-" + string(_dmg) + " ORBITAL BLAST!",
+                    col: c_red,
+                    alpha: 1.0,
+                    life: 60
+                });
+                if (_un.current_hp <= 0) {
+                    _un.is_alive = false;
+                    add_log("[ORBITAL KILL] " + _un.callsign + " vaporized by kinetic bombardment!");
+                }
+            }
+        }
+        add_log("[ORBITAL STRIKE] USN-X Hephaestus fired spinal kinetic mass drivers! Hit " + string(_targets_hit) + " hostile units!");
+    }
+
+    draw_set_color(_orb_rdy ? (_orb_hov ? make_color_rgb(100, 30, 20) : make_color_rgb(60, 18, 12)) : make_color_rgb(18, 22, 28));
+    draw_rectangle(_orb_x, _orb_y, _orb_x + _orb_w, _orb_y + _orb_h, false);
+    draw_set_color(_orb_rdy ? make_color_rgb(255, 60, 40) : make_color_rgb(45, 60, 75));
+    draw_rectangle(_orb_x, _orb_y, _orb_x + _orb_w, _orb_y + _orb_h, true);
+    draw_set_color(_orb_rdy ? c_white : c_gray);
+    var _strike_lbl = _orb_rdy ? "* [O] CALL FLAGSHIP ORBITAL STRIKE (READY)" : ("* FLAGSHIP ORBITAL STRIKE (" + (_fs.orbital_strike_cooldown > 0 ? ("COOLDOWN: " + string(_fs.orbital_strike_cooldown) + "T") : "RELOADING") + ")");
+    draw_text_transformed(_orb_x + 10, _orb_y + 6, _strike_lbl, 0.82, 0.82, 0);
+}
+
+// =========================================================================
 // 5. LIVE COMBAT TERMINAL FEED (Bottom Right: x 930 to 1350, y: 575 to 755)
 // =========================================================================
 var _log_x = _diag_x;

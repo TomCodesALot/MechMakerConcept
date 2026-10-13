@@ -14,6 +14,8 @@ active_tab = 0;              // 0 = R&D Lab, 1 = Factory Floor, 2 = Contracts, 3
 rd_subtab = 0;               // 0 = Crucible Synthesis (Doc 02), 1 = Prototyping Minigames (Doc 03), 2 = Blueprint Specs
 war_subtab = 0;              // 0 = Sector War Map & Mining, 1 = Faction Dossiers, 2 = Faction Diplomacy Matrix (Doc 21), 3 = Decade Mecha Timeline, 4 = PMC Expedition (Doc 12)
 selected_diplo_pair = "terran_colony"; // Selected pair in Diplomacy Matrix (Doc 21)
+flagship_subtab = 0;                   // 0 = Warship & Upgrades, 1 = Celestial Navigation, 2 = Rival Corporate Competitors (Doc 23)
+selected_rival_corp = "corp_vhi";      // Selected rival corporate manufacturer
 diplo_cables_scroll_offset = 0;        // Paging offset for diplomatic cables log
 selected_faction_dossier = "faction_terran"; // "faction_terran", "faction_colony", "faction_syndicate", "faction_zaibatsu"
 selected_timeline_era = 0;   // 0 = All Eras, 1 = Y205 Prototype, 2 = Y208 Early Mass, 3 = Y211 Mainstay, 4 = Y213 Variant, 5 = Y215 Next-Gen

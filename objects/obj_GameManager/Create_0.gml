@@ -36,6 +36,80 @@ pmc_profile = {
     tier_label: "Tier-2 Mercenary Guild Standard"
 };
 
+// 4b. Pre-War Experimental Flagship: USN-X Hephaestus (Doc 23)
+// Scavenger origin: Discovered in Asteroid Belt debris; equipped with archeotech molecular fabrication bay.
+flagship = {
+    name: "USN-X Hephaestus",
+    class: "Pre-War Foundry Dreadnought",
+    origin_lore: "Unearthed from Scrapline debris; equipped with an ancient molecular nanite fabrication core.",
+    current_sphere: "Asteroid Belt",
+    destination_sphere: "",
+    transit_turns_left: 0,
+    hull_hp: 8500,
+    hull_max_hp: 8500,
+    upgrades: {
+        fabrication_tier: 1, // 1 to 4: build speed, simultaneous bays
+        mining_tier: 1,      // 1 to 4: in-sphere ore refining bonus (+25% to +100%)
+        defense_tier: 1,     // 1 to 4: flak CIWS, phase shields against node raids
+        weapons_tier: 1      // 1 to 4: spinal artillery & orbital bombardment support
+    },
+    orbital_strike_available: false,
+    orbital_strike_cooldown: 0
+};
+
+// 4c. Rival Corporate Mobile Suit Manufacturers (Doc 23)
+rival_corporations = {
+    corp_vhi: {
+        id: "corp_vhi",
+        name: "Valkyrie Heavy Industries",
+        ticker: "VHI",
+        alignment: "The Terran Coalition",
+        market_share_pct: 34,
+        hostility_pct: 15,
+        specialty: "Super-Heavy Armor & Ballistic Artillery",
+        flagship_chassis: "GHA-07 Ironclad",
+        ceo: "Baroness Victoria Sterling",
+        hq_location: "Geneva Orbital Ring (Earth)"
+    },
+    corp_aod: {
+        id: "corp_aod",
+        name: "Astraea Orbital Dynamics",
+        ticker: "AOD",
+        alignment: "The Outer Colonies",
+        market_share_pct: 28,
+        hostility_pct: 20,
+        specialty: "Micro-Gravity Verniers & Beam Weaponry",
+        flagship_chassis: "AET-01 Aether",
+        ceo: "Dr. Sorel Vance",
+        hq_location: "Galileo Aerospace Hub (Ganymede)"
+    },
+    corp_rust: {
+        id: "corp_rust",
+        name: "Rustworks Salvage Cartel",
+        ticker: "RUST",
+        alignment: "Rogue Mercenary Syndicates",
+        market_share_pct: 18,
+        hostility_pct: 35,
+        specialty: "Scavenged Junk Frames & Rotary Vulcans",
+        flagship_chassis: "SCR-12 Hyena",
+        ceo: "'Grease' Garvin",
+        hq_location: "Asteroid 433 Eros / Rust-Pike"
+    },
+    corp_hats: {
+        id: "corp_hats",
+        name: "Hyperion Advanced Tactical Systems",
+        ticker: "HATS",
+        alignment: "Apex Bio-Cybernetics Zaibatsu",
+        market_share_pct: 20,
+        hostility_pct: 25,
+        specialty: "Neural Synapse Links & Predictive Combat AI",
+        flagship_chassis: "ZAI-03 Muramasa",
+        ceo: "Director Renzo Takahashi",
+        hq_location: "Neo-Tokyo Orbital Silo (Mars)"
+    }
+};
+pmc_market_share_pct = 5;
+
 // 5. Active Inventory Struct (docs/02, 06, 07)
 inventory = {
     raw_materials: {
@@ -281,13 +355,22 @@ end_turn = function() {
     for (var n = 0; n < array_length(nodes); n++) {
         var _node = nodes[n];
         if (_node.status == "ACTIVE_MINING") {
+            // Flagship In-Sphere Refining Multiplier (Doc 23)
+            var _sphere_mult = 1.0;
+            if (variable_struct_exists(_node, "sphere") && _node.sphere == flagship.current_sphere) {
+                _sphere_mult = 1.0 + (flagship.upgrades.mining_tier * 0.25);
+            }
+            var _yield_p = max(1, floor(_node.yield_rate_primary * _sphere_mult));
+            var _yield_s = max(1, floor(_node.yield_rate_secondary * _sphere_mult));
+
             if (_node.primary_yield != "none") {
-                _node.current_storage[$ _node.primary_yield] = (_node.current_storage[$ _node.primary_yield] ?? 0) + _node.yield_rate_primary;
+                _node.current_storage[$ _node.primary_yield] = (_node.current_storage[$ _node.primary_yield] ?? 0) + _yield_p;
             }
             if (_node.secondary_yield != "none") {
-                _node.current_storage[$ _node.secondary_yield] = (_node.current_storage[$ _node.secondary_yield] ?? 0) + _node.yield_rate_secondary;
+                _node.current_storage[$ _node.secondary_yield] = (_node.current_storage[$ _node.secondary_yield] ?? 0) + _yield_s;
             }
-            array_push(last_turn_events, "* Mining Operation: " + _node.name + " mined +" + string(_node.yield_rate_primary) + " " + _node.primary_yield);
+            var _b_tag = (_sphere_mult > 1.0) ? " [FLAGSHIP REFINED]" : "";
+            array_push(last_turn_events, "* Mining Operation: " + _node.name + " mined +" + string(_yield_p) + " " + _node.primary_yield + _b_tag);
 
             // Ambient Threat Raid Roll
             var _raid_roll = random(100);
@@ -399,6 +482,9 @@ end_turn = function() {
             array_push(last_turn_events, "* WAR SHIFT: " + obj_FactionManager.territory_control.last_shift_report);
         }
     }
+
+    // 6b. Dreadnought Flagship & Rival Corporate Evaluation (Doc 23)
+    evaluate_flagship_turn();
 
     // 7. Random Narrative Event Roll (8% chance each turn if none active)
     if (is_undefined(active_event_popup) && array_length(narrative_events_list) > 0) {
@@ -871,6 +957,164 @@ get_material_data = function(_mat_id) {
 
 get_all_materials = function() {
     return periodic_table_materials;
+};
+
+// 12. Pre-War Flagship Navigation & Upgrade Engine (Doc 23)
+flagship_travel_to = function(_destination_sphere) {
+    if (_destination_sphere == flagship.current_sphere) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("ALREADY STATIONED IN " + string_upper(_destination_sphere) + "!", c_yellow);
+        return false;
+    }
+    if (flagship.transit_turns_left > 0) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("TRANSIT IN PROGRESS: " + string(flagship.transit_turns_left) + " turns left!", c_yellow);
+        return false;
+    }
+
+    flagship.destination_sphere = _destination_sphere;
+    var _spheres = ["Earth Sphere", "Martian Sphere", "Asteroid Belt", "Jovian Outer Sphere", "Saturnian Outer Sphere", "Deep Solar Frontier"];
+    var _i1 = 2;
+    var _i2 = 2;
+    for (var s = 0; s < array_length(_spheres); s++) {
+        if (_spheres[s] == flagship.current_sphere) _i1 = s;
+        if (_spheres[s] == _destination_sphere) _i2 = s;
+    }
+    var _dist = abs(_i1 - _i2);
+    flagship.transit_turns_left = max(1, min(3, _dist));
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("TRANSIT DRIVE ENGAGED: En route to " + _destination_sphere + " (" + string(flagship.transit_turns_left) + " turns)!", c_aqua);
+    }
+    return true;
+};
+
+flagship_upgrade = function(_track) {
+    var _cur_tier = flagship.upgrades[$ _track] ?? 1;
+    if (_cur_tier >= 4) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("TRACK AT MAXIMUM ARCHEOTECH TIER (TIER 4)!", c_yellow);
+        return false;
+    }
+
+    var _next_tier = _cur_tier + 1;
+    var _cost_cr = 0;
+    var _req_alloy = "";
+    var _req_qty = 5;
+
+    if (_track == "fabrication_tier") {
+        if (_next_tier == 2) { _cost_cr = 250000; _req_alloy = "alloy_vanguard_comp"; }
+        else if (_next_tier == 3) { _cost_cr = 600000; _req_alloy = "alloy_aerosteel_flux"; }
+        else if (_next_tier == 4) { _cost_cr = 1500000; _req_alloy = "alloy_adamantine_carbide"; }
+    } else if (_track == "mining_tier") {
+        if (_next_tier == 2) { _cost_cr = 200000; _req_alloy = "alloy_vanguard_comp"; }
+        else if (_next_tier == 3) { _cost_cr = 500000; _req_alloy = "alloy_hyperion_matrix"; }
+        else if (_next_tier == 4) { _cost_cr = 1200000; _req_alloy = "alloy_adamantine_carbide"; }
+    } else if (_track == "defense_tier") {
+        if (_next_tier == 2) { _cost_cr = 180000; _req_alloy = "alloy_vanguard_comp"; }
+        else if (_next_tier == 3) { _cost_cr = 450000; _req_alloy = "alloy_hyperion_matrix"; }
+        else if (_next_tier == 4) { _cost_cr = 1100000; _req_alloy = "alloy_adamantine_carbide"; }
+    } else if (_track == "weapons_tier") {
+        if (_next_tier == 2) { _cost_cr = 350000; _req_alloy = "alloy_vanguard_comp"; }
+        else if (_next_tier == 3) { _cost_cr = 800000; _req_alloy = "alloy_aerosteel_flux"; }
+        else if (_next_tier == 4) { _cost_cr = 2000000; _req_alloy = "alloy_adamantine_carbide"; }
+    }
+
+    if (funds < _cost_cr) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT FUNDS: Requires " + string(_cost_cr) + " Cr!", c_red);
+        return false;
+    }
+    if (_req_alloy != "" && get_alloy(_req_alloy) < _req_qty) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT ALLOY: Requires " + string(_req_qty) + "x " + _req_alloy + "!", c_red);
+        return false;
+    }
+
+    funds -= _cost_cr;
+    if (_req_alloy != "") spend_alloy(_req_alloy, _req_qty);
+
+    flagship.upgrades[$ _track] = _next_tier;
+
+    if (_track == "weapons_tier" && _next_tier >= 2) {
+        flagship.orbital_strike_available = true;
+    }
+
+    var _track_name = (_track == "fabrication_tier") ? "Fabrication Core" :
+                      ((_track == "mining_tier") ? "Automated Mining Sills" :
+                      ((_track == "defense_tier") ? "Hull & CIWS Defenses" : "Spinal Orbital Artillery"));
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("DREADNOUGHT UPGRADE RATIFIED! " + _track_name + " upgraded to Tier " + string(_next_tier) + "!", c_lime);
+    }
+    return true;
+};
+
+launch_corporate_sabotage = function(_corp_id) {
+    if (!variable_struct_exists(rival_corporations, _corp_id)) return false;
+    var _corp = rival_corporations[$ _corp_id];
+    var _cost = 50000;
+
+    if (funds < _cost) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT FUNDS: Black-ops sabotage costs " + string(_cost) + " Cr!", c_red);
+        return false;
+    }
+
+    funds -= _cost;
+    _corp.hostility_pct = min(100, _corp.hostility_pct + 15);
+    var _shift = min(_corp.market_share_pct, 4);
+    _corp.market_share_pct -= _shift;
+    pmc_market_share_pct = min(60, pmc_market_share_pct + _shift);
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("CORPORATE SABOTAGE SUCCESS: Siphoned " + string(_shift) + "% market share from " + _corp.ticker + " (-50,000 Cr)!", c_orange);
+    }
+    return true;
+};
+
+evaluate_flagship_turn = function() {
+    // 1. Orbital Transit countdown
+    if (flagship.transit_turns_left > 0) {
+        flagship.transit_turns_left -= 1;
+        if (flagship.transit_turns_left <= 0) {
+            flagship.current_sphere = flagship.destination_sphere;
+            flagship.destination_sphere = "";
+            array_push(last_turn_events, "* DREADNOUGHT ARRIVAL: USN-X Hephaestus established high orbit over " + flagship.current_sphere + " (+50% local mining yield active).");
+            if (instance_exists(obj_HQTerminal)) {
+                obj_HQTerminal.show_toast("FLAGSHIP ARRIVED IN " + string_upper(flagship.current_sphere) + "!", c_aqua);
+            }
+        }
+    }
+
+    // 2. Orbital Strike Weapon Cooldown
+    if (flagship.upgrades.weapons_tier >= 2) {
+        if (flagship.orbital_strike_cooldown > 0) {
+            flagship.orbital_strike_cooldown -= 1;
+            if (flagship.orbital_strike_cooldown <= 0) {
+                flagship.orbital_strike_available = true;
+            }
+        }
+    }
+
+    // 3. Dynamic Rival Corporate Market Evolution
+    if (instance_exists(obj_FactionManager)) {
+        var _fm = obj_FactionManager;
+        if (_fm.mass_production_contracts.faction_a.replaced && rival_corporations.corp_vhi.market_share_pct > 15) {
+            rival_corporations.corp_vhi.market_share_pct -= 1;
+            pmc_market_share_pct = min(75, pmc_market_share_pct + 1);
+            rival_corporations.corp_vhi.hostility_pct = min(100, rival_corporations.corp_vhi.hostility_pct + 1);
+        }
+        if (_fm.mass_production_contracts.faction_b.replaced && rival_corporations.corp_aod.market_share_pct > 15) {
+            rival_corporations.corp_aod.market_share_pct -= 1;
+            pmc_market_share_pct = min(75, pmc_market_share_pct + 1);
+            rival_corporations.corp_aod.hostility_pct = min(100, rival_corporations.corp_aod.hostility_pct + 1);
+        }
+        if (_fm.mass_production_contracts.faction_c.replaced && rival_corporations.corp_rust.market_share_pct > 10) {
+            rival_corporations.corp_rust.market_share_pct -= 1;
+            pmc_market_share_pct = min(75, pmc_market_share_pct + 1);
+            rival_corporations.corp_rust.hostility_pct = min(100, rival_corporations.corp_rust.hostility_pct + 1);
+        }
+        if (_fm.mass_production_contracts.faction_d.replaced && rival_corporations.corp_hats.market_share_pct > 10) {
+            rival_corporations.corp_hats.market_share_pct -= 1;
+            pmc_market_share_pct = min(75, pmc_market_share_pct + 1);
+            rival_corporations.corp_hats.hostility_pct = min(100, rival_corporations.corp_hats.hostility_pct + 1);
+        }
+    }
 };
 
 get_mining_nodes_by_sphere = function(_sphere) {

@@ -137,15 +137,16 @@ draw_text(_ret_btn_x + 14 + _sx, _et_y + 9 + _sy, "[★ RETIRE CAREER (SCORE)]")
 var _tabs = [
     "1. R&D LAB // ALLOY & PROTOTYPING",
     "2. FACTORY FLOOR & PERSONNEL",
-    "3. CONTRACT BOARD",
-    "4. STRATEGIC WAR MAP"
+    "3. CONTRACT BOARD & COMMERCE",
+    "4. STRATEGIC WAR MAP",
+    "5. DREADNOUGHT // WARSHIP & RIVALS"
 ];
 
-var _tab_w = (_gw - 48) / 4;
+var _tab_w = (_gw - 48) / 5;
 var _tab_y = 68;
 var _tab_h = 36;
 
-for (var tb = 0; tb < 4; tb++) {
+for (var tb = 0; tb < 5; tb++) {
     var _tbx = 24 + tb * _tab_w;
     var _tb_active = (active_tab == tb);
     var _tb_hov = (_mx >= _tbx && _mx <= _tbx + _tab_w - 6 && _my >= _tab_y && _my <= _tab_y + _tab_h);
@@ -4500,6 +4501,324 @@ else if (active_tab == 3) {
             draw_text(_col2_x + 28, _log_box_y + 8, "LATEST THEATER DISPATCH:");
             draw_set_color(c_white);
             draw_text_ext(_col2_x + 28, _log_box_y + 28, _tc.last_shift_report, 20, _col2_w - 56);
+        }
+    }
+}
+
+
+
+// -------------------------------------------------------------------------
+// TAB 4: PRE-WAR DREADNOUGHT WARSHIP & RIVAL CORPORATE ARMS CONGLOMERATES (Doc 23)
+// -------------------------------------------------------------------------
+else if (active_tab == 4) {
+    var _sub_tabs_fs = [
+        "[A. WARSHIP SCHEMATIC & FORGE CORE UPGRADES]",
+        "[B. CELESTIAL NAVIGATION & ORBITAL TRANSIT]",
+        "[C. RIVAL CORPORATE ARMS MANUFACTURERS]"
+    ];
+    var _fsub_w = 380;
+    var _fsub_y = _pan_y + 8;
+    for (var fst = 0; fst < 3; fst++) {
+        var _fstbx = _pan_x + 16 + fst * (_fsub_w + 12);
+        var _fstb_act = (flagship_subtab == fst);
+        var _fstb_hov = (_mx >= _fstbx && _mx <= _fstbx + _fsub_w && _my >= _fsub_y && _my <= _fsub_y + 28);
+        if (_fstb_hov && _click) flagship_subtab = fst;
+
+        draw_set_color(_fstb_act ? make_color_rgb(30, 70, 110) : (_fstb_hov ? make_color_rgb(20, 40, 60) : make_color_rgb(14, 22, 32)));
+        draw_rectangle(_fstbx + _sx, _fsub_y + _sy, _fstbx + _fsub_w + _sx, _fsub_y + 28 + _sy, false);
+        draw_set_color(_fstb_act ? make_color_rgb(100, 200, 255) : make_color_rgb(45, 75, 110));
+        draw_rectangle(_fstbx + _sx, _fsub_y + _sy, _fstbx + _fsub_w + _sx, _fsub_y + 28 + _sy, true);
+        draw_set_color(_fstb_act ? c_white : make_color_rgb(160, 190, 220));
+        draw_text(_fstbx + 14 + _sx, _fsub_y + 6 + _sy, _sub_tabs_fs[fst]);
+    }
+
+    if (instance_exists(obj_GameManager)) {
+        var _gm = obj_GameManager;
+        var _fs = _gm.flagship;
+
+        // =====================================================================
+        // SUBTAB 0: WARSHIP SCHEMATIC & FORGE CORE UPGRADES (Doc 23)
+        // =====================================================================
+        if (flagship_subtab == 0) {
+            var _fx = _pan_x + 24;
+            var _fy = _pan_y + 44;
+            var _fw = _pan_w - 48;
+
+            draw_set_color(make_color_rgb(100, 220, 255));
+            draw_text(_fx, _fy, "== PRE-WAR EXPERIMENTAL DREADNOUGHT: " + string_upper(_fs.name) + " (" + _fs.class + ") ==");
+
+            // Origin Lore Banner
+            var _lor_y = _fy + 22;
+            var _lor_h = 36;
+            draw_set_color(make_color_rgb(14, 20, 30));
+            draw_rectangle(_fx, _lor_y, _fx + _fw, _lor_y + _lor_h, false);
+            draw_set_color(make_color_rgb(40, 70, 105));
+            draw_rectangle(_fx, _lor_y, _fx + _fw, _lor_y + _lor_h, true);
+
+            draw_set_color(make_color_rgb(255, 220, 120));
+            draw_text(_fx + 12, _lor_y + 4, "SCAVENGER ORIGIN: " + _fs.origin_lore);
+            draw_set_color(make_color_rgb(170, 195, 220));
+            draw_text(_fx + 12, _lor_y + 20, "Stationed Orbit: " + _fs.current_sphere + "  |  Hull Armor: " + string(_fs.hull_hp) + " / " + string(_fs.hull_max_hp) + " HP  |  Transit State: " + (_fs.transit_turns_left > 0 ? ("En route to " + _fs.destination_sphere + " (" + string(_fs.transit_turns_left) + "T)") : "Stationary"));
+
+            // 4-Track Upgrade Console Grid (2x2 Cards)
+            var _upg_y_start = _lor_y + _lor_h + 12;
+            var _card_w = (_fw - 16) / 2;
+            var _card_h = 168;
+
+            var _tracks = [
+                { id: "fabrication_tier", title: "1. MOLECULAR FABRICATION CORE", icon: "FOUNDRY", desc: "Nanite crucibles printing custom chassis components at molecular scale.", alloys: ["alloy_vanguard_comp", "alloy_aerosteel_flux", "alloy_adamantine_carbide"], costs: [250000, 600000, 1500000] },
+                { id: "mining_tier", title: "2. AUTOMATED MINING SILLS & TENDERS", icon: "HARVEST", desc: "Refining shuttles boosting in-sphere raw mineral extraction yields.", alloys: ["alloy_vanguard_comp", "alloy_hyperion_matrix", "alloy_adamantine_carbide"], costs: [200000, 500000, 1200000] },
+                { id: "defense_tier", title: "3. HULL DEFENSES & POINT-DEFENSE CIWS", icon: "DEFENSE", desc: "Point-defense flak and kinetic barriers repelling pirate outpost raids.", alloys: ["alloy_vanguard_comp", "alloy_hyperion_matrix", "alloy_adamantine_carbide"], costs: [180000, 450000, 1100000] },
+                { id: "weapons_tier", title: "4. SPINAL ARTILLERY & ORBITAL STRIKES", icon: "WEAPONS", desc: "Spinal mass drivers providing tactical orbital bombardment fire in combat.", alloys: ["alloy_vanguard_comp", "alloy_aerosteel_flux", "alloy_adamantine_carbide"], costs: [350000, 800000, 2000000] }
+            ];
+
+            for (var tr = 0; tr < 4; tr++) {
+                var _trk = _tracks[tr];
+                var _col = tr % 2;
+                var _row = floor(tr / 2);
+                var _cx = _fx + _col * (_card_w + 16);
+                var _cy = _upg_y_start + _row * (_card_h + 12);
+                var _cur_t = _fs.upgrades[$ _trk.id] ?? 1;
+
+                draw_set_color(make_color_rgb(10, 16, 24));
+                draw_rectangle(_cx, _cy, _cx + _card_w, _cy + _card_h, false);
+                draw_set_color(make_color_rgb(30, 50, 75));
+                draw_rectangle(_cx, _cy, _cx + _card_w, _cy + _card_h, true);
+
+                draw_set_color(make_color_rgb(255, 215, 80));
+                draw_text(_cx + 14, _cy + 8, _trk.title);
+
+                draw_set_color(make_color_rgb(0, 220, 255));
+                draw_text(_cx + _card_w - 110, _cy + 8, "[TIER " + string(_cur_t) + " / 4]");
+
+                draw_set_color(c_white);
+                draw_text_ext(_cx + 14, _cy + 28, _trk.desc, 18, _card_w - 28);
+
+                // Tier Benefits List
+                var _benefit_str = "";
+                if (_trk.id == "fabrication_tier") {
+                    _benefit_str = (_cur_t == 1) ? "Current: 1 Build Bay (Standard Print Speed)" :
+                                   ((_cur_t == 2) ? "Current: 2 Build Bays (-25% Fabrication Time)" :
+                                   ((_cur_t == 3) ? "Current: 3 Build Bays (-50% Fabrication Time)" : "Current: 4 Build Bays (+15% Masterwork Chance)"));
+                } else if (_trk.id == "mining_tier") {
+                    _benefit_str = (_cur_t == 1) ? "Current: Manual Tender Shuttles (+25% Local Ore Yield)" :
+                                   ((_cur_t == 2) ? "Current: Automated Ore Sills (+50% Local Ore Yield)" :
+                                   ((_cur_t == 3) ? "Current: Deep-Core Mass Extractors (+75% Local Ore Yield)" : "Current: Nanite Sieve (+100% Ore Yield & Auto-Purify)"));
+                } else if (_trk.id == "defense_tier") {
+                    _benefit_str = (_cur_t == 1) ? "Current: Reinforced Titanium Plating" :
+                                   ((_cur_t == 2) ? "Current: Twin Flak CIWS (+25% Auto-Resolve Node Defense)" :
+                                   ((_cur_t == 3) ? "Current: Kinetic Deflection Grid (+50% Node Defense)" : "Current: Aegis Phase Barrier (Small Raids Nullified)"));
+                } else if (_trk.id == "weapons_tier") {
+                    _benefit_str = (_cur_t == 1) ? "Current: Basic Point Defense (No Orbital Fire Support)" :
+                                   ((_cur_t == 2) ? "Current: 600mm Spinal Mass Drivers (Orbital Strike Unlocked)" :
+                                   ((_cur_t == 3) ? "Current: High-Energy Particle Lance (Heavy AoE Grid Strike)" : "Current: Kinetic Rod Penetrator Array (Catastrophic Bombardment)"));
+                }
+
+                draw_set_color(make_color_rgb(160, 240, 180));
+                draw_text(_cx + 14, _cy + 68, _benefit_str);
+
+                // Upgrade Button & Cost
+                var _ub_y = _cy + 104;
+                var _can_upg = (_cur_t < 4);
+
+                if (_can_upg) {
+                    var _req_c = _trk.costs[_cur_t - 1];
+                    var _req_a = _trk.alloys[_cur_t - 1];
+                    var _has_f = (_gm.funds >= _req_c);
+                    var _has_a = (_gm.get_alloy(_req_a) >= 5);
+                    var _ub_hov = (_mx >= _cx + 14 && _mx <= _cx + _card_w - 14 && _my >= _ub_y && _my <= _ub_y + 44);
+
+                    if (_ub_hov && _click && _has_f && _has_a) {
+                        _gm.flagship_upgrade(_trk.id);
+                    }
+
+                    draw_set_color((_has_f && _has_a) ? (_ub_hov ? make_color_rgb(30, 70, 50) : make_color_rgb(18, 40, 28)) : make_color_rgb(18, 22, 28));
+                    draw_rectangle(_cx + 14, _ub_y, _cx + _card_w - 14, _ub_y + 44, false);
+                    draw_set_color((_has_f && _has_a) ? make_color_rgb(80, 220, 120) : make_color_rgb(45, 60, 75));
+                    draw_rectangle(_cx + 14, _ub_y, _cx + _card_w - 14, _ub_y + 44, true);
+
+                    draw_set_color((_has_f && _has_a) ? c_white : c_gray);
+                    draw_text(_cx + 24, _ub_y + 6, "[UPGRADE TO TIER " + string(_cur_t + 1) + "]");
+                    draw_set_color((_has_f && _has_a) ? make_color_rgb(200, 255, 200) : c_gray);
+                    draw_text(_cx + 24, _ub_y + 24, "Cost: " + string(_req_c) + " Cr  +  5x " + _req_a);
+                } else {
+                    draw_set_color(make_color_rgb(20, 32, 45));
+                    draw_rectangle(_cx + 14, _ub_y, _cx + _card_w - 14, _ub_y + 44, false);
+                    draw_set_color(make_color_rgb(60, 140, 220));
+                    draw_rectangle(_cx + 14, _ub_y, _cx + _card_w - 14, _ub_y + 44, true);
+                    draw_set_color(make_color_rgb(100, 220, 255));
+                    draw_text(_cx + 24, _ub_y + 14, "★ MAX ARCHEOTECH TIER 4 RATIFIED");
+                }
+            }
+        }
+
+        // =====================================================================
+        // SUBTAB 1: CELESTIAL NAVIGATION & ORBITAL TRANSIT (Doc 23)
+        // =====================================================================
+        else if (flagship_subtab == 1) {
+            var _nx = _pan_x + 24;
+            var _ny = _pan_y + 44;
+            var _nw = _pan_w - 48;
+
+            draw_set_color(make_color_rgb(100, 220, 255));
+            draw_text(_nx, _ny, "== SOL SYSTEM CELESTIAL NAVIGATION & ORBITAL TRANSIT (docs/23) ==");
+            draw_set_color(make_color_rgb(160, 190, 220));
+            draw_text(_nx, _ny + 18, "Stationing the USN-X Hephaestus in a planetary sphere boosts local mining yields by +25% to +100% and links fleet fire support.");
+
+            var _spheres_data = [
+                { id: "Earth Sphere", name: "Earth Sphere & L-5 Lagrange", desc: "Low Earth orbit industrial habitats and lunar staging bases. Controlled by Terran Coalition." },
+                { id: "Martian Sphere", name: "Martian Orbital Sphere", desc: "Phobos garrison yards and Olympus basalt research platforms. High corporate presence." },
+                { id: "Asteroid Belt", name: "The Asteroid Belt Fringe", desc: "Ceres hub and Psyche metal spires. Vast mineral veins and Scrapline debris." },
+                { id: "Jovian Outer Sphere", name: "Jovian Outer Moon System", desc: "Europa hydrothermal vents and Io volcanic calderas. Stronghold of the Outer Colonies." },
+                { id: "Saturnian Outer Sphere", name: "Saturnian Ring Platforms", desc: "Titan methane basins and Enceladus cryo-refineries. Contested industrial outpost." },
+                { id: "Deep Solar Frontier", name: "Deep Solar Void & Kuiper Belt", desc: "Derelict shipyards and unpoliced pirate redoubts. Extreme resource hazards." }
+            ];
+
+            var _sp_y_start = _ny + 44;
+            var _sp_card_h = 72;
+
+            for (var si = 0; si < array_length(_spheres_data); si++) {
+                var _spd = _spheres_data[si];
+                var _spy = _sp_y_start + si * (_sp_card_h + 8);
+                var _is_here = (_fs.current_sphere == _spd.id);
+                var _is_target = (_fs.destination_sphere == _spd.id);
+
+                draw_set_color(_is_here ? make_color_rgb(18, 42, 60) : (_is_target ? make_color_rgb(45, 36, 16) : make_color_rgb(10, 16, 24)));
+                draw_rectangle(_nx, _spy, _nx + _nw, _spy + _sp_card_h, false);
+                draw_set_color(_is_here ? make_color_rgb(0, 220, 255) : (_is_target ? make_color_rgb(255, 180, 40) : make_color_rgb(30, 50, 75)));
+                draw_rectangle(_nx, _spy, _nx + _nw, _spy + _sp_card_h, true);
+
+                draw_set_color(c_white);
+                draw_text(_nx + 16, _spy + 8, _spd.name);
+
+                var _stat_badge = _is_here ? "[FLAGSHIP STATIONED HERE - +50% ORE BOOST ACTIVE]" :
+                                  (_is_target ? ("[TRANSIT IN PROGRESS: " + string(_fs.transit_turns_left) + " TURNS REMAINING]") : "[ORBITAL CONCESSION]");
+                draw_set_color(_is_here ? make_color_rgb(0, 240, 255) : (_is_target ? make_color_rgb(255, 200, 50) : make_color_rgb(140, 170, 200)));
+                draw_text(_nx + _nw - 16 - string_width(_stat_badge), _spy + 8, _stat_badge);
+
+                draw_set_color(make_color_rgb(170, 195, 220));
+                draw_text(_nx + 16, _spy + 28, _spd.desc);
+
+                // Transit Button
+                if (!_is_here && !_is_target) {
+                    var _tb_x = _nx + _nw - 220;
+                    var _tb_y = _spy + 34;
+                    var _tb_w = 205;
+                    var _tb_h = 28;
+                    var _tb_hov = (_mx >= _tb_x && _mx <= _tb_x + _tb_w && _my >= _tb_y && _my <= _tb_y + _tb_h);
+
+                    if (_tb_hov && _click) {
+                        _gm.flagship_travel_to(_spd.id);
+                    }
+
+                    draw_set_color(_tb_hov ? make_color_rgb(30, 70, 100) : make_color_rgb(18, 38, 55));
+                    draw_rectangle(_tb_x, _tb_y, _tb_x + _tb_w, _tb_y + _tb_h, false);
+                    draw_set_color(make_color_rgb(80, 180, 255));
+                    draw_rectangle(_tb_x, _tb_y, _tb_x + _tb_w, _tb_y + _tb_h, true);
+                    draw_set_color(c_white);
+                    draw_text(_tb_x + 14, _tb_y + 6, "[ENGAGE TRANSIT DRIVE]");
+                }
+            }
+        }
+
+        // =====================================================================
+        // SUBTAB 2: RIVAL CORPORATE ARMS MANUFACTURERS (Doc 23)
+        // =====================================================================
+        else if (flagship_subtab == 2) {
+            var _rx = _pan_x + 24;
+            var _ry = _pan_y + 44;
+            var _rw = _pan_w - 48;
+
+            draw_set_color(make_color_rgb(100, 220, 255));
+            draw_text(_rx, _ry, "== RIVAL CORPORATE ARMS CONGLOMERATES & SOL MARKET MONOPOLIES (docs/23) ==");
+
+            // Sol Market Share Bar
+            var _mbar_y = _ry + 24;
+            var _mbar_h = 24;
+            draw_set_color(make_color_rgb(10, 16, 24));
+            draw_rectangle(_rx, _mbar_y, _rx + _rw, _mbar_y + _mbar_h, false);
+
+            var _rc = _gm.rival_corporations;
+            var _vhi_w = (_rw * (_rc.corp_vhi.market_share_pct / 100.0));
+            var _aod_w = (_rw * (_rc.corp_aod.market_share_pct / 100.0));
+            var _rst_w = (_rw * (_rc.corp_rust.market_share_pct / 100.0));
+            var _hat_w = (_rw * (_rc.corp_hats.market_share_pct / 100.0));
+            var _pmc_w = (_rw * (_gm.pmc_market_share_pct / 100.0));
+
+            var _cur_bx = _rx;
+            draw_set_color(make_color_rgb(60, 130, 240)); draw_rectangle(_cur_bx, _mbar_y, _cur_bx + _vhi_w, _mbar_y + _mbar_h, false); _cur_bx += _vhi_w;
+            draw_set_color(make_color_rgb(40, 210, 180)); draw_rectangle(_cur_bx, _mbar_y, _cur_bx + _aod_w, _mbar_y + _mbar_h, false); _cur_bx += _aod_w;
+            draw_set_color(make_color_rgb(240, 140, 40)); draw_rectangle(_cur_bx, _mbar_y, _cur_bx + _rst_w, _mbar_y + _mbar_h, false); _cur_bx += _rst_w;
+            draw_set_color(make_color_rgb(180, 90, 240)); draw_rectangle(_cur_bx, _mbar_y, _cur_bx + _hat_w, _mbar_y + _mbar_h, false); _cur_bx += _hat_w;
+            draw_set_color(make_color_rgb(255, 215, 60)); draw_rectangle(_cur_bx, _mbar_y, min(_rx + _rw, _cur_bx + _pmc_w), _mbar_y + _mbar_h, false);
+
+            draw_set_color(make_color_rgb(45, 75, 110));
+            draw_rectangle(_rx, _mbar_y, _rx + _rw, _mbar_y + _mbar_h, true);
+
+            draw_set_color(c_white);
+            draw_text(_rx + 12, _mbar_y + 4, "Sol Arms Market Share: VHI " + string(_rc.corp_vhi.market_share_pct) + "% | AOD " + string(_rc.corp_aod.market_share_pct) + "% | RUST " + string(_rc.corp_rust.market_share_pct) + "% | HATS " + string(_rc.corp_hats.market_share_pct) + "% | YOUR PMC: " + string(_gm.pmc_market_share_pct) + "%");
+
+            // 4 Corporate Dossiers Grid
+            var _corp_keys = ["corp_vhi", "corp_aod", "corp_rust", "corp_hats"];
+            var _cd_y_start = _mbar_y + _mbar_h + 12;
+            var _cd_w = (_rw - 16) / 2;
+            var _cd_h = 165;
+
+            for (var ci = 0; ci < 4; ci++) {
+                var _cid = _corp_keys[ci];
+                var _cp = _rc[$ _cid];
+                var _col = ci % 2;
+                var _row = floor(ci / 2);
+                var _cdx = _rx + _col * (_cd_w + 16);
+                var _cdy = _cd_y_start + _row * (_cd_h + 12);
+
+                draw_set_color(make_color_rgb(10, 16, 24));
+                draw_rectangle(_cdx, _cdy, _cdx + _cd_w, _cdy + _cd_h, false);
+                draw_set_color(make_color_rgb(30, 50, 75));
+                draw_rectangle(_cdx, _cdy, _cdx + _cd_w, _cdy + _cd_h, true);
+
+                draw_set_color(make_color_rgb(255, 215, 80));
+                draw_text(_cdx + 14, _cdy + 8, _cp.name + " [" + _cp.ticker + "]");
+
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_cdx + _cd_w - 140, _cdy + 8, "Market: " + string(_cp.market_share_pct) + "%");
+
+                draw_set_color(make_color_rgb(170, 195, 220));
+                draw_text(_cdx + 14, _cdy + 28, "CEO: " + _cp.ceo + "  |  HQ: " + _cp.hq_location);
+                draw_text(_cdx + 14, _cdy + 46, "Alignment: " + _cp.alignment + "  |  Specialty: " + _cp.specialty);
+                draw_text(_cdx + 14, _cdy + 64, "Flagship Product: " + _cp.flagship_chassis);
+
+                // Corporate Hostility Gauge
+                var _hbar_x = _cdx + 14;
+                var _hbar_y = _cdy + 86;
+                var _hbar_w = _cd_w - 28;
+                var _hbar_h = 10;
+                draw_set_color(make_color_rgb(20, 28, 38));
+                draw_rectangle(_hbar_x, _hbar_y, _hbar_x + _hbar_w, _hbar_y + _hbar_h, false);
+
+                var _hw = (_hbar_w * (_cp.hostility_pct / 100.0));
+                var _hcol = (_cp.hostility_pct >= 75) ? make_color_rgb(255, 60, 60) :
+                            ((_cp.hostility_pct >= 40) ? make_color_rgb(255, 170, 40) : make_color_rgb(80, 220, 120));
+                draw_set_color(_hcol);
+                draw_rectangle(_hbar_x, _hbar_y, _hbar_x + _hw, _hbar_y + _hbar_h, false);
+
+                draw_set_color(make_color_rgb(180, 200, 220));
+                draw_text(_cdx + 14, _cdy + 100, "Corporate Hostility: " + string(_cp.hostility_pct) + "% " + (_cp.hostility_pct >= 75 ? "[KILL-TEAMS ACTIVE]" : ""));
+
+                // Sabotage Action Button
+                var _sb_y = _cdy + 124;
+                var _sb_hov = (_mx >= _cdx + 14 && _mx <= _cdx + 280 && _my >= _sb_y && _my <= _sb_y + 28);
+                if (_sb_hov && _click) {
+                    _gm.launch_corporate_sabotage(_cid);
+                }
+
+                draw_set_color(_sb_hov ? make_color_rgb(70, 40, 20) : make_color_rgb(38, 22, 12));
+                draw_rectangle(_cdx + 14, _sb_y, _cdx + 280, _sb_y + 28, false);
+                draw_set_color(make_color_rgb(255, 140, 40));
+                draw_rectangle(_cdx + 14, _sb_y, _cdx + 280, _sb_y + 28, true);
+                draw_set_color(c_white);
+                draw_text(_cdx + 20, _sb_y + 6, "[CORPORATE SABOTAGE (-50k Cr)]");
+            }
         }
     }
 }
