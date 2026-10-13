@@ -60,3 +60,6 @@ Temporary Items
 
 # GMRT build directory
 Build
+# Python cache
+__pycache__/
+*.pyc
