@@ -294,3 +294,53 @@ for (var i = 0; i < _len; i++) {
         }
     }
 }
+
+// =========================================================================
+// 8. PROCEDURAL NEMESIS DROP-POD AMBUSH WORLD RENDERING (Document 19)
+// =========================================================================
+if (state == COMBAT_STATE.NEMESIS_INCURSION || incursion_data.impact_fx_played) {
+    var _tc = incursion_data.target_c;
+    var _tr = incursion_data.target_r;
+    var _te = grid_elev[_tc][_tr];
+    var _tx = iso_to_screen_x(_tc, _tr, _te, cam_x + _sx, cam_y + _sy, zoom);
+    var _ty = iso_to_screen_y(_tc, _tr, _te, cam_x + _sx, cam_y + _sy, zoom);
+
+    // 1. Landing Target Reticle & Blast Ring
+    if (state == COMBAT_STATE.NEMESIS_INCURSION && incursion_data.pod_altitude > 0) {
+        var _pulse = 0.5 + 0.5 * sin(current_time * 0.015);
+        draw_set_color(make_color_rgb(255, 60, 40));
+        draw_set_alpha(0.7 * _pulse);
+        draw_ellipse(_tx - 32 * zoom, _ty - 16 * zoom, _tx + 32 * zoom, _ty + 16 * zoom, true);
+        draw_ellipse(_tx - 16 * zoom, _ty - 8 * zoom, _tx + 16 * zoom, _ty + 8 * zoom, true);
+        draw_line(_tx - 40 * zoom, _ty, _tx + 40 * zoom, _ty);
+        draw_line(_tx, _ty - 20 * zoom, _tx, _ty + 20 * zoom);
+        draw_set_alpha(1.0);
+
+        // 2. Descending Atmospheric Drop-Pod Capsule & Plasma Streak
+        var _pod_y = _ty - incursion_data.pod_altitude * zoom;
+
+        // Plasma trail / fire streak extending upward
+        draw_set_color(make_color_rgb(255, 120, 30));
+        draw_line_width(_tx, _pod_y, _tx - 4 * zoom, _pod_y - 120 * zoom, 4.0 * zoom);
+        draw_set_color(make_color_rgb(255, 230, 100));
+        draw_line_width(_tx, _pod_y, _tx - 2 * zoom, _pod_y - 80 * zoom, 2.0 * zoom);
+
+        // Armored Drop-Pod Cone (Titanium Capsule with Ablative Heat Shield)
+        draw_set_color(make_color_rgb(45, 50, 60)); // Dark hull
+        draw_triangle(_tx - 14 * zoom, _pod_y - 28 * zoom, _tx + 14 * zoom, _pod_y - 28 * zoom, _tx, _pod_y, false);
+        draw_set_color(make_color_rgb(255, 90, 40)); // Glowing ablative nose
+        draw_triangle(_tx - 6 * zoom, _pod_y - 10 * zoom, _tx + 6 * zoom, _pod_y - 10 * zoom, _tx, _pod_y, false);
+        draw_set_color(make_color_rgb(200, 210, 225));
+        draw_triangle(_tx - 14 * zoom, _pod_y - 28 * zoom, _tx + 14 * zoom, _pod_y - 28 * zoom, _tx, _pod_y, true);
+    }
+
+    // 3. Persistent Ground Scorch & Detonation Crater
+    if (incursion_data.impact_fx_played) {
+        draw_set_color(make_color_rgb(25, 20, 20));
+        draw_set_alpha(0.65);
+        draw_ellipse(_tx - 28 * zoom, _ty - 14 * zoom, _tx + 28 * zoom, _ty + 14 * zoom, false);
+        draw_set_color(make_color_rgb(180, 70, 30));
+        draw_ellipse(_tx - 18 * zoom, _ty - 9 * zoom, _tx + 18 * zoom, _ty + 9 * zoom, true);
+        draw_set_alpha(1.0);
+    }
+}

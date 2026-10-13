@@ -18,7 +18,8 @@ enum COMBAT_STATE {
     AI_PHASE,
     AUTO_SIM,
     VICTORY_AAR,
-    DEFEAT_AAR
+    DEFEAT_AAR,
+    NEMESIS_INCURSION
 }
 
 state = COMBAT_STATE.PLAYER_PHASE;
@@ -29,6 +30,107 @@ auto_combat_enabled = false;
 auto_combat_timer = 0;
 ai_action_timer = 0;
 ai_unit_index = 0;
+
+// 2b. Nemesis Drop-Pod Atmospheric Ambush Incursion (Document 19, Phase 4)
+nemesis_incursion_checked = false;
+nemesis_incursion_active = false;
+nemesis_incursion_turn = irandom_range(3, 4);
+nemesis_incursion_state = 0; // 0=Warning Siren, 1=Atmospheric Descent Streak, 2=Impact Detonation & Shockwave, 3=Comms Intercom Bark, 4=Complete
+nemesis_incursion_timer = 0;
+
+incursion_data = {
+    nemesis_id: "",
+    nemesis_name: "",
+    callsign: "",
+    faction_id: "faction_syndicate",
+    preferred_chassis: "HYE-03",
+    portrait_asset: spr_portrait_cruz,
+    bark_dialogue: "",
+    target_unit_id: "ALLIED_0",
+    target_c: 10,
+    target_r: 10,
+    pod_altitude: 650.0,
+    impact_fx_played: false
+};
+
+evaluate_nemesis_incursion = function() {
+    var _candidate = undefined;
+    var _nem_mgr = instance_exists(obj_NemesisManager) ? obj_NemesisManager : undefined;
+
+    if (!is_undefined(_nem_mgr) && array_length(_nem_mgr.active_nemeses) > 0) {
+        var _list = _nem_mgr.active_nemeses;
+        var _pick_entry = _list[0];
+        _candidate = _nem_mgr.get_character(_pick_entry.pilot_id);
+    }
+
+    if (is_undefined(_candidate)) {
+        if (!is_undefined(_nem_mgr)) {
+            _candidate = _nem_mgr.get_character("pilot_syndicate_jackal");
+            if (is_undefined(_candidate)) _candidate = _nem_mgr.get_character("pilot_zaibatsu_null07");
+        }
+    }
+
+    if (is_undefined(_candidate)) {
+        _candidate = {
+            id: "pilot_syndicate_jackal",
+            name: "Jax 'Jackal' Vance",
+            callsign: "JACKAL",
+            faction_id: "faction_syndicate",
+            preferred_chassis: "HYE-03",
+            role: "Reaver Pirate Ace",
+            morale: 90,
+            combat_trauma_mode: "berserker_rage"
+        };
+    }
+
+    // Determine target landing zone: offset 3-5 tiles from player flagship
+    var _cmd_c = 10;
+    var _cmd_r = 10;
+    for (var u = 0; u < array_length(units); u++) {
+        if (units[u].team == "ALLIED" && !units[u].is_destroyed) {
+            _cmd_c = units[u].grid_c;
+            _cmd_r = units[u].grid_r;
+            break;
+        }
+    }
+
+    var _offset_c = irandom_range(3, 5) * (choose(-1, 1));
+    var _offset_r = irandom_range(3, 5) * (choose(-1, 1));
+    var _land_c = clamp(_cmd_c + _offset_c, 2, grid_cols - 3);
+    var _land_r = clamp(_cmd_r + _offset_r, 2, grid_rows - 3);
+
+    incursion_data.nemesis_id = _candidate.id;
+    incursion_data.nemesis_name = _candidate.name;
+    incursion_data.callsign = _candidate.callsign;
+    incursion_data.faction_id = _candidate[$ "current_faction_id"] ?? _candidate.faction_id;
+    incursion_data.preferred_chassis = _candidate[$ "preferred_chassis"] ?? "HYE-03";
+    incursion_data.target_c = _land_c;
+    incursion_data.target_r = _land_r;
+    incursion_data.pod_altitude = 650.0;
+    incursion_data.impact_fx_played = false;
+
+    // Resolve portrait asset
+    var _port = spr_portrait_cruz;
+    if (incursion_data.faction_id == "faction_terran") _port = spr_portrait_vance;
+    else if (incursion_data.faction_id == "faction_colony") _port = spr_portrait_cassian;
+    else if (incursion_data.faction_id == "faction_zaibatsu") _port = spr_portrait_null07;
+    else if (string_pos("jackal", incursion_data.nemesis_id) > 0) _port = spr_portrait_cole;
+    incursion_data.portrait_asset = _port;
+
+    // Contextual dialogue bark
+    var _trauma = _candidate[$ "combat_trauma_mode"] ?? "";
+    if (_trauma == "berserker_rage") {
+        incursion_data.bark_dialogue = "You took what was mine! I don't care about Earth's treaty—your squad dies in this trench!";
+    } else if (_trauma == "suicidal_charge") {
+        incursion_data.bark_dialogue = "I locked my reactor override before atmospheric re-entry. We both burn together!";
+    } else {
+        incursion_data.bark_dialogue = "Mercenary! You thought that fusion flare took me out? I've tracked your telemetry down to this crater!";
+    }
+
+    nemesis_incursion_active = true;
+    add_log("[RADAR SIREN] HIGH-VELOCITY RE-ENTRY DETECTED: Capsule impact at Grid (" + string(_land_c) + ", " + string(_land_r) + ")!");
+    return true;
+};
 
 // 3. Isometric Battlefield Dimensions (20 Cols x 20 Rows)
 grid_cols = 20;

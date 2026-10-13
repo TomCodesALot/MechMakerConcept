@@ -413,3 +413,82 @@ if (state == COMBAT_STATE.VICTORY_AAR || state == COMBAT_STATE.DEFEAT_AAR) {
     draw_set_color(c_white);
     draw_text(_btn_p_x + 28, _btn_p_y + 12, "[PROCEED TO HQ COMMAND TERMINAL]");
 }
+
+// =========================================================================
+// 9. PROCEDURAL NEMESIS DROP-POD AMBUSH HUD & COMMS INTERCOM (Document 19)
+// =========================================================================
+if (state == COMBAT_STATE.NEMESIS_INCURSION) {
+    // 1. Top Flashing Atmospheric Warning Banner
+    var _banner_w = 900;
+    var _banner_h = 52;
+    var _banner_x = (1366 - _banner_w) * 0.5;
+    var _banner_y = 18;
+
+    var _flash = (current_time mod 400 < 200);
+    draw_set_color(_flash ? make_color_rgb(180, 20, 20) : make_color_rgb(100, 10, 10));
+    draw_rectangle(_banner_x, _banner_y, _banner_x + _banner_w, _banner_y + _banner_h, false);
+    draw_set_color(_flash ? make_color_rgb(255, 180, 60) : make_color_rgb(200, 40, 40));
+    draw_rectangle(_banner_x, _banner_y, _banner_x + _banner_w, _banner_y + _banner_h, true);
+
+    draw_set_color(c_white);
+    draw_text(_banner_x + 22, _banner_y + 10, "▲ EMERGENCY WARNING: UNIDENTIFIED DROP-POD TRAJECTORY DETECTED // SECTOR BREACH ▲");
+    draw_set_color(make_color_rgb(255, 220, 120));
+    var _alt_str = (incursion_data.pod_altitude > 0) ? ("DESCENT ALTITUDE: " + string(floor(incursion_data.pod_altitude)) + " METERS // IMPACT IMMINENT") : "ATMOSPHERIC PENETRATION CONFIRMED // TARGET ON GRID";
+    draw_text(_banner_x + 22, _banner_y + 28, _alt_str);
+
+    // 2. Substate 3: Front Mission Retro Comms Intercom Dialog Window
+    if (nemesis_incursion_state >= 3) {
+        var _box_w = 780;
+        var _box_h = 210;
+        var _box_x = (1366 - _box_w) * 0.5;
+        var _box_y = 510;
+
+        // Outer Beveled SNES Metallic Frame
+        draw_set_color(make_color_rgb(14, 18, 24));
+        draw_rectangle(_box_x, _box_y, _box_x + _box_w, _box_y + _box_h, false);
+        draw_set_color(make_color_rgb(110, 120, 135)); // Highlight border
+        draw_rectangle(_box_x, _box_y, _box_x + _box_w, _box_y + _box_h, true);
+        draw_set_color(make_color_rgb(45, 50, 60)); // Inner recessed shadow
+        draw_rectangle(_box_x + 2, _box_y + 2, _box_x + _box_w - 2, _box_y + _box_h - 2, true);
+
+        // Pilot Portrait Box (128x128 inside frame)
+        var _port_x = _box_x + 20;
+        var _port_y = _box_y + 24;
+        draw_set_color(make_color_rgb(8, 10, 14));
+        draw_rectangle(_port_x, _port_y, _port_x + 128, _port_y + 128, false);
+        draw_set_color(make_color_rgb(90, 100, 115));
+        draw_rectangle(_port_x, _port_y, _port_x + 128, _port_y + 128, true);
+
+        if (sprite_exists(incursion_data.portrait_asset)) {
+            draw_sprite_stretched(incursion_data.portrait_asset, 0, _port_x + 2, _port_y + 2, 124, 124);
+        } else {
+            draw_set_color(make_color_rgb(180, 50, 40));
+            draw_text(_port_x + 16, _port_y + 54, "[NEMESIS]");
+        }
+
+        // Header Information
+        var _info_x = _box_x + 168;
+        draw_set_color(make_color_rgb(255, 140, 40));
+        draw_text(_info_x, _box_y + 18, "[PRIORITY COMMS OVERRIDE] " + string_upper(incursion_data.faction_id));
+
+        draw_set_color(make_color_rgb(240, 220, 120));
+        draw_text(_info_x, _box_y + 38, incursion_data.nemesis_name + " [\"" + incursion_data.callsign + "\"] - " + incursion_data.preferred_chassis);
+
+        // Crimson Nemesis Badge
+        draw_set_color(make_color_rgb(180, 20, 20));
+        draw_rectangle(_info_x, _box_y + 58, _info_x + 230, _box_y + 78, false);
+        draw_set_color(make_color_rgb(255, 80, 80));
+        draw_rectangle(_info_x, _box_y + 58, _info_x + 230, _box_y + 78, true);
+        draw_set_color(c_white);
+        draw_text(_info_x + 10, _box_y + 61, "▲ VENDETTA INVASION ACE ▲");
+
+        // Dialogue Bark Text
+        draw_set_color(make_color_rgb(220, 235, 255));
+        draw_text_ext(_info_x, _box_y + 92, "\"" + incursion_data.bark_dialogue + "\"", 20, _box_w - 188);
+
+        // Dismiss Prompt
+        var _prompt_flash = (current_time mod 600 < 350);
+        draw_set_color(_prompt_flash ? make_color_rgb(80, 230, 140) : make_color_rgb(40, 150, 90));
+        draw_text(_box_x + _box_w - 320, _box_y + _box_h - 26, "[CLICK OR SPACE TO ENGAGE TARGET]");
+    }
+}

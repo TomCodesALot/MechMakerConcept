@@ -180,6 +180,14 @@ switch (state) {
         if (keyboard_check_pressed(ord("2"))) { selected_weapon = 1; state = COMBAT_STATE.TARGET_MODE; }
         if (keyboard_check_pressed(ord("3"))) { selected_weapon = 2; state = COMBAT_STATE.TARGET_MODE; }
         if (keyboard_check_pressed(ord("4"))) { selected_weapon = 3; state = COMBAT_STATE.TARGET_MODE; }
+        if (keyboard_check_pressed(ord("N")) && state == COMBAT_STATE.PLAYER_PHASE) {
+            if (evaluate_nemesis_incursion()) {
+                state = COMBAT_STATE.NEMESIS_INCURSION;
+                nemesis_incursion_state = 0;
+                nemesis_incursion_timer = 0;
+                add_log("[MANUAL TRIGGER] Nemesis incursion drop-pod dispatched!");
+            }
+        }
         if (keyboard_check_pressed(ord("B"))) {
             var _cur_u = units[selected_unit_idx];
             if (_cur_u.current_ap >= 2) {
@@ -341,16 +349,30 @@ switch (state) {
             if (_found_actor) {
                 var _ai_u = units[ai_unit_index];
 
-                // Find closest living allied unit
+                // Find closest living allied unit (or Nemesis Priority Target)
                 var _best_target = undefined;
                 var _best_dist = 999;
-                for (var u = 0; u < array_length(units); u++) {
-                    var _allied_chk = units[u];
-                    if (_allied_chk.team == "ALLIED" && !_allied_chk.is_destroyed) {
-                        var _d = calculate_distance(_ai_u.grid_c, _ai_u.grid_r, _allied_chk.grid_c, _allied_chk.grid_r);
-                        if (_d < _best_dist) {
-                            _best_dist = _d;
-                            _best_target = _allied_chk;
+
+                // Nemesis Threat Priority Override (Document 19)
+                if (_ai_u[$ "is_nemesis"] == true) {
+                    for (var u = 0; u < array_length(units); u++) {
+                        if (units[u].id == _ai_u.nemesis_target_id && !units[u].is_destroyed) {
+                            _best_target = units[u];
+                            _best_dist = calculate_distance(_ai_u.grid_c, _ai_u.grid_r, units[u].grid_c, units[u].grid_r);
+                            break;
+                        }
+                    }
+                }
+
+                if (_best_target == undefined) {
+                    for (var u = 0; u < array_length(units); u++) {
+                        var _allied_chk = units[u];
+                        if (_allied_chk.team == "ALLIED" && !_allied_chk.is_destroyed) {
+                            var _d = calculate_distance(_ai_u.grid_c, _ai_u.grid_r, _allied_chk.grid_c, _allied_chk.grid_r);
+                            if (_d < _best_dist) {
+                                _best_dist = _d;
+                                _best_target = _allied_chk;
+                            }
                         }
                     }
                 }
@@ -411,8 +433,175 @@ switch (state) {
                 state_timer = 0;
                 select_unit(0);
                 add_log("[INITIATIVE RESET // TURN " + string(turn_number) + "] Player Platoon Initiative Restored (+AP)!");
+
+                // Check Procedural Nemesis Drop-Pod Ambush Incursion (Document 19)
+                if (turn_number >= nemesis_incursion_turn && !nemesis_incursion_checked) {
+                    nemesis_incursion_checked = true;
+                    if (evaluate_nemesis_incursion()) {
+                        state = COMBAT_STATE.NEMESIS_INCURSION;
+                        nemesis_incursion_state = 0;
+                        nemesis_incursion_timer = 0;
+                        exit;
+                    }
+                }
+
                 state = COMBAT_STATE.PLAYER_PHASE;
             }
+        }
+        break;
+
+    // ---------------------------------------------------------------------
+    // E2. NEMESIS INCURSION: Atmospheric Drop-Pod Descent & Comms Bark (Document 19)
+    // ---------------------------------------------------------------------
+    case COMBAT_STATE.NEMESIS_INCURSION:
+        nemesis_incursion_timer++;
+
+        // Substate 0: Warning Siren & Camera Pan (Frames 0 to 50)
+        if (nemesis_incursion_state == 0) {
+            screen_shake = max(screen_shake, 3.5);
+            var _t_c = incursion_data.target_c;
+            var _t_r = incursion_data.target_r;
+            cam_target_x = -(iso_to_screen_x(_t_c, _t_r, 0, 0, 0, 1.0) - 1366 * 0.5);
+            cam_target_y = -(iso_to_screen_y(_t_c, _t_r, 0, 0, 0, 1.0) - 768 * 0.5);
+
+            if (nemesis_incursion_timer >= 50) {
+                nemesis_incursion_state = 1;
+                nemesis_incursion_timer = 0;
+            }
+        }
+        // Substate 1: Atmospheric Descent Streak (Frames 51 to 120)
+        else if (nemesis_incursion_state == 1) {
+            incursion_data.pod_altitude = max(0, incursion_data.pod_altitude - 11.0);
+            screen_shake = max(screen_shake, 6.0 + (1.0 - (incursion_data.pod_altitude / 650.0)) * 8.0);
+
+            // Reentry plasma particles
+            var _tc = incursion_data.target_c;
+            var _tr = incursion_data.target_r;
+            var _tx = iso_to_screen_x(_tc, _tr, 0, cam_x, cam_y, zoom);
+            var _ty = iso_to_screen_y(_tc, _tr, 0, cam_x, cam_y, zoom) - incursion_data.pod_altitude * zoom;
+
+            array_push(combat_fx, {
+                sprite: spr_fx_spark,
+                x: _tx + irandom_range(-15, 15),
+                y: _ty + irandom_range(-10, 10),
+                frame: 0.0,
+                speed: 0.4,
+                scale: 1.5 * zoom
+            });
+
+            if (incursion_data.pod_altitude <= 0) {
+                nemesis_incursion_state = 2;
+                nemesis_incursion_timer = 0;
+            }
+        }
+        // Substate 2: Impact Detonation & Unit Insertion (Frames 121 to 170)
+        else if (nemesis_incursion_state == 2) {
+            if (!incursion_data.impact_fx_played) {
+                incursion_data.impact_fx_played = true;
+                screen_shake = 26.0;
+
+                var _tc = incursion_data.target_c;
+                var _tr = incursion_data.target_r;
+                var _tx = iso_to_screen_x(_tc, _tr, 0, cam_x, cam_y, zoom);
+                var _ty = iso_to_screen_y(_tc, _tr, 0, cam_x, cam_y, zoom);
+
+                // Spawn explosion blast ring
+                for (var ex = 0; ex < 6; ex++) {
+                    var _ang = ex * (360.0 / 6.0);
+                    array_push(combat_fx, {
+                        sprite: spr_fx_explosion,
+                        x: _tx + lengthdir_x(25.0 * zoom, _ang),
+                        y: _ty + lengthdir_y(15.0 * zoom, _ang),
+                        frame: 0.0,
+                        speed: 0.35,
+                        scale: 1.6 * zoom
+                    });
+                }
+
+                add_floating_text(_tx, _ty - 70, "ORBITAL IMPACT // NEMESIS INVASION", c_red);
+                add_log("[DROP-POD IMPACT] Atmospheric breach confirmed at Grid (" + string(_tc) + ", " + string(_tr) + ")!");
+
+                // Stagger adjacent units
+                for (var u = 0; u < array_length(units); u++) {
+                    var _adj_u = units[u];
+                    if (!_adj_u.is_destroyed) {
+                        var _dist = calculate_distance(_tc, _tr, _adj_u.grid_c, _adj_u.grid_r);
+                        if (_dist <= 1) {
+                            _adj_u.components.torso.cur = max(10, _adj_u.components.torso.cur - 40);
+                            add_log("[SHOCKWAVE] " + _adj_u.callsign + " suffered -40 Kinetic Shock damage from drop-pod impact!");
+                        }
+                    }
+                }
+
+                // Spawn Nemesis Mobile Suit into units array
+                var _type = "hyena";
+                if (string_pos("GHA", incursion_data.preferred_chassis) > 0 || string_pos("ironclad", incursion_data.preferred_chassis) > 0) _type = "ironclad";
+                else if (string_pos("AET", incursion_data.preferred_chassis) > 0 || string_pos("aether", incursion_data.preferred_chassis) > 0) _type = "aether";
+                else if (string_pos("MUR", incursion_data.preferred_chassis) > 0 || string_pos("muramasa", incursion_data.preferred_chassis) > 0) _type = "muramasa";
+
+                var _nem_u = {
+                    id: "NEMESIS_" + incursion_data.nemesis_id,
+                    callsign: incursion_data.callsign + " [NEMESIS]",
+                    pilot_name: incursion_data.nemesis_name,
+                    team: "HOSTILE",
+                    is_nemesis: true,
+                    nemesis_target_id: "ALLIED_0",
+                    mech_type: _type,
+                    grid_c: _tc,
+                    grid_r: _tr,
+                    elev: grid_elev[_tc][_tr],
+                    visual_x: 0,
+                    visual_y: 0,
+                    facing: 0,
+                    max_ap: 8,
+                    current_ap: 8,
+                    current_heat: 0.0,
+                    max_heat: 120.0,
+                    heat_dissipation: 45.0,
+                    accuracy: 94,
+                    evasion: 55,
+                    braced: false,
+                    components: _create_components(850, 520, 680, 240, 310, 36),
+                    weapons: [
+                        { name: "Nemesis Overcharged Cannon", short_name: "120MM SABOT", proj_type: "KINETIC_CANNON", ap_cost: 3, heat_cost: 16, range_min: 1, range_max: 7, damage: 220, anim_state: "fire_rifle", desc: "Overcharged sabot with explosive breach." },
+                        { name: "Blood-Feud Heavy Vulcan", short_name: "HEAVY VULCAN", proj_type: "ROTARY_VULCAN", ap_cost: 2, heat_cost: 10, range_min: 1, range_max: 4, damage: 115, anim_state: "fire_chaingun", desc: "Sustained kinetic barrage." },
+                        { name: "Vengeance Micro-Missile Pod", short_name: "SWARM MISSILES", proj_type: "MICRO_MISSILE", ap_cost: 4, heat_cost: 24, range_min: 2, range_max: 7, damage: 240, anim_state: "fire_missiles", desc: "Saturation cluster." },
+                        { name: "Hydraulic Breaching Claw", short_name: "CRUSHER CLAW", proj_type: "MELEE", ap_cost: 3, heat_cost: 12, range_min: 1, range_max: 1, damage: 280, anim_state: "melee", desc: "Savage close-quarters armor peel." }
+                    ],
+                    anim_state: "idle",
+                    anim_timer: 0,
+                    anim_frame: 0.0,
+                    anim_speed: 0.18,
+                    recoil_x: 0,
+                    recoil_y: 0,
+                    recoil_shake: 0,
+                    image_blend: make_color_rgb(255, 90, 80),
+                    is_destroyed: false
+                };
+
+                array_push(units, _nem_u);
+            }
+
+            if (nemesis_incursion_timer >= 50) {
+                nemesis_incursion_state = 3;
+                nemesis_incursion_timer = 0;
+            }
+        }
+        // Substate 3: Comms Intercom Bark Window (Interactive Dismiss)
+        else if (nemesis_incursion_state == 3) {
+            var _click = mouse_check_button_pressed(mb_left);
+            var _space = keyboard_check_pressed(vk_space);
+            if (_click || _space || nemesis_incursion_timer >= 300) {
+                nemesis_incursion_state = 4;
+            }
+        }
+        // Substate 4: Insertion Complete -> Return to Combat
+        else if (nemesis_incursion_state == 4) {
+            add_log("[NEMESIS ENGAGED] " + incursion_data.nemesis_name + " has locked combat targeting onto player vanguard!");
+            state = COMBAT_STATE.PLAYER_PHASE;
+            nemesis_incursion_state = 0;
+            nemesis_incursion_timer = 0;
+            select_unit(0);
         }
         break;
 
