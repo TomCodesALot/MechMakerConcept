@@ -8,6 +8,7 @@ show_debug_message("[obj_BattleManager] Initializing Grand-Scale Isometric Battl
 if (!instance_exists(obj_GameManager)) instance_create_depth(0, 0, 0, obj_GameManager);
 if (!instance_exists(obj_FactionManager)) instance_create_depth(0, 0, 0, obj_FactionManager);
 if (!instance_exists(obj_BlueprintManager)) instance_create_depth(0, 0, 0, obj_BlueprintManager);
+if (!instance_exists(obj_NemesisManager)) instance_create_depth(0, 0, 0, obj_NemesisManager);
 
 // 2. Combat State Machine Enums & Variables
 enum COMBAT_STATE {

@@ -568,7 +568,7 @@ apply_tuning_to_custom_mech = function(_custom_mech) {
 
     // Apply Thruster Calibration
     if (_t.grade != "UNTESTED") {
-        _custom_mech.speed = floor(_custom_mech.speed * _t.thrust_mult);
+        _custom_mech.speed = max(1, floor(_custom_mech.speed * _t.thrust_mult));
         _custom_mech[$ "evasion_bonus"] = _t.evasion_bonus;
         _custom_mech[$ "propellant_max"] = floor(150 * _t.fuel_eff_mult);
         _custom_mech[$ "propellant_cur"] = _custom_mech.propellant_max;
