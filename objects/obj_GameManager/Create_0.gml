@@ -391,10 +391,13 @@ end_turn = function() {
         }
     }
 
-    // 6. Weekly Dynamic War Map Simulation Shift (docs/04)
-    if (current_turn % 7 == 0 && instance_exists(obj_FactionManager)) {
-        obj_FactionManager.simulate_war_turn();
-        array_push(last_turn_events, "* WAR SHIFT: " + obj_FactionManager.territory_control.last_shift_report);
+    // 6. Dynamic War Map & Faction AI Turn Evaluation (docs/04, docs/21)
+    if (instance_exists(obj_FactionManager)) {
+        obj_FactionManager.evaluate_faction_ai_turn();
+        if (current_turn % 7 == 0) {
+            obj_FactionManager.simulate_war_turn();
+            array_push(last_turn_events, "* WAR SHIFT: " + obj_FactionManager.territory_control.last_shift_report);
+        }
     }
 
     // 7. Random Narrative Event Roll (8% chance each turn if none active)

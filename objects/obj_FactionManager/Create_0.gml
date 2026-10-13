@@ -140,6 +140,162 @@ mass_production_contracts = {
 factions_overthrown = [];
 pmc_expeditions_launched = 0;
 
+// 4c. Bilateral Diplomatic Relations Matrix & Geopolitical AI Engine (docs/21)
+// Tracks 6 unique bilateral faction pairs, Tension (0-100), treaty timers, and state machines.
+diplomatic_relations = {
+    terran_colony: {
+        pair_id: "terran_colony",
+        faction_1: "faction_a",
+        faction_2: "faction_b",
+        name_1: "The Terran Coalition",
+        name_2: "The Outer Colonies",
+        state: "WAR", // WAR, COLD_WAR, TRUCE, ALLIANCE, NON_AGGRESSION
+        tension: 88,
+        base_friction: 3.0,
+        treaty_turns_left: 0,
+        treaty_max_turns: 0,
+        casus_belli: "Orbital Colonial Sovereignty & Jovian Gas Mine Hegemony",
+        historical_grievance: "Centuries of Earth-centric colonial taxation & repressive mineral tariffs",
+        total_wars_fought: 4,
+        war_duration_turns: 8,
+        last_event_turn: 1
+    },
+    terran_syndicate: {
+        pair_id: "terran_syndicate",
+        faction_1: "faction_a",
+        faction_2: "faction_c",
+        name_1: "The Terran Coalition",
+        name_2: "Rogue Mercenary Syndicates",
+        state: "COLD_WAR",
+        tension: 68,
+        base_friction: 2.5,
+        treaty_turns_left: 0,
+        treaty_max_turns: 0,
+        casus_belli: "Smuggling contraband past Earth orbital blockades",
+        historical_grievance: "Ruthless federal crackdowns on free-trader merchant networks",
+        total_wars_fought: 2,
+        war_duration_turns: 0,
+        last_event_turn: 1
+    },
+    terran_zaibatsu: {
+        pair_id: "terran_zaibatsu",
+        faction_1: "faction_a",
+        faction_2: "faction_d",
+        name_1: "The Terran Coalition",
+        name_2: "Apex Bio-Cybernetics Zaibatsu",
+        state: "NON_AGGRESSION",
+        tension: 35,
+        base_friction: 1.0,
+        treaty_turns_left: 0,
+        treaty_max_turns: 0,
+        casus_belli: "Corporate sovereign charter and patent tax disputes",
+        historical_grievance: "Federal antitrust threats vs corporate sovereign immunity claims",
+        total_wars_fought: 1,
+        war_duration_turns: 0,
+        last_event_turn: 1
+    },
+    colony_syndicate: {
+        pair_id: "colony_syndicate",
+        faction_1: "faction_b",
+        faction_2: "faction_c",
+        name_1: "The Outer Colonies",
+        name_2: "Rogue Mercenary Syndicates",
+        state: "ALLIANCE",
+        tension: 42,
+        base_friction: 1.0,
+        treaty_turns_left: 14,
+        treaty_max_turns: 18,
+        casus_belli: "Mutual defense pact against Earth imperial expansion",
+        historical_grievance: "Syndicate price-gouging on life-support parts during blockades",
+        total_wars_fought: 1,
+        war_duration_turns: 0,
+        last_event_turn: 1
+    },
+    colony_zaibatsu: {
+        pair_id: "colony_zaibatsu",
+        faction_1: "faction_b",
+        faction_2: "faction_d",
+        name_1: "The Outer Colonies",
+        name_2: "Apex Bio-Cybernetics Zaibatsu",
+        state: "COLD_WAR",
+        tension: 62,
+        base_friction: 2.0,
+        treaty_turns_left: 0,
+        treaty_max_turns: 0,
+        casus_belli: "Zaibatsu patent monopolies and cybernetic pilot debt indentures",
+        historical_grievance: "Colony mineral strikes sabotaged by Zaibatsu black-ops contractors",
+        total_wars_fought: 2,
+        war_duration_turns: 0,
+        last_event_turn: 1
+    },
+    syndicate_zaibatsu: {
+        pair_id: "syndicate_zaibatsu",
+        faction_1: "faction_c",
+        faction_2: "faction_d",
+        name_1: "Rogue Mercenary Syndicates",
+        name_2: "Apex Bio-Cybernetics Zaibatsu",
+        state: "TRUCE",
+        tension: 45,
+        base_friction: 1.5,
+        treaty_turns_left: 9,
+        treaty_max_turns: 14,
+        casus_belli: "Stolen neuro-link blueprints and pirated bioware tech",
+        historical_grievance: "Cartel raids on offshore research installations",
+        total_wars_fought: 3,
+        war_duration_turns: 0,
+        last_event_turn: 1
+    }
+};
+
+// 4d. Live Diplomatic Cables Log (Command Deck Teletype Feed, docs/21)
+diplomatic_cables_log = [
+    {
+        id: "cable_hist_01",
+        turn: 1,
+        sender: "The Terran Coalition",
+        recipient: "The Outer Colonies",
+        title: "DECLARATION OF UNRESTRICTED ENGAGEMENT",
+        body: "Federal High Command authorizes unrestricted kinetic strikes along Sector 4 trenches. All colonial craft in Jovian orbit designated hostile.",
+        priority: "URGENT",
+        state: "WAR"
+    },
+    {
+        id: "cable_hist_02",
+        turn: 1,
+        sender: "The Outer Colonies",
+        recipient: "Rogue Mercenary Syndicates",
+        title: "JOVIAN MUTUAL DEFENSE ACCORD RATIFIED",
+        body: "Colonial Council ratifies mutual defense pact with Free-Trader Guilds. Joint patrols established along Jupiter orbital corridor.",
+        priority: "HIGH",
+        state: "ALLIANCE"
+    },
+    {
+        id: "cable_hist_03",
+        turn: 1,
+        sender: "Apex Bio-Cybernetics Zaibatsu",
+        recipient: "Rogue Mercenary Syndicates",
+        title: "CEASEFIRE ACCORD: CALLISTO PATENT SETTLEMENT",
+        body: "Hostilities suspended for 14 turns following neutral arbitration over seized cybernetic neural schematics.",
+        priority: "NORMAL",
+        state: "TRUCE"
+    },
+    {
+        id: "cable_hist_04",
+        turn: 1,
+        sender: "The Terran Coalition",
+        recipient: "Apex Bio-Cybernetics Zaibatsu",
+        title: "FEDERAL-CORPORATE NON-AGGRESSION PACT",
+        body: "Terran Ministry of Commerce confirms mutual non-aggression and preferential tariff status with Zaibatsu industrial habitats.",
+        priority: "NORMAL",
+        state: "NON_AGGRESSION"
+    }
+];
+
+// Anti-Hegemonic Coalition Tracker (Balance-of-Power Anti-Blobbing, docs/21)
+hegemon_faction_id = "";
+coalition_active = false;
+
+
 // 5. Contract Queues (docs/04)
 active_contracts = [];       // Currently accepted contracts with active deadlines
 available_contracts = [
@@ -239,49 +395,416 @@ modify_standing = function(_faction_id, _delta) {
     return set_standing(_faction_id, _current + _delta);
 };
 
-// 7. Dynamic Macro War Map Simulation (docs/04, docs/12)
+// 7. Dynamic Macro War Map & Faction AI Diplomacy Engine (docs/04, docs/12, docs/21)
+
+// 7a. Add Diplomatic Cable to Teletype Log
+add_diplomatic_cable = function(_sender, _recipient, _title, _body, _priority, _state) {
+    var _c_turn = (instance_exists(obj_GameManager)) ? obj_GameManager.current_turn : 1;
+    var _cable = {
+        id: "cable_" + string(_c_turn) + "_" + string(irandom(9999)),
+        turn: _c_turn,
+        sender: _sender,
+        recipient: _recipient,
+        title: _title,
+        body: _body,
+        priority: _priority,
+        state: _state
+    };
+    array_push(diplomatic_cables_log, _cable);
+    if (array_length(diplomatic_cables_log) > 30) {
+        array_delete(diplomatic_cables_log, 0, 1);
+    }
+    if (_priority == "URGENT" && instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("DIPLOMATIC CRISIS: " + _title, c_red);
+    } else if (_priority == "HIGH" && instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("DIPLOMATIC NOTICE: " + _title, c_aqua);
+    }
+    return _cable;
+};
+
+// 7b. Query Bilateral Relation by Faction IDs
+get_relation = function(_f1, _f2) {
+    var _keys = variable_struct_get_names(diplomatic_relations);
+    for (var k = 0; k < array_length(_keys); k++) {
+        var _rel = diplomatic_relations[$ _keys[k]];
+        if ((_rel.faction_1 == _f1 && _rel.faction_2 == _f2) || (_rel.faction_1 == _f2 && _rel.faction_2 == _f1)) {
+            return _rel;
+        }
+    }
+    return undefined;
+};
+
+get_relation_by_id = function(_pair_id) {
+    if (variable_struct_exists(diplomatic_relations, _pair_id)) {
+        return diplomatic_relations[$ _pair_id];
+    }
+    return undefined;
+};
+
+// 7c. Set Diplomatic State & Record Communiqué
+set_diplomatic_state = function(_pair_id, _new_state, _duration, _reason) {
+    var _rel = get_relation_by_id(_pair_id);
+    if (is_undefined(_rel)) return;
+    
+    var _old_state = _rel.state;
+    _rel.state = _new_state;
+    _rel.treaty_turns_left = _duration;
+    _rel.treaty_max_turns = _duration;
+    _rel.last_event_turn = (instance_exists(obj_GameManager)) ? obj_GameManager.current_turn : 1;
+    
+    var _priority = (_new_state == "WAR") ? "URGENT" : ((_new_state == "ALLIANCE" || _new_state == "TRUCE") ? "HIGH" : "NORMAL");
+    var _title = _rel.name_1 + " & " + _rel.name_2 + ": " + _new_state;
+    var _body = _reason + " (State transitioned from " + _old_state + " to " + _new_state + ").";
+    add_diplomatic_cable(_rel.name_1, _rel.name_2, _title, _body, _priority, _new_state);
+};
+
+// 7d. Modify Bilateral Tension (clamped 0 to 100)
+modify_bilateral_tension = function(_pair_id, _delta, _reason) {
+    var _rel = get_relation_by_id(_pair_id);
+    if (is_undefined(_rel)) return;
+
+    var _old = _rel.tension;
+    _rel.tension = clamp(_rel.tension + _delta, 0, 100);
+
+    // Alliance Paranoia Check (Break alliance if tension reaches 75+)
+    if (_rel.state == "ALLIANCE" && _rel.tension >= 75) {
+        if (_rel.tension >= 85) {
+            declare_war(_pair_id, "ALLIED BETRAYAL: Mounting espionage and tensions reached 85+. Alliance shattered into open war!");
+        } else {
+            set_diplomatic_state(_pair_id, "COLD_WAR", 0, "ALLIANCE FRACTURE: Tension reached " + string(_rel.tension) + " due to mutual paranoia and espionage.");
+        }
+    }
+    // Cold War Boiling Point Check (Escalate to War at 85+)
+    else if ((_rel.state == "COLD_WAR" || _rel.state == "NON_AGGRESSION") && _rel.tension >= 85) {
+        declare_war(_pair_id, "BOILING POINT: Bilateral tension reached " + string(_rel.tension) + " over " + _rel.casus_belli + ".");
+    }
+};
+
+// 7e. Formal Declaration of War
+declare_war = function(_pair_id, _casus_belli) {
+    var _rel = get_relation_by_id(_pair_id);
+    if (is_undefined(_rel)) return;
+
+    _rel.state = "WAR";
+    _rel.tension = max(88, _rel.tension);
+    _rel.treaty_turns_left = 0;
+    _rel.treaty_max_turns = 0;
+    _rel.war_duration_turns = 0;
+    _rel.total_wars_fought += 1;
+    _rel.last_event_turn = (instance_exists(obj_GameManager)) ? obj_GameManager.current_turn : 1;
+
+    var _title = "WAR DECLARED: " + string_upper(_rel.name_1) + " VS " + string_upper(_rel.name_2);
+    var _body = "Hostilities commenced! Casus Belli: " + _casus_belli + ". All active treaties voided.";
+    add_diplomatic_cable(_rel.name_1, _rel.name_2, _title, _body, "URGENT", "WAR");
+};
+
+// 7f. Broker Ceasefire Truce
+broker_truce = function(_pair_id, _duration, _reason) {
+    var _rel = get_relation_by_id(_pair_id);
+    if (is_undefined(_rel)) return;
+
+    _rel.state = "TRUCE";
+    _rel.tension = 40;
+    _rel.treaty_turns_left = _duration;
+    _rel.treaty_max_turns = _duration;
+    _rel.war_duration_turns = 0;
+    _rel.last_event_turn = (instance_exists(obj_GameManager)) ? obj_GameManager.current_turn : 1;
+
+    var _title = "CEASEFIRE ACCORD: " + string_upper(_rel.name_1) + " - " + string_upper(_rel.name_2);
+    var _body = "Armistice signed for " + string(_duration) + " turns. " + _reason;
+    add_diplomatic_cable(_rel.name_1, _rel.name_2, _title, _body, "HIGH", "TRUCE");
+};
+
+// 7g. Broker Coalition Alliance
+broker_alliance = function(_pair_id, _duration, _reason) {
+    var _rel = get_relation_by_id(_pair_id);
+    if (is_undefined(_rel)) return;
+
+    _rel.state = "ALLIANCE";
+    _rel.tension = max(20, _rel.tension - 25);
+    _rel.treaty_turns_left = _duration;
+    _rel.treaty_max_turns = _duration;
+    _rel.war_duration_turns = 0;
+    _rel.last_event_turn = (instance_exists(obj_GameManager)) ? obj_GameManager.current_turn : 1;
+
+    var _title = "MUTUAL DEFENSE ALLIANCE: " + string_upper(_rel.name_1) + " + " + string_upper(_rel.name_2);
+    var _body = "Military alliance ratified for " + string(_duration) + " turns. Joint defense pact established. " + _reason;
+    add_diplomatic_cable(_rel.name_1, _rel.name_2, _title, _body, "HIGH", "ALLIANCE");
+};
+
+// 7h. Turn Evaluation: Faction AI Geopolitical Simulation (docs/21)
+evaluate_faction_ai_turn = function() {
+    var _keys = variable_struct_get_names(diplomatic_relations);
+
+    for (var k = 0; k < array_length(_keys); k++) {
+        var _pid = _keys[k];
+        var _rel = diplomatic_relations[$ _pid];
+
+        // 1. Decrement treaty countdowns
+        if (_rel.treaty_turns_left > 0) {
+            _rel.treaty_turns_left -= 1;
+        }
+
+        // 2. State-Specific Dynamics & Mathematical Balancing (docs/21)
+        switch (_rel.state) {
+            case "ALLIANCE":
+                // Core Rule: Alliance Paranoia (+2.5 Tension/turn) to ensure alliances are NOT permanent!
+                _rel.tension = min(100, _rel.tension + 2.5);
+
+                // Check for treaty expiration or paranoia fracture (tension >= 75)
+                if (_rel.treaty_turns_left <= 0 || _rel.tension >= 75) {
+                    if (_rel.tension >= 85) {
+                        declare_war(_pid, "Alliance shattered in betrayal after covert espionage incident!");
+                    } else {
+                        set_diplomatic_state(_pid, "COLD_WAR", 0, "Alliance expired amidst mutual suspicion and border friction.");
+                    }
+                }
+                break;
+
+            case "TRUCE":
+                // Truce Exhaustion: Tension cools by -2.0 per turn
+                _rel.tension = max(0, _rel.tension - 2.0);
+
+                // Check for truce expiration
+                if (_rel.treaty_turns_left <= 0) {
+                    if (_rel.tension >= 60) {
+                        set_diplomatic_state(_pid, "COLD_WAR", 0, "Ceasefire accord expired with unresolved territorial grievances.");
+                    } else {
+                        set_diplomatic_state(_pid, "NON_AGGRESSION", 0, "Ceasefire normalized into fragile border non-aggression.");
+                    }
+                }
+                break;
+
+            case "COLD_WAR":
+                // Drift by Base Friction + minor variance
+                var _c_drift = _rel.base_friction + irandom_range(-1, 2);
+                _rel.tension = clamp(_rel.tension + _c_drift, 0, 100);
+
+                if (_rel.tension >= 85) {
+                    declare_war(_pid, "Covert skirmishes breached the threshold of full-scale warfare.");
+                }
+                break;
+
+            case "NON_AGGRESSION":
+                // Low tension drift
+                var _n_drift = (_rel.base_friction * 0.5) + irandom_range(-1, 1);
+                _rel.tension = clamp(_rel.tension + _n_drift, 0, 100);
+
+                if (_rel.tension >= 50) {
+                    set_diplomatic_state(_pid, "COLD_WAR", 0, "Ideological tension and trade tariffs eroded non-aggression pact.");
+                }
+                break;
+
+            case "WAR":
+                _rel.war_duration_turns += 1;
+                // War exhaustion rolls after prolonged conflict (10+ turns)
+                if (_rel.war_duration_turns >= 10 && random(100) < 22.0) {
+                    broker_truce(_pid, irandom_range(10, 18), "Severe military attrition forces both factions to accept armistice terms.");
+                }
+                break;
+        }
+    }
+
+    // 3. Balance-of-Power Anti-Blobbing (Rubber-Banding, docs/21)
+    // Check if any single faction controls > 40% of Sol territory
+    var _tc = territory_control;
+    var _pcts = [
+        { id: "faction_a", name: "The Terran Coalition", pct: _tc.terran_pct },
+        { id: "faction_b", name: "The Outer Colonies", pct: _tc.colony_pct },
+        { id: "faction_c", name: "Rogue Mercenary Syndicates", pct: _tc.syndicate_pct },
+        { id: "faction_d", name: "Apex Bio-Cybernetics Zaibatsu", pct: _tc.zaibatsu_pct }
+    ];
+
+    var _hegemon = undefined;
+    for (var p = 0; p < array_length(_pcts); p++) {
+        if (_pcts[p].pct >= 40) {
+            _hegemon = _pcts[p];
+            break;
+        }
+    }
+
+    if (!is_undefined(_hegemon)) {
+        hegemon_faction_id = _hegemon.id;
+        coalition_active = true;
+
+        // Threat surge: Decrease bilateral tensions between the other 3 factions by -15
+        for (var k2 = 0; k2 < array_length(_keys); k2++) {
+            var _r2 = diplomatic_relations[$ _keys[k2]];
+            if (_r2.faction_1 != _hegemon.id && _r2.faction_2 != _hegemon.id) {
+                _r2.tension = max(10, _r2.tension - 2.0);
+
+                // Auto-broker Emergency Coalition Alliance if in Cold War or Non-Aggression
+                if (_r2.state != "ALLIANCE" && _r2.state != "WAR" && _r2.tension < 55) {
+                    broker_alliance(_keys[k2], irandom_range(12, 20), "EMERGENCY COALITION: United defense pact formed against dominant " + _hegemon.name + " (" + string(_hegemon.pct) + "% Sol Control)!");
+                }
+            }
+        }
+    } else if (coalition_active) {
+        // Hegemon was beaten back below 38%
+        var _max_pct = max(_tc.terran_pct, _tc.colony_pct, _tc.syndicate_pct, _tc.zaibatsu_pct);
+        if (_max_pct < 35) {
+            coalition_active = false;
+            hegemon_faction_id = "";
+            add_diplomatic_cable("Solar Council", "All Factions", "COALITION DISSOLVED: Sol Balance Restored", "Anti-hegemonic emergency measures deactivated as territory balances re-stabilize.", "NORMAL", "COLD_WAR");
+        }
+    }
+};
+
+// 7i. Player Mercenary Diplomatic Actions (docs/21)
+player_broker_ceasefire = function(_pair_id) {
+    if (!instance_exists(obj_GameManager)) return false;
+    var _gm = obj_GameManager;
+    var _cost = 50000;
+    if (_gm.funds < _cost) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT FUNDS: Ceasefire diplomacy costs " + string(_cost) + " Cr!", c_red);
+        return false;
+    }
+
+    var _rel = get_relation_by_id(_pair_id);
+    if (is_undefined(_rel)) return false;
+    if (_rel.state != "WAR") {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("CANNOT BROKER TRUCE: Factions are not at WAR!", c_yellow);
+        return false;
+    }
+
+    _gm.funds -= _cost;
+    broker_truce(_pair_id, 14, "PMC diplomatic envoy negotiated ceasefire accord.");
+    if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("CEASEFIRE RATIFIED: " + _rel.name_1 + " & " + _rel.name_2 + " sign 14-turn truce (-50,000 Cr)!", c_lime);
+    return true;
+};
+
+player_provoke_crisis = function(_pair_id) {
+    if (!instance_exists(obj_GameManager)) return false;
+    var _gm = obj_GameManager;
+    var _cost = 40000;
+    if (_gm.funds < _cost) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT FUNDS: False-flag strike costs " + string(_cost) + " Cr!", c_red);
+        return false;
+    }
+
+    var _rel = get_relation_by_id(_pair_id);
+    if (is_undefined(_rel)) return false;
+
+    _gm.funds -= _cost;
+    modify_bilateral_tension(_pair_id, 25, "PMC false-flag provocation escalated border crisis.");
+    if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("PROVOCATION SUCCESSFUL: Tension spiked +25 between " + _rel.name_1 + " and " + _rel.name_2 + " (-40,000 Cr)!", c_orange);
+    return true;
+};
+
+player_negotiate_coalition = function(_pair_id) {
+    if (!instance_exists(obj_GameManager)) return false;
+    var _gm = obj_GameManager;
+    var _cost = 60000;
+    if (_gm.funds < _cost) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT FUNDS: Coalition pact costs " + string(_cost) + " Cr!", c_red);
+        return false;
+    }
+
+    var _rel = get_relation_by_id(_pair_id);
+    if (is_undefined(_rel)) return false;
+    if (_rel.state == "WAR") {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("CANNOT ALLY: Factions are actively at WAR! Broker a truce first.", c_red);
+        return false;
+    }
+
+    _gm.funds -= _cost;
+    broker_alliance(_pair_id, 18, "PMC-brokered defense treaty ratified.");
+    if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("ALLIANCE RATIFIED: 18-turn Mutual Defense Treaty between " + _rel.name_1 + " and " + _rel.name_2 + " (-60,000 Cr)!", c_aqua);
+    return true;
+};
+
+// 7j. Dynamic Macro War Map Simulation (Refactored with 6-Pair Diplomacy & Alliances)
 simulate_war_turn = function() {
     var _t_bonus = (mass_production_contracts.faction_a.replaced) ? mass_production_contracts.faction_a.combat_bonus : 0;
     var _c_bonus = (mass_production_contracts.faction_b.replaced) ? mass_production_contracts.faction_b.combat_bonus : 0;
     var _s_bonus = (mass_production_contracts.faction_c.replaced) ? mass_production_contracts.faction_c.combat_bonus : 0;
     var _z_bonus = (mass_production_contracts.faction_d.replaced) ? mass_production_contracts.faction_d.combat_bonus : 0;
 
-    var _terran_pwr = factions.faction_a.military_strength_score + _t_bonus;
-    var _colony_pwr = factions.faction_b.military_strength_score + _c_bonus;
-    var _syndicate_pwr = factions.faction_c.military_strength_score + _s_bonus;
+    // Check Alliance Defense Reinforcement (+12 power per active ally)
+    var _allies_t = 0;
+    var _allies_c = 0;
+    var _allies_s = 0;
+    var _allies_z = 0;
 
-    var _clash = (_terran_pwr - _colony_pwr) + irandom_range(-6, 6);
-    if (_clash > 4 && territory_control.colony_pct > 5) {
-        var _shift = irandom_range(1, 3);
-        territory_control.terran_pct = min(75, territory_control.terran_pct + _shift);
-        territory_control.colony_pct = max(0, territory_control.colony_pct - _shift);
-        territory_control.last_shift_report = (mass_production_contracts.faction_a.replaced) ? 
-            ("Terran Coalition fielding player-licensed " + mass_production_contracts.faction_a.replacement_name + " crushes Colony line!") :
-            "Terran Coalition 1st Armored Division captures orbital trench line in Sector 4!";
-        if (instance_exists(obj_HQTerminal)) {
-            obj_HQTerminal.show_toast("WAR INTEL: Terran Coalition advances in Sector 4 (+ " + string(_shift) + "% control)!", c_yellow);
+    var _keys = variable_struct_get_names(diplomatic_relations);
+    for (var k = 0; k < array_length(_keys); k++) {
+        var _r = diplomatic_relations[$ _keys[k]];
+        if (_r.state == "ALLIANCE") {
+            if (_r.faction_1 == "faction_a" || _r.faction_2 == "faction_a") _allies_t += 12;
+            if (_r.faction_1 == "faction_b" || _r.faction_2 == "faction_b") _allies_c += 12;
+            if (_r.faction_1 == "faction_c" || _r.faction_2 == "faction_c") _allies_s += 12;
+            if (_r.faction_1 == "faction_d" || _r.faction_2 == "faction_d") _allies_z += 12;
         }
-    } else if (_clash < -4 && territory_control.terran_pct > 5) {
-        var _shift = irandom_range(1, 3);
-        territory_control.colony_pct = min(75, territory_control.colony_pct + _shift);
-        territory_control.terran_pct = max(0, territory_control.terran_pct - _shift);
-        territory_control.last_shift_report = (mass_production_contracts.faction_b.replaced) ?
-            ("Outer Colonies fielding player-designed " + mass_production_contracts.faction_b.replacement_name + " shatters Terran front!") :
-            "Outer Colonies ace squadrons breach Terran orbital line in Sector 5!";
+    }
+
+    var _terran_pwr    = factions.faction_a.military_strength_score + _t_bonus + _allies_t;
+    var _colony_pwr    = factions.faction_b.military_strength_score + _c_bonus + _allies_c;
+    var _syndicate_pwr = factions.faction_c.military_strength_score + _s_bonus + _allies_s;
+    var _zaibatsu_pwr  = factions.faction_d.military_strength_score + _z_bonus + _allies_z;
+
+    var _clash_reports = [];
+
+    // Clash 1: Terran vs Colony (if at WAR)
+    var _rel_tc = get_relation("faction_a", "faction_b");
+    if (!is_undefined(_rel_tc) && _rel_tc.state == "WAR") {
+        var _clash = (_terran_pwr - _colony_pwr) + irandom_range(-6, 6);
+        if (_clash > 4 && territory_control.colony_pct > 5) {
+            var _shift = irandom_range(1, 3);
+            territory_control.terran_pct = min(75, territory_control.terran_pct + _shift);
+            territory_control.colony_pct = max(0, territory_control.colony_pct - _shift);
+            var _rep = (mass_production_contracts.faction_a.replaced) ? 
+                ("Terran Coalition fielding " + mass_production_contracts.faction_a.replacement_name + " captures orbital sector (+ " + string(_shift) + "% control)!") :
+                ("Terran armored line breaches Colony defenses in Sector 4 (+ " + string(_shift) + "% control)!");
+            array_push(_clash_reports, _rep);
+        } else if (_clash < -4 && territory_control.terran_pct > 5) {
+            var _shift = irandom_range(1, 3);
+            territory_control.colony_pct = min(75, territory_control.colony_pct + _shift);
+            territory_control.terran_pct = max(0, territory_control.terran_pct - _shift);
+            var _rep = (mass_production_contracts.faction_b.replaced) ?
+                ("Colony aces in " + mass_production_contracts.faction_b.replacement_name + " shatter Terran line (+ " + string(_shift) + "% control)!") :
+                ("Outer Colonies space wing seizes Terran staging perimeter (+ " + string(_shift) + "% control)!");
+            array_push(_clash_reports, _rep);
+        }
+    }
+
+    // Clash 2: Syndicate Opportunism / War vs Terran
+    var _rel_ts = get_relation("faction_a", "faction_c");
+    if (!is_undefined(_rel_ts) && _rel_ts.state == "WAR" && territory_control.terran_pct > 5) {
+        if (_syndicate_pwr >= 35 && random(100) < 45) {
+            territory_control.syndicate_pct = min(35, territory_control.syndicate_pct + 1);
+            territory_control.terran_pct = max(0, territory_control.terran_pct - 1);
+            array_push(_clash_reports, "Rogue Syndicates conduct hit-and-run raids on Terran supply depots (+1% Syndicate)!");
+        }
+    }
+
+    // Clash 3: Zaibatsu Operations
+    var _rel_cz = get_relation("faction_b", "faction_d");
+    if (!is_undefined(_rel_cz) && _rel_cz.state == "WAR" && territory_control.colony_pct > 5) {
+        if (_zaibatsu_pwr >= 45 && random(100) < 40) {
+            territory_control.zaibatsu_pct = min(35, territory_control.zaibatsu_pct + 1);
+            territory_control.colony_pct = max(0, territory_control.colony_pct - 1);
+            array_push(_clash_reports, "Apex Zaibatsu cyber-legions seize Jovian mining nodes from Colonies (+1% Zaibatsu)!");
+        }
+    }
+
+    // Rebalance total percentages to ensure 100% total (accounting for PMC dominion)
+    var _total_factions = territory_control.terran_pct + territory_control.colony_pct + territory_control.syndicate_pct + territory_control.zaibatsu_pct;
+    var _target_total = 100 - territory_control.pmc_pct;
+    if (_total_factions != _target_total && _total_factions > 0) {
+        var _diff = _target_total - _total_factions;
+        territory_control.terran_pct = max(2, territory_control.terran_pct + _diff);
+    }
+
+    if (array_length(_clash_reports) > 0) {
+        territory_control.last_shift_report = _clash_reports[0];
         if (instance_exists(obj_HQTerminal)) {
-            obj_HQTerminal.show_toast("WAR INTEL: Outer Colonies capture orbital sector (+ " + string(_shift) + "% control)!", c_aqua);
+            obj_HQTerminal.show_toast("WAR INTEL: " + _clash_reports[0], c_yellow);
         }
     } else {
-        territory_control.last_shift_report = "Stalemate along the Asteroid Belt boundary. Heavy attritional skirmishing.";
-    }
-
-    // Syndicate opportunism if strength elevated
-    if (_syndicate_pwr >= 35 && random(100) < 40 && territory_control.terran_pct > 5) {
-        territory_control.syndicate_pct = min(28, territory_control.syndicate_pct + 1);
-        territory_control.terran_pct = max(0, territory_control.terran_pct - 1);
-        territory_control.last_shift_report = "Rogue Syndicates exploit chaos to establish pirate redoubts in Delta Sector!";
+        territory_control.last_shift_report = "Frontlines static across Sol sectors. Defensive fortifications holding.";
     }
 };
+
 
 // 7b. Pitch Mass-Production Replacement Doctrine (docs/12)
 pitch_mass_production_replacement = function(_faction_id, _blueprint_id, _custom_name) {

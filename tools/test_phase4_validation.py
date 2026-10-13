@@ -64,6 +64,7 @@ def test_gml_syntax():
         "objects/obj_NemesisManager/Create_0.gml",
         "objects/obj_NemesisManager/CleanUp_0.gml",
         "rooms/rm_init/RoomCreationCode.gml",
+        "objects/obj_FactionManager/Create_0.gml",
         "objects/obj_GameManager/Create_0.gml",
         "objects/obj_HQTerminal/Draw_64.gml",
         "objects/obj_BattleManager/Create_0.gml",

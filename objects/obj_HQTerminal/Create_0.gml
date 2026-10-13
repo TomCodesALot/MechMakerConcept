@@ -12,7 +12,9 @@ if (!instance_exists(obj_BlueprintManager)) instance_create_depth(0, 0, 0, obj_B
 // 1. Navigation State
 active_tab = 0;              // 0 = R&D Lab, 1 = Factory Floor, 2 = Contracts, 3 = War Map
 rd_subtab = 0;               // 0 = Crucible Synthesis (Doc 02), 1 = Prototyping Minigames (Doc 03), 2 = Blueprint Specs
-war_subtab = 0;              // 0 = Sector War Map & Mining, 1 = Faction Dossiers & Liaisons, 2 = Decade Mecha Timeline (Y205-Y215)
+war_subtab = 0;              // 0 = Sector War Map & Mining, 1 = Faction Dossiers, 2 = Faction Diplomacy Matrix (Doc 21), 3 = Decade Mecha Timeline, 4 = PMC Expedition (Doc 12)
+selected_diplo_pair = "terran_colony"; // Selected pair in Diplomacy Matrix (Doc 21)
+diplo_cables_scroll_offset = 0;        // Paging offset for diplomatic cables log
 selected_faction_dossier = "faction_terran"; // "faction_terran", "faction_colony", "faction_syndicate", "faction_zaibatsu"
 selected_timeline_era = 0;   // 0 = All Eras, 1 = Y205 Prototype, 2 = Y208 Early Mass, 3 = Y211 Mainstay, 4 = Y213 Variant, 5 = Y215 Next-Gen
 selected_timeline_mech_idx = 0; // Selected mobile suit index in timeline array

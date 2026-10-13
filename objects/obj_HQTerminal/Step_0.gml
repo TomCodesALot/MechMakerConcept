@@ -67,6 +67,9 @@ if (active_tab == 0 && rd_subtab == 0) {
 } else if (active_tab == 3 && war_subtab == 0) {
     if (mouse_wheel_up()) mining_scroll_offset = max(0, mining_scroll_offset - 1);
     if (mouse_wheel_down()) mining_scroll_offset += 1;
+} else if (active_tab == 3 && war_subtab == 2) {
+    if (mouse_wheel_up()) diplo_cables_scroll_offset = max(0, diplo_cables_scroll_offset - 1);
+    if (mouse_wheel_down()) diplo_cables_scroll_offset += 1;
 } else if (active_tab == 2 && contracts_subtab == 2) {
     if (mouse_wheel_up()) trade_scroll_offset = max(0, trade_scroll_offset - 1);
     if (mouse_wheel_down()) trade_scroll_offset += 1;

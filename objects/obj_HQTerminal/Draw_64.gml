@@ -3009,13 +3009,14 @@ else if (active_tab == 3) {
     var _sub_tabs_w = [
         "[A. SECTOR MAP & MINING (DOC 06)]",
         "[B. FACTIONS & LIAISONS (DOC 04)]",
-        "[C. DECADE MECHA LINEAGE (Y205-Y215)]",
-        "[D. PMC EXPEDITION & OVERTHROW (DOC 12)]"
+        "[C. FACTION DIPLOMACY & WARS (DOC 21)]",
+        "[D. DECADE MECHA LINEAGE (Y205-Y215)]",
+        "[E. PMC EXPEDITION & OVERTHROW (DOC 12)]"
     ];
-    var _wsub_w = 285;
+    var _wsub_w = 232;
     var _wsub_y = _pan_y + 8;
-    for (var wst = 0; wst < 4; wst++) {
-        var _wstbx = _pan_x + 16 + wst * (_wsub_w + 12);
+    for (var wst = 0; wst < 5; wst++) {
+        var _wstbx = _pan_x + 16 + wst * (_wsub_w + 8);
         var _wstb_active = (war_subtab == wst);
         var _wstb_hov = (_mx >= _wstbx && _mx <= _wstbx + _wsub_w && _my >= _wsub_y && _my <= _wsub_y + 28);
         if (_wstb_hov && _click) war_subtab = wst;
@@ -3025,7 +3026,7 @@ else if (active_tab == 3) {
         draw_set_color(_wstb_active ? make_color_rgb(100, 200, 255) : make_color_rgb(45, 75, 110));
         draw_rectangle(_wstbx + _sx, _wsub_y + _sy, _wstbx + _wsub_w + _sx, _wsub_y + 28 + _sy, true);
         draw_set_color(_wstb_active ? c_white : make_color_rgb(160, 190, 220));
-        draw_text(_wstbx + 14 + _sx, _wsub_y + 6 + _sy, _sub_tabs_w[wst]);
+        draw_text(_wstbx + 10 + _sx, _wsub_y + 6 + _sy, _sub_tabs_w[wst]);
     }
 
     // =====================================================================
@@ -3648,9 +3649,333 @@ else if (active_tab == 3) {
     }
 
     // =====================================================================
-    // SUBTAB 2: DECADE MECHA LINEAGE & TIMELINE (Y205-Y215)
+    // SUBTAB 2: FACTION AI DIPLOMACY, ALLIANCES & WAR ROOM MATRIX (DOC 21)
     // =====================================================================
     else if (war_subtab == 2) {
+        var _dx = _pan_x + 20;
+        var _dy = _pan_y + 42;
+        var _dw = _pan_w - 40;
+        var _dh = _pan_h - 52;
+
+        if (instance_exists(obj_FactionManager)) {
+            var _fm = obj_FactionManager;
+            var _tc = _fm.territory_control;
+
+            // 1. Top Header & Hegemonic Threat Balance Bar
+            draw_set_color(make_color_rgb(100, 220, 255));
+            draw_text(_dx, _dy, "== SOL SYSTEM DIPLOMATIC MATRIX & GEOPOLITICAL WAR ROOM (docs/21) ==");
+
+            // Hegemony Balance & Anti-Blobbing Alert Banner
+            var _ban_y = _dy + 22;
+            var _ban_h = 30;
+            var _is_hegemon = (_fm.hegemon_faction_id != "");
+            draw_set_color(_is_hegemon ? make_color_rgb(45, 15, 18) : make_color_rgb(12, 22, 35));
+            draw_rectangle(_dx, _ban_y, _dx + _dw, _ban_y + _ban_h, false);
+            draw_set_color(_is_hegemon ? make_color_rgb(255, 60, 60) : make_color_rgb(40, 75, 115));
+            draw_rectangle(_dx, _ban_y, _dx + _dw, _ban_y + _ban_h, true);
+
+            if (_is_hegemon) {
+                var _hege_name = (_fm.hegemon_faction_id == "faction_a") ? "THE TERRAN COALITION" :
+                                 ((_fm.hegemon_faction_id == "faction_b") ? "THE OUTER COLONIES" :
+                                 ((_fm.hegemon_faction_id == "faction_c") ? "ROGUE SYNDICATES" : "APEX ZAIBATSU"));
+                draw_set_color(make_color_rgb(255, 90, 90));
+                draw_text(_dx + 12, _ban_y + 6, "⚠ HEGEMONIC CRISIS: " + _hege_name + " controls >40% Sol territory! Anti-Hegemon Emergency Coalition Active (-15 Tension / Mutual Defense)!");
+            } else {
+                draw_set_color(make_color_rgb(160, 210, 255));
+                draw_text(_dx + 12, _ban_y + 6, "MULTI-POLAR BALANCE: Alliances are temporary expedients (+2.5/turn Paranoia). Sol Status: Dynamic Cold War & Border Skirmishes.");
+            }
+
+            // 2. Left Column: 6-Pair Bilateral Relations Grid (width: 440)
+            var _col1_x = _dx;
+            var _col1_y = _ban_y + _ban_h + 8;
+            var _col1_w = 440;
+            var _col1_h = _dh - (_col1_y - _dy);
+
+            draw_set_color(make_color_rgb(10, 16, 24));
+            draw_rectangle(_col1_x, _col1_y, _col1_x + _col1_w, _col1_y + _col1_h, false);
+            draw_set_color(make_color_rgb(30, 50, 75));
+            draw_rectangle(_col1_x, _col1_y, _col1_x + _col1_w, _col1_y + _col1_h, true);
+
+            draw_set_color(make_color_rgb(255, 215, 80));
+            draw_text(_col1_x + 12, _col1_y + 8, "BILATERAL RELATIONS MATRIX (6 PAIRS):");
+
+            var _pairs = [
+                "terran_colony",
+                "terran_syndicate",
+                "terran_zaibatsu",
+                "colony_syndicate",
+                "colony_zaibatsu",
+                "syndicate_zaibatsu"
+            ];
+
+            var _card_y_start = _col1_y + 30;
+            var _card_h = 68;
+
+            for (var pi = 0; pi < 6; pi++) {
+                var _pid = _pairs[pi];
+                var _rel = _fm.diplomatic_relations[$ _pid];
+                if (is_undefined(_rel)) continue;
+
+                var _cy = _card_y_start + pi * (_card_h + 6);
+                var _is_sel = (selected_diplo_pair == _pid);
+                var _c_hov = (_mx >= _col1_x + 8 && _mx <= _col1_x + _col1_w - 8 && _my >= _cy && _my <= _cy + _card_h);
+                if (_c_hov && _click) selected_diplo_pair = _pid;
+
+                // Card background
+                draw_set_color(_is_sel ? make_color_rgb(25, 48, 76) : (_c_hov ? make_color_rgb(18, 30, 46) : make_color_rgb(13, 20, 30)));
+                draw_rectangle(_col1_x + 8, _cy, _col1_x + _col1_w - 8, _cy + _card_h, false);
+
+                // State badge color
+                var _st_col = make_color_rgb(150, 180, 220); // NON_AGGRESSION
+                if (_rel.state == "WAR") _st_col = make_color_rgb(255, 60, 60);
+                else if (_rel.state == "COLD_WAR") _st_col = make_color_rgb(200, 100, 255);
+                else if (_rel.state == "TRUCE") _st_col = make_color_rgb(255, 200, 50);
+                else if (_rel.state == "ALLIANCE") _st_col = make_color_rgb(0, 240, 255);
+
+                draw_set_color(_is_sel ? make_color_rgb(100, 220, 255) : make_color_rgb(35, 55, 80));
+                draw_rectangle(_col1_x + 8, _cy, _col1_x + _col1_w - 8, _cy + _card_h, true);
+
+                // Pair names
+                draw_set_color(c_white);
+                draw_text(_col1_x + 16, _cy + 5, _rel.name_1 + " vs " + _rel.name_2);
+
+                // State badge
+                var _badge_str = "[" + _rel.state + "]";
+                if (_rel.treaty_turns_left > 0) _badge_str += " (" + string(_rel.treaty_turns_left) + "T)";
+                draw_set_color(_st_col);
+                draw_text(_col1_x + _col1_w - 16 - string_width(_badge_str), _cy + 5, _badge_str);
+
+                // Tension bar
+                var _bar_x = _col1_x + 16;
+                var _bar_y = _cy + 27;
+                var _bar_w = _col1_w - 32;
+                var _bar_h = 10;
+                draw_set_color(make_color_rgb(20, 28, 38));
+                draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w, _bar_y + _bar_h, false);
+
+                var _ten_w = (_bar_w * (_rel.tension / 100.0));
+                var _ten_col = (_rel.tension >= 75) ? make_color_rgb(255, 60, 60) :
+                               ((_rel.tension >= 50) ? make_color_rgb(255, 170, 40) : make_color_rgb(80, 220, 120));
+                draw_set_color(_ten_col);
+                draw_rectangle(_bar_x, _bar_y, _bar_x + _ten_w, _bar_y + _bar_h, false);
+
+                // Tension value and drift note
+                var _drift_lbl = "";
+                if (_rel.state == "ALLIANCE") _drift_lbl = "+2.5/T Paranoia";
+                else if (_rel.state == "TRUCE") _drift_lbl = "-2.0/T Truce Decay";
+                else if (_rel.state == "COLD_WAR") _drift_lbl = "+" + string(_rel.base_friction) + "/T Friction";
+                else if (_rel.state == "WAR") _drift_lbl = "ACTIVE FRONTLINE WAR";
+
+                draw_set_color(make_color_rgb(180, 200, 220));
+                draw_text(_col1_x + 16, _cy + 43, "Tension: " + string(_rel.tension) + "/100  |  " + _drift_lbl);
+            }
+
+            // 3. Right Column: Detailed Strategic Dossier & Action Console
+            var _col2_x = _col1_x + _col1_w + 14;
+            var _col2_y = _col1_y;
+            var _col2_w = _dw - _col1_w - 14;
+            var _doss_h = 226;
+
+            draw_set_color(make_color_rgb(10, 16, 24));
+            draw_rectangle(_col2_x, _col2_y, _col2_x + _col2_w, _col2_y + _doss_h, false);
+            draw_set_color(make_color_rgb(30, 50, 75));
+            draw_rectangle(_col2_x, _col2_y, _col2_x + _col2_w, _col2_y + _doss_h, true);
+
+            var _cur_rel = _fm.diplomatic_relations[$ selected_diplo_pair];
+            if (!is_undefined(_cur_rel)) {
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_col2_x + 14, _col2_y + 8, "STRATEGIC DOSSIER: " + _cur_rel.name_1 + " <---> " + _cur_rel.name_2);
+
+                // Status & Metrics Row
+                var _r_badge_col = (_cur_rel.state == "WAR") ? make_color_rgb(255, 60, 60) :
+                                   ((_cur_rel.state == "ALLIANCE") ? make_color_rgb(0, 240, 255) :
+                                   ((_cur_rel.state == "TRUCE") ? make_color_rgb(255, 200, 50) : make_color_rgb(200, 100, 255)));
+
+                draw_set_color(_r_badge_col);
+                draw_text(_col2_x + 14, _col2_y + 28, "Current Status: [" + _cur_rel.state + "]");
+
+                draw_set_color(c_white);
+                var _treaty_txt = (_cur_rel.treaty_turns_left > 0) ? (string(_cur_rel.treaty_turns_left) + " turns remaining") : "None";
+                draw_text(_col2_x + 220, _col2_y + 28, "Treaty Countdown: " + _treaty_txt);
+                draw_text(_col2_x + 460, _col2_y + 28, "Total Wars Fought: " + string(_cur_rel.total_wars_fought));
+
+                // Casus Belli & Grievance
+                draw_set_color(make_color_rgb(255, 220, 120));
+                draw_text(_col2_x + 14, _col2_y + 50, "Casus Belli: " + _cur_rel.casus_belli);
+                draw_set_color(make_color_rgb(180, 200, 220));
+                draw_text_ext(_col2_x + 14, _col2_y + 70, "Historical Grievance: " + _cur_rel.historical_grievance, 18, _col2_w - 28);
+
+                // Alliance Paranoia Advisory Box
+                var _adv_y = _col2_y + 110;
+                if (_cur_rel.state == "ALLIANCE") {
+                    draw_set_color(make_color_rgb(18, 38, 50));
+                    draw_rectangle(_col2_x + 14, _adv_y, _col2_x + _col2_w - 14, _adv_y + 40, false);
+                    draw_set_color(make_color_rgb(0, 220, 255));
+                    draw_rectangle(_col2_x + 14, _adv_y, _col2_x + _col2_w - 14, _adv_y + 40, true);
+                    draw_text(_col2_x + 22, _adv_y + 4, "ALLIANCE PARANOIA ACTIVE (+2.5 Tension/turn):");
+                    draw_set_color(make_color_rgb(180, 230, 255));
+                    draw_text(_col2_x + 22, _adv_y + 20, "Espionage festers during military pacts. If Tension hits 75+, pact dissolves into Cold War or War!");
+                } else if (_cur_rel.state == "TRUCE") {
+                    draw_set_color(make_color_rgb(45, 38, 14));
+                    draw_rectangle(_col2_x + 14, _adv_y, _col2_x + _col2_w - 14, _adv_y + 40, false);
+                    draw_set_color(make_color_rgb(255, 200, 50));
+                    draw_rectangle(_col2_x + 14, _adv_y, _col2_x + _col2_w - 14, _adv_y + 40, true);
+                    draw_text(_col2_x + 22, _adv_y + 4, "CEASEFIRE ACCORD ACTIVE (-2.0 Tension/turn):");
+                    draw_set_color(make_color_rgb(255, 230, 160));
+                    draw_text(_col2_x + 22, _adv_y + 20, "Combat sorties frozen. When timer expires, peace normalizes or reverts to Cold War depending on tension.");
+                } else if (_cur_rel.state == "WAR") {
+                    draw_set_color(make_color_rgb(45, 14, 18));
+                    draw_rectangle(_col2_x + 14, _adv_y, _col2_x + _col2_w - 14, _adv_y + 40, false);
+                    draw_set_color(make_color_rgb(255, 60, 60));
+                    draw_rectangle(_col2_x + 14, _adv_y, _col2_x + _col2_w - 14, _adv_y + 40, true);
+                    draw_text(_col2_x + 22, _adv_y + 4, "ACTIVE FRONTLINE COMBAT:");
+                    draw_set_color(make_color_rgb(255, 180, 180));
+                    draw_text(_col2_x + 22, _adv_y + 20, "Armies clashing weekly. Mass-production licenses and allied pacts sway territorial shifts.");
+                } else {
+                    draw_set_color(make_color_rgb(25, 20, 38));
+                    draw_rectangle(_col2_x + 14, _adv_y, _col2_x + _col2_w - 14, _adv_y + 40, false);
+                    draw_set_color(make_color_rgb(180, 120, 240));
+                    draw_rectangle(_col2_x + 14, _adv_y, _col2_x + _col2_w - 14, _adv_y + 40, true);
+                    draw_text(_col2_x + 22, _adv_y + 4, "DIPLOMATIC POSTURE: " + _cur_rel.state);
+                    draw_set_color(make_color_rgb(210, 190, 240));
+                    draw_text(_col2_x + 22, _adv_y + 20, "Tension drifts toward boiling point (85+ = War). Use PMC operations to influence relations.");
+                }
+
+                // Interactive PMC Mercenary Diplomacy Actions
+                var _act_y = _col2_y + 162;
+                var _act_btn_w = (_col2_w - 44) / 3;
+
+                // Action 1: Broker Ceasefire
+                var _b1_x = _col2_x + 14;
+                var _b1_en = (_cur_rel.state == "WAR");
+                var _b1_hov = (_mx >= _b1_x && _mx <= _b1_x + _act_btn_w && _my >= _act_y && _my <= _act_y + 46);
+                if (_b1_en && _b1_hov && _click) {
+                    _fm.player_broker_ceasefire(selected_diplo_pair);
+                }
+                draw_set_color(_b1_en ? (_b1_hov ? make_color_rgb(30, 60, 45) : make_color_rgb(18, 38, 28)) : make_color_rgb(16, 20, 24));
+                draw_rectangle(_b1_x, _act_y, _b1_x + _act_btn_w, _act_y + 46, false);
+                draw_set_color(_b1_en ? make_color_rgb(80, 220, 120) : make_color_rgb(45, 55, 65));
+                draw_rectangle(_b1_x, _act_y, _b1_x + _act_btn_w, _act_y + 46, true);
+                draw_set_color(_b1_en ? c_white : c_gray);
+                draw_text(_b1_x + 10, _act_y + 6, "[BROKER TRUCE]");
+                draw_set_color(_b1_en ? make_color_rgb(180, 255, 180) : c_gray);
+                draw_text(_b1_x + 10, _act_y + 24, "-50,000 Cr | 14 Turns");
+
+                // Action 2: Provoke Proxy Crisis
+                var _b2_x = _b1_x + _act_btn_w + 8;
+                var _b2_hov = (_mx >= _b2_x && _mx <= _b2_x + _act_btn_w && _my >= _act_y && _my <= _act_y + 46);
+                if (_b2_hov && _click) {
+                    _fm.player_provoke_crisis(selected_diplo_pair);
+                }
+                draw_set_color(_b2_hov ? make_color_rgb(70, 40, 20) : make_color_rgb(38, 22, 12));
+                draw_rectangle(_b2_x, _act_y, _b2_x + _act_btn_w, _act_y + 46, false);
+                draw_set_color(make_color_rgb(255, 140, 40));
+                draw_rectangle(_b2_x, _act_y, _b2_x + _act_btn_w, _act_y + 46, true);
+                draw_set_color(c_white);
+                draw_text(_b2_x + 10, _act_y + 6, "[PROVOKE CRISIS]");
+                draw_set_color(make_color_rgb(255, 200, 140));
+                draw_text(_b2_x + 10, _act_y + 24, "-40,000 Cr | +25 Tension");
+
+                // Action 3: Offer Coalition Alliance
+                var _b3_x = _b2_x + _act_btn_w + 8;
+                var _b3_en = (_cur_rel.state != "WAR");
+                var _b3_hov = (_mx >= _b3_x && _mx <= _b3_x + _act_btn_w && _my >= _act_y && _my <= _act_y + 46);
+                if (_b3_en && _b3_hov && _click) {
+                    _fm.player_negotiate_coalition(selected_diplo_pair);
+                }
+                draw_set_color(_b3_en ? (_b3_hov ? make_color_rgb(20, 60, 75) : make_color_rgb(14, 38, 48)) : make_color_rgb(16, 20, 24));
+                draw_rectangle(_b3_x, _act_y, _b3_x + _act_btn_w, _act_y + 46, false);
+                draw_set_color(_b3_en ? make_color_rgb(0, 220, 255) : make_color_rgb(45, 55, 65));
+                draw_rectangle(_b3_x, _act_y, _b3_x + _act_btn_w, _act_y + 46, true);
+                draw_set_color(_b3_en ? c_white : c_gray);
+                draw_text(_b3_x + 10, _act_y + 6, "[OFFER ALLIANCE]");
+                draw_set_color(_b3_en ? make_color_rgb(160, 240, 255) : c_gray);
+                draw_text(_b3_x + 10, _act_y + 24, "-60,000 Cr | 18 Turns");
+            }
+
+            // 4. Right Column Bottom: Live Diplomatic Cables Teletype Feed
+            var _feed_y = _col2_y + _doss_h + 8;
+            var _feed_h = _col1_h - _doss_h - 8;
+
+            draw_set_color(make_color_rgb(10, 16, 24));
+            draw_rectangle(_col2_x, _feed_y, _col2_x + _col2_w, _feed_y + _feed_h, false);
+            draw_set_color(make_color_rgb(30, 50, 75));
+            draw_rectangle(_col2_x, _feed_y, _col2_x + _col2_w, _feed_y + _feed_h, true);
+
+            draw_set_color(make_color_rgb(255, 215, 80));
+            draw_text(_col2_x + 14, _feed_y + 8, "COMMAND DECK DIPLOMATIC CABLES & TELETYPE FEED (docs/21):");
+
+            // Cables List & Paging
+            var _cables = _fm.diplomatic_cables_log;
+            var _num_cables = array_length(_cables);
+            var _max_vis_cables = 3;
+            var _c_entry_h = 56;
+            var _c_y_start = _feed_y + 28;
+
+            for (var ci = 0; ci < min(_max_vis_cables, _num_cables); ci++) {
+                // Reverse chronological display (newest first)
+                var _c_idx = (_num_cables - 1) - (ci + diplo_cables_scroll_offset);
+                if (_c_idx < 0 || _c_idx >= _num_cables) break;
+
+                var _cable = _cables[_c_idx];
+                var _cby = _c_y_start + ci * (_c_entry_h + 6);
+
+                draw_set_color(make_color_rgb(14, 20, 28));
+                draw_rectangle(_col2_x + 12, _cby, _col2_x + _col2_w - 12, _cby + _c_entry_h, false);
+
+                var _cb_border_col = (_cable.priority == "URGENT") ? make_color_rgb(255, 60, 60) :
+                                     ((_cable.priority == "HIGH") ? make_color_rgb(0, 220, 255) : make_color_rgb(45, 65, 90));
+                draw_set_color(_cb_border_col);
+                draw_rectangle(_col2_x + 12, _cby, _col2_x + _col2_w - 12, _cby + _c_entry_h, true);
+
+                // Priority Badge & Turn Timestamp
+                draw_set_color((_cable.priority == "URGENT") ? make_color_rgb(255, 80, 80) :
+                               ((_cable.priority == "HIGH") ? make_color_rgb(80, 220, 255) : make_color_rgb(160, 190, 220)));
+                draw_text(_col2_x + 20, _cby + 4, "[" + _cable.priority + "]  TURN " + string(_cable.turn) + "  |  " + _cable.title);
+
+                // Sender to Recipient
+                draw_set_color(make_color_rgb(255, 220, 120));
+                draw_text(_col2_x + _col2_w - 20 - string_width(_cable.sender + " -> " + _cable.recipient), _cby + 4, _cable.sender + " -> " + _cable.recipient);
+
+                // Body snippet
+                draw_set_color(c_white);
+                draw_text_ext(_col2_x + 20, _cby + 22, _cable.body, 16, _col2_w - 44);
+            }
+
+            // Cables Paging Controls
+            if (_num_cables > _max_vis_cables) {
+                var _cp_y = _feed_y + _feed_h - 24;
+                var _can_prev_c = (diplo_cables_scroll_offset > 0);
+                var _can_next_c = (diplo_cables_scroll_offset + _max_vis_cables < _num_cables);
+
+                if (_can_prev_c && _click && _mx >= _col2_x + 12 && _mx <= _col2_x + 120 && _my >= _cp_y && _my <= _cp_y + 20) {
+                    diplo_cables_scroll_offset -= 1;
+                }
+                if (_can_next_c && _click && _mx >= _col2_x + 130 && _mx <= _col2_x + 240 && _my >= _cp_y && _my <= _cp_y + 20) {
+                    diplo_cables_scroll_offset += 1;
+                }
+
+                draw_set_color(_can_prev_c ? make_color_rgb(25, 55, 85) : make_color_rgb(14, 20, 28));
+                draw_rectangle(_col2_x + 12, _cp_y, _col2_x + 120, _cp_y + 20, false);
+                draw_set_color(make_color_rgb(60, 120, 180));
+                draw_rectangle(_col2_x + 12, _cp_y, _col2_x + 120, _cp_y + 20, true);
+                draw_set_color(c_white);
+                draw_text(_col2_x + 24, _cp_y + 2, "[NEWER CABLES]");
+
+                draw_set_color(_can_next_c ? make_color_rgb(25, 55, 85) : make_color_rgb(14, 20, 28));
+                draw_rectangle(_col2_x + 130, _cp_y, _col2_x + 240, _cp_y + 20, false);
+                draw_set_color(make_color_rgb(60, 120, 180));
+                draw_rectangle(_col2_x + 130, _cp_y, _col2_x + 240, _cp_y + 20, true);
+                draw_set_color(c_white);
+                draw_text(_col2_x + 142, _cp_y + 2, "[OLDER CABLES]");
+            }
+        }
+    }
+
+    // =====================================================================
+    // SUBTAB 3: DECADE MECHA LINEAGE & TIMELINE (Y205-Y215)
+    // =====================================================================
+    else if (war_subtab == 3) {
         var _lx = _pan_x + 24;
         var _ly = _pan_y + 44;
         var _lw = _pan_w - 48;
@@ -3919,9 +4244,9 @@ else if (active_tab == 3) {
     }
 
     // =====================================================================
-    // SUBTAB 3: PMC EXPEDITIONARY STRIKE & FACTION OVERTHROW (docs/12)
+    // SUBTAB 4: PMC EXPEDITIONARY STRIKE & FACTION OVERTHROW (docs/12)
     // =====================================================================
-    else if (war_subtab == 3) {
+    else if (war_subtab == 4) {
         var _ox = _pan_x + 30;
         var _oy = _pan_y + 44;
 
