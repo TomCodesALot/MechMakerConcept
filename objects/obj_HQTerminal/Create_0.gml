@@ -288,25 +288,54 @@ dragging_slider = -1;  // 0: freq, 1: amp, 2: phase
 
 reactor_alignment_pct = 0.0;
 reactor_complete = false;
+reactor_last_score = 0.0;
+reactor_last_grade = "UNTESTED";
 
 test_reactor_pulse = function() {
     reactor_alignment_pct = clamp(100.0 - (abs(slider_freq - wave_target_freq) * 32.0 + abs(slider_amp - wave_target_amp) * 1.1 + abs(slider_phase - wave_target_phase) * 0.32), 0.0, 100.0);
-    if (reactor_alignment_pct >= 90.0) {
+    reactor_last_score = reactor_alignment_pct;
+
+    if (reactor_last_score >= 95.0) reactor_last_grade = "S";
+    else if (reactor_last_score >= 85.0) reactor_last_grade = "A";
+    else if (reactor_last_score >= 70.0) reactor_last_grade = "B";
+    else if (reactor_last_score >= 50.0) reactor_last_grade = "C";
+    else reactor_last_grade = "D";
+
+    if (instance_exists(obj_BlueprintManager)) {
+        var _r = obj_BlueprintManager.active_prototype_tuning.reactor;
+        _r.score = reactor_last_score;
+        _r.grade = reactor_last_grade;
+        if (reactor_last_grade == "S") {
+            _r.output_mult = 1.25; _r.heat_diss_mult = 1.35; _r.energy_dmg_mult = 1.20; _r.en_cap_mult = 1.30;
+        } else if (reactor_last_grade == "A") {
+            _r.output_mult = 1.15; _r.heat_diss_mult = 1.20; _r.energy_dmg_mult = 1.10; _r.en_cap_mult = 1.15;
+        } else if (reactor_last_grade == "B") {
+            _r.output_mult = 1.05; _r.heat_diss_mult = 1.10; _r.energy_dmg_mult = 1.05; _r.en_cap_mult = 1.05;
+        } else if (reactor_last_grade == "C") {
+            _r.output_mult = 1.00; _r.heat_diss_mult = 1.00; _r.energy_dmg_mult = 1.00; _r.en_cap_mult = 1.00;
+        } else {
+            _r.output_mult = 0.85; _r.heat_diss_mult = 0.75; _r.energy_dmg_mult = 0.90; _r.en_cap_mult = 0.85;
+        }
+    }
+
+    if (reactor_last_grade == "S" || reactor_last_grade == "A") {
         reactor_complete = true;
         if (instance_exists(obj_BlueprintManager)) {
             obj_BlueprintManager.add_masterwork({
                 id: "mw_core_hyperion_" + string(current_time),
-                name: "Masterwork Hyperion Tokamak Core (+15% MW)",
+                name: (reactor_last_grade == "S" ? "S-Rank Flawless Tokamak Core (+25% MW)" : "Masterwork Hyperion Tokamak Core (+15% MW)"),
                 slot: "REACTOR",
-                bonus: "+15% Net Power Surplus",
-                grade: "MASTERWORK"
+                bonus: (reactor_last_grade == "S" ? "+25% Net Surplus & +35% Cooling" : "+15% Net Power Surplus"),
+                grade: reactor_last_grade
             });
         }
-        show_toast("HARMONIC LOCK ACHIEVED! Masterwork Reactor Core forged!", c_lime);
-    } else if (reactor_alignment_pct >= 70.0) {
-        show_toast("STABLE HARMONICS: Alignment at " + string_format(reactor_alignment_pct, 1, 1) + "%. Fine-tune to reach 90% for Masterwork!", c_yellow);
+        show_toast("HARMONIC LOCK [" + reactor_last_grade + "-RANK]: " + string_format(reactor_alignment_pct, 1, 1) + "%! Power Output +" + string(floor((obj_BlueprintManager.active_prototype_tuning.reactor.output_mult - 1.0) * 100)) + "%!", c_lime);
+    } else if (reactor_last_grade == "B") {
+        show_toast("STABLE HARMONICS [B-RANK]: " + string_format(reactor_alignment_pct, 1, 1) + "% (+5% Power, +10% Cooling). Fine-tune for S-Rank!", c_yellow);
+    } else if (reactor_last_grade == "C") {
+        show_toast("STANDARD LINE HARMONICS [C-RANK]: " + string_format(reactor_alignment_pct, 1, 1) + "%. Baseline specs.", c_orange);
     } else {
-        show_toast("CONDUIT DESYNC: Alignment only " + string_format(reactor_alignment_pct, 1, 1) + "%. Adjust frequency and phase!", c_red);
+        show_toast("CONTAINMENT INSTABILITY [D-RANK]: " + string_format(reactor_alignment_pct, 1, 1) + "%. Power output penalized by -15%!", c_red);
     }
 };
 
@@ -314,6 +343,8 @@ test_reactor_pulse = function() {
 limb_actions_budget = 8;
 selected_limb_joint = 0;
 limb_complete = false;
+limb_last_score = 0.0;
+limb_last_grade = "UNTESTED";
 
 limb_joints = [
     { name: "Hip Actuator", rel_x: 120, rel_y: 90, stress: 62.0, locked: false },
@@ -363,21 +394,50 @@ limb_weld_joint = function(_idx) {
 
         // Check if all 4 locked
         var _all_locked = true;
+        var _locked_cnt = 0;
         for (var j = 0; j < 4; j++) {
-            if (!limb_joints[j].locked) _all_locked = false;
+            if (limb_joints[j].locked) _locked_cnt++;
+            else _all_locked = false;
         }
-        if (_all_locked) {
-            limb_complete = true;
+
+        if (_all_locked || limb_actions_budget == 0) {
+            limb_complete = _all_locked;
+            limb_last_score = clamp((_locked_cnt / 4.0) * 70.0 + (limb_actions_budget / 8.0) * 30.0, 0.0, 100.0);
+            if (!_all_locked) limb_last_score = max(20.0, limb_last_score - 20.0);
+
+            if (limb_last_score >= 95.0) limb_last_grade = "S";
+            else if (limb_last_score >= 85.0) limb_last_grade = "A";
+            else if (limb_last_score >= 70.0) limb_last_grade = "B";
+            else if (limb_last_score >= 50.0) limb_last_grade = "C";
+            else limb_last_grade = "D";
+
             if (instance_exists(obj_BlueprintManager)) {
-                obj_BlueprintManager.add_masterwork({
-                    id: "mw_legs_colossus_" + string(current_time),
-                    name: "Masterwork Colossus Hydraulic Walkers (+20% Recoil)",
-                    slot: "LEGS",
-                    bonus: "+20% Recoil Absorption & +1 AP",
-                    grade: "MASTERWORK"
-                });
+                var _h = obj_BlueprintManager.active_prototype_tuning.hydraulics;
+                _h.score = limb_last_score;
+                _h.grade = limb_last_grade;
+                if (limb_last_grade == "S") {
+                    _h.pilot_limit_pct = 200; _h.recoil_mult = 1.30; _h.ap_bonus = 1; _h.leg_armor_mult = 1.25;
+                } else if (limb_last_grade == "A") {
+                    _h.pilot_limit_pct = 175; _h.recoil_mult = 1.20; _h.ap_bonus = 0; _h.leg_armor_mult = 1.15;
+                } else if (limb_last_grade == "B") {
+                    _h.pilot_limit_pct = 145; _h.recoil_mult = 1.10; _h.ap_bonus = 0; _h.leg_armor_mult = 1.05;
+                } else if (limb_last_grade == "C") {
+                    _h.pilot_limit_pct = 115; _h.recoil_mult = 1.00; _h.ap_bonus = 0; _h.leg_armor_mult = 1.00;
+                } else {
+                    _h.pilot_limit_pct = 90; _h.recoil_mult = 0.85; _h.ap_bonus = -1; _h.leg_armor_mult = 0.85;
+                }
+
+                if (_all_locked) {
+                    obj_BlueprintManager.add_masterwork({
+                        id: "mw_legs_colossus_" + string(current_time),
+                        name: (limb_last_grade == "S" ? "S-Rank Prototype Colossus Walkers (Limit 200%)" : "Masterwork Colossus Walkers (Limit 175%)"),
+                        slot: "LEGS",
+                        bonus: (limb_last_grade == "S" ? "+30% Recoil, Limit 200%, +1 AP" : "+20% Recoil, Limit 175%"),
+                        grade: limb_last_grade
+                    });
+                }
             }
-            show_toast("ALL JOINTS BALANCED! Masterwork Colossus Hydraulics forged!", c_lime);
+            show_toast("HYDRAULIC BENCH [" + limb_last_grade + "-RANK]: " + string(floor(limb_last_score)) + "%! Pilot Limit (Genkai) set to " + string(obj_BlueprintManager.active_prototype_tuning.hydraulics.pilot_limit_pct) + "%!", c_lime);
         }
     } else {
         show_toast("CANNOT WELD: Stress (" + string(floor(_cur)) + "%) is outside optimal 25%-45% band!", c_red);
@@ -389,6 +449,9 @@ thruster_stage = 0; // 0 to 3
 thruster_fuel = 50.0;
 thruster_mag = 50.0;
 thruster_complete = false;
+thruster_last_score = 0.0;
+thruster_last_grade = "UNTESTED";
+thruster_stage_scores = [0.0, 0.0, 0.0, 0.0];
 
 thruster_stages_info = [
     { title: "STAGE 1: IGNITION PRE-CHAMBER", target_fuel: 35.0, target_mag: 40.0, desc: "Ignite deuterium-tritium pilot flare under gentle magnetic confinement." },
@@ -410,20 +473,44 @@ commit_thruster_pulse = function() {
     var _st = thruster_stages_info[thruster_stage];
     var _res = clamp(100.0 - abs(thruster_fuel - _st.target_fuel) * 1.5 - abs(thruster_mag - _st.target_mag) * 1.5, 0.0, 100.0);
 
+    thruster_stage_scores[thruster_stage] = _res;
+
     if (_res >= 80.0) {
         thruster_stage++;
         if (thruster_stage >= 4) {
             thruster_complete = true;
+            thruster_last_score = (thruster_stage_scores[0] + thruster_stage_scores[1] + thruster_stage_scores[2] + thruster_stage_scores[3]) / 4.0;
+            if (thruster_last_score >= 95.0) thruster_last_grade = "S";
+            else if (thruster_last_score >= 85.0) thruster_last_grade = "A";
+            else if (thruster_last_score >= 70.0) thruster_last_grade = "B";
+            else if (thruster_last_score >= 50.0) thruster_last_grade = "C";
+            else thruster_last_grade = "D";
+
             if (instance_exists(obj_BlueprintManager)) {
+                var _t = obj_BlueprintManager.active_prototype_tuning.thrusters;
+                _t.score = thruster_last_score;
+                _t.grade = thruster_last_grade;
+                if (thruster_last_grade == "S") {
+                    _t.thrust_mult = 1.35; _t.evasion_bonus = 25; _t.space_terrain = "S"; _t.fuel_eff_mult = 1.35;
+                } else if (thruster_last_grade == "A") {
+                    _t.thrust_mult = 1.20; _t.evasion_bonus = 15; _t.space_terrain = "A"; _t.fuel_eff_mult = 1.20;
+                } else if (thruster_last_grade == "B") {
+                    _t.thrust_mult = 1.10; _t.evasion_bonus = 8; _t.space_terrain = "A"; _t.fuel_eff_mult = 1.10;
+                } else if (thruster_last_grade == "C") {
+                    _t.thrust_mult = 1.00; _t.evasion_bonus = 0; _t.space_terrain = "B"; _t.fuel_eff_mult = 1.00;
+                } else {
+                    _t.thrust_mult = 0.85; _t.evasion_bonus = -10; _t.space_terrain = "C"; _t.fuel_eff_mult = 0.75;
+                }
+
                 obj_BlueprintManager.add_masterwork({
                     id: "mw_thruster_vernier_" + string(current_time),
-                    name: "Masterwork Dual-Vector Vernier Backpack (+25% Evasion)",
+                    name: (thruster_last_grade == "S" ? "S-Rank Dual-Vector Vernier (+35% Thrust, S-Space)" : "Masterwork Dual-Vector Vernier (+20% Thrust)"),
                     slot: "BACKPACK",
-                    bonus: "+25% Evasion & Instant Boost",
-                    grade: "MASTERWORK"
+                    bonus: (thruster_last_grade == "S" ? "+35% Thrust, +25% Eva, Space: S" : "+20% Thrust, +15% Eva"),
+                    grade: thruster_last_grade
                 });
             }
-            show_toast("RESONANCE 100%! Masterwork Dual-Vector Vernier Backpack forged!", c_lime);
+            show_toast("THRUSTER RESONANCE [" + thruster_last_grade + "-RANK]: " + string(floor(thruster_last_score)) + "%! Thrust +" + string(floor((obj_BlueprintManager.active_prototype_tuning.thrusters.thrust_mult - 1.0) * 100)) + "%, Evasion +" + string(obj_BlueprintManager.active_prototype_tuning.thrusters.evasion_bonus) + "%!", c_lime);
         } else {
             show_toast("STAGE CLEARED (" + string(floor(_res)) + "% Resonance)! Advanced to " + thruster_stages_info[thruster_stage].title, c_lime);
         }

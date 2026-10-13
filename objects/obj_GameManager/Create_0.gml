@@ -760,6 +760,9 @@ assemble_custom_mech = function(_name, _head_idx, _torso_idx, _arms_idx, _legs_i
         }
     };
 
+    if (instance_exists(obj_BlueprintManager)) {
+        _new_mech = obj_BlueprintManager.apply_tuning_to_custom_mech(_new_mech);
+    }
     array_push(inventory.deployable_mechs, _new_mech);
 
     if (instance_exists(obj_HQTerminal)) {

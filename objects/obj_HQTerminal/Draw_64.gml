@@ -679,6 +679,47 @@ else if (rd_subtab == 1) {
             draw_text(_mbx + 12 + _sx, _m_pan_y + 7 + _sy, _mg_btns[mb]);
         }
 
+        // Active R&D Prototype Tuning Status Ribbon (Doc 20)
+        var _ribbon_y = _m_pan_y + 36;
+        var _ribbon_w = _m_pan_w;
+        draw_set_color(make_color_rgb(10, 16, 24));
+        draw_rectangle(_m_pan_x, _ribbon_y, _m_pan_x + _ribbon_w, _ribbon_y + 26, false);
+        draw_set_color(make_color_rgb(45, 75, 110));
+        draw_rectangle(_m_pan_x, _ribbon_y, _m_pan_x + _ribbon_w, _ribbon_y + 26, true);
+
+        var _rg = "UNTESTED";
+        var _hg = "UNTESTED";
+        var _tg = "UNTESTED";
+        if (instance_exists(obj_BlueprintManager)) {
+            var _pt = obj_BlueprintManager.active_prototype_tuning;
+            _rg = _pt.reactor.grade + " (" + string(floor(_pt.reactor.score)) + "%)";
+            _hg = _pt.hydraulics.grade + " (" + string(floor(_pt.hydraulics.score)) + "%)";
+            _tg = _pt.thrusters.grade + " (" + string(floor(_pt.thrusters.score)) + "%)";
+        }
+
+        draw_set_color(make_color_rgb(255, 215, 80));
+        draw_text(_m_pan_x + 10, _ribbon_y + 5, "ACTIVE PROTOTYPE TUNING:");
+        draw_set_color(make_color_rgb(100, 220, 255));
+        draw_text(_m_pan_x + 220, _ribbon_y + 5, "* REACTOR: " + _rg);
+        draw_set_color(make_color_rgb(140, 255, 160));
+        draw_text(_m_pan_x + 440, _ribbon_y + 5, "* HYDRAULICS: " + _hg);
+        draw_set_color(make_color_rgb(255, 180, 100));
+        draw_text(_m_pan_x + 680, _ribbon_y + 5, "* THRUSTERS: " + _tg);
+
+        var _jbtn_x = _m_pan_x + _ribbon_w - 230;
+        var _jbtn_hov = (_mx >= _jbtn_x && _mx <= _jbtn_x + 220 && _my >= _ribbon_y + 2 && _my <= _ribbon_y + 24);
+        if (_jbtn_hov && _click) {
+            active_tab = 1;
+            factory_subtab = 2;
+            show_toast("PROCEEDING TO ASSEMBLY BAY WITH ACTIVE TUNING SPECS!", c_lime);
+        }
+        draw_set_color(_jbtn_hov ? make_color_rgb(30, 80, 50) : make_color_rgb(16, 45, 28));
+        draw_rectangle(_jbtn_x, _ribbon_y + 2, _jbtn_x + 220, _ribbon_y + 24, false);
+        draw_set_color(make_color_rgb(60, 240, 120));
+        draw_rectangle(_jbtn_x, _ribbon_y + 2, _jbtn_x + 220, _ribbon_y + 24, true);
+        draw_set_color(c_white);
+        draw_text(_jbtn_x + 8, _ribbon_y + 5, ">> APPLY IN ASSEMBLY BAY <<");
+
         // Minigame 0: Reactor Conduit Tuning (Turn-Based Oscilloscope Resonance)
         if (active_minigame == 0) {
             var _scope_x = _m_pan_x + 10;
@@ -2284,8 +2325,47 @@ else if (active_tab == 1) {
                 draw_set_color(make_color_rgb(100, 240, 160));
                 draw_text(_col2_x + 30, _t_diag_y + 34, "Ready for Strategic Sorties, Sector Offensives & Mass-Production Licensure!");
 
+                // 6. Gihren's Greed & Front Mission Operational Telemetry (Doc 20)
+                var _gg_y = _t_diag_y + 68;
+                draw_set_color(make_color_rgb(10, 16, 24));
+                draw_rectangle(_col2_x + 18, _gg_y, _col2_x + _col2_w - 18, _gg_y + 46, false);
+                draw_set_color(make_color_rgb(45, 75, 110));
+                draw_rectangle(_col2_x + 18, _gg_y, _col2_x + _col2_w - 18, _gg_y + 46, true);
+
+                var _lim_disp = 125;
+                var _prop_disp = 140;
+                var _ecm_disp = 35;
+                var _tun_tag = "BASELINE LINE UNIT";
+                if (instance_exists(obj_BlueprintManager)) {
+                    var _pt = obj_BlueprintManager.active_prototype_tuning;
+                    if (_pt.hydraulics.grade != "UNTESTED") _lim_disp = _pt.hydraulics.pilot_limit_pct;
+                    if (_pt.thrusters.grade != "UNTESTED") _prop_disp = floor(150 * _pt.thrusters.fuel_eff_mult);
+                    if (_pt.reactor.grade == "S" || _pt.hydraulics.grade == "S" || _pt.thrusters.grade == "S") _tun_tag = "ACE PROTOTYPE SPEC-X";
+                    else if (_pt.reactor.grade == "A" || _pt.hydraulics.grade == "A" || _pt.thrusters.grade == "A") _tun_tag = "MASTERWORK SPEC";
+                }
+
+                draw_set_color(make_color_rgb(255, 215, 80));
+                draw_text(_col2_x + 24, _gg_y + 6, "GIHREN'S GREED TELEMETRY: LIMIT (GENKAI): " + string(_lim_disp) + "% | PROPELLANT: " + string(_prop_disp) + " EN | ECM: " + string(_ecm_disp) + "%");
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_col2_x + 24, _gg_y + 26, "TERRAIN: G:A S:A U:A T:B | TUNING STATUS: [" + _tun_tag + "]");
+
+                var _tune_btn_x = _col2_x + _col2_w - 190;
+                var _tune_btn_y = _gg_y + 6;
+                var _tune_hov = (_mx >= _tune_btn_x && _mx <= _tune_btn_x + 170 && _my >= _tune_btn_y && _my <= _tune_btn_y + 34);
+                if (_tune_hov && _click) {
+                    active_tab = 0;
+                    rd_subtab = 1;
+                    show_toast("TRANSFERRED TO R&D PROTOTYPING MINIGAMES BENCH!", c_aqua);
+                }
+                draw_set_color(_tune_hov ? make_color_rgb(30, 70, 110) : make_color_rgb(16, 35, 58));
+                draw_rectangle(_tune_btn_x, _tune_btn_y, _tune_btn_x + 170, _tune_btn_y + 34, false);
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_rectangle(_tune_btn_x, _tune_btn_y, _tune_btn_x + 170, _tune_btn_y + 34, true);
+                draw_set_color(c_white);
+                draw_text(_tune_btn_x + 10, _tune_btn_y + 9, "[TUNE IN R&D LAB]");
+
                 // Commission Button
-                var _com_y = _t_diag_y + 80;
+                var _com_y = _gg_y + 56;
                 var _com_w = _col2_w - 36;
                 var _com_h = 52;
                 var _can_com = _is_power_stable;
@@ -4428,10 +4508,11 @@ if (active_tutorial_modal != "") {
         draw_text(_body_x + 60, _ty + _lh * 8.0, "- PHASE ANGLE (deg): Shifts waveform horizontally to align phase crests and troughs.");
 
         draw_set_color(make_color_rgb(180, 210, 240));
-        draw_text(_body_x + 40, _ty + _lh * 9.5, "3. TESTING & REWARDS:");
-        draw_text(_body_x + 60, _ty + _lh * 10.5, "- Take your time adjusting sliders and +/- tactile buttons; the wave does not drift.");
-        draw_text(_body_x + 60, _ty + _lh * 11.5, "- Once Harmonic Alignment reaches >= 90.0%, click [>> TEST CONDUIT HARMONIC PULSE <<].");
-        draw_text(_body_x + 60, _ty + _lh * 12.5, "- Award: Masterwork Hyperion Tokamak Core (+15% Net Power Surplus) added to blueprints!");
+        draw_text(_body_x + 40, _ty + _lh * 9.5, "3. PERFORMANCE TIERS & STAT IMPACT (DOC 20):");
+        draw_text(_body_x + 60, _ty + _lh * 10.5, "- S-RANK (>=95%): Flawless Lock! +25% Power Output, +35% Cooling, +20% Energy DMG.");
+        draw_text(_body_x + 60, _ty + _lh * 11.5, "- A-RANK (85-94%): Masterwork! +15% Power Output, +20% Cooling, +10% Energy DMG.");
+        draw_text(_body_x + 60, _ty + _lh * 12.5, "- B-RANK (70-84%): Fine Precision (+5% Output). C-RANK: Standard Line. D-RANK: -15% Output penalty!");
+        draw_text(_body_x + 60, _ty + _lh * 13.5, "- Active tuning automatically binds into custom mobile suits commissioned in Assembly Bay!");
     }
     else if (active_tutorial_modal == "HYDRAULIC") {
         draw_set_color(make_color_rgb(255, 200, 80));
@@ -4453,10 +4534,11 @@ if (active_tutorial_modal != "") {
         draw_text(_body_x + 60, _ty + _lh * 7.0, "- [+14%] TIGHTEN CYLINDER: Increases target joint stress by 14%, relieving -3% from neighbors.");
         draw_text(_body_x + 60, _ty + _lh * 8.0, "- SAFE TOLERANCE BAND: 25.0% to 45.0% (indicated by green zone on the stress gauge).");
 
-        draw_text(_body_x + 40, _ty + _lh * 9.5, "3. SPOT-WELDING & REWARDS:");
-        draw_text(_body_x + 60, _ty + _lh * 10.5, "- When a joint's stress is inside 25%-45%, click [SPOT-WELD JOINT LOCK] to lock it.");
-        draw_text(_body_x + 60, _ty + _lh * 11.5, "- Once locked, a joint is immune to subsequent neighbor backpressure shifts.");
-        draw_text(_body_x + 60, _ty + _lh * 12.5, "- Award: Lock all 4 joints to forge Masterwork Colossus Hydraulic Walkers (+20% Recoil & +1 AP)!");
+        draw_text(_body_x + 40, _ty + _lh * 9.5, "3. GIHREN'S GREED LIMIT (GENKAI) SCALING (DOC 20):");
+        draw_text(_body_x + 60, _ty + _lh * 10.5, "- S-RANK (All 4 Locked with budget): Pilot Limit set to 200%! Unlocks full Ace reflexes, +30% Recoil, +1 AP.");
+        draw_text(_body_x + 60, _ty + _lh * 11.5, "- A-RANK (All 4 Locked): Pilot Limit set to 175%, +20% Recoil absorption, +15% Leg Armor.");
+        draw_text(_body_x + 60, _ty + _lh * 12.5, "- B-RANK: Pilot Limit 145%. C-RANK: Pilot Limit 115%. D-RANK (<50%): Pilot Limit 90% (Ace bottlenecked!).");
+        draw_text(_body_x + 60, _ty + _lh * 13.5, "- High Limit lets Ace pilots utilize their full Accuracy & Evasion bonuses in tactical combat!");
     }
     else if (active_tutorial_modal == "THRUSTER") {
         draw_set_color(make_color_rgb(255, 200, 80));
@@ -4481,9 +4563,10 @@ if (active_tutorial_modal != "") {
         draw_text(_body_x + 60, _ty + _lh * 9.0, "- Watch the Stage Resonance bar; you need at least 80% resonance to successfully pulse.");
 
         draw_set_color(make_color_rgb(180, 210, 240));
-        draw_text(_body_x + 40, _ty + _lh * 10.5, "3. ADVANCING & REWARDS:");
-        draw_text(_body_x + 60, _ty + _lh * 11.5, "- When resonance is >= 80%, click [>> COMMIT STAGE CALIBRATION PULSE <<] to advance.");
-        draw_text(_body_x + 60, _ty + _lh * 12.5, "- Clearing all 4 stages awards the Masterwork Dual-Vector Vernier Backpack (+25% Evasion)!");
+        draw_text(_body_x + 40, _ty + _lh * 10.5, "3. STAGE RESONANCE & TERRAIN ADAPTABILITY (DOC 20):");
+        draw_text(_body_x + 60, _ty + _lh * 11.5, "- S-RANK (Avg >=95%): +35% Booster Thrust, +25% Evasion, Space Adaptability promoted to S-RANK, +35% Fuel Efficiency!");
+        draw_text(_body_x + 60, _ty + _lh * 12.5, "- A-RANK (85-94%): +20% Booster Thrust, +15% Evasion, Space Adaptability: A-RANK, +20% Fuel Efficiency.");
+        draw_text(_body_x + 60, _ty + _lh * 13.5, "- B-RANK: +10% Thrust. C-RANK: Baseline. D-RANK: -15% Thrust & flameout penalty!");
     }
 }
 

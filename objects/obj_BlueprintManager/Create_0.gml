@@ -423,3 +423,177 @@ discovered_alloy_codex = [
 ];
 
 show_debug_message("[obj_BlueprintManager] Initialized Discovered Alloy Codex with " + string(array_length(discovered_alloy_codex)) + " canonical masterworks.");
+
+// =========================================================================
+// 8. R&D Prototype Tuning Profiles & Comprehensive Combat Stats (Doc 20)
+// =========================================================================
+active_prototype_tuning = {
+    reactor: {
+        score: 0.0,
+        grade: "UNTESTED",
+        output_mult: 1.0,
+        heat_diss_mult: 1.0,
+        energy_dmg_mult: 1.0,
+        en_cap_mult: 1.0
+    },
+    hydraulics: {
+        score: 0.0,
+        grade: "UNTESTED",
+        pilot_limit_pct: 115,
+        recoil_mult: 1.0,
+        ap_bonus: 0,
+        leg_armor_mult: 1.0
+    },
+    thrusters: {
+        score: 0.0,
+        grade: "UNTESTED",
+        thrust_mult: 1.0,
+        evasion_bonus: 0,
+        space_terrain: "B",
+        fuel_eff_mult: 1.0
+    }
+};
+
+get_comprehensive_stats = function(_bp) {
+    if (is_undefined(_bp) || !is_struct(_bp)) return undefined;
+
+    var _code = string(_bp[$ "model_code"] ?? (_bp[$ "blueprint_id"] ?? "PMC-01"));
+    var _tier = _bp[$ "tier"] ?? 2;
+    var _fac = _bp[$ "faction_id"] ?? "player";
+
+    // Gihren's Greed Pilot Limit % (Genkai) Baseline
+    var _limit = 115;
+    if (string_pos("susanoo", string_lower(_code)) > 0) _limit = 210;
+    else if (string_pos("raiden", string_lower(_code)) > 0) _limit = 185;
+    else if (string_pos("seraphim", string_lower(_code)) > 0) _limit = 180;
+    else if (string_pos("muramasa", string_lower(_code)) > 0) _limit = 170;
+    else if (string_pos("aether", string_lower(_code)) > 0) _limit = 155;
+    else if (string_pos("ronin", string_lower(_code)) > 0) _limit = 160;
+    else if (string_pos("ghost", string_lower(_code)) > 0) _limit = 160;
+    else if (string_pos("stratos", string_lower(_code)) > 0) _limit = 155;
+    else if (string_pos("sylph", string_lower(_code)) > 0) _limit = 150;
+    else if (string_pos("helios", string_lower(_code)) > 0) _limit = 155;
+    else if (string_pos("chimera", string_lower(_code)) > 0) _limit = 140;
+    else if (string_pos("marauder", string_lower(_code)) > 0) _limit = 130;
+    else if (string_pos("vanguard", string_lower(_code)) > 0) _limit = 135;
+    else if (string_pos("hyena", string_lower(_code)) > 0) _limit = 125;
+    else if (string_pos("scrapper", string_lower(_code)) > 0) _limit = 130;
+    else if (string_pos("siegebreaker", string_lower(_code)) > 0) _limit = 120;
+    else if (string_pos("ironclad", string_lower(_code)) > 0) _limit = 115;
+    else if (string_pos("behemoth", string_lower(_code)) > 0) _limit = 110;
+    else if (string_pos("slag", string_lower(_code)) > 0) _limit = 110;
+    else if (string_pos("bulwark", string_lower(_code)) > 0) _limit = 105;
+
+    // Propellant Max (EN)
+    var _prop = 120 + (_tier * 20);
+    if (string_pos("behemoth", string_lower(_code)) > 0) _prop = 200;
+    else if (string_pos("susanoo", string_lower(_code)) > 0) _prop = 190;
+    else if (string_pos("seraphim", string_lower(_code)) > 0) _prop = 170;
+
+    // Terrain Adaptability (Ground, Space, Urban, Trench)
+    var _ter = { ground: "A", space: "B", urban: "A", trench: "C" };
+    if (_fac == "faction_colony") {
+        _ter = { ground: "B", space: "S", urban: "B", trench: "B" };
+    } else if (_fac == "faction_zaibatsu") {
+        _ter = { ground: "A", space: "S", urban: "S", trench: "C" };
+    } else if (_fac == "faction_syndicate") {
+        _ter = { ground: "A", space: "A", urban: "S", trench: "B" };
+    }
+    if (string_pos("susanoo", string_lower(_code)) > 0) _ter = { ground: "S", space: "S", urban: "S", trench: "A" };
+
+    // Minovsky / ECM Particle Dispersion %
+    var _ecm = 25;
+    if (_fac == "faction_zaibatsu") _ecm = 55 + (_tier * 5);
+    else if (_fac == "faction_colony") _ecm = 45 + (_tier * 5);
+    else if (_fac == "faction_syndicate") _ecm = 35 + (_tier * 3);
+    else _ecm = 25 + (_tier * 3);
+    _ecm = clamp(_ecm, 15, 75);
+
+    // Sensor Search Grade
+    var _search = "B";
+    if (_ecm >= 55) _search = "S";
+    else if (_ecm >= 40) _search = "A";
+    else if (_ecm >= 25) _search = "B";
+    else _search = "C";
+
+    // Power & Weight Dynamics
+    var _tot = _bp[$ "totals_and_specs"] ?? {};
+    var _w = _tot[$ "total_weight_tonnes"] ?? 75.0;
+    var _p_out = _tot[$ "total_power_output_mw"] ?? 250.0;
+    var _p_drain = _tot[$ "total_power_drain_mw"] ?? 120.0;
+    var _surplus = _p_out - _p_drain;
+    var _pw_ratio = round((_p_out / max(1.0, _w)) * 10.0) / 10.0;
+    var _armor = _tot[$ "total_armor_hp"] ?? 2000;
+    var _recoil = _tot[$ "recoil_absorption_pct"] ?? 0.50;
+
+    return {
+        pilot_limit_pct: _limit,
+        propellant_max: _prop,
+        propellant_cur: _prop,
+        terrain: _ter,
+        ecm_dispersion_pct: _ecm,
+        sensor_search_grade: _search,
+        total_weight_tonnes: _w,
+        total_power_output_mw: _p_out,
+        total_power_drain_mw: _p_drain,
+        net_power_surplus_mw: _surplus,
+        power_weight_ratio: _pw_ratio,
+        total_armor_hp: _armor,
+        recoil_absorption_pct: _recoil
+    };
+};
+
+apply_tuning_to_custom_mech = function(_custom_mech) {
+    if (is_undefined(_custom_mech) || !is_struct(_custom_mech)) return _custom_mech;
+
+    var _r = active_prototype_tuning.reactor;
+    var _h = active_prototype_tuning.hydraulics;
+    var _t = active_prototype_tuning.thrusters;
+
+    // Apply Reactor Tuning
+    if (_r.grade != "UNTESTED") {
+        _custom_mech.power_output = floor(_custom_mech.power_output * _r.output_mult);
+        _custom_mech[$ "heat_dissipation"] = floor(35.0 * _r.heat_diss_mult);
+    }
+
+    // Apply Hydraulic Tuning (Pilot Limit Genkai)
+    if (_h.grade != "UNTESTED") {
+        _custom_mech[$ "pilot_limit_pct"] = _h.pilot_limit_pct;
+        _custom_mech[$ "recoil_absorption_pct"] = clamp(0.50 * _h.recoil_mult, 0.20, 0.95);
+        _custom_mech[$ "armor_rating"] = floor(_custom_mech.armor_rating * _h.leg_armor_mult);
+    } else {
+        _custom_mech[$ "pilot_limit_pct"] = 125;
+        _custom_mech[$ "recoil_absorption_pct"] = 0.50;
+    }
+
+    // Apply Thruster Calibration
+    if (_t.grade != "UNTESTED") {
+        _custom_mech.speed = floor(_custom_mech.speed * _t.thrust_mult);
+        _custom_mech[$ "evasion_bonus"] = _t.evasion_bonus;
+        _custom_mech[$ "propellant_max"] = floor(150 * _t.fuel_eff_mult);
+        _custom_mech[$ "propellant_cur"] = _custom_mech.propellant_max;
+    } else {
+        _custom_mech[$ "evasion_bonus"] = 0;
+        _custom_mech[$ "propellant_max"] = 140;
+        _custom_mech[$ "propellant_cur"] = 140;
+    }
+
+    _custom_mech[$ "terrain"] = { ground: "A", space: (_t.space_terrain != "" ? _t.space_terrain : "A"), urban: "A", trench: "B" };
+    _custom_mech[$ "ecm_dispersion_pct"] = 35;
+    _custom_mech[$ "sensor_search_grade"] = "A";
+    _custom_mech[$ "tuning_grades"] = {
+        reactor: _r.grade,
+        hydraulics: _h.grade,
+        thrusters: _t.grade
+    };
+
+    if (_r.grade == "S" || _h.grade == "S" || _t.grade == "S") {
+        _custom_mech.name += " [Ace Prototype Spec-X]";
+        _custom_mech.callsign += " [Ace Spec-X]";
+    } else if (_r.grade == "A" || _h.grade == "A" || _t.grade == "A") {
+        _custom_mech.name += " [Masterwork Spec]";
+        _custom_mech.callsign += " [Masterwork]";
+    }
+
+    return _custom_mech;
+};

@@ -813,13 +813,34 @@ calculate_distance = function(_c1, _r1, _c2, _r2) {
 calculate_hit_chance = function(_atk, _def, _dist) {
     var _base = _atk.accuracy;
     var _eva = _def.evasion;
+
+    // Gihren's Greed Pilot Limit % (Genkai) Cap Calculus (Doc 20)
+    var _atk_lim = _atk[$ "pilot_limit_pct"] ?? 115;
+    var _atk_ref = _atk[$ "pilot_reflexes"] ?? 50;
+    var _atk_cap_bonus = min(_atk_ref, _atk_lim - 100) * 0.45;
+    _base += _atk_cap_bonus;
+
+    var _def_lim = _def[$ "pilot_limit_pct"] ?? 115;
+    var _def_ref = _def[$ "pilot_reflexes"] ?? 50;
+    var _def_cap_bonus = min(_def_ref, _def_lim - 100) * 0.50;
+    _eva += _def_cap_bonus;
+
+    // Minovsky / ECM Particle Dispersion Jamming (Doc 20)
+    var _ecm_jamming = (_def[$ "ecm_dispersion_pct"] ?? 20) * 0.20;
+    _base -= _ecm_jamming;
+
+    // Terrain Adaptability Modifiers
+    var _def_ter = _def[$ "terrain"] ?? { ground: "A" };
+    if (_def_ter[$ "ground"] == "S") _eva += 12;
+    else if (_def_ter[$ "ground"] == "C") _eva -= 10;
+
     if (_def.braced) _eva += 35;
     if (!_atk.components.head.intact) _base -= 40;
     if (!_def.components.legs.intact) _eva = 0;
     var _cov = (grid_cover[_def.grid_c][_def.grid_r] == 1) ? 25 : ((grid_cover[_def.grid_c][_def.grid_r] == 2) ? 40 : 0);
     var _elev_diff = _atk.elev - _def.elev;
     var _elev_bonus = _elev_diff * 10;
-    return clamp(_base - (_eva * 0.40) - _cov - (_dist * 2) + _elev_bonus, 20, 95);
+    return clamp(_base - (_eva * 0.40) - _cov - (_dist * 2) + _elev_bonus, 15, 95);
 };
 
 // 10. Recompute Movement Tiles for Selected Unit

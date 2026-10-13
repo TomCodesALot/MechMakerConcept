@@ -172,7 +172,18 @@ if (_view_u != undefined) {
     draw_set_color(c_white);
     draw_text(_diag_x + 16, _diag_y + 32, _view_u.callsign);
     draw_set_color(make_color_rgb(160, 190, 220));
-    draw_text(_diag_x + 16, _diag_y + 50, "PILOT: " + _view_u.pilot_name + " | ACC: " + string(_view_u.accuracy) + "% | EVA: " + string(_view_u.evasion) + "%");
+    draw_text(_diag_x + 16, _diag_y + 48, "PILOT: " + _view_u.pilot_name + " | ACC: " + string(_view_u.accuracy) + "% | EVA: " + string(_view_u.evasion) + "%");
+
+    // Gihren's Greed & Front Mission Operational Telemetry (Doc 20)
+    var _lim_val = _view_u[$ "pilot_limit_pct"] ?? 120;
+    var _ecm_val = _view_u[$ "ecm_dispersion_pct"] ?? 25;
+    var _prop_cur = _view_u[$ "propellant_cur"] ?? 140;
+    var _prop_max = _view_u[$ "propellant_max"] ?? 140;
+    var _ter_obj = _view_u[$ "terrain"] ?? { ground: "A", space: "B" };
+    var _ter_str = "G:" + string(_ter_obj[$ "ground"] ?? "A") + " S:" + string(_ter_obj[$ "space"] ?? "B");
+
+    draw_set_color(make_color_rgb(255, 215, 80));
+    draw_text(_diag_x + 16, _diag_y + 64, "LIMIT: " + string(_lim_val) + "% | ECM: " + string(_ecm_val) + "% | EN: " + string(_prop_cur) + "/" + string(_prop_max) + " | TER: " + _ter_str);
 
     // Component Breakdown Function
     var _draw_comp_bar = function(_lbl, _cur, _max, _armor, _intact, _bx, _by) {
@@ -190,7 +201,7 @@ if (_view_u != undefined) {
         }
     };
 
-    var _cy_start = _diag_y + 75;
+    var _cy_start = _diag_y + 84;
     var _comps = _view_u.components;
     _draw_comp_bar("TORSO CORE", _comps.torso.cur, _comps.torso.max, _comps.torso.armor, _comps.torso.intact, _diag_x + 16, _cy_start);
     _draw_comp_bar("HEAD SENSORS", _comps.head.cur, _comps.head.max, _comps.head.armor, _comps.head.intact, _diag_x + 16, _cy_start + 24);
