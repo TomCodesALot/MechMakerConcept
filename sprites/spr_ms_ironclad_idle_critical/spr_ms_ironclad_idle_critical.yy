@@ -2,9 +2,9 @@
   "$GMSprite": "v2",
   "%Name": "spr_ms_ironclad_idle_critical",
   "bboxMode": 0,
-  "bbox_bottom": 255,
+  "bbox_bottom": 159,
   "bbox_left": 0,
-  "bbox_right": 255,
+  "bbox_right": 159,
   "bbox_top": 0,
   "collisionKind": 1,
   "collisionTolerance": 0,
@@ -43,7 +43,7 @@
   ],
   "gridX": 0,
   "gridY": 0,
-  "height": 256,
+  "height": 160,
   "HTile": false,
   "layers": [
     {
@@ -219,8 +219,8 @@
     ],
     "visibleRange": null,
     "volume": 1.0,
-    "xorigin": 128,
-    "yorigin": 252
+    "xorigin": 80,
+    "yorigin": 145
   },
   "swatchColours": null,
   "swfPrecision": 2.525,
@@ -230,5 +230,5 @@
   },
   "type": 0,
   "VTile": false,
-  "width": 256
+  "width": 160
 }

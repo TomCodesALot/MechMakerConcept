@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_raiden_15",
+    "name": "ZMA-15 Raiden",
+    "model_code": "ZMA-15",
+    "faction_id": "faction_zaibatsu",
+    "class": "Precision Railgun Sniper",
+    "role": "Precision Railgun Sniper Platform",
+    "tier": 3,
+    "manufacturer": "Apex Zaibatsu Aerospace",
+    "description": "Extreme standoff railgun sniper with helium-cooled quantum core and bipod stabilizer.",
+    "chassis": {
+        "frame_type": "Precision Monocoque Stabilized Frame",
+        "empty_mass_tonnes": 48.0,
+        "max_weight_capacity_tonnes": 92.0,
+        "base_armor_rating": 640,
+        "base_structure_hp": 1100,
+        "base_walk_speed_kph": 52.0,
+        "base_boost_speed_kph": 98.0,
+        "heat_dissipation_rate": 58.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_raiden_sniper_array",
+            "name": "Apex Extreme-Range Telemetry Optic",
+            "armor_hp": 150,
+            "sensor_range_m": 5200,
+            "lock_on_speed_sec": 0.4,
+            "power_drain_mw": 24.0,
+            "weight_tonnes": 2.2
+        },
+        "torso": {
+            "id": "cr_raiden_quantum_core",
+            "name": "Apex Mark-IV Helium-Cooled Fusion Core",
+            "armor_hp": 550,
+            "structure_hp": 450,
+            "reactor_type": "Helium-Cooled Quantum Core",
+            "reactor_output_mw": 395.0,
+            "power_drain_mw": 46.0,
+            "internal_cooling_units": 8,
+            "weight_tonnes": 21.0
+        },
+        "arm_left": {
+            "id": "am_raiden_bipod_arm",
+            "name": "Gyro-Stabilized Bipod Arm (Left)",
+            "armor_hp": 310,
+            "load_capacity_tonnes": 13.0,
+            "equipped_weapon": {
+                "id": "wpn_bipod_target_designator",
+                "name": "Laser Target Illuminator & Bipod",
+                "type": "Sniper Stabilizer",
+                "damage_per_shot": 0.0,
+                "rate_of_fire_rpm": 60,
+                "effective_range_m": 3500,
+                "ammo_type": "Telemetry Lock",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 1.0,
+                "power_drain_mw": 12.0,
+                "weight_tonnes": 5.5
+            }
+        },
+        "arm_right": {
+            "id": "am_raiden_linear_arm",
+            "name": "Hyper-Velocity Linear Mount Arm (Right)",
+            "armor_hp": 310,
+            "load_capacity_tonnes": 25.0,
+            "equipped_weapon": {
+                "id": "wpn_hyper_velocity_railgun",
+                "name": "Type-99 Hyper-Velocity Magnetic Accelerator",
+                "type": "Extreme-Range Kinetic Railgun",
+                "damage_per_shot": 390.0,
+                "rate_of_fire_rpm": 26,
+                "effective_range_m": 3200,
+                "ammo_type": "Hyper-Velocity Sabot",
+                "ammo_loaded": 36,
+                "ammo_max": 36,
+                "heat_per_shot": 26.0,
+                "power_drain_mw": 92.0,
+                "weight_tonnes": 19.5
+            }
+        },
+        "legs": {
+            "id": "lg_raiden_strut_legs",
+            "name": "Recoil-Absorbing Gyro Struts",
+            "armor_hp": 480,
+            "structure_hp": 390,
+            "weight_tonnes": 18.0,
+            "load_capacity_tonnes": 92.0,
+            "turn_rate_deg_per_sec": 55.0,
+            "power_drain_mw": 26.0,
+            "recoil_absorption_pct": 0.72
+        },
+        "backpack": {
+            "id": "bp_raiden_capacitor_pack",
+            "name": "Cryo-Capacitor Linear Boost Pack",
+            "armor_hp": 190,
+            "weight_tonnes": 9.2,
+            "power_drain_mw": 35.0,
+            "booster_thrust_kn": 550.0,
+            "equipped_auxiliary": {
+                "id": "wpn_thermal_decoy_rack",
+                "name": "Thermal Decoy & Counter-Battery Jammer",
+                "type": "Electronic Warfare Decoy",
+                "salvo_size": 4,
+                "total_salvos": 6,
+                "damage_per_missile": 0.0,
+                "lock_range_m": 1500,
+                "heat_per_salvo": 8.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 75.4,
+        "max_weight_tonnes": 92.0,
+        "total_power_drain_mw": 235.0,
+        "total_power_output_mw": 395.0,
+        "net_power_surplus_mw": 160.0,
+        "total_armor_hp": 1990,
+        "total_structure_hp": 1940,
+        "recoil_absorption_pct": 0.72
+    },
+    "production": {
+        "base_fabrication_cost": 590000,
+        "fabrication_time_days": 18,
+        "maintenance_cost_per_sortie": 26500,
+        "required_tech_tier": 3,
+        "required_materials": {
+            "tungsten": 45,
+            "silica": 68,
+            "tritium": 18,
+            "flux": 28,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.24
+        },
+        "energy": {
+            "damage_reduction_pct": 0.36
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.2
+        },
+        "melee": {
+            "damage_reduction_pct": 0.2
+        }
+    },
+    "lore_dossier": {
+        "designation": "ZMA-15 ZMA-15 Raiden",
+        "manufacturer": "Apex Zaibatsu Aerospace",
+        "historical_origin": "Long-distance surgical elimination weapon that punches through armored bridges."
+    }
+}

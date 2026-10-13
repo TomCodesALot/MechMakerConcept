@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_player_vanguard_heavy",
+    "name": "PMC-01 Vanguard Breaker",
+    "model_code": "PMC-01",
+    "faction_id": "player",
+    "class": "Modular Heavy Assault",
+    "role": "Modular Heavy Vanguard Linebreaker",
+    "tier": 2,
+    "manufacturer": "Player PMC Foundries",
+    "description": "Player-engineered heavy linebreaker chassis with universal hardpoints.",
+    "chassis": {
+        "frame_type": "Modular Heavy Bipedal Frame",
+        "empty_mass_tonnes": 54.0,
+        "max_weight_capacity_tonnes": 115.0,
+        "base_armor_rating": 820,
+        "base_structure_hp": 1150,
+        "base_walk_speed_kph": 44.0,
+        "base_boost_speed_kph": 82.0,
+        "heat_dissipation_rate": 38.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_pmc_target_sentry",
+            "name": "PMC Multi-Spectrum Tactical Visor",
+            "armor_hp": 160,
+            "sensor_range_m": 2600,
+            "lock_on_speed_sec": 0.7,
+            "power_drain_mw": 12.0,
+            "weight_tonnes": 2.3
+        },
+        "torso": {
+            "id": "cr_pmc_heavy_fusion",
+            "name": "PMC High-Yield Modular Fusion Core",
+            "armor_hp": 620,
+            "structure_hp": 480,
+            "reactor_type": "Tritium-Enriched Fusion Tokamak",
+            "reactor_output_mw": 310.0,
+            "power_drain_mw": 36.0,
+            "internal_cooling_units": 5,
+            "weight_tonnes": 23.0
+        },
+        "arm_left": {
+            "id": "am_pmc_heavy_left",
+            "name": "PMC Reinforced Hardpoint Arm (Left)",
+            "armor_hp": 380,
+            "load_capacity_tonnes": 18.0,
+            "equipped_weapon": {
+                "id": "wpn_pmc_autocannon_115mm",
+                "name": "PMC 115mm Modular Solid-Slug Autocannon",
+                "type": "Kinetic Autocannon",
+                "damage_per_shot": 150.0,
+                "rate_of_fire_rpm": 190,
+                "effective_range_m": 920,
+                "ammo_type": "115mm Heavy AP",
+                "ammo_loaded": 220,
+                "ammo_max": 220,
+                "heat_per_shot": 4.0,
+                "power_drain_mw": 8.0,
+                "weight_tonnes": 13.5
+            }
+        },
+        "arm_right": {
+            "id": "am_pmc_heavy_right",
+            "name": "PMC Reinforced Hardpoint Arm (Right)",
+            "armor_hp": 380,
+            "load_capacity_tonnes": 19.0,
+            "equipped_weapon": {
+                "id": "wpn_pmc_rotary_vulcan",
+                "name": "PMC 35mm Gatling Shredder",
+                "type": "Rotary Ballistic",
+                "damage_per_shot": 42.0,
+                "rate_of_fire_rpm": 1150,
+                "effective_range_m": 680,
+                "ammo_type": "35mm Sabot",
+                "ammo_loaded": 1600,
+                "ammo_max": 1600,
+                "heat_per_shot": 1.1,
+                "power_drain_mw": 14.0,
+                "weight_tonnes": 15.0
+            }
+        },
+        "legs": {
+            "id": "lg_pmc_hydraulic_legs",
+            "name": "PMC Heavy Hydraulic Stabilizer Legs",
+            "armor_hp": 620,
+            "structure_hp": 430,
+            "weight_tonnes": 25.0,
+            "load_capacity_tonnes": 115.0,
+            "turn_rate_deg_per_sec": 45.0,
+            "power_drain_mw": 22.0,
+            "recoil_absorption_pct": 0.62
+        },
+        "backpack": {
+            "id": "bp_pmc_ares_pack",
+            "name": "PMC Modular Ordnance Pod Pack",
+            "armor_hp": 210,
+            "weight_tonnes": 10.5,
+            "power_drain_mw": 26.0,
+            "booster_thrust_kn": 440.0,
+            "equipped_auxiliary": {
+                "id": "wpn_pmc_missile_swarm",
+                "name": "PMC Swarm-12 Guided Micro-Missiles",
+                "type": "Guided Missile Pod",
+                "salvo_size": 12,
+                "total_salvos": 6,
+                "damage_per_missile": 68.0,
+                "lock_range_m": 1400,
+                "heat_per_salvo": 28.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 89.3,
+        "max_weight_tonnes": 115.0,
+        "total_power_drain_mw": 118.0,
+        "total_power_output_mw": 310.0,
+        "net_power_surplus_mw": 192.0,
+        "total_armor_hp": 2370,
+        "total_structure_hp": 2060,
+        "recoil_absorption_pct": 0.62
+    },
+    "production": {
+        "base_fabrication_cost": 360000,
+        "fabrication_time_days": 10,
+        "maintenance_cost_per_sortie": 15000,
+        "required_tech_tier": 2,
+        "required_materials": {
+            "tungsten": 55,
+            "silica": 28,
+            "tritium": 8,
+            "flux": 12,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.38
+        },
+        "energy": {
+            "damage_reduction_pct": 0.22
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.34
+        },
+        "melee": {
+            "damage_reduction_pct": 0.18
+        }
+    },
+    "lore_dossier": {
+        "designation": "PMC-01 PMC-01 Vanguard Breaker",
+        "manufacturer": "Player PMC Foundries",
+        "historical_origin": "Player-commissioned assault linebreaker engineered with proprietary Vanguard Composite alloys."
+    }
+}

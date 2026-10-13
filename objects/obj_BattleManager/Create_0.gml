@@ -666,41 +666,39 @@ get_unit_sprite = function(_u) {
     }
 
     if (_is_back) {
-        // BACK PERSPECTIVE SPRITES
-        if (_type == "ironclad") return spr_ms_ironclad_back_idle;
-        if (_type == "aether") return spr_ms_aether_back_idle;
-        if (_type == "hyena") return spr_ms_hyena_back_idle;
-        if (_type == "muramasa") return spr_ms_muramasa_back_idle;
-        if (_type == "siegebreaker") return spr_ms_ironclad_back_idle;
+        // BACK PERSPECTIVE SPRITES (160x160, origin 80, 145)
+        if (_type == "aether" || _type == "sylph" || _type == "helios" || _type == "seraphim" || _type == "stratos" || _type == "pmc_02") return spr_ms_aether_back_idle;
+        if (_type == "hyena" || _type == "marauder" || _type == "slag_lobber" || _type == "chimera" || _type == "scrapper" || _type == "pmc_03") return spr_ms_hyena_back_idle;
+        if (_type == "muramasa" || _type == "ronin" || _type == "raiden" || _type == "susanoo" || _type == "ghost" || _type == "pmc_04") return spr_ms_muramasa_back_idle;
         return spr_ms_ironclad_back_idle;
     } else {
-        // FRONT PERSPECTIVE SPRITES
-        if (_act == "fire_rifle" && _type == "ironclad") return spr_ms_ironclad_fire_rifle;
-        if (_act == "fire_chaingun" && _type == "ironclad") return spr_ms_ironclad_fire_chaingun;
-        if (_act == "fire_missiles" && _type == "ironclad") return spr_ms_ironclad_fire_missiles;
-        if (_act == "melee" && _type == "ironclad") return spr_ms_ironclad_attack_melee;
-        if (_act == "hit" && _type == "ironclad") return spr_ms_ironclad_hit_kinetic;
+        // FRONT PERSPECTIVE SPRITES (160x160, origin 80, 145)
+        if (_act == "fire_rifle" && (_type == "ironclad" || _type == "bulwark" || _type == "behemoth" || _type == "vanguard" || _type == "pmc_01")) return spr_ms_ironclad_fire_rifle;
+        if (_act == "fire_chaingun" && (_type == "ironclad" || _type == "bulwark" || _type == "behemoth" || _type == "vanguard" || _type == "pmc_01")) return spr_ms_ironclad_fire_chaingun;
+        if (_act == "fire_missiles" && (_type == "ironclad" || _type == "bulwark" || _type == "behemoth" || _type == "vanguard" || _type == "pmc_01")) return spr_ms_ironclad_fire_missiles;
+        if (_act == "melee" && (_type == "ironclad" || _type == "bulwark" || _type == "behemoth" || _type == "vanguard" || _type == "pmc_01")) return spr_ms_ironclad_attack_melee;
+        if (_act == "hit" && (_type == "ironclad" || _type == "bulwark" || _type == "behemoth" || _type == "vanguard" || _type == "pmc_01")) return spr_ms_ironclad_hit_kinetic;
 
-        if (_act == "fire_beam" && _type == "aether") return spr_ms_aether_fire_beam;
-        if (_act == "melee" && _type == "aether") return spr_ms_aether_attack_saber;
-        if (_act == "boost" && _type == "aether") return spr_ms_aether_boost;
+        if (_act == "fire_beam" && (_type == "aether" || _type == "sylph" || _type == "helios" || _type == "seraphim" || _type == "stratos" || _type == "pmc_02")) return spr_ms_aether_fire_beam;
+        if (_act == "melee" && (_type == "aether" || _type == "sylph" || _type == "helios" || _type == "seraphim" || _type == "stratos" || _type == "pmc_02")) return spr_ms_aether_attack_saber;
+        if (_act == "boost" && (_type == "aether" || _type == "sylph" || _type == "helios" || _type == "seraphim" || _type == "stratos" || _type == "pmc_02")) return spr_ms_aether_boost;
 
-        if (_act == "fire_flak" && _type == "hyena") return spr_ms_hyena_fire_flak;
-        if (_act == "melee" && _type == "hyena") return spr_ms_hyena_attack_claw;
-        if (_act == "walk" && _type == "hyena") return spr_ms_hyena_walk;
+        if (_act == "fire_flak" && (_type == "hyena" || _type == "marauder" || _type == "slag_lobber" || _type == "chimera" || _type == "scrapper" || _type == "pmc_03")) return spr_ms_hyena_fire_flak;
+        if (_act == "melee" && (_type == "hyena" || _type == "marauder" || _type == "slag_lobber" || _type == "chimera" || _type == "scrapper" || _type == "pmc_03")) return spr_ms_hyena_attack_claw;
+        if (_act == "walk" && (_type == "hyena" || _type == "marauder" || _type == "slag_lobber" || _type == "chimera" || _type == "scrapper" || _type == "pmc_03")) return spr_ms_hyena_walk;
 
-        if (_act == "fire_plasma" && _type == "muramasa") return spr_ms_muramasa_fire_plasma;
-        if (_act == "melee" && _type == "muramasa") return spr_ms_muramasa_attack_blade;
-        if (_act == "sprint" && _type == "muramasa") return spr_ms_muramasa_sprint;
+        if (_act == "fire_plasma" && (_type == "muramasa" || _type == "ronin" || _type == "raiden" || _type == "susanoo" || _type == "ghost" || _type == "pmc_04")) return spr_ms_muramasa_fire_plasma;
+        if (_act == "melee" && (_type == "muramasa" || _type == "ronin" || _type == "raiden" || _type == "susanoo" || _type == "ghost" || _type == "pmc_04")) return spr_ms_muramasa_attack_blade;
+        if (_act == "sprint" && (_type == "muramasa" || _type == "ronin" || _type == "raiden" || _type == "susanoo" || _type == "ghost" || _type == "pmc_04")) return spr_ms_muramasa_sprint;
 
-        if (_act == "fire_siege" && _type == "siegebreaker") return spr_ms_siegebreaker_fire;
-        if (_act == "anchor" && _type == "siegebreaker") return spr_ms_siegebreaker_anchor;
+        if (_act == "fire_siege" && (_type == "siegebreaker" || _type == "behemoth" || _type == "slag_lobber")) return spr_ms_siegebreaker_fire;
+        if (_act == "anchor" && (_type == "siegebreaker" || _type == "behemoth" || _type == "slag_lobber")) return spr_ms_siegebreaker_anchor;
 
-        // Default Front Idles
-        if (_type == "aether") return spr_ms_aether_idle;
-        if (_type == "hyena") return spr_ms_hyena_idle;
-        if (_type == "muramasa") return spr_ms_muramasa_idle;
-        if (_type == "siegebreaker") return spr_ms_siegebreaker_anchor;
+        // Default Front Idles (160x160, origin 80, 145)
+        if (_type == "aether" || _type == "sylph" || _type == "helios" || _type == "seraphim" || _type == "stratos" || _type == "pmc_02") return spr_ms_aether_idle;
+        if (_type == "hyena" || _type == "marauder" || _type == "slag_lobber" || _type == "chimera" || _type == "scrapper" || _type == "pmc_03") return spr_ms_hyena_idle;
+        if (_type == "muramasa" || _type == "ronin" || _type == "raiden" || _type == "susanoo" || _type == "ghost" || _type == "pmc_04") return spr_ms_muramasa_idle;
+        if (_type == "siegebreaker" || _type == "behemoth") return spr_ms_siegebreaker_anchor;
         return spr_ms_ironclad_idle;
     }
 };

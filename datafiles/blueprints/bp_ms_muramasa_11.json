@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_muramasa_11",
+    "name": "ZM-11 Muramasa [Security Line]",
+    "model_code": "ZM-11",
+    "faction_id": "faction_zaibatsu",
+    "class": "Stealth Precision Warform",
+    "role": "Stealth Precision Corporate Grunt",
+    "tier": 2,
+    "manufacturer": "Apex Zaibatsu Aerospace",
+    "description": "High-tech corporate enforcer with active optical baffling and monomolecular plasma blade.",
+    "chassis": {
+        "frame_type": "Carbon-Titanium Monocoque Frame",
+        "empty_mass_tonnes": 42.0,
+        "max_weight_capacity_tonnes": 85.0,
+        "base_armor_rating": 650,
+        "base_structure_hp": 920,
+        "base_walk_speed_kph": 56.0,
+        "base_boost_speed_kph": 112.0,
+        "heat_dissipation_rate": 52.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_muramasa_optic_visor",
+            "name": "Apex Optical Telemetry Multi-Sensor",
+            "armor_hp": 130,
+            "sensor_range_m": 3600,
+            "lock_on_speed_sec": 0.4,
+            "power_drain_mw": 16.0,
+            "weight_tonnes": 2.0
+        },
+        "torso": {
+            "id": "cr_muramasa_tokamak",
+            "name": "Sub-Nanometer Quantum Fusion Tokamak",
+            "armor_hp": 520,
+            "structure_hp": 410,
+            "reactor_type": "Quantum-Shielded Fusion Core",
+            "reactor_output_mw": 340.0,
+            "power_drain_mw": 38.0,
+            "internal_cooling_units": 6,
+            "weight_tonnes": 18.0
+        },
+        "arm_left": {
+            "id": "am_muramasa_katana_arm",
+            "name": "Precision Servo Manipulator (Left)",
+            "armor_hp": 320,
+            "load_capacity_tonnes": 14.0,
+            "equipped_weapon": {
+                "id": "wpn_muramasa_plasma_katana",
+                "name": "Muramasa High-Frequency Plasma Katana",
+                "type": "Monofilament Plasma Blade",
+                "damage_per_shot": 270.0,
+                "rate_of_fire_rpm": 120,
+                "effective_range_m": 85,
+                "ammo_type": "Plasma Core",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 12.0,
+                "power_drain_mw": 32.0,
+                "weight_tonnes": 4.5
+            }
+        },
+        "arm_right": {
+            "id": "am_muramasa_carbine_arm",
+            "name": "Precision Gyro Stabilized Arm (Right)",
+            "armor_hp": 320,
+            "load_capacity_tonnes": 15.0,
+            "equipped_weapon": {
+                "id": "wpn_plasma_carbine_twin",
+                "name": "Type-91 Dual Plasma Burst Carbine",
+                "type": "High-Velocity Plasma Rifle",
+                "damage_per_shot": 150.0,
+                "rate_of_fire_rpm": 180,
+                "effective_range_m": 1100,
+                "ammo_type": "Plasma Cartridge",
+                "ammo_loaded": 150,
+                "ammo_max": 150,
+                "heat_per_shot": 8.0,
+                "power_drain_mw": 42.0,
+                "weight_tonnes": 9.0
+            }
+        },
+        "legs": {
+            "id": "lg_muramasa_sprint_legs",
+            "name": "Apex High-Tensile Sprint Bipedal Legs",
+            "armor_hp": 480,
+            "structure_hp": 370,
+            "weight_tonnes": 17.0,
+            "load_capacity_tonnes": 85.0,
+            "turn_rate_deg_per_sec": 78.0,
+            "power_drain_mw": 28.0,
+            "recoil_absorption_pct": 0.48
+        },
+        "backpack": {
+            "id": "bp_muramasa_stealth_pack",
+            "name": "Active Optical Baffle & Sprint Pack",
+            "armor_hp": 180,
+            "weight_tonnes": 8.5,
+            "power_drain_mw": 40.0,
+            "booster_thrust_kn": 640.0,
+            "equipped_auxiliary": {
+                "id": "wpn_ecm_jamming_pod",
+                "name": "Active Radar Jammer & Decoy Launcher",
+                "type": "Electronic Warfare ECM",
+                "salvo_size": 4,
+                "total_salvos": 6,
+                "damage_per_missile": 0.0,
+                "lock_range_m": 1200,
+                "heat_per_salvo": 10.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 59.0,
+        "max_weight_tonnes": 85.0,
+        "total_power_drain_mw": 196.0,
+        "total_power_output_mw": 340.0,
+        "net_power_surplus_mw": 144.0,
+        "total_armor_hp": 1950,
+        "total_structure_hp": 1700,
+        "recoil_absorption_pct": 0.48
+    },
+    "production": {
+        "base_fabrication_cost": 490000,
+        "fabrication_time_days": 13,
+        "maintenance_cost_per_sortie": 22000,
+        "required_tech_tier": 2,
+        "required_materials": {
+            "tungsten": 38,
+            "silica": 52,
+            "tritium": 12,
+            "flux": 22,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.22
+        },
+        "energy": {
+            "damage_reduction_pct": 0.38
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.2
+        },
+        "melee": {
+            "damage_reduction_pct": 0.3
+        }
+    },
+    "lore_dossier": {
+        "designation": "ZM-11 ZM-11 Muramasa [Security Line]",
+        "manufacturer": "Apex Zaibatsu Aerospace",
+        "historical_origin": "Corporate assassin and high-value facility defense frame with optical stealth baffles."
+    }
+}

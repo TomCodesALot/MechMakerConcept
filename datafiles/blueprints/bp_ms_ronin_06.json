@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_ronin_06",
+    "name": "ZM-06 Ronin",
+    "model_code": "ZM-06",
+    "faction_id": "faction_zaibatsu",
+    "class": "Security Duellist",
+    "role": "Corporate Security Duellist Grunt",
+    "tier": 1,
+    "manufacturer": "Apex Zaibatsu Aerospace",
+    "description": "Light security escort with high-frequency vibro-blade and 45mm caseless PDW.",
+    "chassis": {
+        "frame_type": "Light Agile Corporate Frame",
+        "empty_mass_tonnes": 34.0,
+        "max_weight_capacity_tonnes": 70.0,
+        "base_armor_rating": 480,
+        "base_structure_hp": 740,
+        "base_walk_speed_kph": 64.0,
+        "base_boost_speed_kph": 115.0,
+        "heat_dissipation_rate": 45.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_ronin_sensor",
+            "name": "Ronin Monocular Surveillance Sensor",
+            "armor_hp": 110,
+            "sensor_range_m": 2600,
+            "lock_on_speed_sec": 0.5,
+            "power_drain_mw": 11.0,
+            "weight_tonnes": 1.5
+        },
+        "torso": {
+            "id": "cr_ronin_reactor",
+            "name": "Apex Mini-Tokamak Mark II",
+            "armor_hp": 380,
+            "structure_hp": 320,
+            "reactor_type": "Miniaturized Tokamak Core",
+            "reactor_output_mw": 250.0,
+            "power_drain_mw": 26.0,
+            "internal_cooling_units": 4,
+            "weight_tonnes": 14.0
+        },
+        "arm_left": {
+            "id": "am_ronin_blade_arm",
+            "name": "Ronin Duellist Arm (Left)",
+            "armor_hp": 240,
+            "load_capacity_tonnes": 9.0,
+            "equipped_weapon": {
+                "id": "wpn_vibro_blade",
+                "name": "Type-4 High-Frequency Vibro-Blade",
+                "type": "Vibro Melee Blade",
+                "damage_per_shot": 160.0,
+                "rate_of_fire_rpm": 130,
+                "effective_range_m": 70,
+                "ammo_type": "Internal Servo",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 5.0,
+                "power_drain_mw": 18.0,
+                "weight_tonnes": 3.2
+            }
+        },
+        "arm_right": {
+            "id": "am_ronin_pdw_arm",
+            "name": "Ronin Rapid-Fire Arm (Right)",
+            "armor_hp": 240,
+            "load_capacity_tonnes": 11.0,
+            "equipped_weapon": {
+                "id": "wpn_pdw_45mm",
+                "name": "Apex 45mm High-Cycle PDW",
+                "type": "Rapid Kinetic PDW",
+                "damage_per_shot": 80.0,
+                "rate_of_fire_rpm": 320,
+                "effective_range_m": 750,
+                "ammo_type": "45mm Caseless",
+                "ammo_loaded": 240,
+                "ammo_max": 240,
+                "heat_per_shot": 3.8,
+                "power_drain_mw": 14.0,
+                "weight_tonnes": 6.2
+            }
+        },
+        "legs": {
+            "id": "lg_ronin_agile_legs",
+            "name": "Ronin High-Response Struts",
+            "armor_hp": 360,
+            "structure_hp": 280,
+            "weight_tonnes": 13.0,
+            "load_capacity_tonnes": 70.0,
+            "turn_rate_deg_per_sec": 82.0,
+            "power_drain_mw": 22.0,
+            "recoil_absorption_pct": 0.38
+        },
+        "backpack": {
+            "id": "bp_ronin_sprint_thruster",
+            "name": "Apex Compact Vector Pack",
+            "armor_hp": 130,
+            "weight_tonnes": 5.8,
+            "power_drain_mw": 25.0,
+            "booster_thrust_kn": 520.0,
+            "equipped_auxiliary": {
+                "id": "wpn_flashbang_launcher",
+                "name": "Strobe Flashbang Mortar",
+                "type": "Optical Disrupter",
+                "salvo_size": 3,
+                "total_salvos": 4,
+                "damage_per_missile": 0.0,
+                "lock_range_m": 450,
+                "heat_per_salvo": 4.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 43.7,
+        "max_weight_tonnes": 70.0,
+        "total_power_drain_mw": 116.0,
+        "total_power_output_mw": 250.0,
+        "net_power_surplus_mw": 134.0,
+        "total_armor_hp": 1460,
+        "total_structure_hp": 1340,
+        "recoil_absorption_pct": 0.38
+    },
+    "production": {
+        "base_fabrication_cost": 260000,
+        "fabrication_time_days": 8,
+        "maintenance_cost_per_sortie": 11500,
+        "required_tech_tier": 1,
+        "required_materials": {
+            "tungsten": 28,
+            "silica": 38,
+            "tritium": 6,
+            "flux": 14,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.16
+        },
+        "energy": {
+            "damage_reduction_pct": 0.3
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.15
+        },
+        "melee": {
+            "damage_reduction_pct": 0.25
+        }
+    },
+    "lore_dossier": {
+        "designation": "ZM-06 ZM-06 Ronin",
+        "manufacturer": "Apex Zaibatsu Aerospace",
+        "historical_origin": "Corporate security escort built to defend arcology lobbies and VIP executive suites."
+    }
+}

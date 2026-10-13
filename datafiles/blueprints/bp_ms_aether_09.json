@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_aether_09",
+    "name": "OCM-09 Aether Stryker [Standard]",
+    "model_code": "OCM-09",
+    "faction_id": "faction_colony",
+    "class": "High-Mobility Space Fighter",
+    "role": "High-Mobility Space Dominance Grunt",
+    "tier": 2,
+    "manufacturer": "Aether Aerospace Guild",
+    "description": "Mainline high-mobility interceptor frame of the Colony Union.",
+    "chassis": {
+        "frame_type": "Light Aerosteel Vector Frame",
+        "empty_mass_tonnes": 36.0,
+        "max_weight_capacity_tonnes": 75.0,
+        "base_armor_rating": 580,
+        "base_structure_hp": 880,
+        "base_walk_speed_kph": 62.0,
+        "base_boost_speed_kph": 118.0,
+        "heat_dissipation_rate": 48.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_aether_sensor_fin",
+            "name": "Aether Aerofin Sensor Array",
+            "armor_hp": 120,
+            "sensor_range_m": 3200,
+            "lock_on_speed_sec": 0.5,
+            "power_drain_mw": 14.0,
+            "weight_tonnes": 1.8
+        },
+        "torso": {
+            "id": "cr_aether_tokamak_iii",
+            "name": "Aether Sol-3 High-Compression Reactor",
+            "armor_hp": 480,
+            "structure_hp": 380,
+            "reactor_type": "High-Compression Fusion Tokamak",
+            "reactor_output_mw": 320.0,
+            "power_drain_mw": 32.0,
+            "internal_cooling_units": 5,
+            "weight_tonnes": 16.0
+        },
+        "arm_left": {
+            "id": "am_aether_saber_left",
+            "name": "Aether Agile Manipulator & Saber Hardpoint",
+            "armor_hp": 290,
+            "load_capacity_tonnes": 12.0,
+            "equipped_weapon": {
+                "id": "wpn_beam_saber_aether",
+                "name": "Hyperion Twin-Focus Beam Saber",
+                "type": "Coherent Energy Melee",
+                "damage_per_shot": 210.0,
+                "rate_of_fire_rpm": 90,
+                "effective_range_m": 80,
+                "ammo_type": "Plasma Core",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 14.0,
+                "power_drain_mw": 26.0,
+                "weight_tonnes": 3.8
+            }
+        },
+        "arm_right": {
+            "id": "am_aether_rifle_right",
+            "name": "Aether Stabilized Gun Arm",
+            "armor_hp": 290,
+            "load_capacity_tonnes": 14.0,
+            "equipped_weapon": {
+                "id": "wpn_beam_pulse_rifle",
+                "name": "Type-88 Coherent Beam Pulse Rifle",
+                "type": "Particle Beam Rifle",
+                "damage_per_shot": 165.0,
+                "rate_of_fire_rpm": 140,
+                "effective_range_m": 1200,
+                "ammo_type": "E-Cap Magazine",
+                "ammo_loaded": 120,
+                "ammo_max": 120,
+                "heat_per_shot": 9.5,
+                "power_drain_mw": 38.0,
+                "weight_tonnes": 8.5
+            }
+        },
+        "legs": {
+            "id": "lg_aether_aerosteel_legs",
+            "name": "Aether Vector Vernier Bipedal Legs",
+            "armor_hp": 440,
+            "structure_hp": 340,
+            "weight_tonnes": 15.0,
+            "load_capacity_tonnes": 75.0,
+            "turn_rate_deg_per_sec": 75.0,
+            "power_drain_mw": 24.0,
+            "recoil_absorption_pct": 0.4
+        },
+        "backpack": {
+            "id": "bp_aether_twin_thruster",
+            "name": "Sol-Drive High-G Dual Vernier Pack",
+            "armor_hp": 160,
+            "weight_tonnes": 7.5,
+            "power_drain_mw": 35.0,
+            "booster_thrust_kn": 680.0,
+            "equipped_auxiliary": {
+                "id": "wpn_chaff_flare_launcher",
+                "name": "Thermal Chaff & ECM Flare Dispenser",
+                "type": "Countermeasure",
+                "salvo_size": 8,
+                "total_salvos": 6,
+                "damage_per_missile": 0.0,
+                "lock_range_m": 600,
+                "heat_per_salvo": 4.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 52.6,
+        "max_weight_tonnes": 75.0,
+        "total_power_drain_mw": 169.0,
+        "total_power_output_mw": 320.0,
+        "net_power_surplus_mw": 151.0,
+        "total_armor_hp": 1780,
+        "total_structure_hp": 1600,
+        "recoil_absorption_pct": 0.4
+    },
+    "production": {
+        "base_fabrication_cost": 410000,
+        "fabrication_time_days": 11,
+        "maintenance_cost_per_sortie": 18000,
+        "required_tech_tier": 2,
+        "required_materials": {
+            "tungsten": 35,
+            "silica": 45,
+            "tritium": 10,
+            "flux": 18,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.15
+        },
+        "energy": {
+            "damage_reduction_pct": 0.42
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.2
+        },
+        "melee": {
+            "damage_reduction_pct": 0.25
+        }
+    },
+    "lore_dossier": {
+        "designation": "OCM-09 OCM-09 Aether Stryker [Standard]",
+        "manufacturer": "Aether Aerospace Guild",
+        "historical_origin": "Mainline high-mobility vector vernier interceptor of the Colony Union."
+    }
+}

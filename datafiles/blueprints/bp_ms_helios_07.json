@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_helios_07",
+    "name": "OCA-07 Helios Arbalest",
+    "model_code": "OCA-07",
+    "faction_id": "faction_colony",
+    "class": "Long-Range Particle Artillery",
+    "role": "Long-Range Particle Siege Artillery",
+    "tier": 3,
+    "manufacturer": "Aether Aerospace Guild",
+    "description": "Spinal beam bombardment warform mounting a heavy particle accelerator.",
+    "chassis": {
+        "frame_type": "Heavy Particle Stabilized Frame",
+        "empty_mass_tonnes": 46.0,
+        "max_weight_capacity_tonnes": 92.0,
+        "base_armor_rating": 680,
+        "base_structure_hp": 1150,
+        "base_walk_speed_kph": 50.0,
+        "base_boost_speed_kph": 95.0,
+        "heat_dissipation_rate": 62.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_helios_long_sensor",
+            "name": "Helios Tachyon Targeting Mast",
+            "armor_hp": 150,
+            "sensor_range_m": 4800,
+            "lock_on_speed_sec": 0.7,
+            "power_drain_mw": 20.0,
+            "weight_tonnes": 2.2
+        },
+        "torso": {
+            "id": "cr_helios_sol_tokamak",
+            "name": "Sol-Hyperion Fusion Accelerator Core",
+            "armor_hp": 580,
+            "structure_hp": 480,
+            "reactor_type": "Particle-Surge Tokamak Core",
+            "reactor_output_mw": 410.0,
+            "power_drain_mw": 48.0,
+            "internal_cooling_units": 8,
+            "weight_tonnes": 22.0
+        },
+        "arm_left": {
+            "id": "am_helios_coolant_arm",
+            "name": "Helios Auxiliary Radiator Arm",
+            "armor_hp": 340,
+            "load_capacity_tonnes": 14.0,
+            "equipped_weapon": {
+                "id": "wpn_heat_radiator_shield",
+                "name": "Cryo-Radiator Heat Siphon Shield",
+                "type": "Defensive Thermal Siphon",
+                "damage_per_shot": 40.0,
+                "rate_of_fire_rpm": 60,
+                "effective_range_m": 120,
+                "ammo_type": "Cryo Coolant",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": -15.0,
+                "power_drain_mw": 12.0,
+                "weight_tonnes": 8.0
+            }
+        },
+        "arm_right": {
+            "id": "am_helios_spinal_mount",
+            "name": "Helios Heavy Accelerator Mount Arm",
+            "armor_hp": 340,
+            "load_capacity_tonnes": 22.0,
+            "equipped_weapon": {
+                "id": "wpn_spinal_beam_accelerator",
+                "name": "Spinal Coherent Particle Accelerator",
+                "type": "Heavy Particle Beam",
+                "damage_per_shot": 380.0,
+                "rate_of_fire_rpm": 32,
+                "effective_range_m": 2500,
+                "ammo_type": "Supercharged E-Core",
+                "ammo_loaded": 36,
+                "ammo_max": 36,
+                "heat_per_shot": 32.0,
+                "power_drain_mw": 85.0,
+                "weight_tonnes": 18.0
+            }
+        },
+        "legs": {
+            "id": "lg_helios_braced_legs",
+            "name": "Helios Thermal Radiating Legs",
+            "armor_hp": 520,
+            "structure_hp": 410,
+            "weight_tonnes": 19.0,
+            "load_capacity_tonnes": 92.0,
+            "turn_rate_deg_per_sec": 52.0,
+            "power_drain_mw": 28.0,
+            "recoil_absorption_pct": 0.6
+        },
+        "backpack": {
+            "id": "bp_helios_radiator_wings",
+            "name": "Helios Fold-Out Thermal Radiator Wings",
+            "armor_hp": 220,
+            "weight_tonnes": 9.5,
+            "power_drain_mw": 32.0,
+            "booster_thrust_kn": 520.0,
+            "equipped_auxiliary": {
+                "id": "wpn_beam_turret_defensive",
+                "name": "Twin Defensive Particle CIWS",
+                "type": "Point Defense Beam",
+                "salvo_size": 12,
+                "total_salvos": 12,
+                "damage_per_missile": 28.0,
+                "lock_range_m": 850,
+                "heat_per_salvo": 14.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 78.7,
+        "max_weight_tonnes": 92.0,
+        "total_power_drain_mw": 225.0,
+        "total_power_output_mw": 410.0,
+        "net_power_surplus_mw": 185.0,
+        "total_armor_hp": 2150,
+        "total_structure_hp": 2040,
+        "recoil_absorption_pct": 0.6
+    },
+    "production": {
+        "base_fabrication_cost": 580000,
+        "fabrication_time_days": 19,
+        "maintenance_cost_per_sortie": 27500,
+        "required_tech_tier": 3,
+        "required_materials": {
+            "tungsten": 45,
+            "silica": 62,
+            "tritium": 18,
+            "flux": 25,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.2
+        },
+        "energy": {
+            "damage_reduction_pct": 0.48
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.22
+        },
+        "melee": {
+            "damage_reduction_pct": 0.18
+        }
+    },
+    "lore_dossier": {
+        "designation": "OCA-07 OCA-07 Helios Arbalest",
+        "manufacturer": "Aether Aerospace Guild",
+        "historical_origin": "Long-range sniper and siege artillery developed to break Jovian gunboat blockades."
+    }
+}

@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_player_stratos_interceptor",
+    "name": "PMC-02 Stratos Interceptor",
+    "model_code": "PMC-02",
+    "faction_id": "player",
+    "class": "Modular High-G Interceptor",
+    "role": "Player Modular Stratos High-G Interceptor",
+    "tier": 2,
+    "manufacturer": "Player PMC Foundries",
+    "description": "High-agility orbital fighter frame utilizing vector vernier thrusters.",
+    "chassis": {
+        "frame_type": "Aerosteel Hybrid Interceptor Frame",
+        "empty_mass_tonnes": 38.0,
+        "max_weight_capacity_tonnes": 80.0,
+        "base_armor_rating": 610,
+        "base_structure_hp": 890,
+        "base_walk_speed_kph": 60.0,
+        "base_boost_speed_kph": 115.0,
+        "heat_dissipation_rate": 46.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_pmc_aerofin",
+            "name": "PMC High-G Telemetry Fin",
+            "armor_hp": 130,
+            "sensor_range_m": 3100,
+            "lock_on_speed_sec": 0.5,
+            "power_drain_mw": 14.0,
+            "weight_tonnes": 1.9
+        },
+        "torso": {
+            "id": "cr_pmc_flux_reactor",
+            "name": "PMC Hyperion-Flux Core",
+            "armor_hp": 490,
+            "structure_hp": 390,
+            "reactor_type": "Flux-Boosted Fusion Tokamak",
+            "reactor_output_mw": 330.0,
+            "power_drain_mw": 34.0,
+            "internal_cooling_units": 5,
+            "weight_tonnes": 17.0
+        },
+        "arm_left": {
+            "id": "am_pmc_saber_arm",
+            "name": "PMC Rapid Servo Manipulator (Left)",
+            "armor_hp": 300,
+            "load_capacity_tonnes": 13.0,
+            "equipped_weapon": {
+                "id": "wpn_pmc_beam_saber",
+                "name": "PMC Hyperion Focus Beam Saber",
+                "type": "Coherent Energy Melee",
+                "damage_per_shot": 220.0,
+                "rate_of_fire_rpm": 95,
+                "effective_range_m": 85,
+                "ammo_type": "Plasma E-Cap",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 13.0,
+                "power_drain_mw": 28.0,
+                "weight_tonnes": 4.0
+            }
+        },
+        "arm_right": {
+            "id": "am_pmc_beam_arm",
+            "name": "PMC Beam Hardpoint Arm (Right)",
+            "armor_hp": 300,
+            "load_capacity_tonnes": 15.0,
+            "equipped_weapon": {
+                "id": "wpn_pmc_particle_rifle",
+                "name": "PMC Twin Particle Pulse Rifle",
+                "type": "Particle Beam Rifle",
+                "damage_per_shot": 170.0,
+                "rate_of_fire_rpm": 145,
+                "effective_range_m": 1180,
+                "ammo_type": "E-Cap Magazine",
+                "ammo_loaded": 130,
+                "ammo_max": 130,
+                "heat_per_shot": 9.0,
+                "power_drain_mw": 40.0,
+                "weight_tonnes": 8.8
+            }
+        },
+        "legs": {
+            "id": "lg_pmc_vernier_legs",
+            "name": "PMC Vector Vernier Strut Legs",
+            "armor_hp": 460,
+            "structure_hp": 350,
+            "weight_tonnes": 16.0,
+            "load_capacity_tonnes": 80.0,
+            "turn_rate_deg_per_sec": 72.0,
+            "power_drain_mw": 25.0,
+            "recoil_absorption_pct": 0.42
+        },
+        "backpack": {
+            "id": "bp_pmc_vector_pack",
+            "name": "PMC Dual Sol-Vernier Thruster Pack",
+            "armor_hp": 170,
+            "weight_tonnes": 8.0,
+            "power_drain_mw": 36.0,
+            "booster_thrust_kn": 660.0,
+            "equipped_auxiliary": {
+                "id": "wpn_pmc_ecm_chaff",
+                "name": "Chaff Dispenser & Thermal Cloak",
+                "type": "Tactical Countermeasure",
+                "salvo_size": 6,
+                "total_salvos": 6,
+                "damage_per_missile": 0.0,
+                "lock_range_m": 550,
+                "heat_per_salvo": 4.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 55.7,
+        "max_weight_tonnes": 80.0,
+        "total_power_drain_mw": 177.0,
+        "total_power_output_mw": 330.0,
+        "net_power_surplus_mw": 153.0,
+        "total_armor_hp": 1850,
+        "total_structure_hp": 1630,
+        "recoil_absorption_pct": 0.42
+    },
+    "production": {
+        "base_fabrication_cost": 440000,
+        "fabrication_time_days": 11,
+        "maintenance_cost_per_sortie": 17500,
+        "required_tech_tier": 2,
+        "required_materials": {
+            "tungsten": 10,
+            "silica": 15,
+            "tritium": 25,
+            "flux": 20,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.18
+        },
+        "energy": {
+            "damage_reduction_pct": 0.4
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.22
+        },
+        "melee": {
+            "damage_reduction_pct": 0.24
+        }
+    },
+    "lore_dossier": {
+        "designation": "PMC-02 PMC-02 Stratos Interceptor",
+        "manufacturer": "Player PMC Foundries",
+        "historical_origin": "Player-commissioned orbital interceptor designed to dominate deep space sectors."
+    }
+}

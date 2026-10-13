@@ -321,6 +321,37 @@ if (file_exists("mobile_suits_timeline.json")) {
     }
 }
 
+// 8b. Load & Index All 20 Canonical Blueprint JSONs from datafiles/blueprints/
+var _canonical_files = [
+    "bp_ms_ironclad_07.json", "bp_ms_bulwark_03.json", "bp_ms_siegebreaker_07b.json", "bp_ms_behemoth_11.json",
+    "bp_ms_aether_09.json", "bp_ms_sylph_04.json", "bp_ms_helios_07.json", "bp_ms_seraphim_15.json",
+    "bp_ms_hyena_12.json", "bp_ms_marauder_05.json", "bp_ms_slag_lobber_14.json", "bp_ms_chimera_19.json",
+    "bp_ms_muramasa_11.json", "bp_ms_ronin_06.json", "bp_ms_raiden_15.json", "bp_ms_susanoo_22.json",
+    "bp_player_vanguard_heavy.json", "bp_player_stratos_interceptor.json", "bp_player_scrapper_brawler.json", "bp_player_ghost_sniper.json"
+];
+for (var b = 0; b < array_length(_canonical_files); b++) {
+    var _fname = _canonical_files[b];
+    var _loaded_bp = load_blueprint(_fname);
+    if (!is_undefined(_loaded_bp)) {
+        var _bid = _loaded_bp.blueprint_id;
+        var _spr = spr_ms_ironclad_idle;
+        if (string_pos("aether", _bid) > 0 || string_pos("sylph", _bid) > 0 || string_pos("helios", _bid) > 0 || string_pos("seraphim", _bid) > 0 || string_pos("stratos", _bid) > 0) _spr = spr_ms_aether_idle;
+        else if (string_pos("hyena", _bid) > 0 || string_pos("marauder", _bid) > 0 || string_pos("slag", _bid) > 0 || string_pos("chimera", _bid) > 0 || string_pos("scrapper", _bid) > 0) _spr = spr_ms_hyena_idle;
+        else if (string_pos("muramasa", _bid) > 0 || string_pos("ronin", _bid) > 0 || string_pos("raiden", _bid) > 0 || string_pos("susanoo", _bid) > 0 || string_pos("ghost", _bid) > 0) _spr = spr_ms_muramasa_idle;
+        else if (string_pos("siege", _bid) > 0) _spr = spr_ms_siegebreaker_fire;
+        
+        _loaded_bp.associated_sprite = _spr;
+        _loaded_bp.schematic_sprite = spr_mech_schematic;
+        
+        unlocked_blueprints[$ _bid] = _loaded_bp;
+        if (variable_struct_exists(_loaded_bp, "model_code")) {
+            unlocked_blueprints[$ _loaded_bp.model_code] = _loaded_bp;
+        }
+        array_push(all_blueprint_list, _loaded_bp);
+    }
+}
+show_debug_message("[obj_BlueprintManager] Loaded all 20 canonical blueprint JSONs from datafiles/blueprints/ into registry.");
+
 show_debug_message("[obj_BlueprintManager] Total Blueprints Active: " + string(array_length(all_blueprint_list)) + ". Ready for Prototyping & Assembly.");
 
 // 9. Pre-populate Discovered Alloy Codex with Canonical Standards (docs/02 & 14)

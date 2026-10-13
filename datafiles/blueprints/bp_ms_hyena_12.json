@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_hyena_12",
+    "name": "SCR-12 Hyena [Scavenger Line]",
+    "model_code": "SCR-12",
+    "faction_id": "faction_syndicate",
+    "class": "Asymmetric Heavy Scavenger",
+    "role": "Asymmetric Heavy Scavenger & Pirate Grunt",
+    "tier": 2,
+    "manufacturer": "Rust-Belt Free Foundry",
+    "description": "Junk-welded pirate mainstay combining flak scatterguns and pneumatic crusher claw.",
+    "chassis": {
+        "frame_type": "Reinforced Scrap Tubular Frame",
+        "empty_mass_tonnes": 52.0,
+        "max_weight_capacity_tonnes": 105.0,
+        "base_armor_rating": 720,
+        "base_structure_hp": 1100,
+        "base_walk_speed_kph": 48.0,
+        "base_boost_speed_kph": 88.0,
+        "heat_dissipation_rate": 30.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_hyena_scrap_dome",
+            "name": "Welded Mining Visor & Radio Rig",
+            "armor_hp": 140,
+            "sensor_range_m": 1900,
+            "lock_on_speed_sec": 0.9,
+            "power_drain_mw": 10.0,
+            "weight_tonnes": 2.2
+        },
+        "torso": {
+            "id": "cr_hyena_salvage_tokamak",
+            "name": "Overclocked Syndicate Fission-Turbine",
+            "armor_hp": 580,
+            "structure_hp": 480,
+            "reactor_type": "Overclocked Fission-Turbine Hybrid",
+            "reactor_output_mw": 265.0,
+            "power_drain_mw": 32.0,
+            "internal_cooling_units": 3,
+            "weight_tonnes": 22.0
+        },
+        "arm_left": {
+            "id": "am_hyena_claw_arm",
+            "name": "Heavy Hydraulic Breaching Claw Left Arm",
+            "armor_hp": 420,
+            "load_capacity_tonnes": 18.0,
+            "equipped_weapon": {
+                "id": "wpn_hydraulic_scrap_claw",
+                "name": "Pneumatic Scrap-Crusher Claw",
+                "type": "Hydraulic Melee Crusher",
+                "damage_per_shot": 260.0,
+                "rate_of_fire_rpm": 70,
+                "effective_range_m": 75,
+                "ammo_type": "Pneumatic Charge",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 10.0,
+                "power_drain_mw": 22.0,
+                "weight_tonnes": 11.5
+            }
+        },
+        "arm_right": {
+            "id": "am_hyena_flak_arm",
+            "name": "Hyena Heavy Recoil Right Arm",
+            "armor_hp": 360,
+            "load_capacity_tonnes": 16.0,
+            "equipped_weapon": {
+                "id": "wpn_flak_scattergun",
+                "name": "8-Gauge Slag Flak Scattergun",
+                "type": "Flak Kinetic Scattergun",
+                "damage_per_shot": 180.0,
+                "rate_of_fire_rpm": 90,
+                "effective_range_m": 550,
+                "ammo_type": "Slag Canister Shot",
+                "ammo_loaded": 140,
+                "ammo_max": 140,
+                "heat_per_shot": 6.5,
+                "power_drain_mw": 12.0,
+                "weight_tonnes": 12.0
+            }
+        },
+        "legs": {
+            "id": "lg_hyena_scrap_legs",
+            "name": "Reinforced Mining Excavator Legs",
+            "armor_hp": 560,
+            "structure_hp": 420,
+            "weight_tonnes": 23.0,
+            "load_capacity_tonnes": 105.0,
+            "turn_rate_deg_per_sec": 48.0,
+            "power_drain_mw": 20.0,
+            "recoil_absorption_pct": 0.58
+        },
+        "backpack": {
+            "id": "bp_hyena_booster_rig",
+            "name": "Slag-Vent Auxiliary Thruster Rig",
+            "armor_hp": 180,
+            "weight_tonnes": 9.0,
+            "power_drain_mw": 24.0,
+            "booster_thrust_kn": 440.0,
+            "equipped_auxiliary": {
+                "id": "wpn_scrap_rocket_rack",
+                "name": "Unguided Slag Rocket Pod",
+                "type": "Unguided Rocket Volley",
+                "salvo_size": 8,
+                "total_salvos": 4,
+                "damage_per_missile": 58.0,
+                "lock_range_m": 700,
+                "heat_per_salvo": 20.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 79.7,
+        "max_weight_tonnes": 105.0,
+        "total_power_drain_mw": 120.0,
+        "total_power_output_mw": 265.0,
+        "net_power_surplus_mw": 145.0,
+        "total_armor_hp": 2240,
+        "total_structure_hp": 2000,
+        "recoil_absorption_pct": 0.58
+    },
+    "production": {
+        "base_fabrication_cost": 290000,
+        "fabrication_time_days": 9,
+        "maintenance_cost_per_sortie": 11000,
+        "required_tech_tier": 2,
+        "required_materials": {
+            "tungsten": 45,
+            "silica": 20,
+            "tritium": 4,
+            "flux": 8,
+            "slag": 15
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.35
+        },
+        "energy": {
+            "damage_reduction_pct": 0.12
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.32
+        },
+        "melee": {
+            "damage_reduction_pct": 0.3
+        }
+    },
+    "lore_dossier": {
+        "designation": "SCR-12 SCR-12 Hyena [Scavenger Line]",
+        "manufacturer": "Rust-Belt Free Foundry",
+        "historical_origin": "Scavenger pirate workhorse feared for savage boarding actions in space hulks."
+    }
+}

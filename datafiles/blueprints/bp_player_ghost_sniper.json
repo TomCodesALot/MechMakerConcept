@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_player_ghost_sniper",
+    "name": "PMC-04 Kusanagi Ghost",
+    "model_code": "PMC-04",
+    "faction_id": "player",
+    "class": "Neural-Linked Precision Warform",
+    "role": "Player Modular Ghost Sniper",
+    "tier": 3,
+    "manufacturer": "Player PMC Foundries",
+    "description": "Experimental cyber-neural chassis forged with superconductor matrices.",
+    "chassis": {
+        "frame_type": "Superconductor Neural Monocoque Frame",
+        "empty_mass_tonnes": 45.0,
+        "max_weight_capacity_tonnes": 88.0,
+        "base_armor_rating": 780,
+        "base_structure_hp": 1050,
+        "base_walk_speed_kph": 56.0,
+        "base_boost_speed_kph": 110.0,
+        "heat_dissipation_rate": 54.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_pmc_ghost_sensor",
+            "name": "PMC Neural Infiltration Visor",
+            "armor_hp": 150,
+            "sensor_range_m": 4500,
+            "lock_on_speed_sec": 0.35,
+            "power_drain_mw": 20.0,
+            "weight_tonnes": 2.0
+        },
+        "torso": {
+            "id": "cr_pmc_quantum_tokamak",
+            "name": "PMC Sub-Nanometer Quantum Tokamak",
+            "armor_hp": 600,
+            "structure_hp": 480,
+            "reactor_type": "Quantum Tokamak Core",
+            "reactor_output_mw": 380.0,
+            "power_drain_mw": 44.0,
+            "internal_cooling_units": 7,
+            "weight_tonnes": 20.0
+        },
+        "arm_left": {
+            "id": "am_pmc_nanoblade_arm",
+            "name": "PMC Monomolecular Manipulator (Left)",
+            "armor_hp": 340,
+            "load_capacity_tonnes": 14.0,
+            "equipped_weapon": {
+                "id": "wpn_pmc_nanoblade",
+                "name": "High-Frequency Nanoblade & Thermal Saber",
+                "type": "Monofilament Energy Blade",
+                "damage_per_shot": 290.0,
+                "rate_of_fire_rpm": 125,
+                "effective_range_m": 90,
+                "ammo_type": "Superconducting Edge",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 11.0,
+                "power_drain_mw": 34.0,
+                "weight_tonnes": 4.2
+            }
+        },
+        "arm_right": {
+            "id": "am_pmc_linear_rifle_arm",
+            "name": "PMC Linear Rifle Hardpoint (Right)",
+            "armor_hp": 340,
+            "load_capacity_tonnes": 18.0,
+            "equipped_weapon": {
+                "id": "wpn_pmc_linear_rifle",
+                "name": "Linear Accelerator Sniper Rifle",
+                "type": "Precision Linear Accelerator",
+                "damage_per_shot": 310.0,
+                "rate_of_fire_rpm": 45,
+                "effective_range_m": 2100,
+                "ammo_type": "Magnetic Linear Sabot",
+                "ammo_loaded": 50,
+                "ammo_max": 50,
+                "heat_per_shot": 18.0,
+                "power_drain_mw": 62.0,
+                "weight_tonnes": 12.0
+            }
+        },
+        "legs": {
+            "id": "lg_pmc_ghost_legs",
+            "name": "PMC Agile Bipedal Dampener Legs",
+            "armor_hp": 520,
+            "structure_hp": 400,
+            "weight_tonnes": 17.5,
+            "load_capacity_tonnes": 88.0,
+            "turn_rate_deg_per_sec": 76.0,
+            "power_drain_mw": 26.0,
+            "recoil_absorption_pct": 0.58
+        },
+        "backpack": {
+            "id": "bp_pmc_optical_cloak_pack",
+            "name": "Active Optical Cloak & ECM Thruster Pack",
+            "armor_hp": 210,
+            "weight_tonnes": 8.8,
+            "power_drain_mw": 42.0,
+            "booster_thrust_kn": 650.0,
+            "equipped_auxiliary": {
+                "id": "wpn_pmc_sensor_decoy",
+                "name": "Holographic Decoy & Chaff Ejector",
+                "type": "Optical Decoy System",
+                "salvo_size": 4,
+                "total_salvos": 6,
+                "damage_per_missile": 0.0,
+                "lock_range_m": 1200,
+                "heat_per_salvo": 8.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 64.5,
+        "max_weight_tonnes": 88.0,
+        "total_power_drain_mw": 228.0,
+        "total_power_output_mw": 380.0,
+        "net_power_surplus_mw": 152.0,
+        "total_armor_hp": 2160,
+        "total_structure_hp": 1930,
+        "recoil_absorption_pct": 0.58
+    },
+    "production": {
+        "base_fabrication_cost": 485000,
+        "fabrication_time_days": 14,
+        "maintenance_cost_per_sortie": 23500,
+        "required_tech_tier": 3,
+        "required_materials": {
+            "tungsten": 15,
+            "silica": 10,
+            "tritium": 35,
+            "flux": 30,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.24
+        },
+        "energy": {
+            "damage_reduction_pct": 0.4
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.22
+        },
+        "melee": {
+            "damage_reduction_pct": 0.32
+        }
+    },
+    "lore_dossier": {
+        "designation": "PMC-04 PMC-04 Kusanagi Ghost",
+        "manufacturer": "Player PMC Foundries",
+        "historical_origin": "Player-commissioned stealth sniper warform combining optical baffles with linear rail punch."
+    }
+}

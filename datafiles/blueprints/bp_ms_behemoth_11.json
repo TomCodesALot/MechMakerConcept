@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_behemoth_11",
+    "name": "TCX-11 Behemoth Mk.IV",
+    "model_code": "TCX-11",
+    "faction_id": "faction_terran",
+    "class": "Super-Dreadnought Platform",
+    "role": "Quadrupedal Super-Heavy Railgun Platform",
+    "tier": 4,
+    "manufacturer": "Vanguard Defense Systems",
+    "description": "Colossal quadruped mobile fortress with twin 400mm Hyper-Rail batteries.",
+    "chassis": {
+        "frame_type": "Quadruped Heavy Dreadnought Frame",
+        "empty_mass_tonnes": 95.0,
+        "max_weight_capacity_tonnes": 240.0,
+        "base_armor_rating": 1350,
+        "base_structure_hp": 2400,
+        "base_walk_speed_kph": 26.0,
+        "base_boost_speed_kph": 45.0,
+        "heat_dissipation_rate": 55.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_behemoth_command_dome",
+            "name": "Behemoth Armored Command Bridge",
+            "armor_hp": 380,
+            "sensor_range_m": 5000,
+            "lock_on_speed_sec": 0.9,
+            "power_drain_mw": 25.0,
+            "weight_tonnes": 5.0
+        },
+        "torso": {
+            "id": "cr_hyperion_dreadnought_core",
+            "name": "Hyperion Gigawatt Class-VI Super-Core",
+            "armor_hp": 1250,
+            "structure_hp": 950,
+            "reactor_type": "Multi-Chamber Fusion Super-Core",
+            "reactor_output_mw": 520.0,
+            "power_drain_mw": 75.0,
+            "internal_cooling_units": 10,
+            "weight_tonnes": 42.0
+        },
+        "arm_left": {
+            "id": "am_behemoth_left_rail",
+            "name": "Port Heavy Rail Turret Sponson",
+            "armor_hp": 720,
+            "load_capacity_tonnes": 36.0,
+            "equipped_weapon": {
+                "id": "wpn_hyper_rail_400mm_l",
+                "name": "Port 400mm Hyper-Rail Battery",
+                "type": "Capital-Grade Railgun",
+                "damage_per_shot": 580.0,
+                "rate_of_fire_rpm": 18,
+                "effective_range_m": 3000,
+                "ammo_type": "400mm Penetrators",
+                "ammo_loaded": 36,
+                "ammo_max": 36,
+                "heat_per_shot": 42.0,
+                "power_drain_mw": 90.0,
+                "weight_tonnes": 32.0
+            }
+        },
+        "arm_right": {
+            "id": "am_behemoth_right_rail",
+            "name": "Starboard Heavy Rail Turret Sponson",
+            "armor_hp": 720,
+            "load_capacity_tonnes": 36.0,
+            "equipped_weapon": {
+                "id": "wpn_hyper_rail_400mm_r",
+                "name": "Starboard 400mm Hyper-Rail Battery",
+                "type": "Capital-Grade Railgun",
+                "damage_per_shot": 580.0,
+                "rate_of_fire_rpm": 18,
+                "effective_range_m": 3000,
+                "ammo_type": "400mm Penetrators",
+                "ammo_loaded": 36,
+                "ammo_max": 36,
+                "heat_per_shot": 42.0,
+                "power_drain_mw": 90.0,
+                "weight_tonnes": 32.0
+            }
+        },
+        "legs": {
+            "id": "lg_behemoth_quad_pillars",
+            "name": "Quadruped Reinforced Titan Pillar Legs",
+            "armor_hp": 1150,
+            "structure_hp": 850,
+            "weight_tonnes": 48.0,
+            "load_capacity_tonnes": 240.0,
+            "turn_rate_deg_per_sec": 22.0,
+            "power_drain_mw": 45.0,
+            "recoil_absorption_pct": 0.95
+        },
+        "backpack": {
+            "id": "bp_behemoth_power_vault",
+            "name": "Behemoth Secondary Fusion Sponson Pack",
+            "armor_hp": 480,
+            "weight_tonnes": 22.0,
+            "power_drain_mw": 40.0,
+            "booster_thrust_kn": 480.0,
+            "equipped_auxiliary": {
+                "id": "wpn_ciws_vulcan_turret",
+                "name": "Twin Point-Defense CIWS Rotary Cannons",
+                "type": "Anti-Air Kinetic CIWS",
+                "salvo_size": 30,
+                "total_salvos": 20,
+                "damage_per_missile": 22.0,
+                "lock_range_m": 900,
+                "heat_per_salvo": 12.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 181.0,
+        "max_weight_tonnes": 240.0,
+        "total_power_drain_mw": 365.0,
+        "total_power_output_mw": 520.0,
+        "net_power_surplus_mw": 155.0,
+        "total_armor_hp": 4700,
+        "total_structure_hp": 4200,
+        "recoil_absorption_pct": 0.95
+    },
+    "production": {
+        "base_fabrication_cost": 890000,
+        "fabrication_time_days": 28,
+        "maintenance_cost_per_sortie": 42000,
+        "required_tech_tier": 4,
+        "required_materials": {
+            "tungsten": 120,
+            "silica": 60,
+            "tritium": 25,
+            "flux": 30,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.5
+        },
+        "energy": {
+            "damage_reduction_pct": 0.28
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.45
+        },
+        "melee": {
+            "damage_reduction_pct": 0.2
+        }
+    },
+    "lore_dossier": {
+        "designation": "TCX-11 TCX-11 Behemoth Mk.IV",
+        "manufacturer": "Vanguard Defense Systems",
+        "historical_origin": "Terran Coalitions supreme mobile fortress and theater command bastion."
+    }
+}

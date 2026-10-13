@@ -1,11 +1,13 @@
 {
     "blueprint_id": "bp_ms_ironclad_07",
-    "name": "GHA-07 Ironclad",
+    "name": "GHA-07 Ironclad [Line Type]",
+    "model_code": "GHA-07",
+    "faction_id": "faction_terran",
     "class": "Heavy Assault",
     "role": "Sustained Linebreaker & Heavy Fire Support",
     "tier": 2,
     "manufacturer": "Vanguard Defense Systems",
-    "description": "A heavily armored siege-class mobile suit engineered for direct planetary assaults, urban containment, and frontal fortress penetration. Sacrifices mobility for layered composite plating and sustained kinetic firepower.",
+    "description": "Standard mainline heavy siege suit of the Terran Coalition.",
     "chassis": {
         "frame_type": "Heavy Bipedal Reinforced",
         "empty_mass_tonnes": 58.0,
@@ -54,17 +56,7 @@
                 "ammo_max": 240,
                 "heat_per_shot": 4.2,
                 "power_drain_mw": 8.0,
-                "weight_tonnes": 14.5,
-                "melee_alternate": {
-                    "id": "wpn_cannon_battering_club",
-                    "name": "Type-77 Breaching Gun-Club Strike",
-                    "type": "Blunt Kinetic Melee",
-                    "damage_per_strike": 280.0,
-                    "impact_force_kn": 840.0,
-                    "heat_per_strike": 12.0,
-                    "power_drain_mw": 25.0,
-                    "tactical_doctrine": "Leverages the 14.5-tonne hardened titanium breech and reinforced barrel shroud as a devastating kinetic war-club to crush enemy chassis and batter open fortified fortress blast doors."
-                }
+                "weight_tonnes": 14.5
             }
         },
         "arm_right": {
@@ -133,40 +125,30 @@
         "maintenance_cost_per_sortie": 16500,
         "required_tech_tier": 2,
         "required_materials": {
-            "structural_alloys": 120,
-            "avionics_components": 45,
-            "rare_composites": 20
+            "tungsten": 60,
+            "silica": 30,
+            "tritium": 5,
+            "flux": 10,
+            "slag": 0
         }
     },
     "damage_affinities": {
         "kinetic": {
-            "armor_rating": 850,
-            "damage_reduction_pct": 0.4,
-            "visual_effect": "AP solid slug impact, ricochet sparks, composite plate puncture"
+            "damage_reduction_pct": 0.4
         },
         "energy": {
-            "thermal_dissipation_mw": 35.0,
-            "damage_reduction_pct": 0.2,
-            "visual_effect": "Plasma beam vaporization, molten orange slag, chassis electrical arcing"
+            "damage_reduction_pct": 0.2
         },
         "rocket": {
-            "blast_absorption_pct": 0.65,
-            "concussive_damping": 0.5,
-            "visual_effect": "HE detonation fireball, concussive black smoke cloud, charred crater"
+            "damage_reduction_pct": 0.35
         },
         "melee": {
-            "bulkhead_shear_resistance_pct": 0.15,
-            "damage_reduction_pct": 0.1,
-            "visual_effect": "Thermal blade slice, hydraulic fluid breach, glowing molten scar"
+            "damage_reduction_pct": 0.15
         }
     },
     "lore_dossier": {
-        "designation": "GHA-07 Ironclad",
-        "manufacturer": "Vanguard Defense Systems (Heavy Ordnance & Siege Division)",
-        "foundry_location": "Callisto Orbital Megafoundry & Jovian Periphery Complex",
-        "rollout_year": "UC 0084 (Block I Prototype)",
-        "mass_production_commission": "UC 0087 (Block II Standard Service Entry)",
-        "active_service_batch": "Batch-07E Refit (UC 0092)",
-        "historical_origin": "Engineered during the Jovian Outer Sphere Wars to resolve the Orbital Beachhead Crisis, where standard high-mobility bipedal units suffered catastrophic losses against heavy fortress railguns. Designed as a walking naval dreadnought sacrificing flight agility for impenetrable composite ceramite armor, dual-feed ballistic saturation, and brute-force gun-club breaching."
+        "designation": "GHA-07 GHA-07 Ironclad [Line Type]",
+        "manufacturer": "Vanguard Defense Systems",
+        "historical_origin": "Engineered during the Jovian Outer Sphere Wars to resolve the Orbital Beachhead Crisis."
     }
 }

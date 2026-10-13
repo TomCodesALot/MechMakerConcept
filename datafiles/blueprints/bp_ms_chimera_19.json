@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_chimera_19",
+    "name": "SCX-19 Chimera Apex",
+    "model_code": "SCX-19",
+    "faction_id": "faction_syndicate",
+    "class": "Illegal Hybrid Dreadnought",
+    "role": "Illegal Hybrid Dreadnought Brawler",
+    "tier": 4,
+    "manufacturer": "Rust-Belt Free Foundry (Bay 9)",
+    "description": "Four-armed hybrid dreadnought with stolen siege rails and dual demolition claws.",
+    "chassis": {
+        "frame_type": "Four-Armed Asymmetric Heavy Frame",
+        "empty_mass_tonnes": 82.0,
+        "max_weight_capacity_tonnes": 185.0,
+        "base_armor_rating": 1150,
+        "base_structure_hp": 2100,
+        "base_walk_speed_kph": 42.0,
+        "base_boost_speed_kph": 82.0,
+        "heat_dissipation_rate": 48.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_chimera_spider_optic",
+            "name": "Octa-Lens Stolen Sensor Array",
+            "armor_hp": 310,
+            "sensor_range_m": 4200,
+            "lock_on_speed_sec": 0.7,
+            "power_drain_mw": 22.0,
+            "weight_tonnes": 3.8
+        },
+        "torso": {
+            "id": "cr_chimera_stolen_tokamak",
+            "name": "Twin Terran-Aether Hybrid Core",
+            "armor_hp": 1050,
+            "structure_hp": 820,
+            "reactor_type": "Hot-Wired Hybrid Dual Tokamak",
+            "reactor_output_mw": 480.0,
+            "power_drain_mw": 65.0,
+            "internal_cooling_units": 8,
+            "weight_tonnes": 38.0
+        },
+        "arm_left": {
+            "id": "am_chimera_dual_claws",
+            "name": "Tandem Hydraulic Crushing Arm (Left)",
+            "armor_hp": 620,
+            "load_capacity_tonnes": 30.0,
+            "equipped_weapon": {
+                "id": "wpn_twin_demolition_claws",
+                "name": "Dual Breaching Demolition Claws",
+                "type": "Tandem Kinetic Melee",
+                "damage_per_shot": 480.0,
+                "rate_of_fire_rpm": 60,
+                "effective_range_m": 90,
+                "ammo_type": "Pneumatic Fluid",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 16.0,
+                "power_drain_mw": 35.0,
+                "weight_tonnes": 18.0
+            }
+        },
+        "arm_right": {
+            "id": "am_chimera_stolen_rail",
+            "name": "Scavenged Rail Cannon Mount (Right)",
+            "armor_hp": 620,
+            "load_capacity_tonnes": 32.0,
+            "equipped_weapon": {
+                "id": "wpn_stolen_siege_rail_250mm",
+                "name": "250mm Stolen Siege Railgun",
+                "type": "Stolen Magnetic Accelerator",
+                "damage_per_shot": 490.0,
+                "rate_of_fire_rpm": 22,
+                "effective_range_m": 2400,
+                "ammo_type": "250mm Penetrator",
+                "ammo_loaded": 32,
+                "ammo_max": 32,
+                "heat_per_shot": 34.0,
+                "power_drain_mw": 80.0,
+                "weight_tonnes": 26.0
+            }
+        },
+        "legs": {
+            "id": "lg_chimera_reinforced_legs",
+            "name": "Quad-Pneumatic Brawler Legs",
+            "armor_hp": 920,
+            "structure_hp": 740,
+            "weight_tonnes": 36.0,
+            "load_capacity_tonnes": 185.0,
+            "turn_rate_deg_per_sec": 38.0,
+            "power_drain_mw": 38.0,
+            "recoil_absorption_pct": 0.82
+        },
+        "backpack": {
+            "id": "bp_chimera_salvage_engines",
+            "name": "Overloaded Cruiser Thruster Pod",
+            "armor_hp": 380,
+            "weight_tonnes": 16.0,
+            "power_drain_mw": 48.0,
+            "booster_thrust_kn": 640.0,
+            "equipped_auxiliary": {
+                "id": "wpn_cluster_bomb_rack",
+                "name": "Slag Canister Carpet Dispenser",
+                "type": "Cluster Bomb Rack",
+                "salvo_size": 12,
+                "total_salvos": 6,
+                "damage_per_missile": 48.0,
+                "lock_range_m": 900,
+                "heat_per_salvo": 22.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 137.8,
+        "max_weight_tonnes": 185.0,
+        "total_power_drain_mw": 288.0,
+        "total_power_output_mw": 480.0,
+        "net_power_surplus_mw": 192.0,
+        "total_armor_hp": 3900,
+        "total_structure_hp": 3660,
+        "recoil_absorption_pct": 0.82
+    },
+    "production": {
+        "base_fabrication_cost": 820000,
+        "fabrication_time_days": 26,
+        "maintenance_cost_per_sortie": 38000,
+        "required_tech_tier": 4,
+        "required_materials": {
+            "tungsten": 95,
+            "silica": 45,
+            "tritium": 20,
+            "flux": 25,
+            "slag": 35
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.44
+        },
+        "energy": {
+            "damage_reduction_pct": 0.28
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.4
+        },
+        "melee": {
+            "damage_reduction_pct": 0.35
+        }
+    },
+    "lore_dossier": {
+        "designation": "SCX-19 SCX-19 Chimera Apex",
+        "manufacturer": "Rust-Belt Free Foundry (Bay 9)",
+        "historical_origin": "Scavenged apex dreadnought cobbled from destroyed capital ships and derelict planetary wrecks."
+    }
+}

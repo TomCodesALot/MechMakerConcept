@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_marauder_05",
+    "name": "SCR-05 Marauder",
+    "model_code": "SCR-05",
+    "faction_id": "faction_syndicate",
+    "class": "Scrap Raider",
+    "role": "Close-Quarters Pirate Raider Grunt",
+    "tier": 1,
+    "manufacturer": "Rust-Belt Free Foundry",
+    "description": "Fast-moving ambush raider with serrated cleaver and short-range blunderbuss.",
+    "chassis": {
+        "frame_type": "Light Tubular Scavenger Frame",
+        "empty_mass_tonnes": 40.0,
+        "max_weight_capacity_tonnes": 80.0,
+        "base_armor_rating": 540,
+        "base_structure_hp": 820,
+        "base_walk_speed_kph": 58.0,
+        "base_boost_speed_kph": 96.0,
+        "heat_dissipation_rate": 26.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_marauder_skulllight",
+            "name": "Welded Shrapnel Mask & Searchlight",
+            "armor_hp": 110,
+            "sensor_range_m": 1500,
+            "lock_on_speed_sec": 1.0,
+            "power_drain_mw": 8.0,
+            "weight_tonnes": 1.8
+        },
+        "torso": {
+            "id": "cr_marauder_fission_block",
+            "name": "Salvaged Fission Heat Engine",
+            "armor_hp": 420,
+            "structure_hp": 340,
+            "reactor_type": "Salvaged Fission Reactor",
+            "reactor_output_mw": 205.0,
+            "power_drain_mw": 24.0,
+            "internal_cooling_units": 2,
+            "weight_tonnes": 17.0
+        },
+        "arm_left": {
+            "id": "am_marauder_cleaver_arm",
+            "name": "Marauder Welded Cleaver Arm",
+            "armor_hp": 280,
+            "load_capacity_tonnes": 11.0,
+            "equipped_weapon": {
+                "id": "wpn_serrated_cleaver",
+                "name": "Heavy Serrated Shipbreaker Cleaver",
+                "type": "Crude Melee Cleaver",
+                "damage_per_shot": 175.0,
+                "rate_of_fire_rpm": 85,
+                "effective_range_m": 60,
+                "ammo_type": "Hardened Slag",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 4.0,
+                "power_drain_mw": 14.0,
+                "weight_tonnes": 6.5
+            }
+        },
+        "arm_right": {
+            "id": "am_marauder_gun_arm",
+            "name": "Marauder Shrapnel Arm",
+            "armor_hp": 280,
+            "load_capacity_tonnes": 12.0,
+            "equipped_weapon": {
+                "id": "wpn_shrapnel_gun_90mm",
+                "name": "90mm Scrap Shrapnel Gun",
+                "type": "Short-Range Scatter Kinetic",
+                "damage_per_shot": 120.0,
+                "rate_of_fire_rpm": 110,
+                "effective_range_m": 420,
+                "ammo_type": "Scrap Pellets",
+                "ammo_loaded": 100,
+                "ammo_max": 100,
+                "heat_per_shot": 4.5,
+                "power_drain_mw": 8.0,
+                "weight_tonnes": 7.5
+            }
+        },
+        "legs": {
+            "id": "lg_marauder_spring_legs",
+            "name": "Hydraulic Rebound Struts",
+            "armor_hp": 410,
+            "structure_hp": 310,
+            "weight_tonnes": 16.0,
+            "load_capacity_tonnes": 80.0,
+            "turn_rate_deg_per_sec": 58.0,
+            "power_drain_mw": 18.0,
+            "recoil_absorption_pct": 0.42
+        },
+        "backpack": {
+            "id": "bp_marauder_torch_booster",
+            "name": "Chemical Thruster Tank Rig",
+            "armor_hp": 130,
+            "weight_tonnes": 6.5,
+            "power_drain_mw": 20.0,
+            "booster_thrust_kn": 410.0,
+            "equipped_auxiliary": {
+                "id": "wpn_smokescreen_torch",
+                "name": "Chemical Heavy Smokescreen Pod",
+                "type": "Tactical Smokescreen",
+                "salvo_size": 4,
+                "total_salvos": 3,
+                "damage_per_missile": 0.0,
+                "lock_range_m": 350,
+                "heat_per_salvo": 6.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 55.3,
+        "max_weight_tonnes": 80.0,
+        "total_power_drain_mw": 92.0,
+        "total_power_output_mw": 205.0,
+        "net_power_surplus_mw": 113.0,
+        "total_armor_hp": 1630,
+        "total_structure_hp": 1470,
+        "recoil_absorption_pct": 0.42
+    },
+    "production": {
+        "base_fabrication_cost": 185000,
+        "fabrication_time_days": 6,
+        "maintenance_cost_per_sortie": 7800,
+        "required_tech_tier": 1,
+        "required_materials": {
+            "tungsten": 35,
+            "silica": 15,
+            "tritium": 0,
+            "flux": 4,
+            "slag": 15
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.28
+        },
+        "energy": {
+            "damage_reduction_pct": 0.1
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.25
+        },
+        "melee": {
+            "damage_reduction_pct": 0.22
+        }
+    },
+    "lore_dossier": {
+        "designation": "SCR-05 SCR-05 Marauder",
+        "manufacturer": "Rust-Belt Free Foundry",
+        "historical_origin": "Standard pirate ambush suit built in clandestine salvage bays across asteroid belts."
+    }
+}

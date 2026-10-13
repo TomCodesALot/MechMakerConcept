@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_slag_lobber_14",
+    "name": "SCA-14 Slag-Lobber",
+    "model_code": "SCA-14",
+    "faction_id": "faction_syndicate",
+    "class": "Incendiary Siege Mortar",
+    "role": "Converted Incendiary Slag Mortar",
+    "tier": 3,
+    "manufacturer": "Rust-Belt Free Foundry",
+    "description": "Converted smelting chassis equipped with an incendiary molten slag catapult.",
+    "chassis": {
+        "frame_type": "Heavy Foundry Bipedal Frame",
+        "empty_mass_tonnes": 64.0,
+        "max_weight_capacity_tonnes": 135.0,
+        "base_armor_rating": 820,
+        "base_structure_hp": 1380,
+        "base_walk_speed_kph": 38.0,
+        "base_boost_speed_kph": 65.0,
+        "heat_dissipation_rate": 38.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_slag_smelt_visor",
+            "name": "Smelting Visor & Ballistic Angle Gauge",
+            "armor_hp": 160,
+            "sensor_range_m": 2800,
+            "lock_on_speed_sec": 1.1,
+            "power_drain_mw": 12.0,
+            "weight_tonnes": 2.8
+        },
+        "torso": {
+            "id": "cr_slag_furnace_core",
+            "name": "Twin Industrial Induction Furnace Core",
+            "armor_hp": 680,
+            "structure_hp": 550,
+            "reactor_type": "Overclocked Induction Crucible Core",
+            "reactor_output_mw": 310.0,
+            "power_drain_mw": 42.0,
+            "internal_cooling_units": 4,
+            "weight_tonnes": 26.0
+        },
+        "arm_left": {
+            "id": "am_slag_crane_arm",
+            "name": "Excavator Crane & Anchor Arm",
+            "armor_hp": 450,
+            "load_capacity_tonnes": 20.0,
+            "equipped_weapon": {
+                "id": "wpn_spiked_stabilizer_crane",
+                "name": "Spiked Excavator Stabilizer Stake",
+                "type": "Ground Anchor Melee",
+                "damage_per_shot": 140.0,
+                "rate_of_fire_rpm": 45,
+                "effective_range_m": 90,
+                "ammo_type": "Steel Stake",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 3.0,
+                "power_drain_mw": 10.0,
+                "weight_tonnes": 12.0
+            }
+        },
+        "arm_right": {
+            "id": "am_slag_mortar_arm",
+            "name": "Slag Mortar Sponson Right Arm",
+            "armor_hp": 450,
+            "load_capacity_tonnes": 24.0,
+            "equipped_weapon": {
+                "id": "wpn_slag_catapult_220mm",
+                "name": "220mm Molten Slag Catapult",
+                "type": "Incendiary Siege Mortar",
+                "damage_per_shot": 310.0,
+                "rate_of_fire_rpm": 28,
+                "effective_range_m": 1800,
+                "ammo_type": "Liquid Slag Shells",
+                "ammo_loaded": 40,
+                "ammo_max": 40,
+                "heat_per_shot": 24.0,
+                "power_drain_mw": 35.0,
+                "weight_tonnes": 19.5
+            }
+        },
+        "legs": {
+            "id": "lg_slag_heavy_treads",
+            "name": "Hydraulic Smelting Track Legs",
+            "armor_hp": 680,
+            "structure_hp": 490,
+            "weight_tonnes": 28.0,
+            "load_capacity_tonnes": 135.0,
+            "turn_rate_deg_per_sec": 32.0,
+            "power_drain_mw": 26.0,
+            "recoil_absorption_pct": 0.75
+        },
+        "backpack": {
+            "id": "bp_slag_crucible_hopper",
+            "name": "Crucible Slag Pre-Heater Hopper",
+            "armor_hp": 240,
+            "weight_tonnes": 13.0,
+            "power_drain_mw": 28.0,
+            "booster_thrust_kn": 360.0,
+            "equipped_auxiliary": {
+                "id": "wpn_incendiary_mine_layer",
+                "name": "Thermite Mine Ejector Rack",
+                "type": "Area Denial Mine",
+                "salvo_size": 4,
+                "total_salvos": 6,
+                "damage_per_missile": 85.0,
+                "lock_range_m": 500,
+                "heat_per_salvo": 16.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 101.3,
+        "max_weight_tonnes": 135.0,
+        "total_power_drain_mw": 153.0,
+        "total_power_output_mw": 310.0,
+        "net_power_surplus_mw": 157.0,
+        "total_armor_hp": 2660,
+        "total_structure_hp": 2420,
+        "recoil_absorption_pct": 0.75
+    },
+    "production": {
+        "base_fabrication_cost": 460000,
+        "fabrication_time_days": 15,
+        "maintenance_cost_per_sortie": 21000,
+        "required_tech_tier": 3,
+        "required_materials": {
+            "tungsten": 60,
+            "silica": 25,
+            "tritium": 5,
+            "flux": 10,
+            "slag": 30
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.38
+        },
+        "energy": {
+            "damage_reduction_pct": 0.25
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.35
+        },
+        "melee": {
+            "damage_reduction_pct": 0.2
+        }
+    },
+    "lore_dossier": {
+        "designation": "SCA-14 SCA-14 Slag-Lobber",
+        "manufacturer": "Rust-Belt Free Foundry",
+        "historical_origin": "Rains molten industrial slag to breach hardened hangar blast doors and perimeter bunkers."
+    }
+}

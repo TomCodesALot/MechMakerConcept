@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_seraphim_15",
+    "name": "OCX-15 Seraphim Trans-Am",
+    "model_code": "OCX-15",
+    "faction_id": "faction_colony",
+    "class": "Supercritical Dominator",
+    "role": "Supercritical Particle Surge Dominator",
+    "tier": 4,
+    "manufacturer": "Aether Aerospace Guild (Apex Sol)",
+    "description": "Apex particle combat frame with supercritical Trans-Am resonance drive.",
+    "chassis": {
+        "frame_type": "Supercritical Quantum Aerosteel Frame",
+        "empty_mass_tonnes": 52.0,
+        "max_weight_capacity_tonnes": 110.0,
+        "base_armor_rating": 890,
+        "base_structure_hp": 1650,
+        "base_walk_speed_kph": 78.0,
+        "base_boost_speed_kph": 165.0,
+        "heat_dissipation_rate": 75.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_seraphim_crown",
+            "name": "Seraphim Crown Quantum Sensor Array",
+            "armor_hp": 240,
+            "sensor_range_m": 5500,
+            "lock_on_speed_sec": 0.3,
+            "power_drain_mw": 26.0,
+            "weight_tonnes": 2.5
+        },
+        "torso": {
+            "id": "cr_seraphim_transam_core",
+            "name": "Trans-Am Supercritical Singularity Reactor",
+            "armor_hp": 780,
+            "structure_hp": 620,
+            "reactor_type": "Singularity-Resonance Fusion Core",
+            "reactor_output_mw": 560.0,
+            "power_drain_mw": 65.0,
+            "internal_cooling_units": 10,
+            "weight_tonnes": 26.0
+        },
+        "arm_left": {
+            "id": "am_seraphim_left_blade",
+            "name": "Seraphim Twin Particle Arm (Left)",
+            "armor_hp": 450,
+            "load_capacity_tonnes": 20.0,
+            "equipped_weapon": {
+                "id": "wpn_hyper_beam_saber_pair",
+                "name": "Trans-Am Dual Hyper-Beam Blades",
+                "type": "Supercritical Energy Blade",
+                "damage_per_shot": 340.0,
+                "rate_of_fire_rpm": 110,
+                "effective_range_m": 120,
+                "ammo_type": "Singularity Tap",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 18.0,
+                "power_drain_mw": 45.0,
+                "weight_tonnes": 6.5
+            }
+        },
+        "arm_right": {
+            "id": "am_seraphim_right_cannon",
+            "name": "Seraphim Heavy Beam Arm (Right)",
+            "armor_hp": 450,
+            "load_capacity_tonnes": 24.0,
+            "equipped_weapon": {
+                "id": "wpn_twin_hyper_beam_cannon",
+                "name": "Dual Hyper-Beam Buster Cannons",
+                "type": "Supercritical Beam Battery",
+                "damage_per_shot": 460.0,
+                "rate_of_fire_rpm": 55,
+                "effective_range_m": 2200,
+                "ammo_type": "High-Density Energy Battery",
+                "ammo_loaded": 60,
+                "ammo_max": 60,
+                "heat_per_shot": 35.0,
+                "power_drain_mw": 110.0,
+                "weight_tonnes": 16.5
+            }
+        },
+        "legs": {
+            "id": "lg_seraphim_wings_legs",
+            "name": "Seraphim Quantum Vernier Legs",
+            "armor_hp": 680,
+            "structure_hp": 520,
+            "weight_tonnes": 22.0,
+            "load_capacity_tonnes": 110.0,
+            "turn_rate_deg_per_sec": 95.0,
+            "power_drain_mw": 40.0,
+            "recoil_absorption_pct": 0.55
+        },
+        "backpack": {
+            "id": "bp_seraphim_eight_wings",
+            "name": "Octa-Wing Trans-Am Vernier Drive",
+            "armor_hp": 320,
+            "weight_tonnes": 12.0,
+            "power_drain_mw": 55.0,
+            "booster_thrust_kn": 920.0,
+            "equipped_auxiliary": {
+                "id": "wpn_remote_funnel_pod",
+                "name": "Sextuple Beam Funnel Dispenser",
+                "type": "Remote Funnel Drone",
+                "salvo_size": 6,
+                "total_salvos": 6,
+                "damage_per_missile": 75.0,
+                "lock_range_m": 2400,
+                "heat_per_salvo": 28.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 85.5,
+        "max_weight_tonnes": 110.0,
+        "total_power_drain_mw": 341.0,
+        "total_power_output_mw": 560.0,
+        "net_power_surplus_mw": 219.0,
+        "total_armor_hp": 2920,
+        "total_structure_hp": 2790,
+        "recoil_absorption_pct": 0.55
+    },
+    "production": {
+        "base_fabrication_cost": 920000,
+        "fabrication_time_days": 27,
+        "maintenance_cost_per_sortie": 45000,
+        "required_tech_tier": 4,
+        "required_materials": {
+            "tungsten": 70,
+            "silica": 85,
+            "tritium": 35,
+            "flux": 40,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.25
+        },
+        "energy": {
+            "damage_reduction_pct": 0.55
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.3
+        },
+        "melee": {
+            "damage_reduction_pct": 0.35
+        }
+    },
+    "lore_dossier": {
+        "designation": "OCX-15 OCX-15 Seraphim Trans-Am",
+        "manufacturer": "Aether Aerospace Guild (Apex Sol)",
+        "historical_origin": "Undisputed crown jewel of Colony Aether fleet radiating an unmistakable solar corona."
+    }
+}

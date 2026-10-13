@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_sylph_04",
+    "name": "OCM-04 Sylph",
+    "model_code": "OCM-04",
+    "faction_id": "faction_colony",
+    "class": "Light Interceptor",
+    "role": "Light Orbital Interceptor Grunt",
+    "tier": 1,
+    "manufacturer": "Aether Aerospace Guild",
+    "description": "Ultra-lightweight orbital scout and interceptor with blistering evasion.",
+    "chassis": {
+        "frame_type": "Featherweight Interceptor Frame",
+        "empty_mass_tonnes": 28.0,
+        "max_weight_capacity_tonnes": 58.0,
+        "base_armor_rating": 420,
+        "base_structure_hp": 650,
+        "base_walk_speed_kph": 75.0,
+        "base_boost_speed_kph": 135.0,
+        "heat_dissipation_rate": 42.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_sylph_monoeye",
+            "name": "Sylph High-Frequency Sensor Mast",
+            "armor_hp": 90,
+            "sensor_range_m": 2800,
+            "lock_on_speed_sec": 0.4,
+            "power_drain_mw": 10.0,
+            "weight_tonnes": 1.2
+        },
+        "torso": {
+            "id": "cr_sylph_core",
+            "name": "Sol-1 Compact Reaction Engine",
+            "armor_hp": 340,
+            "structure_hp": 280,
+            "reactor_type": "Miniaturized Fusion Core",
+            "reactor_output_mw": 240.0,
+            "power_drain_mw": 22.0,
+            "internal_cooling_units": 3,
+            "weight_tonnes": 12.0
+        },
+        "arm_left": {
+            "id": "am_sylph_left",
+            "name": "Sylph Lightweight Left Arm",
+            "armor_hp": 210,
+            "load_capacity_tonnes": 8.0,
+            "equipped_weapon": {
+                "id": "wpn_thermal_needle",
+                "name": "High-Frequency Thermal Needle",
+                "type": "Plasma Needle Melee",
+                "damage_per_shot": 140.0,
+                "rate_of_fire_rpm": 110,
+                "effective_range_m": 60,
+                "ammo_type": "Internal Cell",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 8.0,
+                "power_drain_mw": 16.0,
+                "weight_tonnes": 2.2
+            }
+        },
+        "arm_right": {
+            "id": "am_sylph_right",
+            "name": "Sylph Lightweight Right Arm",
+            "armor_hp": 210,
+            "load_capacity_tonnes": 10.0,
+            "equipped_weapon": {
+                "id": "wpn_particle_carbine",
+                "name": "Light Particle Carbine",
+                "type": "Beam Carbine",
+                "damage_per_shot": 95.0,
+                "rate_of_fire_rpm": 220,
+                "effective_range_m": 900,
+                "ammo_type": "E-Pack Light",
+                "ammo_loaded": 160,
+                "ammo_max": 160,
+                "heat_per_shot": 5.5,
+                "power_drain_mw": 24.0,
+                "weight_tonnes": 5.5
+            }
+        },
+        "legs": {
+            "id": "lg_sylph_feather_legs",
+            "name": "Sylph High-Agility Feather Struts",
+            "armor_hp": 320,
+            "structure_hp": 250,
+            "weight_tonnes": 11.0,
+            "load_capacity_tonnes": 58.0,
+            "turn_rate_deg_per_sec": 88.0,
+            "power_drain_mw": 18.0,
+            "recoil_absorption_pct": 0.3
+        },
+        "backpack": {
+            "id": "bp_sylph_microrocket",
+            "name": "Sylph Sprint Vernier Module",
+            "armor_hp": 110,
+            "weight_tonnes": 5.0,
+            "power_drain_mw": 26.0,
+            "booster_thrust_kn": 560.0,
+            "equipped_auxiliary": {
+                "id": "wpn_micro_missile_pod",
+                "name": "Quad Micro-Missile Pod",
+                "type": "Light Missile Pod",
+                "salvo_size": 4,
+                "total_salvos": 4,
+                "damage_per_missile": 42.0,
+                "lock_range_m": 800,
+                "heat_per_salvo": 12.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 36.9,
+        "max_weight_tonnes": 58.0,
+        "total_power_drain_mw": 116.0,
+        "total_power_output_mw": 240.0,
+        "net_power_surplus_mw": 124.0,
+        "total_armor_hp": 1280,
+        "total_structure_hp": 1180,
+        "recoil_absorption_pct": 0.3
+    },
+    "production": {
+        "base_fabrication_cost": 240000,
+        "fabrication_time_days": 7,
+        "maintenance_cost_per_sortie": 10500,
+        "required_tech_tier": 1,
+        "required_materials": {
+            "tungsten": 30,
+            "silica": 30,
+            "tritium": 5,
+            "flux": 10,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.1
+        },
+        "energy": {
+            "damage_reduction_pct": 0.35
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.15
+        },
+        "melee": {
+            "damage_reduction_pct": 0.2
+        }
+    },
+    "lore_dossier": {
+        "designation": "OCM-04 OCM-04 Sylph",
+        "manufacturer": "Aether Aerospace Guild",
+        "historical_origin": "First combat chassis produced by the orbital shipyards, ultra-agile border interceptor."
+    }
+}

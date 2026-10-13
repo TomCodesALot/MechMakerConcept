@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_susanoo_22",
+    "name": "ZX-22 Susanoo Cyber-Drive",
+    "model_code": "ZX-22",
+    "faction_id": "faction_zaibatsu",
+    "class": "Transhuman Cyber Warform",
+    "role": "Hyper-Cognitive Transhuman Dominance Frame",
+    "tier": 4,
+    "manufacturer": "Apex Zaibatsu (Neural Labs)",
+    "description": "Transhuman cybernetic dominance frame directly interfaced with pilot cerebral cortex.",
+    "chassis": {
+        "frame_type": "Superconducting Neural Monocoque Frame",
+        "empty_mass_tonnes": 48.0,
+        "max_weight_capacity_tonnes": 100.0,
+        "base_armor_rating": 920,
+        "base_structure_hp": 1750,
+        "base_walk_speed_kph": 74.0,
+        "base_boost_speed_kph": 155.0,
+        "heat_dissipation_rate": 70.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_susanoo_neural_crown",
+            "name": "Apex Neural Synapse Interface Visor",
+            "armor_hp": 260,
+            "sensor_range_m": 5800,
+            "lock_on_speed_sec": 0.2,
+            "power_drain_mw": 32.0,
+            "weight_tonnes": 2.4
+        },
+        "torso": {
+            "id": "cr_susanoo_quantum_singularity",
+            "name": "Zero-Point Quantum Singularity Core",
+            "armor_hp": 820,
+            "structure_hp": 660,
+            "reactor_type": "Zero-Point Quantum Singularity",
+            "reactor_output_mw": 580.0,
+            "power_drain_mw": 70.0,
+            "internal_cooling_units": 10,
+            "weight_tonnes": 25.0
+        },
+        "arm_left": {
+            "id": "am_susanoo_left_arm",
+            "name": "Neural-Linked Servo Arm (Left)",
+            "armor_hp": 480,
+            "load_capacity_tonnes": 22.0,
+            "equipped_weapon": {
+                "id": "wpn_tachyon_saber_twin",
+                "name": "Dual Relativistic Tachyon Sabers",
+                "type": "Tachyon Melee Blade",
+                "damage_per_shot": 360.0,
+                "rate_of_fire_rpm": 140,
+                "effective_range_m": 110,
+                "ammo_type": "Zero-Point Tap",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 16.0,
+                "power_drain_mw": 52.0,
+                "weight_tonnes": 6.8
+            }
+        },
+        "arm_right": {
+            "id": "am_susanoo_right_arm",
+            "name": "Neural-Linked Accelerator Arm (Right)",
+            "armor_hp": 480,
+            "load_capacity_tonnes": 25.0,
+            "equipped_weapon": {
+                "id": "wpn_quantum_tachyon_blaster",
+                "name": "Twin Quantum Tachyon Beam Blaster",
+                "type": "High-Output Quantum Beam",
+                "damage_per_shot": 420.0,
+                "rate_of_fire_rpm": 65,
+                "effective_range_m": 2100,
+                "ammo_type": "Quantum Flux Core",
+                "ammo_loaded": 80,
+                "ammo_max": 80,
+                "heat_per_shot": 30.0,
+                "power_drain_mw": 98.0,
+                "weight_tonnes": 15.2
+            }
+        },
+        "legs": {
+            "id": "lg_susanoo_neural_legs",
+            "name": "Superconducting Vernier Bipedal Legs",
+            "armor_hp": 710,
+            "structure_hp": 540,
+            "weight_tonnes": 21.0,
+            "load_capacity_tonnes": 100.0,
+            "turn_rate_deg_per_sec": 98.0,
+            "power_drain_mw": 42.0,
+            "recoil_absorption_pct": 0.6
+        },
+        "backpack": {
+            "id": "bp_susanoo_singularity_pack",
+            "name": "Zero-Point Vernier Shift Pack",
+            "armor_hp": 340,
+            "weight_tonnes": 11.5,
+            "power_drain_mw": 58.0,
+            "booster_thrust_kn": 880.0,
+            "equipped_auxiliary": {
+                "id": "wpn_neural_drone_cloud",
+                "name": "Octa-Neural Swarm Interceptor Drones",
+                "type": "Autonomous Neural Drone",
+                "salvo_size": 8,
+                "total_salvos": 6,
+                "damage_per_missile": 62.0,
+                "lock_range_m": 2200,
+                "heat_per_salvo": 24.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 81.9,
+        "max_weight_tonnes": 100.0,
+        "total_power_drain_mw": 352.0,
+        "total_power_output_mw": 580.0,
+        "net_power_surplus_mw": 228.0,
+        "total_armor_hp": 3090,
+        "total_structure_hp": 2950,
+        "recoil_absorption_pct": 0.6
+    },
+    "production": {
+        "base_fabrication_cost": 950000,
+        "fabrication_time_days": 28,
+        "maintenance_cost_per_sortie": 48000,
+        "required_tech_tier": 4,
+        "required_materials": {
+            "tungsten": 65,
+            "silica": 90,
+            "tritium": 30,
+            "flux": 45,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.3
+        },
+        "energy": {
+            "damage_reduction_pct": 0.52
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.32
+        },
+        "melee": {
+            "damage_reduction_pct": 0.4
+        }
+    },
+    "lore_dossier": {
+        "designation": "ZX-22 ZX-22 Susanoo Cyber-Drive",
+        "manufacturer": "Apex Zaibatsu (Neural Labs)",
+        "historical_origin": "Hyper-cognitive warform moving with near-zero latency, anticipating firing vectors."
+    }
+}

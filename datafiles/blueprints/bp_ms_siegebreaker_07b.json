@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_siegebreaker_07b",
+    "name": "GHA-07B Ironclad [Siegebreaker]",
+    "model_code": "GHA-07B",
+    "faction_id": "faction_terran",
+    "class": "Super-Heavy Artillery",
+    "role": "Bunker Penetration & Heavy Artillery Support",
+    "tier": 3,
+    "manufacturer": "Vanguard Defense Systems",
+    "description": "Devastating artillery refit of the Ironclad mounting a 300mm Titan Siege Railgun.",
+    "chassis": {
+        "frame_type": "Ultra-Heavy Bipedal Anchored",
+        "empty_mass_tonnes": 68.0,
+        "max_weight_capacity_tonnes": 145.0,
+        "base_armor_rating": 1050,
+        "base_structure_hp": 1550,
+        "base_walk_speed_kph": 32.0,
+        "base_boost_speed_kph": 60.0,
+        "heat_dissipation_rate": 40.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_siege_telemetry",
+            "name": "Titan Long-Range Orbital Telemetry Mast",
+            "armor_hp": 210,
+            "sensor_range_m": 4200,
+            "lock_on_speed_sec": 1.2,
+            "power_drain_mw": 18.0,
+            "weight_tonnes": 3.5
+        },
+        "torso": {
+            "id": "cr_hyperion_siege_v",
+            "name": "Hyperion Class-V High-Output Reactor",
+            "armor_hp": 850,
+            "structure_hp": 650,
+            "reactor_type": "Supercharged Fusion Tokamak",
+            "reactor_output_mw": 350.0,
+            "power_drain_mw": 45.0,
+            "internal_cooling_units": 6,
+            "weight_tonnes": 29.0
+        },
+        "arm_left": {
+            "id": "am_siege_brace",
+            "name": "Ironclad Pneumatic Shock Absorber Left Arm",
+            "armor_hp": 520,
+            "load_capacity_tonnes": 22.0,
+            "equipped_weapon": {
+                "id": "wpn_shield_anchor",
+                "name": "Pneumatic Ground Anchor Shield",
+                "type": "Recoil Countermeasure",
+                "damage_per_shot": 90.0,
+                "rate_of_fire_rpm": 30,
+                "effective_range_m": 150,
+                "ammo_type": "Ground Stake",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 2.0,
+                "power_drain_mw": 10.0,
+                "weight_tonnes": 16.0
+            }
+        },
+        "arm_right": {
+            "id": "am_siege_rail",
+            "name": "Titan Heavy Linear Cradle Right Arm",
+            "armor_hp": 520,
+            "load_capacity_tonnes": 28.0,
+            "equipped_weapon": {
+                "id": "wpn_titan_rail_300mm",
+                "name": "300mm Titan Siege Railgun",
+                "type": "Heavy Magnetic Accelerator",
+                "damage_per_shot": 420.0,
+                "rate_of_fire_rpm": 24,
+                "effective_range_m": 2200,
+                "ammo_type": "300mm DU Sabot",
+                "ammo_loaded": 48,
+                "ammo_max": 48,
+                "heat_per_shot": 28.0,
+                "power_drain_mw": 65.0,
+                "weight_tonnes": 24.5
+            }
+        },
+        "legs": {
+            "id": "lg_titan_anchor_legs",
+            "name": "Titan Hydraulic Anchor Tread-Pads",
+            "armor_hp": 800,
+            "structure_hp": 580,
+            "weight_tonnes": 32.0,
+            "load_capacity_tonnes": 145.0,
+            "turn_rate_deg_per_sec": 28.0,
+            "power_drain_mw": 28.0,
+            "recoil_absorption_pct": 0.88
+        },
+        "backpack": {
+            "id": "bp_hyper_capacitor_pack",
+            "name": "Titan Magnetic Capacitor Bank",
+            "armor_hp": 280,
+            "weight_tonnes": 14.0,
+            "power_drain_mw": 32.0,
+            "booster_thrust_kn": 340.0,
+            "equipped_auxiliary": {
+                "id": "wpn_he_mortar_cluster",
+                "name": "Spinal 160mm Heavy Mortar",
+                "type": "Indirect Bombardment",
+                "salvo_size": 4,
+                "total_salvos": 8,
+                "damage_per_missile": 130.0,
+                "lock_range_m": 1800,
+                "heat_per_salvo": 22.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 119.0,
+        "max_weight_tonnes": 145.0,
+        "total_power_drain_mw": 198.0,
+        "total_power_output_mw": 350.0,
+        "net_power_surplus_mw": 152.0,
+        "total_armor_hp": 3180,
+        "total_structure_hp": 2780,
+        "recoil_absorption_pct": 0.88
+    },
+    "production": {
+        "base_fabrication_cost": 540000,
+        "fabrication_time_days": 18,
+        "maintenance_cost_per_sortie": 26000,
+        "required_tech_tier": 3,
+        "required_materials": {
+            "tungsten": 80,
+            "silica": 35,
+            "tritium": 8,
+            "flux": 15,
+            "slag": 0
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.45
+        },
+        "energy": {
+            "damage_reduction_pct": 0.22
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.38
+        },
+        "melee": {
+            "damage_reduction_pct": 0.1
+        }
+    },
+    "lore_dossier": {
+        "designation": "GHA-07B GHA-07B Ironclad [Siegebreaker]",
+        "manufacturer": "Vanguard Defense Systems",
+        "historical_origin": "Pulverizes subterranean redoubts with 300mm kinetic rail penetrators."
+    }
+}

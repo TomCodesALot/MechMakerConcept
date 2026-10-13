@@ -1,0 +1,154 @@
+{
+    "blueprint_id": "bp_ms_bulwark_03",
+    "name": "TCM-03 Bulwark",
+    "model_code": "TCM-03",
+    "faction_id": "faction_terran",
+    "class": "Entrenched Defender",
+    "role": "Entrenched Heavy Defense Grunt",
+    "tier": 1,
+    "manufacturer": "Vanguard Defense Systems",
+    "description": "Standard mass-produced trench defense suit.",
+    "chassis": {
+        "frame_type": "Standard Trench Bipedal",
+        "empty_mass_tonnes": 48.0,
+        "max_weight_capacity_tonnes": 95.0,
+        "base_armor_rating": 680,
+        "base_structure_hp": 980,
+        "base_walk_speed_kph": 34.0,
+        "base_boost_speed_kph": 52.0,
+        "heat_dissipation_rate": 24.0
+    },
+    "components": {
+        "head": {
+            "id": "hd_bulwark_periscope",
+            "name": "TCM Trench Periscope & Rangefinder",
+            "armor_hp": 140,
+            "sensor_range_m": 1800,
+            "lock_on_speed_sec": 1.1,
+            "power_drain_mw": 8.0,
+            "weight_tonnes": 2.0
+        },
+        "torso": {
+            "id": "cr_hyperion_type1",
+            "name": "Hyperion Type-1 Standard Fusion Tokamak",
+            "armor_hp": 520,
+            "structure_hp": 400,
+            "reactor_type": "Standard Industrial Fusion",
+            "reactor_output_mw": 210.0,
+            "power_drain_mw": 25.0,
+            "internal_cooling_units": 2,
+            "weight_tonnes": 20.0
+        },
+        "arm_left": {
+            "id": "am_bulwark_shield",
+            "name": "Bulwark Shield Arm & Mantlet",
+            "armor_hp": 480,
+            "load_capacity_tonnes": 16.0,
+            "equipped_weapon": {
+                "id": "wpn_shield_mantlet",
+                "name": "Heavy Cast-Iron Spiked Mantlet Shield",
+                "type": "Defensive Kinetic Bulwark",
+                "damage_per_shot": 60.0,
+                "rate_of_fire_rpm": 60,
+                "effective_range_m": 100,
+                "ammo_type": "Solid Bash",
+                "ammo_loaded": 999,
+                "ammo_max": 999,
+                "heat_per_shot": 1.0,
+                "power_drain_mw": 2.0,
+                "weight_tonnes": 12.0
+            }
+        },
+        "arm_right": {
+            "id": "am_bulwark_gun",
+            "name": "Bulwark Reinforced Right Arm",
+            "armor_hp": 320,
+            "load_capacity_tonnes": 14.0,
+            "equipped_weapon": {
+                "id": "wpn_cannon_90mm",
+                "name": "Type-62 90mm Rifled Trench Cannon",
+                "type": "Kinetic Cannon",
+                "damage_per_shot": 110.0,
+                "rate_of_fire_rpm": 120,
+                "effective_range_m": 800,
+                "ammo_type": "90mm Solid AP",
+                "ammo_loaded": 180,
+                "ammo_max": 180,
+                "heat_per_shot": 3.0,
+                "power_drain_mw": 6.0,
+                "weight_tonnes": 10.0
+            }
+        },
+        "legs": {
+            "id": "lg_bulwark_strut",
+            "name": "TCM Trench Reinforced Strut Legs",
+            "armor_hp": 520,
+            "structure_hp": 380,
+            "weight_tonnes": 22.0,
+            "load_capacity_tonnes": 95.0,
+            "turn_rate_deg_per_sec": 30.0,
+            "power_drain_mw": 16.0,
+            "recoil_absorption_pct": 0.55
+        },
+        "backpack": {
+            "id": "bp_bulwark_logistics",
+            "name": "TCM Logistics Trench Generator",
+            "armor_hp": 180,
+            "weight_tonnes": 8.0,
+            "power_drain_mw": 14.0,
+            "booster_thrust_kn": 280.0,
+            "equipped_auxiliary": {
+                "id": "wpn_smoke_discharger",
+                "name": "Hexa-Smoke Screen Mortar",
+                "type": "Tactical Screen",
+                "salvo_size": 6,
+                "total_salvos": 4,
+                "damage_per_missile": 0.0,
+                "lock_range_m": 400,
+                "heat_per_salvo": 8.0
+            }
+        }
+    },
+    "totals_and_specs": {
+        "total_weight_tonnes": 74.0,
+        "max_weight_tonnes": 95.0,
+        "total_power_drain_mw": 71.0,
+        "total_power_output_mw": 210.0,
+        "net_power_surplus_mw": 139.0,
+        "total_armor_hp": 2160,
+        "total_structure_hp": 1760,
+        "recoil_absorption_pct": 0.55
+    },
+    "production": {
+        "base_fabrication_cost": 220000,
+        "fabrication_time_days": 8,
+        "maintenance_cost_per_sortie": 9500,
+        "required_tech_tier": 1,
+        "required_materials": {
+            "tungsten": 50,
+            "silica": 20,
+            "tritium": 0,
+            "flux": 5,
+            "slag": 5
+        }
+    },
+    "damage_affinities": {
+        "kinetic": {
+            "damage_reduction_pct": 0.38
+        },
+        "energy": {
+            "damage_reduction_pct": 0.15
+        },
+        "rocket": {
+            "damage_reduction_pct": 0.3
+        },
+        "melee": {
+            "damage_reduction_pct": 0.2
+        }
+    },
+    "lore_dossier": {
+        "designation": "TCM-03 TCM-03 Bulwark",
+        "manufacturer": "Vanguard Defense Systems",
+        "historical_origin": "First standardized mass-production trench defense workhorse."
+    }
+}
