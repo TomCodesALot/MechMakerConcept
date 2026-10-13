@@ -612,3 +612,9 @@ with open(OUT_PATH, "w", encoding="utf-8") as f:
 print(f"\n=======================================================")
 print(f"SUCCESS: Generated {len(ROSTER)} characters into {OUT_PATH}")
 print(f"=======================================================")
+
+# Auto-enrich with romances, friendships, and allegiance variance
+import subprocess
+enrich_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'enrich_characters_full.py')
+if os.path.exists(enrich_script):
+    subprocess.run(['python3', enrich_script], check=True)
