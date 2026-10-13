@@ -785,9 +785,19 @@ show_debug_message("[obj_GameManager] Initialized with calendar day " + string(c
 periodic_table_materials = [];
 periodic_table_dict = {};
 
-if (file_exists("materials_periodic_table.json")) {
+var _cand_pt = [
+    "materials_periodic_table.json",
+    "datafiles/materials_periodic_table.json",
+    working_directory + "materials_periodic_table.json",
+    working_directory + "datafiles/materials_periodic_table.json"
+];
+var _res_pt = "";
+for (var p1 = 0; p1 < array_length(_cand_pt); p1++) {
+    if (file_exists(_cand_pt[p1])) { _res_pt = _cand_pt[p1]; break; }
+}
+if (_res_pt != "") {
     try {
-        var _f_pt = file_text_open_read("materials_periodic_table.json");
+        var _f_pt = file_text_open_read(_res_pt);
         var _json_pt = "";
         while (!file_text_eof(_f_pt)) {
             _json_pt += file_text_readln(_f_pt);
@@ -808,9 +818,19 @@ if (file_exists("materials_periodic_table.json")) {
     }
 }
 
-if (file_exists("solar_mining_nodes.json")) {
+var _cand_sn = [
+    "solar_mining_nodes.json",
+    "datafiles/solar_mining_nodes.json",
+    working_directory + "solar_mining_nodes.json",
+    working_directory + "datafiles/solar_mining_nodes.json"
+];
+var _res_sn = "";
+for (var p2 = 0; p2 < array_length(_cand_sn); p2++) {
+    if (file_exists(_cand_sn[p2])) { _res_sn = _cand_sn[p2]; break; }
+}
+if (_res_sn != "") {
     try {
-        var _f_sn = file_text_open_read("solar_mining_nodes.json");
+        var _f_sn = file_text_open_read(_res_sn);
         var _json_sn = "";
         while (!file_text_eof(_f_sn)) {
             _json_sn += file_text_readln(_f_sn);
