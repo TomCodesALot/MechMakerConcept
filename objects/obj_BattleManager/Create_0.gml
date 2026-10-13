@@ -726,6 +726,40 @@ for (var i = 0; i < array_length(units); i++) {
     _u.visual_y = iso_to_screen_y(_u.grid_c, _u.grid_r, _u.elev, cam_x, cam_y, zoom);
 }
 
+// 5b. Flagship Strategic Division Buffs (Doc 24)
+if (instance_exists(obj_GameManager)) {
+    var _gm_fs = obj_GameManager.flagship;
+    // Command Tier 5: Tactical Supremacy (+2 AP, +20% accuracy)
+    if (_gm_fs.upgrades.command_tier >= 5) {
+        for (var i = 0; i < array_length(units); i++) {
+            if (units[i].team == "ALLIED") {
+                units[i].max_ap += 2;
+                units[i].current_ap += 2;
+                units[i].accuracy = min(99, units[i].accuracy + 20);
+            }
+        }
+    }
+    // Pilot Suite Tier 4+: Genkai Reflex Limit (+20% evasion)
+    if (_gm_fs.upgrades.pilot_suite_tier >= 4) {
+        for (var i = 0; i < array_length(units); i++) {
+            if (units[i].team == "ALLIED") {
+                units[i].evasion = min(99, units[i].evasion + 20);
+            }
+        }
+    }
+    // Master Protocol B: Orbital Siege Fortress (+35% armor rating, +15 heat dissipation)
+    if (_gm_fs.specialization_protocol == "siege_fortress") {
+        for (var i = 0; i < array_length(units); i++) {
+            if (units[i].team == "ALLIED") {
+                units[i].heat_dissipation += 15.0;
+                if (variable_struct_exists(units[i], "components") && variable_struct_exists(units[i].components, "torso")) {
+                    units[i].components.torso.armor = floor(units[i].components.torso.armor * 1.35);
+                }
+            }
+        }
+    }
+}
+
 // 6. In-Flight Physical Projectiles & Combat FX Queues
 projectiles = [];
 combat_fx = [];

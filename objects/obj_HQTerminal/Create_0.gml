@@ -16,6 +16,7 @@ war_subtab = 0;              // 0 = Sector War Map & Mining, 1 = Faction Dossier
 selected_diplo_pair = "terran_colony"; // Selected pair in Diplomacy Matrix (Doc 21)
 flagship_subtab = 0;                   // 0 = Warship & Upgrades, 1 = Celestial Navigation, 2 = Rival Corporate Competitors (Doc 23)
 selected_rival_corp = "corp_vhi";      // Selected rival corporate manufacturer
+flagship_division_category = 0;        // 0 = Production & Harvest, 1 = Defense & Weapons, 2 = Drives & Pilots, 3 = SIGINT & Command (Doc 24)
 diplo_cables_scroll_offset = 0;        // Paging offset for diplomatic cables log
 selected_faction_dossier = "faction_terran"; // "faction_terran", "faction_colony", "faction_syndicate", "faction_zaibatsu"
 selected_timeline_era = 0;   // 0 = All Eras, 1 = Y205 Prototype, 2 = Y208 Early Mass, 3 = Y211 Mainstay, 4 = Y213 Variant, 5 = Y215 Next-Gen

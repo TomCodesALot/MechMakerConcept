@@ -312,10 +312,11 @@ for (var b = 0; b < array_length(_btn_defs); b++) {
 }
 
 // =========================================================================
-// 4b. FLAGSHIP ORBITAL FIRE SUPPORT (Doc 23)
+// 4b. FLAGSHIP ORBITAL FIRE SUPPORT & TACTICAL SUPERWEAPONS (Docs 23 & 24)
 // =========================================================================
 if (instance_exists(obj_GameManager) && obj_GameManager.flagship.upgrades.weapons_tier >= 2) {
     var _fs = obj_GameManager.flagship;
+    var _wt = _fs.upgrades.weapons_tier;
     var _orb_x = _act_x;
     var _orb_y = _act_y - 34;
     var _orb_w = 340;
@@ -325,31 +326,61 @@ if (instance_exists(obj_GameManager) && obj_GameManager.flagship.upgrades.weapon
 
     if (_orb_rdy && _orb_hov && _click) {
         _fs.orbital_strike_available = false;
-        _fs.orbital_strike_cooldown = 3;
-        screen_shake = 18.0;
+        var _cd = (_wt == 2) ? 3 : ((_wt <= 4) ? 2 : 1);
+        if (_fs.specialization_protocol == "siege_fortress") _cd = max(1, _cd - 1);
+        _fs.orbital_strike_cooldown = _cd;
+        screen_shake = (_wt >= 5) ? 26.0 : 20.0;
+
+        var _dmg_min = 600;
+        var _dmg_max = 1100;
+        var _wpn_name = "600mm Spinal Mass Drivers";
+        if (_wt == 3) {
+            _dmg_min = 1200; _dmg_max = 1800;
+            _wpn_name = "Spinal Particle Lance";
+        } else if (_wt == 4) {
+            _dmg_min = 2000; _dmg_max = 3000;
+            _wpn_name = "Kinetic Rod Penetrator Array";
+        } else if (_wt >= 5) {
+            _dmg_min = 3500; _dmg_max = 5000;
+            _wpn_name = "Doomsday Tachyon Cleaver";
+        }
+
+        if (_fs.specialization_protocol == "siege_fortress") {
+            _dmg_min = floor(_dmg_min * 1.5);
+            _dmg_max = floor(_dmg_max * 1.5);
+        }
 
         var _targets_hit = 0;
         for (var u = 0; u < array_length(units); u++) {
             var _un = units[u];
-            if (_un.team == 1 && _un.is_alive) {
-                var _dmg = irandom_range(600, 1100);
-                _un.current_hp = max(0, _un.current_hp - _dmg);
+            if ((_un.team == "ENEMY" || _un.team == 1) && !_un.is_destroyed) {
+                var _dmg = irandom_range(_dmg_min, _dmg_max);
+                if (variable_struct_exists(_un, "components") && variable_struct_exists(_un.components, "torso")) {
+                    _un.components.torso.cur = max(0, _un.components.torso.cur - _dmg);
+                    if (_un.components.torso.cur <= 0) {
+                        _un.is_destroyed = true;
+                        _un.components.torso.intact = false;
+                        _un.anim_state = "destroyed";
+                    }
+                } else if (variable_struct_exists(_un, "current_hp")) {
+                    _un.current_hp = max(0, _un.current_hp - _dmg);
+                    if (_un.current_hp <= 0) _un.is_destroyed = true;
+                }
                 _targets_hit++;
                 array_push(floating_texts, {
                     x: _un.grid_c * 48,
                     y: _un.grid_r * 48 - 20,
-                    text: "-" + string(_dmg) + " ORBITAL BLAST!",
-                    col: c_red,
+                    text: "-" + string(_dmg) + " " + string_upper(_wpn_name) + "!",
+                    col: (_wt >= 5) ? c_fuchsia : c_red,
                     alpha: 1.0,
-                    life: 60
+                    life: 70
                 });
-                if (_un.current_hp <= 0) {
-                    _un.is_alive = false;
-                    add_log("[ORBITAL KILL] " + _un.callsign + " vaporized by kinetic bombardment!");
+                if (_un.is_destroyed) {
+                    add_log("[ORBITAL KILL] " + _un.callsign + " vaporized by " + _wpn_name + "!");
                 }
             }
         }
-        add_log("[ORBITAL STRIKE] USN-X Hephaestus fired spinal kinetic mass drivers! Hit " + string(_targets_hit) + " hostile units!");
+        add_log("[ORBITAL STRIKE] USN-X Hephaestus fired " + _wpn_name + "! Obliterated " + string(_targets_hit) + " hostile target(s)!");
     }
 
     draw_set_color(_orb_rdy ? (_orb_hov ? make_color_rgb(100, 30, 20) : make_color_rgb(60, 18, 12)) : make_color_rgb(18, 22, 28));
@@ -357,7 +388,7 @@ if (instance_exists(obj_GameManager) && obj_GameManager.flagship.upgrades.weapon
     draw_set_color(_orb_rdy ? make_color_rgb(255, 60, 40) : make_color_rgb(45, 60, 75));
     draw_rectangle(_orb_x, _orb_y, _orb_x + _orb_w, _orb_y + _orb_h, true);
     draw_set_color(_orb_rdy ? c_white : c_gray);
-    var _strike_lbl = _orb_rdy ? "* [O] CALL FLAGSHIP ORBITAL STRIKE (READY)" : ("* FLAGSHIP ORBITAL STRIKE (" + (_fs.orbital_strike_cooldown > 0 ? ("COOLDOWN: " + string(_fs.orbital_strike_cooldown) + "T") : "RELOADING") + ")");
+    var _strike_lbl = _orb_rdy ? ("* [O] CALL FLAGSHIP " + (_wt >= 5 ? "TACHYON CLEAVER" : "ORBITAL STRIKE") + " (READY)") : ("* FLAGSHIP ORBITAL SUPPORT (" + (_fs.orbital_strike_cooldown > 0 ? ("COOLDOWN: " + string(_fs.orbital_strike_cooldown) + "T") : "RELOADING") + ")");
     draw_text_transformed(_orb_x + 10, _orb_y + 6, _strike_lbl, 0.82, 0.82, 0);
 }
 

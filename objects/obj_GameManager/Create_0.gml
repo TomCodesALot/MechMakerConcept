@@ -48,11 +48,16 @@ flagship = {
     hull_hp: 8500,
     hull_max_hp: 8500,
     upgrades: {
-        fabrication_tier: 1, // 1 to 4: build speed, simultaneous bays
-        mining_tier: 1,      // 1 to 4: in-sphere ore refining bonus (+25% to +100%)
-        defense_tier: 1,     // 1 to 4: flak CIWS, phase shields against node raids
-        weapons_tier: 1      // 1 to 4: spinal artillery & orbital bombardment support
+        fabrication_tier: 1, // 1 to 5: 1-5 bays, print speed, +25% masterwork, +15% base armor/power
+        mining_tier: 1,      // 1 to 5: local node yield (+25% to +250%), passive +15kg elements/turn at T5
+        defense_tier: 1,     // 1 to 5: hull HP (8,500 to 40,000), pirate raid immunity at T4/T5
+        weapons_tier: 1,     // 1 to 5: 600mm mass driver -> particle lance -> kinetic rods -> doomsday cleaver
+        propulsion_tier: 1,  // 1 to 5: transit 3T -> 2T -> 1T -> 1T -> 0T Instant Tachyon Fold Warp
+        pilot_suite_tier: 1, // 1 to 5: cryo-regen, +2 passive pilot combat stat/turn, Genkai +20%, trauma stabilization
+        sigint_tier: 1,      // 1 to 5: raid alerts, 15% trade discount, sabotage immunity, passive market siphon
+        command_tier: 1      // 1 to 5: +15% payouts, +1 combat deployment, +2 AP / +20% acc & armor in combat
     },
+    specialization_protocol: "", // "", "forge_titan", "siege_fortress", "shadow_panopticon"
     orbital_strike_available: false,
     orbital_strike_cooldown: 0
 };
@@ -124,6 +129,8 @@ inventory = {
         alloy_hyperion_matrix: 6,     // Hyperion Superconductor Matrix
         alloy_aerosteel_flux: 8,      // Aerosteel Vernier Alloy
         alloy_adamantine_carbide: 6,  // Adamantine Heavy Carbide
+        alloy_reactive_damascus: 4,   // Reactive Damascus Composite (Tier 5 Masterwork)
+        alloy_chobham_reactive: 4,    // Chobham-X Reactive Composite (Tier 5 Masterwork)
         structural_alloys: 850,
         avionics_components: 240,
         rare_composites: 95
@@ -355,10 +362,15 @@ end_turn = function() {
     for (var n = 0; n < array_length(nodes); n++) {
         var _node = nodes[n];
         if (_node.status == "ACTIVE_MINING") {
-            // Flagship In-Sphere Refining Multiplier (Doc 23)
+            // Flagship In-Sphere Refining Multiplier (Docs 23 & 24)
             var _sphere_mult = 1.0;
             if (variable_struct_exists(_node, "sphere") && _node.sphere == flagship.current_sphere) {
-                _sphere_mult = 1.0 + (flagship.upgrades.mining_tier * 0.25);
+                var _m_tier = flagship.upgrades.mining_tier;
+                var _tier_mults = [1.25, 1.50, 2.00, 2.50, 3.50];
+                _sphere_mult = _tier_mults[clamp(_m_tier - 1, 0, 4)];
+                if (flagship.specialization_protocol == "forge_titan") {
+                    _sphere_mult *= 1.5;
+                }
             }
             var _yield_p = max(1, floor(_node.yield_rate_primary * _sphere_mult));
             var _yield_s = max(1, floor(_node.yield_rate_secondary * _sphere_mult));
@@ -959,7 +971,7 @@ get_all_materials = function() {
     return periodic_table_materials;
 };
 
-// 12. Pre-War Flagship Navigation & Upgrade Engine (Doc 23)
+// 12. Pre-War Flagship Navigation, 8-Division Upgrades & Master Protocols (Docs 23 & 24)
 flagship_travel_to = function(_destination_sphere) {
     if (_destination_sphere == flagship.current_sphere) {
         if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("ALREADY STATIONED IN " + string_upper(_destination_sphere) + "!", c_yellow);
@@ -970,7 +982,6 @@ flagship_travel_to = function(_destination_sphere) {
         return false;
     }
 
-    flagship.destination_sphere = _destination_sphere;
     var _spheres = ["Earth Sphere", "Martian Sphere", "Asteroid Belt", "Jovian Outer Sphere", "Saturnian Outer Sphere", "Deep Solar Frontier"];
     var _i1 = 2;
     var _i2 = 2;
@@ -979,18 +990,70 @@ flagship_travel_to = function(_destination_sphere) {
         if (_spheres[s] == _destination_sphere) _i2 = s;
     }
     var _dist = abs(_i1 - _i2);
-    flagship.transit_turns_left = max(1, min(3, _dist));
 
+    // Speed progression: T1=max 3 turns, T2=max 2 turns, T3=1 turn, T4=1 turn, T5 or Protocol C=0 turns (Instant Tachyon Fold Warp)
+    var _prop_tier = flagship.upgrades.propulsion_tier;
+    var _transit_turns = 1;
+    if (_prop_tier == 1) {
+        _transit_turns = max(1, min(3, _dist));
+    } else if (_prop_tier == 2) {
+        _transit_turns = max(1, min(2, _dist));
+    } else if (_prop_tier == 3 || _prop_tier == 4) {
+        _transit_turns = 1;
+    } else if (_prop_tier >= 5 || flagship.specialization_protocol == "shadow_panopticon") {
+        _transit_turns = 0;
+    }
+
+    if (_transit_turns == 0) {
+        flagship.current_sphere = _destination_sphere;
+        flagship.destination_sphere = "";
+        flagship.transit_turns_left = 0;
+        array_push(last_turn_events, "* TACHYON FOLD WARP: USN-X Hephaestus executed zero-turn transit to " + _destination_sphere + "!");
+        if (instance_exists(obj_HQTerminal)) {
+            obj_HQTerminal.show_toast("TACHYON FOLD INSTANT ARRIVAL: " + string_upper(_destination_sphere) + "!", c_fuchsia);
+        }
+        return true;
+    }
+
+    flagship.destination_sphere = _destination_sphere;
+    flagship.transit_turns_left = _transit_turns;
     if (instance_exists(obj_HQTerminal)) {
         obj_HQTerminal.show_toast("TRANSIT DRIVE ENGAGED: En route to " + _destination_sphere + " (" + string(flagship.transit_turns_left) + " turns)!", c_aqua);
     }
     return true;
 };
 
+flagship_set_specialization = function(_protocol) {
+    var _t3_count = 0;
+    var _tracks = ["fabrication_tier", "mining_tier", "defense_tier", "weapons_tier", "propulsion_tier", "pilot_suite_tier", "sigint_tier", "command_tier"];
+    for (var t = 0; t < array_length(_tracks); t++) {
+        if ((flagship.upgrades[$ _tracks[t]] ?? 1) >= 3) _t3_count++;
+    }
+    if (_t3_count < 4) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("LOCKED: Requires at least 4 Flagship Divisions at Tier 3+ (Current: " + string(_t3_count) + "/4)!", c_yellow);
+        return false;
+    }
+
+    flagship.specialization_protocol = _protocol;
+    var _proto_name = (_protocol == "forge_titan") ? "INDUSTRIAL FORGE TITAN" :
+                      ((_protocol == "siege_fortress") ? "ORBITAL SIEGE FORTRESS" : "SHADOW PANOPTICON");
+
+    if (_protocol == "siege_fortress") {
+        flagship.hull_max_hp = 65000;
+        flagship.hull_hp = min(flagship.hull_max_hp, flagship.hull_hp + 25000);
+    }
+
+    array_push(last_turn_events, "* FLAGSHIP DOCTRINE RATIFIED: USN-X Hephaestus initialized " + _proto_name + " protocol!");
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("FLAGSHIP PROTOCOL RATIFIED: " + _proto_name + "!", c_lime);
+    }
+    return true;
+};
+
 flagship_upgrade = function(_track) {
     var _cur_tier = flagship.upgrades[$ _track] ?? 1;
-    if (_cur_tier >= 4) {
-        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("TRACK AT MAXIMUM ARCHEOTECH TIER (TIER 4)!", c_yellow);
+    if (_cur_tier >= 5) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("DIVISION AT MAXIMUM APEX ARCHEOTECH TIER (TIER 5)!", c_yellow);
         return false;
     }
 
@@ -1003,18 +1066,42 @@ flagship_upgrade = function(_track) {
         if (_next_tier == 2) { _cost_cr = 250000; _req_alloy = "alloy_vanguard_comp"; }
         else if (_next_tier == 3) { _cost_cr = 600000; _req_alloy = "alloy_aerosteel_flux"; }
         else if (_next_tier == 4) { _cost_cr = 1500000; _req_alloy = "alloy_adamantine_carbide"; }
+        else if (_next_tier == 5) { _cost_cr = 3500000; _req_alloy = "alloy_reactive_damascus"; }
     } else if (_track == "mining_tier") {
         if (_next_tier == 2) { _cost_cr = 200000; _req_alloy = "alloy_vanguard_comp"; }
         else if (_next_tier == 3) { _cost_cr = 500000; _req_alloy = "alloy_hyperion_matrix"; }
         else if (_next_tier == 4) { _cost_cr = 1200000; _req_alloy = "alloy_adamantine_carbide"; }
+        else if (_next_tier == 5) { _cost_cr = 3000000; _req_alloy = "alloy_chobham_reactive"; }
     } else if (_track == "defense_tier") {
         if (_next_tier == 2) { _cost_cr = 180000; _req_alloy = "alloy_vanguard_comp"; }
         else if (_next_tier == 3) { _cost_cr = 450000; _req_alloy = "alloy_hyperion_matrix"; }
         else if (_next_tier == 4) { _cost_cr = 1100000; _req_alloy = "alloy_adamantine_carbide"; }
+        else if (_next_tier == 5) { _cost_cr = 2800000; _req_alloy = "alloy_chobham_reactive"; }
     } else if (_track == "weapons_tier") {
         if (_next_tier == 2) { _cost_cr = 350000; _req_alloy = "alloy_vanguard_comp"; }
         else if (_next_tier == 3) { _cost_cr = 800000; _req_alloy = "alloy_aerosteel_flux"; }
         else if (_next_tier == 4) { _cost_cr = 2000000; _req_alloy = "alloy_adamantine_carbide"; }
+        else if (_next_tier == 5) { _cost_cr = 4500000; _req_alloy = "alloy_reactive_damascus"; }
+    } else if (_track == "propulsion_tier") {
+        if (_next_tier == 2) { _cost_cr = 220000; _req_alloy = "alloy_vanguard_comp"; }
+        else if (_next_tier == 3) { _cost_cr = 550000; _req_alloy = "alloy_aerosteel_flux"; }
+        else if (_next_tier == 4) { _cost_cr = 1300000; _req_alloy = "alloy_adamantine_carbide"; }
+        else if (_next_tier == 5) { _cost_cr = 3200000; _req_alloy = "alloy_reactive_damascus"; }
+    } else if (_track == "pilot_suite_tier") {
+        if (_next_tier == 2) { _cost_cr = 190000; _req_alloy = "alloy_vanguard_comp"; }
+        else if (_next_tier == 3) { _cost_cr = 480000; _req_alloy = "alloy_hyperion_matrix"; }
+        else if (_next_tier == 4) { _cost_cr = 1250000; _req_alloy = "alloy_adamantine_carbide"; }
+        else if (_next_tier == 5) { _cost_cr = 2900000; _req_alloy = "alloy_chobham_reactive"; }
+    } else if (_track == "sigint_tier") {
+        if (_next_tier == 2) { _cost_cr = 210000; _req_alloy = "alloy_vanguard_comp"; }
+        else if (_next_tier == 3) { _cost_cr = 520000; _req_alloy = "alloy_hyperion_matrix"; }
+        else if (_next_tier == 4) { _cost_cr = 1400000; _req_alloy = "alloy_adamantine_carbide"; }
+        else if (_next_tier == 5) { _cost_cr = 3400000; _req_alloy = "alloy_reactive_damascus"; }
+    } else if (_track == "command_tier") {
+        if (_next_tier == 2) { _cost_cr = 260000; _req_alloy = "alloy_vanguard_comp"; }
+        else if (_next_tier == 3) { _cost_cr = 650000; _req_alloy = "alloy_aerosteel_flux"; }
+        else if (_next_tier == 4) { _cost_cr = 1600000; _req_alloy = "alloy_adamantine_carbide"; }
+        else if (_next_tier == 5) { _cost_cr = 4000000; _req_alloy = "alloy_reactive_damascus"; }
     }
 
     if (funds < _cost_cr) {
@@ -1031,13 +1118,22 @@ flagship_upgrade = function(_track) {
 
     flagship.upgrades[$ _track] = _next_tier;
 
+    if (_track == "defense_tier") {
+        var _hulls = [8500, 12000, 18000, 26000, 40000];
+        flagship.hull_max_hp = _hulls[_next_tier - 1];
+        flagship.hull_hp = flagship.hull_max_hp;
+    }
     if (_track == "weapons_tier" && _next_tier >= 2) {
         flagship.orbital_strike_available = true;
     }
 
     var _track_name = (_track == "fabrication_tier") ? "Fabrication Core" :
-                      ((_track == "mining_tier") ? "Automated Mining Sills" :
-                      ((_track == "defense_tier") ? "Hull & CIWS Defenses" : "Spinal Orbital Artillery"));
+                      ((_track == "mining_tier") ? "Mining Sills & Refinery" :
+                      ((_track == "defense_tier") ? "Hull Defenses & CIWS" :
+                      ((_track == "weapons_tier") ? "Spinal Artillery & Strikes" :
+                      ((_track == "propulsion_tier") ? "Tachyon FTL Propulsion" :
+                      ((_track == "pilot_suite_tier") ? "Neural Holodecks & Med-Bay" :
+                      ((_track == "sigint_tier") ? "SIGINT & EW Panopticon" : "Strategic Bridge & CIC"))))));
 
     if (instance_exists(obj_HQTerminal)) {
         obj_HQTerminal.show_toast("DREADNOUGHT UPGRADE RATIFIED! " + _track_name + " upgraded to Tier " + string(_next_tier) + "!", c_lime);
@@ -1074,7 +1170,7 @@ evaluate_flagship_turn = function() {
         if (flagship.transit_turns_left <= 0) {
             flagship.current_sphere = flagship.destination_sphere;
             flagship.destination_sphere = "";
-            array_push(last_turn_events, "* DREADNOUGHT ARRIVAL: USN-X Hephaestus established high orbit over " + flagship.current_sphere + " (+50% local mining yield active).");
+            array_push(last_turn_events, "* DREADNOUGHT ARRIVAL: USN-X Hephaestus established high orbit over " + flagship.current_sphere + " (Mining yield & fire support online).");
             if (instance_exists(obj_HQTerminal)) {
                 obj_HQTerminal.show_toast("FLAGSHIP ARRIVED IN " + string_upper(flagship.current_sphere) + "!", c_aqua);
             }
@@ -1091,7 +1187,45 @@ evaluate_flagship_turn = function() {
         }
     }
 
-    // 3. Dynamic Rival Corporate Market Evolution
+    // 3. Mining Tier 5: Autonomous Planetary Siphon Harvester Array (+15kg raw materials/turn)
+    if (flagship.upgrades.mining_tier >= 5) {
+        add_raw_material("mat_tungsten", 6);
+        add_raw_material("mat_silica_carb", 5);
+        add_raw_material("mat_tritium", 2);
+        add_raw_material("mat_syn_flux", 2);
+        array_push(last_turn_events, "* HARVEST ARRAY: USN-X Hephaestus siphon drones gathered +15kg raw minerals into fleet cargo.");
+    }
+
+    // 4. Pilot Suite Tier 3-5: Neural Holodeck Passive Training & Trauma Healing
+    if (flagship.upgrades.pilot_suite_tier >= 3 && variable_struct_exists(facilities, "roster_pilots")) {
+        for (var p = 0; p < array_length(facilities.roster_pilots); p++) {
+            var _plt = facilities.roster_pilots[p];
+            if (is_struct(_plt)) {
+                if (variable_struct_exists(_plt, "stat_combat")) _plt.stat_combat = min(99, _plt.stat_combat + 1);
+                if (flagship.upgrades.pilot_suite_tier >= 5) {
+                    if (variable_struct_exists(_plt, "trauma_state")) _plt.trauma_state = "focused_master";
+                    if (variable_struct_exists(_plt, "morale")) _plt.morale = 100;
+                }
+            }
+        }
+    }
+
+    // 5. SIGINT Tier 5 / Shadow Panopticon: Intercept & Siphon Market Share
+    var _siphon_freq = (flagship.specialization_protocol == "shadow_panopticon") ? 4 : 5;
+    if ((flagship.upgrades.sigint_tier >= 5 || flagship.specialization_protocol == "shadow_panopticon") && (turn_count % _siphon_freq == 0)) {
+        var _highest_corp = rival_corporations.corp_vhi;
+        if (rival_corporations.corp_aod.market_share_pct > _highest_corp.market_share_pct) _highest_corp = rival_corporations.corp_aod;
+        if (rival_corporations.corp_rust.market_share_pct > _highest_corp.market_share_pct) _highest_corp = rival_corporations.corp_rust;
+        if (rival_corporations.corp_hats.market_share_pct > _highest_corp.market_share_pct) _highest_corp = rival_corporations.corp_hats;
+        var _sip_pct = (flagship.specialization_protocol == "shadow_panopticon") ? 2 : 1;
+        if (_highest_corp.market_share_pct > 5) {
+            _highest_corp.market_share_pct -= _sip_pct;
+            pmc_market_share_pct = min(80, pmc_market_share_pct + _sip_pct);
+            array_push(last_turn_events, "* SIGINT EXPLOIT: Panopticon array siphoned +" + string(_sip_pct) + "% market share from " + _highest_corp.ticker + ".");
+        }
+    }
+
+    // 6. Dynamic Rival Corporate Market Evolution
     if (instance_exists(obj_FactionManager)) {
         var _fm = obj_FactionManager;
         if (_fm.mass_production_contracts.faction_a.replaced && rival_corporations.corp_vhi.market_share_pct > 15) {

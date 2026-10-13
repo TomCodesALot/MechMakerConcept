@@ -4537,7 +4537,7 @@ else if (active_tab == 4) {
         var _fs = _gm.flagship;
 
         // =====================================================================
-        // SUBTAB 0: WARSHIP SCHEMATIC & FORGE CORE UPGRADES (Doc 23)
+        // SUBTAB 0: WARSHIP SCHEMATIC, 8-DIVISION REFITS & MASTER PROTOCOLS (Docs 23 & 24)
         // =====================================================================
         if (flagship_subtab == 0) {
             var _fx = _pan_x + 24;
@@ -4549,7 +4549,7 @@ else if (active_tab == 4) {
 
             // Origin Lore Banner
             var _lor_y = _fy + 22;
-            var _lor_h = 36;
+            var _lor_h = 42;
             draw_set_color(make_color_rgb(14, 20, 30));
             draw_rectangle(_fx, _lor_y, _fx + _fw, _lor_y + _lor_h, false);
             draw_set_color(make_color_rgb(40, 70, 105));
@@ -4558,101 +4558,318 @@ else if (active_tab == 4) {
             draw_set_color(make_color_rgb(255, 220, 120));
             draw_text(_fx + 12, _lor_y + 4, "SCAVENGER ORIGIN: " + _fs.origin_lore);
             draw_set_color(make_color_rgb(170, 195, 220));
-            draw_text(_fx + 12, _lor_y + 20, "Stationed Orbit: " + _fs.current_sphere + "  |  Hull Armor: " + string(_fs.hull_hp) + " / " + string(_fs.hull_max_hp) + " HP  |  Transit State: " + (_fs.transit_turns_left > 0 ? ("En route to " + _fs.destination_sphere + " (" + string(_fs.transit_turns_left) + "T)") : "Stationary"));
+            var _proto_label = (_fs.specialization_protocol == "forge_titan") ? "INDUSTRIAL FORGE TITAN" :
+                               ((_fs.specialization_protocol == "siege_fortress") ? "ORBITAL SIEGE FORTRESS" :
+                               ((_fs.specialization_protocol == "shadow_panopticon") ? "SHADOW PANOPTICON" : "STANDARD FLEET"));
+            draw_text(_fx + 12, _lor_y + 22, "Stationed Orbit: " + _fs.current_sphere + "  |  Hull Armor: " + string(_fs.hull_hp) + " / " + string(_fs.hull_max_hp) + " HP  |  Transit: " + (_fs.transit_turns_left > 0 ? ("En route to " + _fs.destination_sphere + " (" + string(_fs.transit_turns_left) + "T)") : "Stationary") + "  |  Doctrine: " + _proto_label);
 
-            // 4-Track Upgrade Console Grid (2x2 Cards)
-            var _upg_y_start = _lor_y + _lor_h + 12;
-            var _card_w = (_fw - 16) / 2;
-            var _card_h = 168;
+            // 4-Category Division Switcher (y: 242 to 270)
+            var _cat_names = [
+                "[1. PRODUCTION & HARVEST (DIV 1 & 2)]",
+                "[2. DEFENSE & TACTICAL WEAPONS (DIV 3 & 4)]",
+                "[3. TACHYON DRIVES & PILOT SUITE (DIV 5 & 6)]",
+                "[4. SIGINT & FLEET COMMAND (DIV 7 & 8)]"
+            ];
+            var _cat_w = (_fw - 36) / 4;
+            var _cat_y = _lor_y + _lor_h + 8;
+            var _cat_h = 28;
 
-            var _tracks = [
-                { id: "fabrication_tier", title: "1. MOLECULAR FABRICATION CORE", icon: "FOUNDRY", desc: "Nanite crucibles printing custom chassis components at molecular scale.", alloys: ["alloy_vanguard_comp", "alloy_aerosteel_flux", "alloy_adamantine_carbide"], costs: [250000, 600000, 1500000] },
-                { id: "mining_tier", title: "2. AUTOMATED MINING SILLS & TENDERS", icon: "HARVEST", desc: "Refining shuttles boosting in-sphere raw mineral extraction yields.", alloys: ["alloy_vanguard_comp", "alloy_hyperion_matrix", "alloy_adamantine_carbide"], costs: [200000, 500000, 1200000] },
-                { id: "defense_tier", title: "3. HULL DEFENSES & POINT-DEFENSE CIWS", icon: "DEFENSE", desc: "Point-defense flak and kinetic barriers repelling pirate outpost raids.", alloys: ["alloy_vanguard_comp", "alloy_hyperion_matrix", "alloy_adamantine_carbide"], costs: [180000, 450000, 1100000] },
-                { id: "weapons_tier", title: "4. SPINAL ARTILLERY & ORBITAL STRIKES", icon: "WEAPONS", desc: "Spinal mass drivers providing tactical orbital bombardment fire in combat.", alloys: ["alloy_vanguard_comp", "alloy_aerosteel_flux", "alloy_adamantine_carbide"], costs: [350000, 800000, 2000000] }
+            for (var c = 0; c < 4; c++) {
+                var _cx = _fx + c * (_cat_w + 12);
+                var _is_cat_act = (flagship_division_category == c);
+                var _c_hov = (_mx >= _cx && _mx <= _cx + _cat_w && _my >= _cat_y && _my <= _cat_y + _cat_h);
+                if (_c_hov && _click) flagship_division_category = c;
+
+                draw_set_color(_is_cat_act ? make_color_rgb(30, 80, 120) : (_c_hov ? make_color_rgb(22, 45, 68) : make_color_rgb(14, 22, 32)));
+                draw_rectangle(_cx, _cat_y, _cx + _cat_w, _cat_y + _cat_h, false);
+                draw_set_color(_is_cat_act ? make_color_rgb(100, 220, 255) : make_color_rgb(45, 75, 110));
+                draw_rectangle(_cx, _cat_y, _cx + _cat_w, _cat_y + _cat_h, true);
+                draw_set_color(_is_cat_act ? c_white : make_color_rgb(170, 200, 230));
+                draw_text(_cx + 10, _cat_y + 6, _cat_names[c]);
+            }
+
+            // All 8 Divisions Data Structure (Docs 23 & 24)
+            var _divisions = [
+                // Category 0: Production & Harvest
+                {
+                    id: "fabrication_tier", cat: 0,
+                    title: "DIV 1: MOLECULAR FABRICATION CORE", icon: "FOUNDRY",
+                    desc: "Nanite sintering crucibles printing mobile suit chassis at atomic scale.",
+                    tiers: [
+                        "T1: Scrapline Assembler (1 Bay, Standard Print Speed)",
+                        "T2: Dual Sintering Bays (2 Bays, -25% Print Time)",
+                        "T3: Tri-Core Nanite Crucible (3 Bays, -50% Time, +5% Masterwork)",
+                        "T4: Pre-War Archeotech Replicator (4 Bays, -70% Time, +15% Masterwork)",
+                        "T5: Omega Sovereign Synthesizer (5 Bays, +25% S-Grade, +15% Armor/Power!)"
+                    ],
+                    alloys: ["alloy_vanguard_comp", "alloy_aerosteel_flux", "alloy_adamantine_carbide", "alloy_reactive_damascus"],
+                    costs: [250000, 600000, 1500000, 3500000]
+                },
+                {
+                    id: "mining_tier", cat: 0,
+                    title: "DIV 2: MINING SILLS & DRONE REFINERY", icon: "HARVEST",
+                    desc: "Automated extraction shuttles boosting planetary ore yields and refining slag.",
+                    tiers: [
+                        "T1: Manual Tender Shuttles (+25% Local Planetary Yield)",
+                        "T2: Magnetic Harvester Drones (+50% Local Yield, +50% Depot Storage)",
+                        "T3: Deep-Core Plasma Tractor (+100% Local Yield, +10% Rare Isotopes)",
+                        "T4: Nanite Centrifuge Sieve (+150% Local Yield, Auto-Purify Slag)",
+                        "T5: Planetary Siphon Harvester Array (+250% Yield, Passively +15kg Ore/T!)"
+                    ],
+                    alloys: ["alloy_vanguard_comp", "alloy_hyperion_matrix", "alloy_adamantine_carbide", "alloy_chobham_reactive"],
+                    costs: [200000, 500000, 1200000, 3000000]
+                },
+
+                // Category 1: Defense & Weapons
+                {
+                    id: "defense_tier", cat: 1,
+                    title: "DIV 3: HULL ARMOR, DEFLECTION & CIWS", icon: "DEFENSE",
+                    desc: "Composite bulkheads and point-defense systems repelling pirate outpost raids.",
+                    tiers: [
+                        "T1: Patchwork Titanium Plating (8,500 Hull HP)",
+                        "T2: Twin Flak CIWS (12,000 HP, +25% Pirate Raid Defense Rate)",
+                        "T3: Hard-Light Kinetic Deflection (18,000 HP, +50% Pirate Raid Defense)",
+                        "T4: Phase Displacement Matrix (26,000 HP, Outpost Mining Raids Nullified)",
+                        "T5: Aegis Sovereign Fortress Barrier (40,000 HP, Sol-Wide Raid Immunity!)"
+                    ],
+                    alloys: ["alloy_vanguard_comp", "alloy_hyperion_matrix", "alloy_adamantine_carbide", "alloy_chobham_reactive"],
+                    costs: [180000, 450000, 1100000, 2800000]
+                },
+                {
+                    id: "weapons_tier", cat: 1,
+                    title: "DIV 4: SPINAL ARTILLERY & FIRE SUPPORT", icon: "WEAPONS",
+                    desc: "Spinal kinetic cannons and particle beams delivering tactical strikes in combat.",
+                    tiers: [
+                        "T1: Point-Defense Autocannons (No Tactical Bombardment)",
+                        "T2: Twin 600mm Mass Drivers (Orbital Strike: 600-1100 Dmg, 3T CD)",
+                        "T3: Spinal Particle Lance (High Beam Strike: 1200-1800 Dmg, 2T CD)",
+                        "T4: Tungsten Kinetic Rod Array (Catastrophic Rods: 2000-3000 Dmg, 2T CD)",
+                        "T5: Doomsday Tachyon Cleaver (Apocalyptic Strike: 3500-5000 Dmg, 1T CD!)"
+                    ],
+                    alloys: ["alloy_vanguard_comp", "alloy_aerosteel_flux", "alloy_adamantine_carbide", "alloy_reactive_damascus"],
+                    costs: [350000, 800000, 2000000, 4500000]
+                },
+
+                // Category 2: Drives & Pilots
+                {
+                    id: "propulsion_tier", cat: 2,
+                    title: "DIV 5: PROPULSION & TACHYON FTL DRIVE", icon: "DRIVE",
+                    desc: "High-thrust graviton manifolds enabling high-speed planetary transit across Sol.",
+                    tiers: [
+                        "T1: Ion Thruster Verniers (Standard Sol Transit: 2-3 Turns)",
+                        "T2: Fusion-Plasma Drive Manifolds (Reduced Transit: 1-2 Turns)",
+                        "T3: Graviton Compression Drive (Rapid Transit: Exactly 1 Turn Across Sol)",
+                        "T4: Sub-Space Micro-Warp Drive (1 Turn Transit + Tactical Emergency Warp)",
+                        "T5: Tachyon Fold Warp Core (Instantaneous 0-Turn Planetary Transit!)"
+                    ],
+                    alloys: ["alloy_vanguard_comp", "alloy_aerosteel_flux", "alloy_adamantine_carbide", "alloy_reactive_damascus"],
+                    costs: [220000, 550000, 1300000, 3200000]
+                },
+                {
+                    id: "pilot_suite_tier", cat: 2,
+                    title: "DIV 6: NEURAL HOLODECKS & MED-BAY", icon: "PILOT",
+                    desc: "Cryo-regen pods and neural simulators for pilot training and psychological therapy.",
+                    tiers: [
+                        "T1: Standard Crew Bunks (Baseline Fatigue Recovery)",
+                        "T2: Cryo-Regen Medical Pods (Hospitalized Pilots Recover 2x Faster)",
+                        "T3: Neural Link Sync Holodeck (All Roster Pilots Passively +1 Combat Stat/T)",
+                        "T4: Cybernetic Neural Calibrator (Genkai Pilot Reflex Limit +20% Evasion)",
+                        "T5: Tachyon Mind-Link Nexus (Trauma Therapy: Stabilizes Berserkers to Masters!)"
+                    ],
+                    alloys: ["alloy_vanguard_comp", "alloy_hyperion_matrix", "alloy_adamantine_carbide", "alloy_chobham_reactive"],
+                    costs: [190000, 480000, 1250000, 2900000]
+                },
+
+                // Category 3: SIGINT & Fleet Command
+                {
+                    id: "sigint_tier", cat: 3,
+                    title: "DIV 7: SIGINT & EW PANOPTICON ARRAY", icon: "INTEL",
+                    desc: "Tachyon sensory globes intercepting transmissions, black-market deals, and rival corps.",
+                    tiers: [
+                        "T1: Standard System Radar (Basic In-Sphere Tracking)",
+                        "T2: Deep-Space Tachyon Dome (Forecasts Pirate Raids 2 Turns Ahead)",
+                        "T3: Black-Market Intercept Matrix (15% Market Trade Price Discount)",
+                        "T4: Corporate Network Infiltration (Immune to Corporate Counter-Sabotage)",
+                        "T5: Prometheus Panopticon Array (Siphons +1% Market Share Every 5 Turns!)"
+                    ],
+                    alloys: ["alloy_vanguard_comp", "alloy_hyperion_matrix", "alloy_adamantine_carbide", "alloy_reactive_damascus"],
+                    costs: [210000, 520000, 1400000, 3400000]
+                },
+                {
+                    id: "command_tier", cat: 3,
+                    title: "DIV 8: STRATEGIC COMMAND BRIDGE & CIC", icon: "COMMAND",
+                    desc: "Tactical battle coordinator issuing real-time firing coordinates and sovereign edicts.",
+                    tiers: [
+                        "T1: Makeshift Salvage Bridge (Standard PMC Command Operations)",
+                        "T2: Fleet Tactical CIC (+15% Revenue from All PMC Contracts)",
+                        "T3: Multi-Wing Sortie Command (Deploy +1 Allied Mobile Suit in Combat)",
+                        "T4: Sovereign Warlord War Room (+25% Expedition Success, +50% Daily Tribute)",
+                        "T5: Apex Hegemon Command Nexus (Tactical Supremacy: +2 AP & +20% Acc to Units!)"
+                    ],
+                    alloys: ["alloy_vanguard_comp", "alloy_aerosteel_flux", "alloy_adamantine_carbide", "alloy_reactive_damascus"],
+                    costs: [260000, 650000, 1600000, 4000000]
+                }
             ];
 
-            for (var tr = 0; tr < 4; tr++) {
-                var _trk = _tracks[tr];
-                var _col = tr % 2;
-                var _row = floor(tr / 2);
-                var _cx = _fx + _col * (_card_w + 16);
-                var _cy = _upg_y_start + _row * (_card_h + 12);
-                var _cur_t = _fs.upgrades[$ _trk.id] ?? 1;
+            // Filter the 2 divisions for current category
+            var _cat_divs = [];
+            for (var d = 0; d < array_length(_divisions); d++) {
+                if (_divisions[d].cat == flagship_division_category) array_push(_cat_divs, _divisions[d]);
+            }
+
+            // Render 2 Division Cards Side-by-Side (y: 284 to 594)
+            var _card_y_start = _cat_y + _cat_h + 8;
+            var _card_w = (_fw - 16) / 2;
+            var _card_h = 280;
+
+            for (var cd = 0; cd < array_length(_cat_divs); cd++) {
+                var _div = _cat_divs[cd];
+                var _card_x = _fx + cd * (_card_w + 16);
+                var _cur_t = _fs.upgrades[$ _div.id] ?? 1;
 
                 draw_set_color(make_color_rgb(10, 16, 24));
-                draw_rectangle(_cx, _cy, _cx + _card_w, _cy + _card_h, false);
+                draw_rectangle(_card_x, _card_y_start, _card_x + _card_w, _card_y_start + _card_h, false);
                 draw_set_color(make_color_rgb(30, 50, 75));
-                draw_rectangle(_cx, _cy, _cx + _card_w, _cy + _card_h, true);
+                draw_rectangle(_card_x, _card_y_start, _card_x + _card_w, _card_y_start + _card_h, true);
 
+                // Division Header & Tier Badge
                 draw_set_color(make_color_rgb(255, 215, 80));
-                draw_text(_cx + 14, _cy + 8, _trk.title);
+                draw_text(_card_x + 14, _card_y_start + 8, _div.title);
 
                 draw_set_color(make_color_rgb(0, 220, 255));
-                draw_text(_cx + _card_w - 110, _cy + 8, "[TIER " + string(_cur_t) + " / 4]");
+                draw_text(_card_x + _card_w - 120, _card_y_start + 8, "[TIER " + string(_cur_t) + " / 5]");
 
-                draw_set_color(c_white);
-                draw_text_ext(_cx + 14, _cy + 28, _trk.desc, 18, _card_w - 28);
-
-                // Tier Benefits List
-                var _benefit_str = "";
-                if (_trk.id == "fabrication_tier") {
-                    _benefit_str = (_cur_t == 1) ? "Current: 1 Build Bay (Standard Print Speed)" :
-                                   ((_cur_t == 2) ? "Current: 2 Build Bays (-25% Fabrication Time)" :
-                                   ((_cur_t == 3) ? "Current: 3 Build Bays (-50% Fabrication Time)" : "Current: 4 Build Bays (+15% Masterwork Chance)"));
-                } else if (_trk.id == "mining_tier") {
-                    _benefit_str = (_cur_t == 1) ? "Current: Manual Tender Shuttles (+25% Local Ore Yield)" :
-                                   ((_cur_t == 2) ? "Current: Automated Ore Sills (+50% Local Ore Yield)" :
-                                   ((_cur_t == 3) ? "Current: Deep-Core Mass Extractors (+75% Local Ore Yield)" : "Current: Nanite Sieve (+100% Ore Yield & Auto-Purify)"));
-                } else if (_trk.id == "defense_tier") {
-                    _benefit_str = (_cur_t == 1) ? "Current: Reinforced Titanium Plating" :
-                                   ((_cur_t == 2) ? "Current: Twin Flak CIWS (+25% Auto-Resolve Node Defense)" :
-                                   ((_cur_t == 3) ? "Current: Kinetic Deflection Grid (+50% Node Defense)" : "Current: Aegis Phase Barrier (Small Raids Nullified)"));
-                } else if (_trk.id == "weapons_tier") {
-                    _benefit_str = (_cur_t == 1) ? "Current: Basic Point Defense (No Orbital Fire Support)" :
-                                   ((_cur_t == 2) ? "Current: 600mm Spinal Mass Drivers (Orbital Strike Unlocked)" :
-                                   ((_cur_t == 3) ? "Current: High-Energy Particle Lance (Heavy AoE Grid Strike)" : "Current: Kinetic Rod Penetrator Array (Catastrophic Bombardment)"));
+                // 5 Visual Progression Pips
+                var _pip_x_start = _card_x + 14;
+                var _pip_y = _card_y_start + 28;
+                for (var p = 1; p <= 5; p++) {
+                    var _px = _pip_x_start + (p - 1) * 28;
+                    var _p_unlocked = (p <= _cur_t);
+                    draw_set_color(_p_unlocked ? make_color_rgb(0, 220, 120) : make_color_rgb(25, 35, 45));
+                    draw_rectangle(_px, _pip_y, _px + 22, _pip_y + 8, false);
+                    draw_set_color(_p_unlocked ? make_color_rgb(140, 255, 180) : make_color_rgb(45, 60, 75));
+                    draw_rectangle(_px, _pip_y, _px + 22, _pip_y + 8, true);
                 }
 
-                draw_set_color(make_color_rgb(160, 240, 180));
-                draw_text(_cx + 14, _cy + 68, _benefit_str);
+                draw_set_color(make_color_rgb(180, 205, 230));
+                draw_text_ext(_card_x + 160, _pip_y - 4, _div.desc, 16, _card_w - 174);
 
-                // Upgrade Button & Cost
-                var _ub_y = _cy + 104;
-                var _can_upg = (_cur_t < 4);
+                // 5 Tier Breakdown List
+                var _tier_list_y = _card_y_start + 44;
+                for (var t = 0; t < 5; t++) {
+                    var _t_num = t + 1;
+                    var _is_cur = (_t_num == _cur_t);
+                    var _is_past = (_t_num < _cur_t);
+                    var _prefix = _is_cur ? "▶ " : (_is_past ? "✓ " : "• ");
+
+                    if (_is_cur) {
+                        draw_set_color(make_color_rgb(255, 225, 100));
+                    } else if (_is_past) {
+                        draw_set_color(make_color_rgb(130, 200, 150));
+                    } else {
+                        draw_set_color(make_color_rgb(120, 140, 160));
+                    }
+                    draw_text(_card_x + 14, _tier_list_y + t * 24, _prefix + _div.tiers[t]);
+                }
+
+                // Upgrade Button & Resource Checks
+                var _ub_y = _card_y_start + 180;
+                var _can_upg = (_cur_t < 5);
 
                 if (_can_upg) {
-                    var _req_c = _trk.costs[_cur_t - 1];
-                    var _req_a = _trk.alloys[_cur_t - 1];
+                    var _req_c = _div.costs[_cur_t - 1];
+                    var _req_a = _div.alloys[_cur_t - 1];
                     var _has_f = (_gm.funds >= _req_c);
                     var _has_a = (_gm.get_alloy(_req_a) >= 5);
-                    var _ub_hov = (_mx >= _cx + 14 && _mx <= _cx + _card_w - 14 && _my >= _ub_y && _my <= _ub_y + 44);
+                    var _ub_hov = (_mx >= _card_x + 14 && _mx <= _card_x + _card_w - 14 && _my >= _ub_y && _my <= _ub_y + 46);
 
                     if (_ub_hov && _click && _has_f && _has_a) {
-                        _gm.flagship_upgrade(_trk.id);
+                        _gm.flagship_upgrade(_div.id);
                     }
 
                     draw_set_color((_has_f && _has_a) ? (_ub_hov ? make_color_rgb(30, 70, 50) : make_color_rgb(18, 40, 28)) : make_color_rgb(18, 22, 28));
-                    draw_rectangle(_cx + 14, _ub_y, _cx + _card_w - 14, _ub_y + 44, false);
+                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 46, false);
                     draw_set_color((_has_f && _has_a) ? make_color_rgb(80, 220, 120) : make_color_rgb(45, 60, 75));
-                    draw_rectangle(_cx + 14, _ub_y, _cx + _card_w - 14, _ub_y + 44, true);
+                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 46, true);
 
                     draw_set_color((_has_f && _has_a) ? c_white : c_gray);
-                    draw_text(_cx + 24, _ub_y + 6, "[UPGRADE TO TIER " + string(_cur_t + 1) + "]");
+                    draw_text(_card_x + 24, _ub_y + 6, "[★ UPGRADE TO TIER " + string(_cur_t + 1) + "]");
                     draw_set_color((_has_f && _has_a) ? make_color_rgb(200, 255, 200) : c_gray);
-                    draw_text(_cx + 24, _ub_y + 24, "Cost: " + string(_req_c) + " Cr  +  5x " + _req_a);
+                    draw_text(_card_x + 24, _ub_y + 24, "Cost: " + string(_req_c) + " Cr  +  5x " + _req_a + " (Have: " + string(_gm.get_alloy(_req_a)) + ")");
                 } else {
                     draw_set_color(make_color_rgb(20, 32, 45));
-                    draw_rectangle(_cx + 14, _ub_y, _cx + _card_w - 14, _ub_y + 44, false);
+                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 46, false);
                     draw_set_color(make_color_rgb(60, 140, 220));
-                    draw_rectangle(_cx + 14, _ub_y, _cx + _card_w - 14, _ub_y + 44, true);
+                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 46, true);
                     draw_set_color(make_color_rgb(100, 220, 255));
-                    draw_text(_cx + 24, _ub_y + 14, "★ MAX ARCHEOTECH TIER 4 RATIFIED");
+                    draw_text(_card_x + 24, _ub_y + 14, "★ APEX ARCHEOTECH TIER 5 RATIFIED (MAX PROGRESSION)");
                 }
             }
-        }
 
-        // =====================================================================
+            // =================================================================
+            // FLAGSHIP SPECIALIZATION PROTOCOLS (MASTER DOCTRINES - Doc 24)
+            // =================================================================
+            var _t3_count = 0;
+            var _chk_tracks = ["fabrication_tier", "mining_tier", "defense_tier", "weapons_tier", "propulsion_tier", "pilot_suite_tier", "sigint_tier", "command_tier"];
+            for (var tk = 0; tk < array_length(_chk_tracks); tk++) {
+                if ((_fs.upgrades[$ _chk_tracks[tk]] ?? 1) >= 3) _t3_count++;
+            }
+
+            var _proto_y = _card_y_start + _card_h + 10;
+            var _proto_w = (_fw - 20) / 3;
+            var _proto_h = 80;
+
+            draw_set_color(make_color_rgb(255, 220, 100));
+            draw_text(_fx, _proto_y, "== FLAGSHIP SPECIALIZATION PROTOCOLS // MASTER ENDGAME DOCTRINES (Requires 4 Divisions at Tier 3+ | Current: " + string(_t3_count) + "/4) ==");
+
+            var _protocols = [
+                {
+                    id: "forge_titan",
+                    name: "PROTOCOL A: INDUSTRIAL FORGE TITAN",
+                    desc: "-40% Chassis Fabrication Costs  |  +1 Assembly Bay  |  3.0x Mining Yield Multiplier"
+                },
+                {
+                    id: "siege_fortress",
+                    name: "PROTOCOL B: ORBITAL SIEGE FORTRESS",
+                    desc: "+50% Orbital Strike Bombardment Dmg  |  +25,000 Dreadnought HP  |  +35% Allied Grid Armor"
+                },
+                {
+                    id: "shadow_panopticon",
+                    name: "PROTOCOL C: SHADOW PANOPTICON",
+                    desc: "0-Turn Instant Tachyon Warp  |  Sabotage Bounty Defense  |  Siphons +2% Market Share Every 4T"
+                }
+            ];
+
+            for (var pr = 0; pr < 3; pr++) {
+                var _pdata = _protocols[pr];
+                var _px = _fx + pr * (_proto_w + 10);
+                var _py = _proto_y + 18;
+                var _is_active = (_fs.specialization_protocol == _pdata.id);
+                var _unlocked = (_t3_count >= 4);
+
+                var _pb_hov = (_mx >= _px && _mx <= _px + _proto_w && _my >= _py && _my <= _py + _proto_h);
+                if (_pb_hov && _click && _unlocked) {
+                    _gm.flagship_set_specialization(_pdata.id);
+                }
+
+                draw_set_color(_is_active ? make_color_rgb(32, 60, 40) : (_unlocked ? (_pb_hov ? make_color_rgb(24, 40, 56) : make_color_rgb(14, 20, 28)) : make_color_rgb(10, 12, 16)));
+                draw_rectangle(_px, _py, _px + _proto_w, _py + _proto_h, false);
+                draw_set_color(_is_active ? make_color_rgb(100, 255, 140) : (_unlocked ? make_color_rgb(60, 110, 160) : make_color_rgb(40, 45, 55)));
+                draw_rectangle(_px, _py, _px + _proto_w, _py + _proto_h, true);
+
+                draw_set_color(_is_active ? make_color_rgb(255, 220, 100) : (_unlocked ? c_white : c_gray));
+                draw_text(_px + 12, _py + 6, _pdata.name);
+
+                draw_set_color(_unlocked ? make_color_rgb(170, 200, 220) : make_color_rgb(100, 110, 120));
+                draw_text_ext(_px + 12, _py + 24, _pdata.desc, 15, _proto_w - 24);
+
+                var _badge = _is_active ? "★ [RATIFIED ACTIVE DOCTRINE]" : (_unlocked ? "[CLICK TO RATIFY DOCTRINE]" : "[LOCKED: Requires 4 T3+ Divisions]");
+                draw_set_color(_is_active ? make_color_rgb(80, 240, 120) : (_unlocked ? make_color_rgb(0, 220, 255) : c_dkgray));
+                draw_text(_px + 12, _py + _proto_h - 18, _badge);
+            }
+        }
+        
+                // =====================================================================
         // SUBTAB 1: CELESTIAL NAVIGATION & ORBITAL TRANSIT (Doc 23)
         // =====================================================================
         else if (flagship_subtab == 1) {
@@ -4691,7 +4908,9 @@ else if (active_tab == 4) {
                 draw_set_color(c_white);
                 draw_text(_nx + 16, _spy + 8, _spd.name);
 
-                var _stat_badge = _is_here ? "[FLAGSHIP STATIONED HERE - +50% ORE BOOST ACTIVE]" :
+                var _m_pct = [25, 50, 100, 150, 250][clamp(_fs.upgrades.mining_tier - 1, 0, 4)];
+                if (_fs.specialization_protocol == "forge_titan") _m_pct = floor(_m_pct * 1.5);
+                var _stat_badge = _is_here ? ("[FLAGSHIP STATIONED HERE - +" + string(_m_pct) + "% ORE BOOST ACTIVE]") :
                                   (_is_target ? ("[TRANSIT IN PROGRESS: " + string(_fs.transit_turns_left) + " TURNS REMAINING]") : "[ORBITAL CONCESSION]");
                 draw_set_color(_is_here ? make_color_rgb(0, 240, 255) : (_is_target ? make_color_rgb(255, 200, 50) : make_color_rgb(140, 170, 200)));
                 draw_text(_nx + _nw - 16 - string_width(_stat_badge), _spy + 8, _stat_badge);
@@ -4713,10 +4932,11 @@ else if (active_tab == 4) {
 
                     draw_set_color(_tb_hov ? make_color_rgb(30, 70, 100) : make_color_rgb(18, 38, 55));
                     draw_rectangle(_tb_x, _tb_y, _tb_x + _tb_w, _tb_y + _tb_h, false);
-                    draw_set_color(make_color_rgb(80, 180, 255));
+                    var _is_instant = (_fs.upgrades.propulsion_tier >= 5 || _fs.specialization_protocol == "shadow_panopticon");
+                    draw_set_color(_is_instant ? make_color_rgb(255, 120, 240) : make_color_rgb(80, 180, 255));
                     draw_rectangle(_tb_x, _tb_y, _tb_x + _tb_w, _tb_y + _tb_h, true);
                     draw_set_color(c_white);
-                    draw_text(_tb_x + 14, _tb_y + 6, "[ENGAGE TRANSIT DRIVE]");
+                    draw_text(_tb_x + 14, _tb_y + 6, _is_instant ? "[0-TURN TACHYON FOLD]" : "[ENGAGE TRANSIT DRIVE]");
                 }
             }
         }
