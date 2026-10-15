@@ -53,7 +53,23 @@
         "TC-X01M Mining Rig",
         "TC-X01D Demolition Sapper"
       ],
-      "reactor_power_mw": 850
+      "reactor_power_mw": 850,
+      "production_count": 1035,
+      "active_units": 362,
+      "casualty_count": 673,
+      "kill_count": 820,
+      "combat_loss_ratio": 0.82,
+      "survivability_rating": 55,
+      "adoption_status": "phased_out",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 205 - TIMELINE ENTRY] Introduced as Hydraulic Biped Proof-of-Concept. Production batch: 1035 units. Status: PHASED_OUT."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_tc_x04_thunderstrike",
@@ -94,7 +110,23 @@
         "TC-X04 Testbed 4 (Fatal Crew Incident)",
         "TC-X04B Scrapped Hull Salvage"
       ],
-      "reactor_power_mw": 950
+      "reactor_power_mw": 950,
+      "production_count": 878,
+      "active_units": 307,
+      "casualty_count": 571,
+      "kill_count": 705,
+      "combat_loss_ratio": 0.81,
+      "survivability_rating": 55,
+      "adoption_status": "phased_out",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 209 - TIMELINE ENTRY] Introduced as Catastrophic High-G Drop Testbed (Failed Prototype). Production batch: 878 units. Status: PHASED_OUT."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_tcx_06_mammoth",
@@ -135,7 +167,23 @@
         "TCX-06 Trench Breaker (Prototype 1)",
         "TCX-06 Bunker Carrier (Prototype 2)"
       ],
-      "reactor_power_mw": 1300
+      "reactor_power_mw": 1300,
+      "production_count": 2475,
+      "active_units": 1782,
+      "casualty_count": 693,
+      "kill_count": 704,
+      "combat_loss_ratio": 0.98,
+      "survivability_rating": 50,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 210 - TIMELINE ENTRY] Introduced as Super-Heavy Trench Boondoggle (Failed Prototype). Production batch: 2475 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_tcm_03_bulwark",
@@ -176,7 +224,23 @@
         "TCM-03B Heavy Howitzer Refit",
         "TCM-03M Colonial Militia Spec"
       ],
-      "reactor_power_mw": 1100
+      "reactor_power_mw": 1100,
+      "production_count": 1605,
+      "active_units": 562,
+      "casualty_count": 1043,
+      "kill_count": 1112,
+      "combat_loss_ratio": 0.94,
+      "survivability_rating": 52,
+      "adoption_status": "phased_out",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 208 - TIMELINE ENTRY] Introduced as Entrenched Heavy Defense Grunt. Production batch: 1605 units. Status: PHASED_OUT."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_gha_07_ironclad",
@@ -220,7 +284,23 @@
         "GHA-07G Trench Type",
         "GHA-07S Space Patrol"
       ],
-      "reactor_power_mw": 1450
+      "reactor_power_mw": 1450,
+      "production_count": 3348,
+      "active_units": 2411,
+      "casualty_count": 937,
+      "kill_count": 1050,
+      "combat_loss_ratio": 0.89,
+      "survivability_rating": 53,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 211 - TIMELINE ENTRY] Introduced as Sustained Linebreaker & Grunt Backbone. Production batch: 3348 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_gha_07g_ironclad_trench",
@@ -261,7 +341,23 @@
         "GHA-07G Baseline Mud Fighter",
         "GHA-07G/CL Chemical Warfare Sealed Spec"
       ],
-      "reactor_power_mw": 1420
+      "reactor_power_mw": 1420,
+      "production_count": 4507,
+      "active_units": 3245,
+      "casualty_count": 1262,
+      "kill_count": 1396,
+      "combat_loss_ratio": 0.9,
+      "survivability_rating": 53,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Mud & Quagmire Assault Variant. Production batch: 4507 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_gha_07s_ironclad_space",
@@ -302,7 +398,23 @@
         "GHA-07S Orbital Sentry",
         "GHA-07S/HR High-Range Patrol with Auxiliary Tanks"
       ],
-      "reactor_power_mw": 1500
+      "reactor_power_mw": 1500,
+      "production_count": 4368,
+      "active_units": 3145,
+      "casualty_count": 1223,
+      "kill_count": 1638,
+      "combat_loss_ratio": 0.75,
+      "survivability_rating": 57,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Orbital Station & Dockyard Defense. Production batch: 4368 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_gha_07c_ironclad_commander",
@@ -343,7 +455,23 @@
         "GHA-07C Standard Officer Unit",
         "GHA-07C/HQ Regimental Flagship Frame"
       ],
-      "reactor_power_mw": 1550
+      "reactor_power_mw": 1550,
+      "production_count": 4334,
+      "active_units": 3120,
+      "casualty_count": 1214,
+      "kill_count": 1625,
+      "combat_loss_ratio": 0.75,
+      "survivability_rating": 57,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Squad Command & Fire Direction. Production batch: 4334 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_gha_07c_breaker_custom",
@@ -383,7 +511,23 @@
       "variants": [
         "GHA-07C/AC 'Breaker Custom' (Unique Machine)"
       ],
-      "reactor_power_mw": 1700
+      "reactor_power_mw": 1700,
+      "production_count": 4773,
+      "active_units": 3437,
+      "casualty_count": 1336,
+      "kill_count": 1157,
+      "combat_loss_ratio": 1.15,
+      "survivability_rating": 46,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Marcus Cole Ace Linebreaker. Production batch: 4773 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_tca_09_deadeye_custom",
@@ -423,7 +567,23 @@
       "variants": [
         "TCA-09 'Dead-Eye' Vanguard Custom (Unique Machine)"
       ],
-      "reactor_power_mw": 1650
+      "reactor_power_mw": 1650,
+      "production_count": 4550,
+      "active_units": 3276,
+      "casualty_count": 1274,
+      "kill_count": 1688,
+      "combat_loss_ratio": 0.75,
+      "survivability_rating": 57,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Elena Rostova Railgun Sniper. Production batch: 4550 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_gha_07b_siegebreaker",
@@ -464,7 +624,23 @@
         "GHA-07B Standard Siege Breaker",
         "GHA-07B2 Twin Mortar Variant"
       ],
-      "reactor_power_mw": 1600
+      "reactor_power_mw": 1600,
+      "production_count": 3342,
+      "active_units": 2406,
+      "casualty_count": 936,
+      "kill_count": 876,
+      "combat_loss_ratio": 1.07,
+      "survivability_rating": 48,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Bunker Penetration & Heavy Artillery Support. Production batch: 3342 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_gha_08_flak_colossus",
@@ -505,7 +681,23 @@
         "GHA-08 Air Defense Base",
         "GHA-08M Micro-Rocket Saturation Refit"
       ],
-      "reactor_power_mw": 1750
+      "reactor_power_mw": 1750,
+      "production_count": 4308,
+      "active_units": 3102,
+      "casualty_count": 1206,
+      "kill_count": 1112,
+      "combat_loss_ratio": 1.08,
+      "survivability_rating": 48,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 214 - TIMELINE ENTRY] Introduced as Mobile Air-Defense & Anti-Vernier Platform. Production batch: 4308 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_tcx_11_behemoth",
@@ -546,7 +738,23 @@
         "TCX-11 Behemoth Mk.IV",
         "TCX-11B Orbital Interdiction Battery Prototype"
       ],
-      "reactor_power_mw": 2200
+      "reactor_power_mw": 2200,
+      "production_count": 4665,
+      "active_units": 3359,
+      "casualty_count": 1306,
+      "kill_count": 1504,
+      "combat_loss_ratio": 0.87,
+      "survivability_rating": 54,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 215 - TIMELINE ENTRY] Introduced as Quadrupedal Super-Heavy Railgun Platform. Production batch: 4665 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_oc_x02_zephyr",
@@ -586,7 +794,23 @@
         "OC-X02 Zephyr Zero (Prototype)",
         "OC-X02B Automated Drone Testbed"
       ],
-      "reactor_power_mw": 950
+      "reactor_power_mw": 950,
+      "production_count": 2206,
+      "active_units": 772,
+      "casualty_count": 1434,
+      "kill_count": 1687,
+      "combat_loss_ratio": 0.85,
+      "survivability_rating": 54,
+      "adoption_status": "phased_out",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 205 - TIMELINE ENTRY] Introduced as High-G Vacuum Vernier Testbed. Production batch: 2206 units. Status: PHASED_OUT."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_oc_x08_icarus",
@@ -626,7 +850,23 @@
         "OC-X08 'Icarus' Prototype 1",
         "OC-X08B Static Laboratory Rig"
       ],
-      "reactor_power_mw": 1150
+      "reactor_power_mw": 1150,
+      "production_count": 2981,
+      "active_units": 2146,
+      "casualty_count": 835,
+      "kill_count": 1064,
+      "combat_loss_ratio": 0.78,
+      "survivability_rating": 56,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 210 - TIMELINE ENTRY] Introduced as Solar-Sail Energy Failure (Failed Prototype). Production batch: 2981 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_ocx_13_chrysalis",
@@ -666,7 +906,23 @@
         "OCX-13 Chrysalis Flight Test 1",
         "OCX-13 Chrysalis Armed Spec"
       ],
-      "reactor_power_mw": 1400
+      "reactor_power_mw": 1400,
+      "production_count": 3034,
+      "active_units": 2184,
+      "casualty_count": 850,
+      "kill_count": 1081,
+      "combat_loss_ratio": 0.79,
+      "survivability_rating": 56,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 214 - TIMELINE ENTRY] Introduced as Ultra-Light Nanoweave Boondoggle (Failed Prototype). Production batch: 3034 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_ocm_04_sylph",
@@ -708,7 +964,23 @@
         "OCM-04R Reconnaissance Pod Type",
         "OCM-04C Flight Leader"
       ],
-      "reactor_power_mw": 1200
+      "reactor_power_mw": 1200,
+      "production_count": 1557,
+      "active_units": 545,
+      "casualty_count": 1012,
+      "kill_count": 921,
+      "combat_loss_ratio": 1.1,
+      "survivability_rating": 48,
+      "adoption_status": "phased_out",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 208 - TIMELINE ENTRY] Introduced as Light Orbital Interceptor Grunt. Production batch: 1557 units. Status: PHASED_OUT."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_ocm_09_aether",
@@ -752,7 +1024,23 @@
         "OCM-09C Flight Leader",
         "OCM-09R Nightshade"
       ],
-      "reactor_power_mw": 1600
+      "reactor_power_mw": 1600,
+      "production_count": 2623,
+      "active_units": 1889,
+      "casualty_count": 734,
+      "kill_count": 832,
+      "combat_loss_ratio": 0.88,
+      "survivability_rating": 53,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 211 - TIMELINE ENTRY] Introduced as High-Mobility Space Dominance Grunt. Production batch: 2623 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_ocm_09g_aether_lander",
@@ -793,7 +1081,23 @@
         "OCM-09G Strike Lander Base",
         "OCM-09G/HV Heavy Desert Assault Type"
       ],
-      "reactor_power_mw": 1580
+      "reactor_power_mw": 1580,
+      "production_count": 3283,
+      "active_units": 2364,
+      "casualty_count": 919,
+      "kill_count": 988,
+      "combat_loss_ratio": 0.93,
+      "survivability_rating": 52,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Planetary Atmospheric Assault Grunt. Production batch: 3283 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_ocm_09s_aether_patrol",
@@ -834,7 +1138,23 @@
         "OCM-09S Deep Patrol Standard",
         "OCM-09S/ER Extended Range Tanker"
       ],
-      "reactor_power_mw": 1650
+      "reactor_power_mw": 1650,
+      "production_count": 3391,
+      "active_units": 2442,
+      "casualty_count": 949,
+      "kill_count": 944,
+      "combat_loss_ratio": 1.01,
+      "survivability_rating": 50,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Zero-G Long-Range Patrol Grunt. Production batch: 3391 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_ocm_09c_aether_leader",
@@ -875,7 +1195,23 @@
         "OCM-09C Flight Leader Base",
         "OCM-09C/EW Electronic Decoy Leader"
       ],
-      "reactor_power_mw": 1720
+      "reactor_power_mw": 1720,
+      "production_count": 2243,
+      "active_units": 1615,
+      "casualty_count": 628,
+      "kill_count": 703,
+      "combat_loss_ratio": 0.89,
+      "survivability_rating": 53,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Squadron Command & Tactical Data-Link. Production batch: 2243 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_ocm_09s_phantom_custom",
@@ -915,7 +1251,23 @@
       "variants": [
         "OCM-09S/GT 'Starlight Phantom' (Unique Custom)"
       ],
-      "reactor_power_mw": 1850
+      "reactor_power_mw": 1850,
+      "production_count": 3828,
+      "active_units": 2756,
+      "casualty_count": 1072,
+      "kill_count": 1376,
+      "combat_loss_ratio": 0.78,
+      "survivability_rating": 56,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Sorren Lin Ace Interceptor. Production batch: 3828 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_ocm_09r_nightshade",
@@ -956,7 +1308,23 @@
         "OCM-09R Nightshade Standard",
         "OCM-09R/ECM Ghost Signal Specialist"
       ],
-      "reactor_power_mw": 1700
+      "reactor_power_mw": 1700,
+      "production_count": 3381,
+      "active_units": 2434,
+      "casualty_count": 947,
+      "kill_count": 1148,
+      "combat_loss_ratio": 0.82,
+      "survivability_rating": 55,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Electronic Warfare & Deep Recon Sniper. Production batch: 3381 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_ocm_10_aegis_seraph",
@@ -996,7 +1364,23 @@
       "variants": [
         "OCM-10 'Aegis Seraph' (Unique Prototype)"
       ],
-      "reactor_power_mw": 1800
+      "reactor_power_mw": 1800,
+      "production_count": 3987,
+      "active_units": 2871,
+      "casualty_count": 1116,
+      "kill_count": 1005,
+      "combat_loss_ratio": 1.11,
+      "survivability_rating": 47,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Kira Dahl EW Command Frame. Production batch: 3987 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_oca_07_helios_arbalest",
@@ -1037,7 +1421,23 @@
         "OCA-07 Helios Arbalest Standard",
         "OCA-07B Heavy Radiator Carrier"
       ],
-      "reactor_power_mw": 1950
+      "reactor_power_mw": 1950,
+      "production_count": 4462,
+      "active_units": 3213,
+      "casualty_count": 1249,
+      "kill_count": 1420,
+      "combat_loss_ratio": 0.88,
+      "survivability_rating": 53,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Long-Range Particle Siege Artillery. Production batch: 4462 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_oca_11_starlight_barrage",
@@ -1078,7 +1478,23 @@
         "OCA-11 Starlight Barrage Standard",
         "OCA-11P Precision Guidance Refit"
       ],
-      "reactor_power_mw": 1780
+      "reactor_power_mw": 1780,
+      "production_count": 4026,
+      "active_units": 2899,
+      "casualty_count": 1127,
+      "kill_count": 1450,
+      "combat_loss_ratio": 0.78,
+      "survivability_rating": 56,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 214 - TIMELINE ENTRY] Introduced as Micro-Missile Saturation Battery. Production batch: 4026 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_ocx_15_seraphim",
@@ -1119,7 +1535,23 @@
         "OCX-15 Seraphim Trans-Am Prototype",
         "OCX-15B Autonomous Synchronizer"
       ],
-      "reactor_power_mw": 2400
+      "reactor_power_mw": 2400,
+      "production_count": 2991,
+      "active_units": 2154,
+      "casualty_count": 837,
+      "kill_count": 922,
+      "combat_loss_ratio": 0.91,
+      "survivability_rating": 52,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 215 - TIMELINE ENTRY] Introduced as Supercritical Particle Surge Dominator. Production batch: 2991 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scx_00_rustbucket",
@@ -1159,7 +1591,23 @@
         "SCX-00 Rust-Bucket Baseline",
         "SCX-00B Armed Rockbreaker"
       ],
-      "reactor_power_mw": 720
+      "reactor_power_mw": 720,
+      "production_count": 1446,
+      "active_units": 506,
+      "casualty_count": 940,
+      "kill_count": 1049,
+      "combat_loss_ratio": 0.9,
+      "survivability_rating": 53,
+      "adoption_status": "phased_out",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 205 - TIMELINE ENTRY] Introduced as Scrap-Welded Mining Demolition Rig. Production batch: 1446 units. Status: PHASED_OUT."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scx_07_widowmaker",
@@ -1198,7 +1646,23 @@
       "variants": [
         "SCX-07 'Widowmaker' Testbed (Abandoned in Mine Shaft)"
       ],
-      "reactor_power_mw": 1400
+      "reactor_power_mw": 1400,
+      "production_count": 811,
+      "active_units": 284,
+      "casualty_count": 527,
+      "kill_count": 459,
+      "combat_loss_ratio": 1.15,
+      "survivability_rating": 47,
+      "adoption_status": "phased_out",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 209 - TIMELINE ENTRY] Introduced as Unshielded Overclocked Reactor Hazard (Failed Prototype). Production batch: 811 units. Status: PHASED_OUT."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scx_14_goliath_slag",
@@ -1237,7 +1701,23 @@
       "variants": [
         "SCX-14 Goliath-Slag (Prototype Drifted in Vacuum)"
       ],
-      "reactor_power_mw": 1350
+      "reactor_power_mw": 1350,
+      "production_count": 4025,
+      "active_units": 2898,
+      "casualty_count": 1127,
+      "kill_count": 978,
+      "combat_loss_ratio": 1.15,
+      "survivability_rating": 46,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Four-Armed Hydraulic Disaster (Failed Prototype). Production batch: 4025 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scr_05_marauder",
@@ -1279,7 +1759,23 @@
         "SCR-05B Breacher with Hull Saws",
         "SCR-05K Belt Gunner"
       ],
-      "reactor_power_mw": 1050
+      "reactor_power_mw": 1050,
+      "production_count": 975,
+      "active_units": 341,
+      "casualty_count": 634,
+      "kill_count": 540,
+      "combat_loss_ratio": 1.17,
+      "survivability_rating": 46,
+      "adoption_status": "phased_out",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 208 - TIMELINE ENTRY] Introduced as Close-Quarters Pirate Raider Grunt. Production batch: 975 units. Status: PHASED_OUT."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scr_12_hyena",
@@ -1323,7 +1819,23 @@
         "SCR-12L Reaver Boss",
         "SCR-12B Grappler Reaver"
       ],
-      "reactor_power_mw": 1380
+      "reactor_power_mw": 1380,
+      "production_count": 2432,
+      "active_units": 1751,
+      "casualty_count": 681,
+      "kill_count": 723,
+      "combat_loss_ratio": 0.94,
+      "survivability_rating": 51,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 211 - TIMELINE ENTRY] Introduced as Asymmetric Heavy Scavenger & Pirate Grunt. Production batch: 2432 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scr_12d_hyena_breacher",
@@ -1364,7 +1876,23 @@
         "SCR-12D Demolition Type",
         "SCR-12D/TH Heavy Thermite Rig"
       ],
-      "reactor_power_mw": 1350
+      "reactor_power_mw": 1350,
+      "production_count": 4318,
+      "active_units": 3109,
+      "casualty_count": 1209,
+      "kill_count": 1071,
+      "combat_loss_ratio": 1.13,
+      "survivability_rating": 47,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Hull-Melting Assault Grunt. Production batch: 4318 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scr_12k_hyena_gunner",
@@ -1405,7 +1933,23 @@
         "SCR-12K Hollow Gunner Base",
         "SCR-12K/SN Sniper Refit with Bipod"
       ],
-      "reactor_power_mw": 1420
+      "reactor_power_mw": 1420,
+      "production_count": 2547,
+      "active_units": 1834,
+      "casualty_count": 713,
+      "kill_count": 703,
+      "combat_loss_ratio": 1.01,
+      "survivability_rating": 50,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Belt Long-Range Fire Support Grunt. Production batch: 2547 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scr_12l_hyena_boss",
@@ -1446,7 +1990,23 @@
         "SCR-12L Reaver Boss Base",
         "SCR-12L/MK 'Skull-Cowl' Custom"
       ],
-      "reactor_power_mw": 1500
+      "reactor_power_mw": 1500,
+      "production_count": 4097,
+      "active_units": 2950,
+      "casualty_count": 1147,
+      "kill_count": 1400,
+      "combat_loss_ratio": 0.82,
+      "survivability_rating": 55,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Pirate Gang Leader Flagship. Production batch: 4097 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scr_12t_dread_harvester",
@@ -1486,7 +2046,23 @@
       "variants": [
         "SCR-12T 'Dread Harvester' (Unique Flagship)"
       ],
-      "reactor_power_mw": 1650
+      "reactor_power_mw": 1650,
+      "production_count": 4104,
+      "active_units": 2955,
+      "casualty_count": 1149,
+      "kill_count": 1494,
+      "combat_loss_ratio": 0.77,
+      "survivability_rating": 57,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as 'Iron-Eye' Torval Boarding Terror. Production batch: 4104 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scr_12s_rust_spark",
@@ -1526,7 +2102,23 @@
       "variants": [
         "SCR-12S 'Rust Spark' (Unique Custom)"
       ],
-      "reactor_power_mw": 1580
+      "reactor_power_mw": 1580,
+      "production_count": 3710,
+      "active_units": 2671,
+      "casualty_count": 1039,
+      "kill_count": 1380,
+      "combat_loss_ratio": 0.75,
+      "survivability_rating": 57,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Nadia Ortiz Tuned Scrap Brawler. Production batch: 3710 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scr_12b_grappler",
@@ -1567,7 +2159,23 @@
         "SCR-12B Grappler Reaver Standard",
         "SCR-12B/TR Trapper Variant"
       ],
-      "reactor_power_mw": 1520
+      "reactor_power_mw": 1520,
+      "production_count": 3128,
+      "active_units": 2252,
+      "casualty_count": 876,
+      "kill_count": 1133,
+      "combat_loss_ratio": 0.77,
+      "survivability_rating": 56,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as High-Speed Hull Breacher & Pilot Snatcher. Production batch: 3128 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_sca_14_slag_lobber",
@@ -1608,7 +2216,23 @@
         "SCA-14 Slag-Lobber Base",
         "SCA-14/TH Thermite Geyser Variant"
       ],
-      "reactor_power_mw": 1450
+      "reactor_power_mw": 1450,
+      "production_count": 2368,
+      "active_units": 1705,
+      "casualty_count": 663,
+      "kill_count": 702,
+      "combat_loss_ratio": 0.94,
+      "survivability_rating": 51,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Converted Incendiary Slag Mortar. Production batch: 2368 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_sca_08_junk_mortar",
@@ -1648,7 +2272,23 @@
         "SCA-08 Junk-Mortar Barge Standard",
         "SCA-08B Quad-Tube Barge"
       ],
-      "reactor_power_mw": 1180
+      "reactor_power_mw": 1180,
+      "production_count": 4499,
+      "active_units": 3239,
+      "casualty_count": 1260,
+      "kill_count": 1217,
+      "combat_loss_ratio": 1.04,
+      "survivability_rating": 49,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 210 - TIMELINE ENTRY] Introduced as Multi-Tube Shrapnel Bombardier. Production batch: 4499 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_scx_19_chimera",
@@ -1688,7 +2328,23 @@
       "variants": [
         "SCX-19 Chimera Apex Prototype (Single Existing Unit)"
       ],
-      "reactor_power_mw": 2100
+      "reactor_power_mw": 2100,
+      "production_count": 2375,
+      "active_units": 1710,
+      "casualty_count": 665,
+      "kill_count": 892,
+      "combat_loss_ratio": 0.75,
+      "survivability_rating": 57,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 215 - TIMELINE ENTRY] Introduced as Illegal Hybrid Dreadnought Brawler. Production batch: 2375 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zx_01_synapse",
@@ -1728,7 +2384,23 @@
         "ZX-01 Synapse Testbed 1",
         "ZX-01B Filtered Neural Testbed 2"
       ],
-      "reactor_power_mw": 980
+      "reactor_power_mw": 980,
+      "production_count": 2225,
+      "active_units": 779,
+      "casualty_count": 1446,
+      "kill_count": 1679,
+      "combat_loss_ratio": 0.86,
+      "survivability_rating": 54,
+      "adoption_status": "phased_out",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 205 - TIMELINE ENTRY] Introduced as Spinal Neural-Link Man-Machine Testbed. Production batch: 2225 units. Status: PHASED_OUT."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zx_09_mind_eater",
@@ -1767,7 +2439,23 @@
       "variants": [
         "ZX-09 'Mind-Eater' Prototype (Purged from Company Records)"
       ],
-      "reactor_power_mw": 1250
+      "reactor_power_mw": 1250,
+      "production_count": 3453,
+      "active_units": 2486,
+      "casualty_count": 967,
+      "kill_count": 1025,
+      "combat_loss_ratio": 0.94,
+      "survivability_rating": 51,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 210 - TIMELINE ENTRY] Introduced as Fatal Neural Feedback Disaster (Failed Prototype). Production batch: 3453 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zx_14_phantom_shiva",
@@ -1806,7 +2494,23 @@
       "variants": [
         "ZX-14 Phantom-Shiva Prototype (Dismantled After 48 Hours)"
       ],
-      "reactor_power_mw": 1550
+      "reactor_power_mw": 1550,
+      "production_count": 4223,
+      "active_units": 3041,
+      "casualty_count": 1182,
+      "kill_count": 1468,
+      "combat_loss_ratio": 0.81,
+      "survivability_rating": 55,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Six-Armed Neural Overdose Disaster (Failed Prototype). Production batch: 4223 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zm_06_ronin",
@@ -1848,7 +2552,23 @@
         "ZM-06B Black-Ops Spec",
         "ZM-06C Executive Guard"
       ],
-      "reactor_power_mw": 1300
+      "reactor_power_mw": 1300,
+      "production_count": 2271,
+      "active_units": 795,
+      "casualty_count": 1476,
+      "kill_count": 1324,
+      "combat_loss_ratio": 1.11,
+      "survivability_rating": 47,
+      "adoption_status": "phased_out",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 208 - TIMELINE ENTRY] Introduced as Corporate Security Duellist Grunt. Production batch: 2271 units. Status: PHASED_OUT."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zm_11_muramasa",
@@ -1892,7 +2612,23 @@
         "ZM-11H Riot Suppressor",
         "ZM-11D Kage Drone Carrier"
       ],
-      "reactor_power_mw": 1750
+      "reactor_power_mw": 1750,
+      "production_count": 4556,
+      "active_units": 3280,
+      "casualty_count": 1276,
+      "kill_count": 1600,
+      "combat_loss_ratio": 0.8,
+      "survivability_rating": 56,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 211 - TIMELINE ENTRY] Introduced as Stealth Precision Corporate Grunt. Production batch: 4556 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zm_11b_muramasa_infiltrator",
@@ -1933,7 +2669,23 @@
         "ZM-11B Infiltrator Standard",
         "ZM-11B/SO Sub-Orbital Ghost Spec"
       ],
-      "reactor_power_mw": 1700
+      "reactor_power_mw": 1700,
+      "production_count": 2755,
+      "active_units": 1984,
+      "casualty_count": 771,
+      "kill_count": 1015,
+      "combat_loss_ratio": 0.76,
+      "survivability_rating": 57,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Black-Ops Radar-Absorbent Grunt. Production batch: 2755 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zm_11c_muramasa_escort",
@@ -1974,7 +2726,23 @@
         "ZM-11C Executive Escort Base",
         "ZM-11C/PR Presidential Guard Unit"
       ],
-      "reactor_power_mw": 1820
+      "reactor_power_mw": 1820,
+      "production_count": 2520,
+      "active_units": 1814,
+      "casualty_count": 706,
+      "kill_count": 741,
+      "combat_loss_ratio": 0.95,
+      "survivability_rating": 51,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as High-Spec VIP Guard Frame. Production batch: 2520 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zm_11h_muramasa_riot",
@@ -2015,7 +2783,23 @@
         "ZM-11H Riot Suppressor Standard",
         "ZM-11H/CR Crowd Containment Rig"
       ],
-      "reactor_power_mw": 1680
+      "reactor_power_mw": 1680,
+      "production_count": 4635,
+      "active_units": 3337,
+      "casualty_count": 1298,
+      "kill_count": 1678,
+      "combat_loss_ratio": 0.77,
+      "survivability_rating": 56,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 212 - TIMELINE ENTRY] Introduced as Non-Lethal Corporate Riot Grunt. Production batch: 4635 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zx_11x_neuro_specter",
@@ -2055,7 +2839,23 @@
       "variants": [
         "ZX-11X 'Neuro-Specter' (Unique Custom)"
       ],
-      "reactor_power_mw": 1980
+      "reactor_power_mw": 1980,
+      "production_count": 3089,
+      "active_units": 2224,
+      "casualty_count": 865,
+      "kill_count": 971,
+      "combat_loss_ratio": 0.89,
+      "survivability_rating": 53,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Null-07 Neural Feedback Duelist. Production batch: 3089 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zm_11k_kestrel_prime",
@@ -2095,7 +2895,23 @@
       "variants": [
         "ZM-11K 'Kestrel Prime' (Unique Custom)"
       ],
-      "reactor_power_mw": 1880
+      "reactor_power_mw": 1880,
+      "production_count": 2873,
+      "active_units": 2069,
+      "casualty_count": 804,
+      "kill_count": 895,
+      "combat_loss_ratio": 0.9,
+      "survivability_rating": 53,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Maya Zhao High-Mobility Command Unit. Production batch: 2873 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zma_15_raiden",
@@ -2136,7 +2952,23 @@
         "ZMA-15 Raiden Standard",
         "ZMA-15B Orbital Interdiction Battery"
       ],
-      "reactor_power_mw": 1920
+      "reactor_power_mw": 1920,
+      "production_count": 2264,
+      "active_units": 1630,
+      "casualty_count": 634,
+      "kill_count": 578,
+      "combat_loss_ratio": 1.1,
+      "survivability_rating": 48,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Precision Railgun Sniper Platform. Production batch: 2264 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zm_11d_kage",
@@ -2177,7 +3009,23 @@
         "ZM-11D Kage Drone Carrier Standard",
         "ZM-11D/SW Swarm Commander Refit"
       ],
-      "reactor_power_mw": 1850
+      "reactor_power_mw": 1850,
+      "production_count": 3374,
+      "active_units": 2429,
+      "casualty_count": 945,
+      "kill_count": 1025,
+      "combat_loss_ratio": 0.92,
+      "survivability_rating": 52,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 213 - TIMELINE ENTRY] Introduced as Autonomous Sub-Drone Coordinator & Sensor Ghost. Production batch: 3374 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     },
     {
       "id": "ms_zx_22_susanoo",
@@ -2218,7 +3066,23 @@
         "ZX-22 Susanoo Cyber-Drive (Flagship Prototype)",
         "ZX-22B Automated Pre-Cognitive Core"
       ],
-      "reactor_power_mw": 2500
+      "reactor_power_mw": 2500,
+      "production_count": 3025,
+      "active_units": 2178,
+      "casualty_count": 847,
+      "kill_count": 854,
+      "combat_loss_ratio": 0.99,
+      "survivability_rating": 50,
+      "adoption_status": "standard_issue",
+      "replaced_by": "",
+      "adoption_turn": 0,
+      "dynamic_lore_chronicle": [
+        "[Year 215 - TIMELINE ENTRY] Introduced as Hyper-Cognitive Transhuman Dominance Frame. Production batch: 3025 units. Status: STANDARD_ISSUE."
+      ],
+      "primary_theaters": [
+        "Historical Campaign Arc",
+        "Colonial Reclamation Sector"
+      ]
     }
   ]
 }

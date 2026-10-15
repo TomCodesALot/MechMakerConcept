@@ -1344,6 +1344,14 @@ award_procurement_contract = function(_faction_id, _mech, _trial_result) {
     _mp.active_frontline_units = 0;
     _mp.block_level = _is_upgrade ? min(3, _mp.block_level + 1) : 1;
 
+    // Dynamic Lore & Global Stats Tracking in obj_BlueprintManager (docs/35)
+    if (instance_exists(obj_BlueprintManager)) {
+        var _base_suit_id = _mp.baseline_suit_id;
+        obj_BlueprintManager.record_suit_replacement(_base_suit_id, _mech.name, true, _faction_id);
+        var _new_bid = _mech[$ "blueprint_id"] ?? (_mech[$ "id"] ?? "bp_custom");
+        obj_BlueprintManager.record_suit_adoption(_new_bid, _faction_id, _mech.name, true, 1500);
+    }
+
     // Register Blueprint Weakness in obj_GameManager (Arms Dealer Paradox - docs/25)
     if (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "register_exported_blueprint_weakness")) {
         obj_GameManager.register_exported_blueprint_weakness(_mp.replacement_blueprint_id, _mech.name);

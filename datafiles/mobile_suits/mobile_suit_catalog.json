@@ -24,7 +24,28 @@
       82,
       68
     ],
-    "lore": "The legendary backbone of Earth defense, capable of surviving orbital bombardment."
+    "lore": "The legendary backbone of Earth defense, capable of surviving orbital bombardment.",
+    "historical_lore": "Designed during the Second Resource Scramble by Valkyrie Heavy Industries, the GHA-07 Ironclad became the defining symbol of Terran planetary defense. Commissioned under the Baikal Directive, its blueprint favored brutal monolithic cast-tungsten front armor capable of withstanding direct kinetic artillery strikes while rolling forward at deliberate, crushing speeds.",
+    "manufacturing_quirks": "The immense mass of the frontal tungsten cowl causes persistent hydraulic wear in the forward knee joints; field mechanics frequently replace sheared titanium pins after less than 40 hours of trench combat.",
+    "battlefield_reputation": "Terran infantry revere the suit as 'The Moving Wall', while enemy pilots dread closing within range of its 120mm rifled cannon, which can crack light skirmisher cockpits with a single clean kinetic impact.",
+    "doctrine_summary": "Frontline kinetic attrition anchor and heavy trench breakthrough platform.",
+    "production_count": 4820,
+    "active_units": 3140,
+    "casualty_count": 1680,
+    "kill_count": 2490,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Baikal Trench Line",
+      "Low Earth Orbit Staging",
+      "Mare Imbrium Basin"
+    ],
+    "combat_loss_ratio": 0.67,
+    "survivability_rating": 60,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 4,820 units manufactured (3,140 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_terran_ballista_04": {
     "id": "ms_terran_ballista_04",
@@ -51,7 +72,28 @@
       75,
       60
     ],
-    "lore": "Quadruped heavy fire platform designed to saturate hostile trenches from over the horizon."
+    "lore": "Quadruped heavy fire platform designed to saturate hostile trenches from over the horizon.",
+    "historical_lore": "TH-M04 Ballista was manufactured by Valkyrie Heavy Industries to fill the critical role of Siege Artillery. Developed at the Lake Baikal metallurgical complex during the height of the Lunar border disputes. Its structural design emphasizes sheer mass and redundant hydraulic circuitry, ensuring the machine remains operational even after catastrophic armor breaches across secondary limbs.",
+    "manufacturing_quirks": "Recoil forces from the primary heavy cannon shake loose cabin telemetry wiring harnesses; pilots are taught to kick the lower dashboard console to reset failing sensor readouts.",
+    "battlefield_reputation": "Mercenaries consider it the most reliable machine in the Sol system\u2014impossible to flip, impossible to crush, and simple enough to repair with scrap and an arc welder.",
+    "doctrine_summary": "Siege Artillery doctrine tailored for faction_a strategic objectives.",
+    "production_count": 4259,
+    "active_units": 2929,
+    "casualty_count": 1330,
+    "kill_count": 1560,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Ural Trench Network",
+      "Mare Crisium Crater",
+      "Kamchatka Defense Arc"
+    ],
+    "combat_loss_ratio": 0.85,
+    "survivability_rating": 54,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 4,259 units manufactured (2,929 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_terran_centurion_02": {
     "id": "ms_terran_centurion_02",
@@ -78,7 +120,28 @@
       76,
       60
     ],
-    "lore": "Aggressive shock assault unit built to smash through perimeter gates and fortified bunkers."
+    "lore": "Aggressive shock assault unit built to smash through perimeter gates and fortified bunkers.",
+    "historical_lore": "TH-C02 Centurion was manufactured by Valkyrie Heavy Industries to fill the critical role of Linebreaker Spearhead. Developed at the Lake Baikal metallurgical complex during the height of the Lunar border disputes. Its structural design emphasizes sheer mass and redundant hydraulic circuitry, ensuring the machine remains operational even after catastrophic armor breaches across secondary limbs.",
+    "manufacturing_quirks": "Recoil forces from the primary heavy cannon shake loose cabin telemetry wiring harnesses; pilots are taught to kick the lower dashboard console to reset failing sensor readouts.",
+    "battlefield_reputation": "Known affectionately by ground grunts as 'The Iron Wall' and cursed by rookie pilots as a brutal, unforgiving machine that punishes over-eager maneuvering.",
+    "doctrine_summary": "Linebreaker Spearhead doctrine tailored for faction_a strategic objectives.",
+    "production_count": 3137,
+    "active_units": 2585,
+    "casualty_count": 552,
+    "kill_count": 643,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Gobi Desert Proving Grounds",
+      "Pacific Floating Hub",
+      "Sub-Orbital Drop Corridors"
+    ],
+    "combat_loss_ratio": 0.86,
+    "survivability_rating": 54,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 3,137 units manufactured (2,585 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_terran_trenchcoat_09": {
     "id": "ms_terran_trenchcoat_09",
@@ -105,7 +168,28 @@
       58,
       64
     ],
-    "lore": "Specialized close-quarters brawler renowned for lethal room-clearing inside domed cities."
+    "lore": "Specialized close-quarters brawler renowned for lethal room-clearing inside domed cities.",
+    "historical_lore": "TH-T09 Trenchcoat was manufactured by Valkyrie Heavy Industries to fill the critical role of CQB Grunt Brawler. Developed at the Lake Baikal metallurgical complex during the height of the Lunar border disputes. Its structural design emphasizes sheer mass and redundant hydraulic circuitry, ensuring the machine remains operational even after catastrophic armor breaches across secondary limbs.",
+    "manufacturing_quirks": "The main diesel-fusion boiler vents dense superheated steam through dorsal baffles, creating a distinctive thermal plume that infrared scanners can track for kilometers.",
+    "battlefield_reputation": "Known affectionately by ground grunts as 'The Iron Wall' and cursed by rookie pilots as a brutal, unforgiving machine that punishes over-eager maneuvering.",
+    "doctrine_summary": "CQB Grunt Brawler doctrine tailored for faction_a strategic objectives.",
+    "production_count": 3872,
+    "active_units": 2864,
+    "casualty_count": 1008,
+    "kill_count": 1384,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Baikal Redoubt",
+      "Copernicus Lunar Base",
+      "Low Earth Orbit Fortress Rings"
+    ],
+    "combat_loss_ratio": 0.73,
+    "survivability_rating": 58,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 3,872 units manufactured (2,864 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_terran_bulwark_03": {
     "id": "ms_terran_bulwark_03",
@@ -132,7 +216,28 @@
       78,
       65
     ],
-    "lore": "Early pre-war line guard with thick cast armor."
+    "lore": "Early pre-war line guard with thick cast armor.",
+    "historical_lore": "TCM-03 Bulwark was manufactured by Valkyrie Heavy Industries to fill the critical role of Line Defense. Commissioned under the Terran Military Council to fortify Earth's planetary perimeter against insurgent fleets. Valkyrie Heavy Industries opted for heavy layered composite alloy armor, heavy diesel-fusion thermal turbines, and high-caliber rifled ballistics capable of holding entrenched ground redoubts under continuous orbital bombardments.",
+    "manufacturing_quirks": "Coolant lines in the hip joints are prone to freezing in sub-zero lunar or Siberian conditions, requiring grease monkeys to pre-heat the limbs with plasma torches before morning sorties.",
+    "battlefield_reputation": "Opposing Colony skirmishers mock its sluggish ground pace until its 120mm solid shot punches through their light aerosteel bulkheads at extreme ranges.",
+    "doctrine_summary": "Line Defense doctrine tailored for faction_a strategic objectives.",
+    "production_count": 1081,
+    "active_units": 841,
+    "casualty_count": 240,
+    "kill_count": 319,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Ural Trench Network",
+      "Mare Crisium Crater",
+      "Kamchatka Defense Arc"
+    ],
+    "combat_loss_ratio": 0.75,
+    "survivability_rating": 57,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,081 units manufactured (841 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_vanguard_01": {
     "id": "ms_terran_vanguard_01",
@@ -159,7 +264,28 @@
       88,
       72
     ],
-    "lore": "Forward artillery spotter and fast border patrol."
+    "lore": "Forward artillery spotter and fast border patrol.",
+    "historical_lore": "TCM-01 Vanguard Scout was manufactured by Valkyrie Heavy Industries to fill the critical role of Recon Scout. Commissioned under the Terran Military Council to fortify Earth's planetary perimeter against insurgent fleets. Valkyrie Heavy Industries opted for heavy layered composite alloy armor, heavy diesel-fusion thermal turbines, and high-caliber rifled ballistics capable of holding entrenched ground redoubts under continuous orbital bombardments.",
+    "manufacturing_quirks": "Coolant lines in the hip joints are prone to freezing in sub-zero lunar or Siberian conditions, requiring grease monkeys to pre-heat the limbs with plasma torches before morning sorties.",
+    "battlefield_reputation": "Opposing Colony skirmishers mock its sluggish ground pace until its 120mm solid shot punches through their light aerosteel bulkheads at extreme ranges.",
+    "doctrine_summary": "Recon Scout doctrine tailored for faction_a strategic objectives.",
+    "production_count": 765,
+    "active_units": 514,
+    "casualty_count": 251,
+    "kill_count": 385,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Ural Trench Network",
+      "Mare Crisium Crater",
+      "Kamchatka Defense Arc"
+    ],
+    "combat_loss_ratio": 0.65,
+    "survivability_rating": 61,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 765 units manufactured (514 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_vance_custom": {
     "id": "ms_terran_vance_custom",
@@ -186,7 +312,28 @@
       105,
       85
     ],
-    "lore": "Personal flagship of Cmdr. Marcus Vance with enhanced comms."
+    "lore": "Personal flagship of Cmdr. Marcus Vance with enhanced comms.",
+    "historical_lore": "GHA-07C Ironclad Commander was manufactured by Valkyrie Heavy Industries to fill the critical role of Commander Custom. Designed by Ural Defense Dynamics as a counter to agile zero-gravity Colony incursions. The chassis integrates reinforced recoil dampeners and heavy kinetic armor plating, sacrificing top-speed maneuverability for unyielding structural integrity.",
+    "manufacturing_quirks": "Coolant lines in the hip joints are prone to freezing in sub-zero lunar or Siberian conditions, requiring grease monkeys to pre-heat the limbs with plasma torches before morning sorties.",
+    "battlefield_reputation": "Known affectionately by ground grunts as 'The Iron Wall' and cursed by rookie pilots as a brutal, unforgiving machine that punishes over-eager maneuvering.",
+    "doctrine_summary": "Commander Custom doctrine tailored for faction_a strategic objectives.",
+    "production_count": 173,
+    "active_units": 132,
+    "casualty_count": 41,
+    "kill_count": 191,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Ural Trench Network",
+      "Mare Crisium Crater",
+      "Kamchatka Defense Arc"
+    ],
+    "combat_loss_ratio": 0.21,
+    "survivability_rating": 82,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 173 units manufactured (132 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_terran_firefly_05": {
     "id": "ms_terran_firefly_05",
@@ -213,7 +360,28 @@
       92,
       70
     ],
-    "lore": "Fast skirmisher operating in flanking pincers."
+    "lore": "Fast skirmisher operating in flanking pincers.",
+    "historical_lore": "TH-F05 Firefly Flanker was manufactured by Valkyrie Heavy Industries to fill the critical role of Fast Flanker. Commissioned under the Terran Military Council to fortify Earth's planetary perimeter against insurgent fleets. Valkyrie Heavy Industries opted for heavy layered composite alloy armor, heavy diesel-fusion thermal turbines, and high-caliber rifled ballistics capable of holding entrenched ground redoubts under continuous orbital bombardments.",
+    "manufacturing_quirks": "Heavy frontal armor plates cause chronic stress fractures on forward knee actuator bearings during high-g descent landings; maintenance crews routinely reinforce the limb pins with field-welded tungsten rods.",
+    "battlefield_reputation": "Opposing Colony skirmishers mock its sluggish ground pace until its 120mm solid shot punches through their light aerosteel bulkheads at extreme ranges.",
+    "doctrine_summary": "Fast Flanker doctrine tailored for faction_a strategic objectives.",
+    "production_count": 691,
+    "active_units": 510,
+    "casualty_count": 181,
+    "kill_count": 304,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Baikal Redoubt",
+      "Copernicus Lunar Base",
+      "Low Earth Orbit Fortress Rings"
+    ],
+    "combat_loss_ratio": 0.6,
+    "survivability_rating": 63,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 691 units manufactured (510 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_ironclad_bastion_08": {
     "id": "ms_terran_ironclad_bastion_08",
@@ -240,7 +408,28 @@
       76,
       62
     ],
-    "lore": "Heavier evolution of the Ironclad designed to withstand naval railguns."
+    "lore": "Heavier evolution of the Ironclad designed to withstand naval railguns.",
+    "historical_lore": "GHA-08 Ironclad Bastion was manufactured by Valkyrie Heavy Industries to fill the critical role of Heavy Bastion. Designed by Ural Defense Dynamics as a counter to agile zero-gravity Colony incursions. The chassis integrates reinforced recoil dampeners and heavy kinetic armor plating, sacrificing top-speed maneuverability for unyielding structural integrity.",
+    "manufacturing_quirks": "Heavy frontal armor plates cause chronic stress fractures on forward knee actuator bearings during high-g descent landings; maintenance crews routinely reinforce the limb pins with field-welded tungsten rods.",
+    "battlefield_reputation": "Mercenaries consider it the most reliable machine in the Sol system\u2014impossible to flip, impossible to crush, and simple enough to repair with scrap and an arc welder.",
+    "doctrine_summary": "Heavy Bastion doctrine tailored for faction_a strategic objectives.",
+    "production_count": 798,
+    "active_units": 544,
+    "casualty_count": 254,
+    "kill_count": 258,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Baikal Redoubt",
+      "Copernicus Lunar Base",
+      "Low Earth Orbit Fortress Rings"
+    ],
+    "combat_loss_ratio": 0.98,
+    "survivability_rating": 50,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 798 units manufactured (544 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_centurion_assault_02": {
     "id": "ms_terran_centurion_assault_02",
@@ -267,7 +456,28 @@
       98,
       80
     ],
-    "lore": "Up-armored strike chassis optimized for orbital drop breaches."
+    "lore": "Up-armored strike chassis optimized for orbital drop breaches.",
+    "historical_lore": "VHI-02 Centurion Assault was manufactured by Valkyrie Heavy Industries to fill the critical role of Assault Striker. Designed by Ural Defense Dynamics as a counter to agile zero-gravity Colony incursions. The chassis integrates reinforced recoil dampeners and heavy kinetic armor plating, sacrificing top-speed maneuverability for unyielding structural integrity.",
+    "manufacturing_quirks": "The main diesel-fusion boiler vents dense superheated steam through dorsal baffles, creating a distinctive thermal plume that infrared scanners can track for kilometers.",
+    "battlefield_reputation": "Pilots nickname its cockpit 'The Iron Sarcophagus' because surviving a direct hit often leaves the hatches warped shut until extraction teams torch them open.",
+    "doctrine_summary": "Assault Striker doctrine tailored for faction_a strategic objectives.",
+    "production_count": 1409,
+    "active_units": 951,
+    "casualty_count": 458,
+    "kill_count": 565,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Ural Trench Network",
+      "Mare Crisium Crater",
+      "Kamchatka Defense Arc"
+    ],
+    "combat_loss_ratio": 0.81,
+    "survivability_rating": 55,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,409 units manufactured (951 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_siegebreaker_01": {
     "id": "ms_terran_siegebreaker_01",
@@ -294,7 +504,28 @@
       68,
       55
     ],
-    "lore": "Massive stationary bombardment mech used to reduce Jovian fortresses."
+    "lore": "Massive stationary bombardment mech used to reduce Jovian fortresses.",
+    "historical_lore": "TH-S01 Siegebreaker was manufactured by Valkyrie Heavy Industries to fill the critical role of Superheavy Artillery. Designed by Ural Defense Dynamics as a counter to agile zero-gravity Colony incursions. The chassis integrates reinforced recoil dampeners and heavy kinetic armor plating, sacrificing top-speed maneuverability for unyielding structural integrity.",
+    "manufacturing_quirks": "Recoil forces from the primary heavy cannon shake loose cabin telemetry wiring harnesses; pilots are taught to kick the lower dashboard console to reset failing sensor readouts.",
+    "battlefield_reputation": "Pilots nickname its cockpit 'The Iron Sarcophagus' because surviving a direct hit often leaves the hatches warped shut until extraction teams torch them open.",
+    "doctrine_summary": "Superheavy Artillery doctrine tailored for faction_a strategic objectives.",
+    "production_count": 1249,
+    "active_units": 950,
+    "casualty_count": 299,
+    "kill_count": 521,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Gobi Desert Proving Grounds",
+      "Pacific Floating Hub",
+      "Sub-Orbital Drop Corridors"
+    ],
+    "combat_loss_ratio": 0.57,
+    "survivability_rating": 64,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,249 units manufactured (950 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_demolisher_08": {
     "id": "ms_terran_demolisher_08",
@@ -321,7 +552,28 @@
       82,
       68
     ],
-    "lore": "Frontline combat engineering mech equipped to clear minefields."
+    "lore": "Frontline combat engineering mech equipped to clear minefields.",
+    "historical_lore": "TH-D08 Demolisher was manufactured by Valkyrie Heavy Industries to fill the critical role of Combat Engineer. Commissioned under the Terran Military Council to fortify Earth's planetary perimeter against insurgent fleets. Valkyrie Heavy Industries opted for heavy layered composite alloy armor, heavy diesel-fusion thermal turbines, and high-caliber rifled ballistics capable of holding entrenched ground redoubts under continuous orbital bombardments.",
+    "manufacturing_quirks": "Heavy frontal armor plates cause chronic stress fractures on forward knee actuator bearings during high-g descent landings; maintenance crews routinely reinforce the limb pins with field-welded tungsten rods.",
+    "battlefield_reputation": "Known affectionately by ground grunts as 'The Iron Wall' and cursed by rookie pilots as a brutal, unforgiving machine that punishes over-eager maneuvering.",
+    "doctrine_summary": "Combat Engineer doctrine tailored for faction_a strategic objectives.",
+    "production_count": 1093,
+    "active_units": 768,
+    "casualty_count": 325,
+    "kill_count": 499,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Ural Trench Network",
+      "Mare Crisium Crater",
+      "Kamchatka Defense Arc"
+    ],
+    "combat_loss_ratio": 0.65,
+    "survivability_rating": 61,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,093 units manufactured (768 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_warhammer_03": {
     "id": "ms_terran_warhammer_03",
@@ -348,7 +600,28 @@
       80,
       66
     ],
-    "lore": "Fierce anti-armor stormer with quad-linked gatling cannons."
+    "lore": "Fierce anti-armor stormer with quad-linked gatling cannons.",
+    "historical_lore": "VHI-03 Warhammer Breaker was manufactured by Valkyrie Heavy Industries to fill the critical role of Heavy Stormer. Designed by Ural Defense Dynamics as a counter to agile zero-gravity Colony incursions. The chassis integrates reinforced recoil dampeners and heavy kinetic armor plating, sacrificing top-speed maneuverability for unyielding structural integrity.",
+    "manufacturing_quirks": "Recoil forces from the primary heavy cannon shake loose cabin telemetry wiring harnesses; pilots are taught to kick the lower dashboard console to reset failing sensor readouts.",
+    "battlefield_reputation": "Pilots nickname its cockpit 'The Iron Sarcophagus' because surviving a direct hit often leaves the hatches warped shut until extraction teams torch them open.",
+    "doctrine_summary": "Heavy Stormer doctrine tailored for faction_a strategic objectives.",
+    "production_count": 1119,
+    "active_units": 736,
+    "casualty_count": 383,
+    "kill_count": 678,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Gobi Desert Proving Grounds",
+      "Pacific Floating Hub",
+      "Sub-Orbital Drop Corridors"
+    ],
+    "combat_loss_ratio": 0.56,
+    "survivability_rating": 64,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,119 units manufactured (736 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_behemoth_11": {
     "id": "ms_terran_behemoth_11",
@@ -375,7 +648,28 @@
       62,
       50
     ],
-    "lore": "Colossal planetary dreadnought deploying walking battleship armor."
+    "lore": "Colossal planetary dreadnought deploying walking battleship armor.",
+    "historical_lore": "TCX-11 Behemoth Mk.IV was manufactured by Valkyrie Heavy Industries to fill the critical role of Heavy Dreadnought. Developed at the Lake Baikal metallurgical complex during the height of the Lunar border disputes. Its structural design emphasizes sheer mass and redundant hydraulic circuitry, ensuring the machine remains operational even after catastrophic armor breaches across secondary limbs.",
+    "manufacturing_quirks": "Recoil forces from the primary heavy cannon shake loose cabin telemetry wiring harnesses; pilots are taught to kick the lower dashboard console to reset failing sensor readouts.",
+    "battlefield_reputation": "Mercenaries consider it the most reliable machine in the Sol system\u2014impossible to flip, impossible to crush, and simple enough to repair with scrap and an arc welder.",
+    "doctrine_summary": "Heavy Dreadnought doctrine tailored for faction_a strategic objectives.",
+    "production_count": 1092,
+    "active_units": 704,
+    "casualty_count": 388,
+    "kill_count": 662,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Gobi Desert Proving Grounds",
+      "Pacific Floating Hub",
+      "Sub-Orbital Drop Corridors"
+    ],
+    "combat_loss_ratio": 0.59,
+    "survivability_rating": 63,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,092 units manufactured (704 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_titan_04": {
     "id": "ms_terran_titan_04",
@@ -402,7 +696,28 @@
       74,
       60
     ],
-    "lore": "Mobile assault fortress leading planetary invasion armies."
+    "lore": "Mobile assault fortress leading planetary invasion armies.",
+    "historical_lore": "VHI-04 Titan Dreadnought was manufactured by Valkyrie Heavy Industries to fill the critical role of Assault Dreadnought. Commissioned under the Terran Military Council to fortify Earth's planetary perimeter against insurgent fleets. Valkyrie Heavy Industries opted for heavy layered composite alloy armor, heavy diesel-fusion thermal turbines, and high-caliber rifled ballistics capable of holding entrenched ground redoubts under continuous orbital bombardments.",
+    "manufacturing_quirks": "The main diesel-fusion boiler vents dense superheated steam through dorsal baffles, creating a distinctive thermal plume that infrared scanners can track for kilometers.",
+    "battlefield_reputation": "Mercenaries consider it the most reliable machine in the Sol system\u2014impossible to flip, impossible to crush, and simple enough to repair with scrap and an arc welder.",
+    "doctrine_summary": "Assault Dreadnought doctrine tailored for faction_a strategic objectives.",
+    "production_count": 890,
+    "active_units": 596,
+    "casualty_count": 294,
+    "kill_count": 356,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Ural Trench Network",
+      "Mare Crisium Crater",
+      "Kamchatka Defense Arc"
+    ],
+    "combat_loss_ratio": 0.83,
+    "survivability_rating": 55,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 890 units manufactured (596 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_paladin_03": {
     "id": "ms_terran_paladin_03",
@@ -429,7 +744,28 @@
       88,
       70
     ],
-    "lore": "Escort guardian armed with anti-missile thermal lasers."
+    "lore": "Escort guardian armed with anti-missile thermal lasers.",
+    "historical_lore": "TH-P03 Paladin Heavy Escort was manufactured by Valkyrie Heavy Industries to fill the critical role of Fleet Escort. Designed by Ural Defense Dynamics as a counter to agile zero-gravity Colony incursions. The chassis integrates reinforced recoil dampeners and heavy kinetic armor plating, sacrificing top-speed maneuverability for unyielding structural integrity.",
+    "manufacturing_quirks": "Heavy frontal armor plates cause chronic stress fractures on forward knee actuator bearings during high-g descent landings; maintenance crews routinely reinforce the limb pins with field-welded tungsten rods.",
+    "battlefield_reputation": "Known affectionately by ground grunts as 'The Iron Wall' and cursed by rookie pilots as a brutal, unforgiving machine that punishes over-eager maneuvering.",
+    "doctrine_summary": "Fleet Escort doctrine tailored for faction_a strategic objectives.",
+    "production_count": 1290,
+    "active_units": 999,
+    "casualty_count": 291,
+    "kill_count": 390,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Baikal Redoubt",
+      "Copernicus Lunar Base",
+      "Low Earth Orbit Fortress Rings"
+    ],
+    "combat_loss_ratio": 0.75,
+    "survivability_rating": 57,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,290 units manufactured (999 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_promethean_02": {
     "id": "ms_terran_promethean_02",
@@ -456,7 +792,28 @@
       100,
       78
     ],
-    "lore": "Experimental reactor testbed firing supercritical thermal shells."
+    "lore": "Experimental reactor testbed firing supercritical thermal shells.",
+    "historical_lore": "TH-X02 Promethean was manufactured by Valkyrie Heavy Industries to fill the critical role of Experimental Prototype. Designed by Ural Defense Dynamics as a counter to agile zero-gravity Colony incursions. The chassis integrates reinforced recoil dampeners and heavy kinetic armor plating, sacrificing top-speed maneuverability for unyielding structural integrity.",
+    "manufacturing_quirks": "Recoil forces from the primary heavy cannon shake loose cabin telemetry wiring harnesses; pilots are taught to kick the lower dashboard console to reset failing sensor readouts.",
+    "battlefield_reputation": "Known affectionately by ground grunts as 'The Iron Wall' and cursed by rookie pilots as a brutal, unforgiving machine that punishes over-eager maneuvering.",
+    "doctrine_summary": "Experimental Prototype doctrine tailored for faction_a strategic objectives.",
+    "production_count": 638,
+    "active_units": 467,
+    "casualty_count": 171,
+    "kill_count": 284,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Gobi Desert Proving Grounds",
+      "Pacific Floating Hub",
+      "Sub-Orbital Drop Corridors"
+    ],
+    "combat_loss_ratio": 0.6,
+    "survivability_rating": 62,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 638 units manufactured (467 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_goliath_prime_x01": {
     "id": "ms_terran_goliath_prime_x01",
@@ -483,7 +840,28 @@
       58,
       46
     ],
-    "lore": "Terran apex X-chassis prototype capable of trampling enemy lines."
+    "lore": "Terran apex X-chassis prototype capable of trampling enemy lines.",
+    "historical_lore": "VHI-X01 Goliath Prime was manufactured by Valkyrie Heavy Industries to fill the critical role of Prototype Juggernaut. Developed at the Lake Baikal metallurgical complex during the height of the Lunar border disputes. Its structural design emphasizes sheer mass and redundant hydraulic circuitry, ensuring the machine remains operational even after catastrophic armor breaches across secondary limbs.",
+    "manufacturing_quirks": "Recoil forces from the primary heavy cannon shake loose cabin telemetry wiring harnesses; pilots are taught to kick the lower dashboard console to reset failing sensor readouts.",
+    "battlefield_reputation": "Known affectionately by ground grunts as 'The Iron Wall' and cursed by rookie pilots as a brutal, unforgiving machine that punishes over-eager maneuvering.",
+    "doctrine_summary": "Prototype Juggernaut doctrine tailored for faction_a strategic objectives.",
+    "production_count": 54,
+    "active_units": 39,
+    "casualty_count": 15,
+    "kill_count": 61,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Gobi Desert Proving Grounds",
+      "Pacific Floating Hub",
+      "Sub-Orbital Drop Corridors"
+    ],
+    "combat_loss_ratio": 0.25,
+    "survivability_rating": 80,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 54 units manufactured (39 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_colony_aether_01": {
     "id": "ms_colony_aether_01",
@@ -510,7 +888,28 @@
       75,
       125
     ],
-    "lore": "The graceful pride of the Jovian fleet, out-turning any kinetic war machine in vacuum."
+    "lore": "The graceful pride of the Jovian fleet, out-turning any kinetic war machine in vacuum.",
+    "historical_lore": "Engineered in the zero-G orbital docks of L-5 by Astraea Orbital Dynamics, the AET-01 Aether was conceived as an answer to Terran heavy armor. Utilizing an ultralight aerosteel frame and a high-yield Cherenkov superconducting reactor, the suit revolutionized orbital combat through unmatched vernier vectoring.",
+    "manufacturing_quirks": "Superconducting bus cables run uncomfortably close to the cockpit life-support pod; pilots report ambient tingling in their fingertips and ozone smells during sustained high-burn maneuvers.",
+    "battlefield_reputation": "Terran gunners derisively call it 'The Blue Mosquito' due to its evasive maneuvers, but fear its high-output beam carbine which slices through cast armor like hot wire through butter.",
+    "doctrine_summary": "Zero-G orbital dominance, high-speed hit-and-run particle skirmishing.",
+    "production_count": 3450,
+    "active_units": 2420,
+    "casualty_count": 1030,
+    "kill_count": 2210,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "L-5 Gateway",
+      "Jovian Mining Belt",
+      "Archimedes Orbital Corridor"
+    ],
+    "combat_loss_ratio": 0.47,
+    "survivability_rating": 68,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 3,450 units manufactured (2,420 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_colony_zephyr_05": {
     "id": "ms_colony_zephyr_05",
@@ -537,7 +936,28 @@
       65,
       110
     ],
-    "lore": "Electronic warfare interceptor that blankets battlefield radars in blinding static."
+    "lore": "Electronic warfare interceptor that blankets battlefield radars in blinding static.",
+    "historical_lore": "JCC-Z05 Zephyr was manufactured by Astraea Orbital Dynamics to fill the critical role of EW Skirmisher. Engineered by Jovian Construction Corp to safeguard deep-space mining colonies from Terran boarding operations. The suit leverages revolutionary vernier cluster arrays that allow instantaneous 360-degree vector changes without bleeding momentum.",
+    "manufacturing_quirks": "The lightweight aerosteel chassis is prone to micro-fracturing under high atmospheric drag; pilots must disengage limiter clamps before attempting high-speed atmospheric dives.",
+    "battlefield_reputation": "Mercenaries love its high salvage value; black market cartels pay top dollar for intact Astraea superconducting capacitor banks and vernier nozzles.",
+    "doctrine_summary": "EW Skirmisher doctrine tailored for faction_b strategic objectives.",
+    "production_count": 4780,
+    "active_units": 3285,
+    "casualty_count": 1495,
+    "kill_count": 2093,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "L-5 Orbital Gateway",
+      "Jovian Ring Platforms",
+      "Archimedes Lagrange Corridor"
+    ],
+    "combat_loss_ratio": 0.71,
+    "survivability_rating": 58,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 4,780 units manufactured (3,285 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_colony_kepler_02": {
     "id": "ms_colony_kepler_02",
@@ -564,7 +984,28 @@
       55,
       88
     ],
-    "lore": "Precision sniper unit that destroys hostile reactors from outside visual sensor range."
+    "lore": "Precision sniper unit that destroys hostile reactors from outside visual sensor range.",
+    "historical_lore": "JCC-K02 Kepler was manufactured by Astraea Orbital Dynamics to fill the critical role of Orbital Rail-Sniper. Conceived in the zero-G orbital foundries of L-5 by Astraea Orbital Dynamics. Rejecting Earth's obsolete heavy armor philosophy, Colony engineers utilized hyper-light aerosteel matrices, Cherenkov blue plasma thrusters, and superconductive particle conduits for supreme vacuum agility.",
+    "manufacturing_quirks": "The Cherenkov superconductor core induces slight magnetic interference with the pilot's helmet comms, creating a faint, rhythmic whine dubbed the 'Jovian Chorus'.",
+    "battlefield_reputation": "Admired across the Jovian colonies as an elegant guardian of freedom; Terran tank crews call it 'The Flying Scalpel' for its precision beam attacks.",
+    "doctrine_summary": "Orbital Rail-Sniper doctrine tailored for faction_b strategic objectives.",
+    "production_count": 3458,
+    "active_units": 2504,
+    "casualty_count": 954,
+    "kill_count": 1139,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "L-5 Orbital Gateway",
+      "Jovian Ring Platforms",
+      "Archimedes Lagrange Corridor"
+    ],
+    "combat_loss_ratio": 0.84,
+    "survivability_rating": 54,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 3,458 units manufactured (2,504 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_colony_oberon_08": {
     "id": "ms_colony_oberon_08",
@@ -591,7 +1032,28 @@
       68,
       110
     ],
-    "lore": "Heavy fleet escort unit guarding Jovian gas tankers against pirate boarding torpedoes."
+    "lore": "Heavy fleet escort unit guarding Jovian gas tankers against pirate boarding torpedoes.",
+    "historical_lore": "JCC-O08 Oberon was manufactured by Astraea Orbital Dynamics to fill the critical role of Fleet Guard Escort. Conceived in the zero-G orbital foundries of L-5 by Astraea Orbital Dynamics. Rejecting Earth's obsolete heavy armor philosophy, Colony engineers utilized hyper-light aerosteel matrices, Cherenkov blue plasma thrusters, and superconductive particle conduits for supreme vacuum agility.",
+    "manufacturing_quirks": "The lightweight aerosteel chassis is prone to micro-fracturing under high atmospheric drag; pilots must disengage limiter clamps before attempting high-speed atmospheric dives.",
+    "battlefield_reputation": "Admired across the Jovian colonies as an elegant guardian of freedom; Terran tank crews call it 'The Flying Scalpel' for its precision beam attacks.",
+    "doctrine_summary": "Fleet Guard Escort doctrine tailored for faction_b strategic objectives.",
+    "production_count": 3855,
+    "active_units": 2829,
+    "casualty_count": 1026,
+    "kill_count": 1000,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Callisto Deep Mining Station",
+      "Ganymede Logistics Belt",
+      "High Lunar Orbit"
+    ],
+    "combat_loss_ratio": 1.03,
+    "survivability_rating": 49,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 3,855 units manufactured (2,829 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_colony_sylph_01": {
     "id": "ms_colony_sylph_01",
@@ -618,7 +1080,28 @@
       60,
       105
     ],
-    "lore": "Light early patrol chassis guarding outer Jovian listening posts."
+    "lore": "Light early patrol chassis guarding outer Jovian listening posts.",
+    "historical_lore": "AOD-01 Sylph Interceptor was manufactured by Astraea Orbital Dynamics to fill the critical role of Light Interceptor. Conceived in the zero-G orbital foundries of L-5 by Astraea Orbital Dynamics. Rejecting Earth's obsolete heavy armor philosophy, Colony engineers utilized hyper-light aerosteel matrices, Cherenkov blue plasma thrusters, and superconductive particle conduits for supreme vacuum agility.",
+    "manufacturing_quirks": "Optical sensor pods require recalibration after high-energy beam discharges due to residual thermal blooming across the fore-camera lenses.",
+    "battlefield_reputation": "Mercenaries love its high salvage value; black market cartels pay top dollar for intact Astraea superconducting capacitor banks and vernier nozzles.",
+    "doctrine_summary": "Light Interceptor doctrine tailored for faction_b strategic objectives.",
+    "production_count": 1191,
+    "active_units": 847,
+    "casualty_count": 344,
+    "kill_count": 510,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Europa Cryo-Refinery Arc",
+      "Lagrange Point 4",
+      "Deep Void Patrol Sector"
+    ],
+    "combat_loss_ratio": 0.67,
+    "survivability_rating": 60,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,191 units manufactured (847 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_pegasus_09": {
     "id": "ms_colony_pegasus_09",
@@ -645,7 +1128,28 @@
       70,
       118
     ],
-    "lore": "Extremely fast courier ship used to bypass planetary embargo lines."
+    "lore": "Extremely fast courier ship used to bypass planetary embargo lines.",
+    "historical_lore": "JCC-P09 Pegasus Courier was manufactured by Astraea Orbital Dynamics to fill the critical role of High-Speed Courier. Engineered by Jovian Construction Corp to safeguard deep-space mining colonies from Terran boarding operations. The suit leverages revolutionary vernier cluster arrays that allow instantaneous 360-degree vector changes without bleeding momentum.",
+    "manufacturing_quirks": "The Cherenkov superconductor core induces slight magnetic interference with the pilot's helmet comms, creating a faint, rhythmic whine dubbed the 'Jovian Chorus'.",
+    "battlefield_reputation": "Admired across the Jovian colonies as an elegant guardian of freedom; Terran tank crews call it 'The Flying Scalpel' for its precision beam attacks.",
+    "doctrine_summary": "High-Speed Courier doctrine tailored for faction_b strategic objectives.",
+    "production_count": 962,
+    "active_units": 718,
+    "casualty_count": 244,
+    "kill_count": 267,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Europa Cryo-Refinery Arc",
+      "Lagrange Point 4",
+      "Deep Void Patrol Sector"
+    ],
+    "combat_loss_ratio": 0.91,
+    "survivability_rating": 52,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 962 units manufactured (718 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_cassian_custom": {
     "id": "ms_colony_cassian_custom",
@@ -672,7 +1176,28 @@
       95,
       155
     ],
-    "lore": "Gold-trimmed flagship of Capt. Cassian Vane with advanced tactical battle-mapping."
+    "lore": "Gold-trimmed flagship of Capt. Cassian Vane with advanced tactical battle-mapping.",
+    "historical_lore": "AET-01C Aether Officer was manufactured by Astraea Orbital Dynamics to fill the critical role of Command Interceptor. Engineered by Jovian Construction Corp to safeguard deep-space mining colonies from Terran boarding operations. The suit leverages revolutionary vernier cluster arrays that allow instantaneous 360-degree vector changes without bleeding momentum.",
+    "manufacturing_quirks": "Continuous micro-vernier burns create rapid fuel cell pressure fluctuations that require pilots to manually feather the thruster valves during dogfights.",
+    "battlefield_reputation": "Pilots praise its feather-light handling and breathtaking roll rates, though veteran aces caution that one solid kinetic hit will fold the frame in half.",
+    "doctrine_summary": "Command Interceptor doctrine tailored for faction_b strategic objectives.",
+    "production_count": 142,
+    "active_units": 126,
+    "casualty_count": 16,
+    "kill_count": 58,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Callisto Deep Mining Station",
+      "Ganymede Logistics Belt",
+      "High Lunar Orbit"
+    ],
+    "combat_loss_ratio": 0.28,
+    "survivability_rating": 78,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 142 units manufactured (126 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_colony_vector_04": {
     "id": "ms_colony_vector_04",
@@ -699,7 +1224,28 @@
       72,
       122
     ],
-    "lore": "Standard carrier-based vacuum superiority fighter of the Jovian navy."
+    "lore": "Standard carrier-based vacuum superiority fighter of the Jovian navy.",
+    "historical_lore": "JCC-V04 Vector was manufactured by Astraea Orbital Dynamics to fill the critical role of Zero-G Fighter. Conceived in the zero-G orbital foundries of L-5 by Astraea Orbital Dynamics. Rejecting Earth's obsolete heavy armor philosophy, Colony engineers utilized hyper-light aerosteel matrices, Cherenkov blue plasma thrusters, and superconductive particle conduits for supreme vacuum agility.",
+    "manufacturing_quirks": "The Cherenkov superconductor core induces slight magnetic interference with the pilot's helmet comms, creating a faint, rhythmic whine dubbed the 'Jovian Chorus'.",
+    "battlefield_reputation": "Pilots praise its feather-light handling and breathtaking roll rates, though veteran aces caution that one solid kinetic hit will fold the frame in half.",
+    "doctrine_summary": "Zero-G Fighter doctrine tailored for faction_b strategic objectives.",
+    "production_count": 1197,
+    "active_units": 911,
+    "casualty_count": 286,
+    "kill_count": 374,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "L-5 Orbital Gateway",
+      "Jovian Ring Platforms",
+      "Archimedes Lagrange Corridor"
+    ],
+    "combat_loss_ratio": 0.76,
+    "survivability_rating": 57,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,197 units manufactured (911 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_aether_striker_02": {
     "id": "ms_colony_aether_striker_02",
@@ -726,7 +1272,28 @@
       85,
       140
     ],
-    "lore": "Enhanced strike model with high-power capacitor discharges."
+    "lore": "Enhanced strike model with high-power capacitor discharges.",
+    "historical_lore": "AOD-02 Aether Striker was manufactured by Astraea Orbital Dynamics to fill the critical role of Assault Interceptor. Engineered by Jovian Construction Corp to safeguard deep-space mining colonies from Terran boarding operations. The suit leverages revolutionary vernier cluster arrays that allow instantaneous 360-degree vector changes without bleeding momentum.",
+    "manufacturing_quirks": "Optical sensor pods require recalibration after high-energy beam discharges due to residual thermal blooming across the fore-camera lenses.",
+    "battlefield_reputation": "Considered the gold standard for zero-G dogfighting; aces who master its high-frequency pitch controls can evade entire missile salvos without taking armor damage.",
+    "doctrine_summary": "Assault Interceptor doctrine tailored for faction_b strategic objectives.",
+    "production_count": 976,
+    "active_units": 680,
+    "casualty_count": 296,
+    "kill_count": 441,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Callisto Deep Mining Station",
+      "Ganymede Logistics Belt",
+      "High Lunar Orbit"
+    ],
+    "combat_loss_ratio": 0.67,
+    "survivability_rating": 60,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 976 units manufactured (680 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_helios_06": {
     "id": "ms_colony_helios_06",
@@ -753,7 +1320,28 @@
       88,
       144
     ],
-    "lore": "Specialized in sustained energy fire with enormous cooling radiator arrays."
+    "lore": "Specialized in sustained energy fire with enormous cooling radiator arrays.",
+    "historical_lore": "JCC-H06 Helios Beam was manufactured by Astraea Orbital Dynamics to fill the critical role of Beam Skirmisher. Born from Selene Vector Laboratories as a high-speed skirmishing doctrine. The design prioritizes particle beam efficiency and rapid heat dissipation, allowing it to harass enemy capital formations from beyond counter-battery range.",
+    "manufacturing_quirks": "Continuous micro-vernier burns create rapid fuel cell pressure fluctuations that require pilots to manually feather the thruster valves during dogfights.",
+    "battlefield_reputation": "Considered the gold standard for zero-G dogfighting; aces who master its high-frequency pitch controls can evade entire missile salvos without taking armor damage.",
+    "doctrine_summary": "Beam Skirmisher doctrine tailored for faction_b strategic objectives.",
+    "production_count": 638,
+    "active_units": 431,
+    "casualty_count": 207,
+    "kill_count": 266,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Europa Cryo-Refinery Arc",
+      "Lagrange Point 4",
+      "Deep Void Patrol Sector"
+    ],
+    "combat_loss_ratio": 0.78,
+    "survivability_rating": 56,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 638 units manufactured (431 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_eclipse_07": {
     "id": "ms_colony_eclipse_07",
@@ -780,7 +1368,28 @@
       45,
       80
     ],
-    "lore": "Deep space stealth unit running completely silent on thermal heat sinks."
+    "lore": "Deep space stealth unit running completely silent on thermal heat sinks.",
+    "historical_lore": "JCC-E07 Eclipse Stealth was manufactured by Astraea Orbital Dynamics to fill the critical role of Optical Recon. Conceived in the zero-G orbital foundries of L-5 by Astraea Orbital Dynamics. Rejecting Earth's obsolete heavy armor philosophy, Colony engineers utilized hyper-light aerosteel matrices, Cherenkov blue plasma thrusters, and superconductive particle conduits for supreme vacuum agility.",
+    "manufacturing_quirks": "Optical sensor pods require recalibration after high-energy beam discharges due to residual thermal blooming across the fore-camera lenses.",
+    "battlefield_reputation": "Admired across the Jovian colonies as an elegant guardian of freedom; Terran tank crews call it 'The Flying Scalpel' for its precision beam attacks.",
+    "doctrine_summary": "Optical Recon doctrine tailored for faction_b strategic objectives.",
+    "production_count": 749,
+    "active_units": 550,
+    "casualty_count": 199,
+    "kill_count": 289,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Callisto Deep Mining Station",
+      "Ganymede Logistics Belt",
+      "High Lunar Orbit"
+    ],
+    "combat_loss_ratio": 0.69,
+    "survivability_rating": 59,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 749 units manufactured (550 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_nebula_03": {
     "id": "ms_colony_nebula_03",
@@ -807,7 +1416,28 @@
       68,
       115
     ],
-    "lore": "Deploys vast minefields of homing smart-mines across orbital choke-points."
+    "lore": "Deploys vast minefields of homing smart-mines across orbital choke-points.",
+    "historical_lore": "JCC-N03 Nebula Minelayer was manufactured by Astraea Orbital Dynamics to fill the critical role of Area Denial. Born from Selene Vector Laboratories as a high-speed skirmishing doctrine. The design prioritizes particle beam efficiency and rapid heat dissipation, allowing it to harass enemy capital formations from beyond counter-battery range.",
+    "manufacturing_quirks": "Continuous micro-vernier burns create rapid fuel cell pressure fluctuations that require pilots to manually feather the thruster valves during dogfights.",
+    "battlefield_reputation": "Mercenaries love its high salvage value; black market cartels pay top dollar for intact Astraea superconducting capacitor banks and vernier nozzles.",
+    "doctrine_summary": "Area Denial doctrine tailored for faction_b strategic objectives.",
+    "production_count": 1438,
+    "active_units": 899,
+    "casualty_count": 539,
+    "kill_count": 913,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Europa Cryo-Refinery Arc",
+      "Lagrange Point 4",
+      "Deep Void Patrol Sector"
+    ],
+    "combat_loss_ratio": 0.59,
+    "survivability_rating": 63,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,438 units manufactured (899 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_seraphim_03": {
     "id": "ms_colony_seraphim_03",
@@ -834,7 +1464,28 @@
       100,
       165
     ],
-    "lore": "Elite ace unit equipped with shimmering hexagonal beam shield wings."
+    "lore": "Elite ace unit equipped with shimmering hexagonal beam shield wings.",
+    "historical_lore": "AOD-03 Seraphim Apex was manufactured by Astraea Orbital Dynamics to fill the critical role of Apex Interceptor. Engineered by Jovian Construction Corp to safeguard deep-space mining colonies from Terran boarding operations. The suit leverages revolutionary vernier cluster arrays that allow instantaneous 360-degree vector changes without bleeding momentum.",
+    "manufacturing_quirks": "Continuous micro-vernier burns create rapid fuel cell pressure fluctuations that require pilots to manually feather the thruster valves during dogfights.",
+    "battlefield_reputation": "Pilots praise its feather-light handling and breathtaking roll rates, though veteran aces caution that one solid kinetic hit will fold the frame in half.",
+    "doctrine_summary": "Apex Interceptor doctrine tailored for faction_b strategic objectives.",
+    "production_count": 853,
+    "active_units": 618,
+    "casualty_count": 235,
+    "kill_count": 259,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Callisto Deep Mining Station",
+      "Ganymede Logistics Belt",
+      "High Lunar Orbit"
+    ],
+    "combat_loss_ratio": 0.91,
+    "survivability_rating": 52,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 853 units manufactured (618 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_archangel_04": {
     "id": "ms_colony_archangel_04",
@@ -861,7 +1512,28 @@
       105,
       170
     ],
-    "lore": "Massive orbital dreadnought commanding colonial fleet defense."
+    "lore": "Massive orbital dreadnought commanding colonial fleet defense.",
+    "historical_lore": "AOD-04 Archangel Dreadnought was manufactured by Astraea Orbital Dynamics to fill the critical role of Fleet Flagship. Engineered by Jovian Construction Corp to safeguard deep-space mining colonies from Terran boarding operations. The suit leverages revolutionary vernier cluster arrays that allow instantaneous 360-degree vector changes without bleeding momentum.",
+    "manufacturing_quirks": "Optical sensor pods require recalibration after high-energy beam discharges due to residual thermal blooming across the fore-camera lenses.",
+    "battlefield_reputation": "Mercenaries love its high salvage value; black market cartels pay top dollar for intact Astraea superconducting capacitor banks and vernier nozzles.",
+    "doctrine_summary": "Fleet Flagship doctrine tailored for faction_b strategic objectives.",
+    "production_count": 1362,
+    "active_units": 848,
+    "casualty_count": 514,
+    "kill_count": 697,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Europa Cryo-Refinery Arc",
+      "Lagrange Point 4",
+      "Deep Void Patrol Sector"
+    ],
+    "combat_loss_ratio": 0.74,
+    "survivability_rating": 58,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,362 units manufactured (848 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_typhon_01": {
     "id": "ms_colony_typhon_01",
@@ -888,7 +1560,28 @@
       75,
       128
     ],
-    "lore": "Walking missile frigate capable of launching 96 smart warheads per salvo."
+    "lore": "Walking missile frigate capable of launching 96 smart warheads per salvo.",
+    "historical_lore": "JCC-T01 Typhon Missile Frigate was manufactured by Astraea Orbital Dynamics to fill the critical role of Missile Cruiser. Born from Selene Vector Laboratories as a high-speed skirmishing doctrine. The design prioritizes particle beam efficiency and rapid heat dissipation, allowing it to harass enemy capital formations from beyond counter-battery range.",
+    "manufacturing_quirks": "Optical sensor pods require recalibration after high-energy beam discharges due to residual thermal blooming across the fore-camera lenses.",
+    "battlefield_reputation": "Admired across the Jovian colonies as an elegant guardian of freedom; Terran tank crews call it 'The Flying Scalpel' for its precision beam attacks.",
+    "doctrine_summary": "Missile Cruiser doctrine tailored for faction_b strategic objectives.",
+    "production_count": 1101,
+    "active_units": 679,
+    "casualty_count": 422,
+    "kill_count": 533,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "L-5 Orbital Gateway",
+      "Jovian Ring Platforms",
+      "Archimedes Lagrange Corridor"
+    ],
+    "combat_loss_ratio": 0.79,
+    "survivability_rating": 56,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,101 units manufactured (679 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_chronos_03": {
     "id": "ms_colony_chronos_03",
@@ -915,7 +1608,28 @@
       95,
       160
     ],
-    "lore": "Prototype equipped with experimental tachyon verniers enabling instant micro-hops."
+    "lore": "Prototype equipped with experimental tachyon verniers enabling instant micro-hops.",
+    "historical_lore": "JCC-X03 Chronos Drive was manufactured by Astraea Orbital Dynamics to fill the critical role of Tachyon Testbed. Engineered by Jovian Construction Corp to safeguard deep-space mining colonies from Terran boarding operations. The suit leverages revolutionary vernier cluster arrays that allow instantaneous 360-degree vector changes without bleeding momentum.",
+    "manufacturing_quirks": "Optical sensor pods require recalibration after high-energy beam discharges due to residual thermal blooming across the fore-camera lenses.",
+    "battlefield_reputation": "Pilots praise its feather-light handling and breathtaking roll rates, though veteran aces caution that one solid kinetic hit will fold the frame in half.",
+    "doctrine_summary": "Tachyon Testbed doctrine tailored for faction_b strategic objectives.",
+    "production_count": 655,
+    "active_units": 511,
+    "casualty_count": 144,
+    "kill_count": 255,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "L-5 Orbital Gateway",
+      "Jovian Ring Platforms",
+      "Archimedes Lagrange Corridor"
+    ],
+    "combat_loss_ratio": 0.56,
+    "survivability_rating": 64,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 655 units manufactured (511 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_ghost_mirage_x08": {
     "id": "ms_colony_ghost_mirage_x08",
@@ -942,7 +1656,28 @@
       85,
       150
     ],
-    "lore": "Masterwork custom unit piloted by Sorren Lin, producing radar holograms."
+    "lore": "Masterwork custom unit piloted by Sorren Lin, producing radar holograms.",
+    "historical_lore": "JCC-X08 Ghost Mirage was manufactured by Astraea Orbital Dynamics to fill the critical role of Ghost Ace. Conceived in the zero-G orbital foundries of L-5 by Astraea Orbital Dynamics. Rejecting Earth's obsolete heavy armor philosophy, Colony engineers utilized hyper-light aerosteel matrices, Cherenkov blue plasma thrusters, and superconductive particle conduits for supreme vacuum agility.",
+    "manufacturing_quirks": "The Cherenkov superconductor core induces slight magnetic interference with the pilot's helmet comms, creating a faint, rhythmic whine dubbed the 'Jovian Chorus'.",
+    "battlefield_reputation": "Mercenaries love its high salvage value; black market cartels pay top dollar for intact Astraea superconducting capacitor banks and vernier nozzles.",
+    "doctrine_summary": "Ghost Ace doctrine tailored for faction_b strategic objectives.",
+    "production_count": 1351,
+    "active_units": 876,
+    "casualty_count": 475,
+    "kill_count": 720,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "L-5 Orbital Gateway",
+      "Jovian Ring Platforms",
+      "Archimedes Lagrange Corridor"
+    ],
+    "combat_loss_ratio": 0.66,
+    "survivability_rating": 60,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,351 units manufactured (876 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_astraea_dominus_x01": {
     "id": "ms_colony_astraea_dominus_x01",
@@ -969,7 +1704,28 @@
       115,
       180
     ],
-    "lore": "Colonial pinnacle unit wielding miniature fusion particle blades."
+    "lore": "Colonial pinnacle unit wielding miniature fusion particle blades.",
+    "historical_lore": "AOD-X01 Astraea Dominus was manufactured by Astraea Orbital Dynamics to fill the critical role of Apex Super-Fighter. Conceived in the zero-G orbital foundries of L-5 by Astraea Orbital Dynamics. Rejecting Earth's obsolete heavy armor philosophy, Colony engineers utilized hyper-light aerosteel matrices, Cherenkov blue plasma thrusters, and superconductive particle conduits for supreme vacuum agility.",
+    "manufacturing_quirks": "Optical sensor pods require recalibration after high-energy beam discharges due to residual thermal blooming across the fore-camera lenses.",
+    "battlefield_reputation": "Admired across the Jovian colonies as an elegant guardian of freedom; Terran tank crews call it 'The Flying Scalpel' for its precision beam attacks.",
+    "doctrine_summary": "Apex Super-Fighter doctrine tailored for faction_b strategic objectives.",
+    "production_count": 87,
+    "active_units": 65,
+    "casualty_count": 22,
+    "kill_count": 95,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Europa Cryo-Refinery Arc",
+      "Lagrange Point 4",
+      "Deep Void Patrol Sector"
+    ],
+    "combat_loss_ratio": 0.23,
+    "survivability_rating": 81,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 87 units manufactured (65 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_syndicate_hyena_12": {
     "id": "ms_syndicate_hyena_12",
@@ -996,7 +1752,28 @@
       65,
       45
     ],
-    "lore": "Built from cannibalized military wrecks, the Hyena drags enemy suits into brutal melee."
+    "lore": "Built from cannibalized military wrecks, the Hyena drags enemy suits into brutal melee.",
+    "historical_lore": "Assembled across clandestine asteroid workshops by the Rustworks Salvage Cartel, the SCR-12 Hyena represents the ruthless ingenuity of the Rim. Built almost entirely from salvaged military scrap and commercial drilling chassis, it trades uniform factory standards for brutal, improvisational durability.",
+    "manufacturing_quirks": "Because wiring harnesses are cobbled together from half a dozen derelict shipwrecks, no two Hyenas share identical electrical schematics; grease monkeys routinely joke that repairing one requires a priest as much as a wrench.",
+    "battlefield_reputation": "Infamous among merchant convoy captains for its heavy pneumatic harpoon winch, which drags disabled freighters and wounded mobile suits into point-blank flak range.",
+    "doctrine_summary": "Ambush boarding, scrap melee brawling, and asset extraction.",
+    "production_count": 5600,
+    "active_units": 3680,
+    "casualty_count": 1920,
+    "kill_count": 1840,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Ceres Deep Ring",
+      "Trojan Asteroid Corridor",
+      "Deimos Debris Field"
+    ],
+    "combat_loss_ratio": 1.04,
+    "survivability_rating": 49,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 5,600 units manufactured (3,680 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_syndicate_gorgon_04": {
     "id": "ms_syndicate_gorgon_04",
@@ -1023,7 +1800,28 @@
       55,
       40
     ],
-    "lore": "Feared asteroid boarding mech designed to breach titanium bulkheads and crush reactors."
+    "lore": "Feared asteroid boarding mech designed to breach titanium bulkheads and crush reactors.",
+    "historical_lore": "ARC-G04 Gorgon was manufactured by Rustworks Salvage Cartel to fill the critical role of Boarding Breaker. Engineered by the Ceres Iron Outlaws as an intimidating shock-assault platform. With dual rotary flak cannons and spiked kinetic ramming cowls, it excels at terrorizing civilian trade convoys and ambushing corporate supply lines.",
+    "manufacturing_quirks": "Asymmetrical scrap plating creates an off-center center-of-gravity; pilots must learn to compensate for a persistent leftward yaw during boost maneuvers.",
+    "battlefield_reputation": "Terran and Colony militaries officially designate it as 'Irregular Terror Armor', advising pilots to destroy them on sight rather than negotiate.",
+    "doctrine_summary": "Boarding Breaker doctrine tailored for faction_c strategic objectives.",
+    "production_count": 2824,
+    "active_units": 1964,
+    "casualty_count": 860,
+    "kill_count": 928,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Psyche Heavy Metal Drift",
+      "Sector 7 Scrap Fields",
+      "Inner Belt Ambush Corridors"
+    ],
+    "combat_loss_ratio": 0.93,
+    "survivability_rating": 52,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 2,824 units manufactured (1,964 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_syndicate_bloodhound_06": {
     "id": "ms_syndicate_bloodhound_06",
@@ -1050,7 +1848,28 @@
       50,
       36
     ],
-    "lore": "Fast wheeled marauder that hunts in packs to ambush isolated military convoys."
+    "lore": "Fast wheeled marauder that hunts in packs to ambush isolated military convoys.",
+    "historical_lore": "ARC-B06 Bloodhound was manufactured by Rustworks Salvage Cartel to fill the critical role of Pack Hunter. Assembled in clandestine asteroid hollows by the Asteroid Reclamation Guild. Designed to outlast corporate attrition, its frame features asymmetrical slag armor plates and heavy pneumatic harpoon winches designed for boarding raids and piracy.",
+    "manufacturing_quirks": "Cockpit seals are often patched with industrial sealant tape and re-welded bulkhead scraps; cabin pressure alarms frequently sound false warnings in vacuum.",
+    "battlefield_reputation": "Mercenaries nickname it 'The Junkyard Dog'\u2014ugly, loud, and vicious, with an uncanny ability to keep crawling forward after losing half its torso armor.",
+    "doctrine_summary": "Pack Hunter doctrine tailored for faction_c strategic objectives.",
+    "production_count": 4684,
+    "active_units": 3160,
+    "casualty_count": 1524,
+    "kill_count": 1743,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Ceres Mining Outposts",
+      "Vesta Debris Belt",
+      "Trojan Asteroid Corridors"
+    ],
+    "combat_loss_ratio": 0.87,
+    "survivability_rating": 53,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 4,684 units manufactured (3,160 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_syndicate_vandal_03": {
     "id": "ms_syndicate_vandal_03",
@@ -1077,7 +1896,28 @@
       45,
       38
     ],
-    "lore": "Guerilla ambush unit that blankets the area in blinding magnesium flares."
+    "lore": "Guerilla ambush unit that blankets the area in blinding magnesium flares.",
+    "historical_lore": "ARC-V03 Vandal was manufactured by Rustworks Salvage Cartel to fill the critical role of Ambush Raider. Jury-rigged across lawless asteroid shipyards by the Rustworks Salvage Cartel. Constructed from welded derelict transport hulls, repurposed industrial mining claws, and contraband military reactors, the chassis reflects the brutal, scavenged survival ethos of the Asteroid Belt.",
+    "manufacturing_quirks": "The scavenged reactor runs hot and loud, occasionally venting caustic sulfurous exhaust directly past the cockpit intake filters.",
+    "battlefield_reputation": "Feared by merchant convoy captains across the Sol system; the harsh shriek of its pneumatic boarding harpoon usually signals total cargo confiscation.",
+    "doctrine_summary": "Ambush Raider doctrine tailored for faction_c strategic objectives.",
+    "production_count": 4189,
+    "active_units": 3040,
+    "casualty_count": 1149,
+    "kill_count": 1333,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Deimos Wreckage Graveyard",
+      "Pallas Smuggling Hub",
+      "Outer Kuiper Gateway"
+    ],
+    "combat_loss_ratio": 0.86,
+    "survivability_rating": 54,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 4,189 units manufactured (3,040 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_syndicate_scrapper_01": {
     "id": "ms_syndicate_scrapper_01",
@@ -1104,7 +1944,28 @@
       50,
       35
     ],
-    "lore": "Rudimentary combat walker patched together from industrial loaders."
+    "lore": "Rudimentary combat walker patched together from industrial loaders.",
+    "historical_lore": "RST-01 Scrapper Grunt was manufactured by Rustworks Salvage Cartel to fill the critical role of Scrap Militia. Engineered by the Ceres Iron Outlaws as an intimidating shock-assault platform. With dual rotary flak cannons and spiked kinetic ramming cowls, it excels at terrorizing civilian trade convoys and ambushing corporate supply lines.",
+    "manufacturing_quirks": "Ammunition feed chutes for the heavy flak cannons tend to jam if low-grade non-standard propellant rounds are loaded under high-g maneuvers.",
+    "battlefield_reputation": "Terran and Colony militaries officially designate it as 'Irregular Terror Armor', advising pilots to destroy them on sight rather than negotiate.",
+    "doctrine_summary": "Scrap Militia doctrine tailored for faction_c strategic objectives.",
+    "production_count": 1002,
+    "active_units": 793,
+    "casualty_count": 209,
+    "kill_count": 336,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Psyche Heavy Metal Drift",
+      "Sector 7 Scrap Fields",
+      "Inner Belt Ambush Corridors"
+    ],
+    "combat_loss_ratio": 0.62,
+    "survivability_rating": 62,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,002 units manufactured (793 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_hellhound_02": {
     "id": "ms_syndicate_hellhound_02",
@@ -1131,7 +1992,28 @@
       45,
       30
     ],
-    "lore": "Terror weapon spraying superheated napalm over infantry bunkers."
+    "lore": "Terror weapon spraying superheated napalm over infantry bunkers.",
+    "historical_lore": "ARC-H02 Hellhound Flamer was manufactured by Rustworks Salvage Cartel to fill the critical role of Thermal Torcher. Jury-rigged across lawless asteroid shipyards by the Rustworks Salvage Cartel. Constructed from welded derelict transport hulls, repurposed industrial mining claws, and contraband military reactors, the chassis reflects the brutal, scavenged survival ethos of the Asteroid Belt.",
+    "manufacturing_quirks": "Ammunition feed chutes for the heavy flak cannons tend to jam if low-grade non-standard propellant rounds are loaded under high-g maneuvers.",
+    "battlefield_reputation": "Terran and Colony militaries officially designate it as 'Irregular Terror Armor', advising pilots to destroy them on sight rather than negotiate.",
+    "doctrine_summary": "Thermal Torcher doctrine tailored for faction_c strategic objectives.",
+    "production_count": 1172,
+    "active_units": 915,
+    "casualty_count": 257,
+    "kill_count": 373,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Deimos Wreckage Graveyard",
+      "Pallas Smuggling Hub",
+      "Outer Kuiper Gateway"
+    ],
+    "combat_loss_ratio": 0.69,
+    "survivability_rating": 59,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,172 units manufactured (915 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_cruz_custom": {
     "id": "ms_syndicate_cruz_custom",
@@ -1158,7 +2040,28 @@
       60,
       42
     ],
-    "lore": "Battle-scarred command rig of Sonya Cruz, clad in the armor of defeated Terran aces."
+    "lore": "Battle-scarred command rig of Sonya Cruz, clad in the armor of defeated Terran aces.",
+    "historical_lore": "SCR-12C Hyena Warlord was manufactured by Rustworks Salvage Cartel to fill the critical role of Warlord Flagship. Assembled in clandestine asteroid hollows by the Asteroid Reclamation Guild. Designed to outlast corporate attrition, its frame features asymmetrical slag armor plates and heavy pneumatic harpoon winches designed for boarding raids and piracy.",
+    "manufacturing_quirks": "Asymmetrical scrap plating creates an off-center center-of-gravity; pilots must learn to compensate for a persistent leftward yaw during boost maneuvers.",
+    "battlefield_reputation": "Pilots wear their suits' battle scars and mismatched armor plates like badges of honor, boasting that no corporate cleanroom suit has the guts to brawl at point-blank range.",
+    "doctrine_summary": "Warlord Flagship doctrine tailored for faction_c strategic objectives.",
+    "production_count": 68,
+    "active_units": 56,
+    "casualty_count": 12,
+    "kill_count": 40,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Deimos Wreckage Graveyard",
+      "Pallas Smuggling Hub",
+      "Outer Kuiper Gateway"
+    ],
+    "combat_loss_ratio": 0.3,
+    "survivability_rating": 77,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 68 units manufactured (56 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_syndicate_jackal_08": {
     "id": "ms_syndicate_jackal_08",
@@ -1185,7 +2088,28 @@
       62,
       42
     ],
-    "lore": "Aggressive skirmisher operated by seasoned mercenary contractors."
+    "lore": "Aggressive skirmisher operated by seasoned mercenary contractors.",
+    "historical_lore": "ARC-J08 Jackal Skirmisher was manufactured by Rustworks Salvage Cartel to fill the critical role of Fast Skirmisher. Jury-rigged across lawless asteroid shipyards by the Rustworks Salvage Cartel. Constructed from welded derelict transport hulls, repurposed industrial mining claws, and contraband military reactors, the chassis reflects the brutal, scavenged survival ethos of the Asteroid Belt.",
+    "manufacturing_quirks": "Asymmetrical scrap plating creates an off-center center-of-gravity; pilots must learn to compensate for a persistent leftward yaw during boost maneuvers.",
+    "battlefield_reputation": "Feared by merchant convoy captains across the Sol system; the harsh shriek of its pneumatic boarding harpoon usually signals total cargo confiscation.",
+    "doctrine_summary": "Fast Skirmisher doctrine tailored for faction_c strategic objectives.",
+    "production_count": 1153,
+    "active_units": 830,
+    "casualty_count": 323,
+    "kill_count": 330,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Ceres Mining Outposts",
+      "Vesta Debris Belt",
+      "Trojan Asteroid Corridors"
+    ],
+    "combat_loss_ratio": 0.98,
+    "survivability_rating": 51,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,153 units manufactured (830 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_marauder_02": {
     "id": "ms_syndicate_marauder_02",
@@ -1212,7 +2136,28 @@
       58,
       40
     ],
-    "lore": "Brutal brawler capable of withstanding direct missile hits."
+    "lore": "Brutal brawler capable of withstanding direct missile hits.",
+    "historical_lore": "RST-02 Marauder Brawler was manufactured by Rustworks Salvage Cartel to fill the critical role of Heavy Brawler. Assembled in clandestine asteroid hollows by the Asteroid Reclamation Guild. Designed to outlast corporate attrition, its frame features asymmetrical slag armor plates and heavy pneumatic harpoon winches designed for boarding raids and piracy.",
+    "manufacturing_quirks": "The scavenged reactor runs hot and loud, occasionally venting caustic sulfurous exhaust directly past the cockpit intake filters.",
+    "battlefield_reputation": "Mercenaries nickname it 'The Junkyard Dog'\u2014ugly, loud, and vicious, with an uncanny ability to keep crawling forward after losing half its torso armor.",
+    "doctrine_summary": "Heavy Brawler doctrine tailored for faction_c strategic objectives.",
+    "production_count": 677,
+    "active_units": 452,
+    "casualty_count": 225,
+    "kill_count": 349,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Psyche Heavy Metal Drift",
+      "Sector 7 Scrap Fields",
+      "Inner Belt Ambush Corridors"
+    ],
+    "combat_loss_ratio": 0.64,
+    "survivability_rating": 61,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 677 units manufactured (452 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_warthog_05": {
     "id": "ms_syndicate_warthog_05",
@@ -1239,7 +2184,28 @@
       55,
       36
     ],
-    "lore": "Fires dense balls of molten industrial slag over fortress battlements."
+    "lore": "Fires dense balls of molten industrial slag over fortress battlements.",
+    "historical_lore": "ARC-W05 Warthog Siege was manufactured by Rustworks Salvage Cartel to fill the critical role of Siege Mortar. Assembled in clandestine asteroid hollows by the Asteroid Reclamation Guild. Designed to outlast corporate attrition, its frame features asymmetrical slag armor plates and heavy pneumatic harpoon winches designed for boarding raids and piracy.",
+    "manufacturing_quirks": "Asymmetrical scrap plating creates an off-center center-of-gravity; pilots must learn to compensate for a persistent leftward yaw during boost maneuvers.",
+    "battlefield_reputation": "Mercenaries nickname it 'The Junkyard Dog'\u2014ugly, loud, and vicious, with an uncanny ability to keep crawling forward after losing half its torso armor.",
+    "doctrine_summary": "Siege Mortar doctrine tailored for faction_c strategic objectives.",
+    "production_count": 1330,
+    "active_units": 989,
+    "casualty_count": 341,
+    "kill_count": 375,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Ceres Mining Outposts",
+      "Vesta Debris Belt",
+      "Trojan Asteroid Corridors"
+    ],
+    "combat_loss_ratio": 0.91,
+    "survivability_rating": 52,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,330 units manufactured (989 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_ripper_07": {
     "id": "ms_syndicate_ripper_07",
@@ -1266,7 +2232,28 @@
       50,
       36
     ],
-    "lore": "Close-combat terror machine with twin industrial circular saws."
+    "lore": "Close-combat terror machine with twin industrial circular saws.",
+    "historical_lore": "ARC-R07 Ripper Melee was manufactured by Rustworks Salvage Cartel to fill the critical role of Melee Specialist. Engineered by the Ceres Iron Outlaws as an intimidating shock-assault platform. With dual rotary flak cannons and spiked kinetic ramming cowls, it excels at terrorizing civilian trade convoys and ambushing corporate supply lines.",
+    "manufacturing_quirks": "Cockpit seals are often patched with industrial sealant tape and re-welded bulkhead scraps; cabin pressure alarms frequently sound false warnings in vacuum.",
+    "battlefield_reputation": "Terran and Colony militaries officially designate it as 'Irregular Terror Armor', advising pilots to destroy them on sight rather than negotiate.",
+    "doctrine_summary": "Melee Specialist doctrine tailored for faction_c strategic objectives.",
+    "production_count": 1138,
+    "active_units": 864,
+    "casualty_count": 274,
+    "kill_count": 425,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Psyche Heavy Metal Drift",
+      "Sector 7 Scrap Fields",
+      "Inner Belt Ambush Corridors"
+    ],
+    "combat_loss_ratio": 0.64,
+    "survivability_rating": 61,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,138 units manufactured (864 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_scythe_09": {
     "id": "ms_syndicate_scythe_09",
@@ -1293,7 +2280,28 @@
       45,
       35
     ],
-    "lore": "Silent assassin utilizing monofilament wire to sever limbs in ambushes."
+    "lore": "Silent assassin utilizing monofilament wire to sever limbs in ambushes.",
+    "historical_lore": "ARC-S09 Scythe Infiltrator was manufactured by Rustworks Salvage Cartel to fill the critical role of Stealth Assassin. Engineered by the Ceres Iron Outlaws as an intimidating shock-assault platform. With dual rotary flak cannons and spiked kinetic ramming cowls, it excels at terrorizing civilian trade convoys and ambushing corporate supply lines.",
+    "manufacturing_quirks": "The scavenged reactor runs hot and loud, occasionally venting caustic sulfurous exhaust directly past the cockpit intake filters.",
+    "battlefield_reputation": "Terran and Colony militaries officially designate it as 'Irregular Terror Armor', advising pilots to destroy them on sight rather than negotiate.",
+    "doctrine_summary": "Stealth Assassin doctrine tailored for faction_c strategic objectives.",
+    "production_count": 973,
+    "active_units": 669,
+    "casualty_count": 304,
+    "kill_count": 539,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Deimos Wreckage Graveyard",
+      "Pallas Smuggling Hub",
+      "Outer Kuiper Gateway"
+    ],
+    "combat_loss_ratio": 0.56,
+    "survivability_rating": 64,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 973 units manufactured (669 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_slag_lobber_03": {
     "id": "ms_syndicate_slag_lobber_03",
@@ -1320,7 +2328,28 @@
       54,
       38
     ],
-    "lore": "Covers the battlefield in sticky, blinding slag that overheats enemy vents."
+    "lore": "Covers the battlefield in sticky, blinding slag that overheats enemy vents.",
+    "historical_lore": "RST-03 Slag Lobber was manufactured by Rustworks Salvage Cartel to fill the critical role of Heavy Support. Assembled in clandestine asteroid hollows by the Asteroid Reclamation Guild. Designed to outlast corporate attrition, its frame features asymmetrical slag armor plates and heavy pneumatic harpoon winches designed for boarding raids and piracy.",
+    "manufacturing_quirks": "The scavenged reactor runs hot and loud, occasionally venting caustic sulfurous exhaust directly past the cockpit intake filters.",
+    "battlefield_reputation": "Pilots wear their suits' battle scars and mismatched armor plates like badges of honor, boasting that no corporate cleanroom suit has the guts to brawl at point-blank range.",
+    "doctrine_summary": "Heavy Support doctrine tailored for faction_c strategic objectives.",
+    "production_count": 1080,
+    "active_units": 859,
+    "casualty_count": 221,
+    "kill_count": 376,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Ceres Mining Outposts",
+      "Vesta Debris Belt",
+      "Trojan Asteroid Corridors"
+    ],
+    "combat_loss_ratio": 0.59,
+    "survivability_rating": 63,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,080 units manufactured (859 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_junker_dread_04": {
     "id": "ms_syndicate_junker_dread_04",
@@ -1347,7 +2376,28 @@
       48,
       32
     ],
-    "lore": "Walking scrapyard monstrosity equipped with guns salvaged from downed warships."
+    "lore": "Walking scrapyard monstrosity equipped with guns salvaged from downed warships.",
+    "historical_lore": "RST-04 Junker Dreadnought was manufactured by Rustworks Salvage Cartel to fill the critical role of Scrap Behemoth. Engineered by the Ceres Iron Outlaws as an intimidating shock-assault platform. With dual rotary flak cannons and spiked kinetic ramming cowls, it excels at terrorizing civilian trade convoys and ambushing corporate supply lines.",
+    "manufacturing_quirks": "Asymmetrical scrap plating creates an off-center center-of-gravity; pilots must learn to compensate for a persistent leftward yaw during boost maneuvers.",
+    "battlefield_reputation": "Mercenaries nickname it 'The Junkyard Dog'\u2014ugly, loud, and vicious, with an uncanny ability to keep crawling forward after losing half its torso armor.",
+    "doctrine_summary": "Scrap Behemoth doctrine tailored for faction_c strategic objectives.",
+    "production_count": 705,
+    "active_units": 467,
+    "casualty_count": 238,
+    "kill_count": 346,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Psyche Heavy Metal Drift",
+      "Sector 7 Scrap Fields",
+      "Inner Belt Ambush Corridors"
+    ],
+    "combat_loss_ratio": 0.69,
+    "survivability_rating": 59,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 705 units manufactured (467 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_chimera_01": {
     "id": "ms_syndicate_chimera_01",
@@ -1374,7 +2424,28 @@
       68,
       48
     ],
-    "lore": "High-end mercenary flagship combining the finest military components on the black market."
+    "lore": "High-end mercenary flagship combining the finest military components on the black market.",
+    "historical_lore": "ARC-C01 Chimera Vanguard was manufactured by Rustworks Salvage Cartel to fill the critical role of Elite Hybrid. Engineered by the Ceres Iron Outlaws as an intimidating shock-assault platform. With dual rotary flak cannons and spiked kinetic ramming cowls, it excels at terrorizing civilian trade convoys and ambushing corporate supply lines.",
+    "manufacturing_quirks": "Cockpit seals are often patched with industrial sealant tape and re-welded bulkhead scraps; cabin pressure alarms frequently sound false warnings in vacuum.",
+    "battlefield_reputation": "Feared by merchant convoy captains across the Sol system; the harsh shriek of its pneumatic boarding harpoon usually signals total cargo confiscation.",
+    "doctrine_summary": "Elite Hybrid doctrine tailored for faction_c strategic objectives.",
+    "production_count": 1079,
+    "active_units": 666,
+    "casualty_count": 413,
+    "kill_count": 435,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Psyche Heavy Metal Drift",
+      "Sector 7 Scrap Fields",
+      "Inner Belt Ambush Corridors"
+    ],
+    "combat_loss_ratio": 0.95,
+    "survivability_rating": 51,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,079 units manufactured (666 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_cerberus_04": {
     "id": "ms_syndicate_cerberus_04",
@@ -1401,7 +2472,28 @@
       58,
       38
     ],
-    "lore": "Terrifying three-turret assault mech capable of engaging multiple targets."
+    "lore": "Terrifying three-turret assault mech capable of engaging multiple targets.",
+    "historical_lore": "ARC-X04 Cerberus Triple-Head was manufactured by Rustworks Salvage Cartel to fill the critical role of Triple-Head Assault. Assembled in clandestine asteroid hollows by the Asteroid Reclamation Guild. Designed to outlast corporate attrition, its frame features asymmetrical slag armor plates and heavy pneumatic harpoon winches designed for boarding raids and piracy.",
+    "manufacturing_quirks": "Asymmetrical scrap plating creates an off-center center-of-gravity; pilots must learn to compensate for a persistent leftward yaw during boost maneuvers.",
+    "battlefield_reputation": "Feared by merchant convoy captains across the Sol system; the harsh shriek of its pneumatic boarding harpoon usually signals total cargo confiscation.",
+    "doctrine_summary": "Triple-Head Assault doctrine tailored for faction_c strategic objectives.",
+    "production_count": 1189,
+    "active_units": 910,
+    "casualty_count": 279,
+    "kill_count": 452,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Deimos Wreckage Graveyard",
+      "Pallas Smuggling Hub",
+      "Outer Kuiper Gateway"
+    ],
+    "combat_loss_ratio": 0.62,
+    "survivability_rating": 62,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,189 units manufactured (910 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_iron_reaver_09": {
     "id": "ms_syndicate_iron_reaver_09",
@@ -1428,7 +2520,28 @@
       62,
       40
     ],
-    "lore": "The supreme flagship of pirate armadas, devastating any suit it tackles."
+    "lore": "The supreme flagship of pirate armadas, devastating any suit it tackles.",
+    "historical_lore": "ARC-X09 Iron Reaver was manufactured by Rustworks Salvage Cartel to fill the critical role of Reaver Flagship. Assembled in clandestine asteroid hollows by the Asteroid Reclamation Guild. Designed to outlast corporate attrition, its frame features asymmetrical slag armor plates and heavy pneumatic harpoon winches designed for boarding raids and piracy.",
+    "manufacturing_quirks": "The scavenged reactor runs hot and loud, occasionally venting caustic sulfurous exhaust directly past the cockpit intake filters.",
+    "battlefield_reputation": "Mercenaries nickname it 'The Junkyard Dog'\u2014ugly, loud, and vicious, with an uncanny ability to keep crawling forward after losing half its torso armor.",
+    "doctrine_summary": "Reaver Flagship doctrine tailored for faction_c strategic objectives.",
+    "production_count": 583,
+    "active_units": 462,
+    "casualty_count": 121,
+    "kill_count": 130,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Psyche Heavy Metal Drift",
+      "Sector 7 Scrap Fields",
+      "Inner Belt Ambush Corridors"
+    ],
+    "combat_loss_ratio": 0.93,
+    "survivability_rating": 52,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 583 units manufactured (462 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_rust_devil_x01": {
     "id": "ms_syndicate_rust_devil_x01",
@@ -1455,7 +2568,28 @@
       50,
       34
     ],
-    "lore": "Legendary prototype chassis welded together by insane pirate foundry masters."
+    "lore": "Legendary prototype chassis welded together by insane pirate foundry masters.",
+    "historical_lore": "RST-X01 Rust Devil Prime was manufactured by Rustworks Salvage Cartel to fill the critical role of Scrap Apex X-Spec. Engineered by the Ceres Iron Outlaws as an intimidating shock-assault platform. With dual rotary flak cannons and spiked kinetic ramming cowls, it excels at terrorizing civilian trade convoys and ambushing corporate supply lines.",
+    "manufacturing_quirks": "The scavenged reactor runs hot and loud, occasionally venting caustic sulfurous exhaust directly past the cockpit intake filters.",
+    "battlefield_reputation": "Mercenaries nickname it 'The Junkyard Dog'\u2014ugly, loud, and vicious, with an uncanny ability to keep crawling forward after losing half its torso armor.",
+    "doctrine_summary": "Scrap Apex X-Spec doctrine tailored for faction_c strategic objectives.",
+    "production_count": 69,
+    "active_units": 51,
+    "casualty_count": 18,
+    "kill_count": 60,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Ceres Mining Outposts",
+      "Vesta Debris Belt",
+      "Trojan Asteroid Corridors"
+    ],
+    "combat_loss_ratio": 0.3,
+    "survivability_rating": 77,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 69 units manufactured (51 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_zaibatsu_muramasa_03": {
     "id": "ms_zaibatsu_muramasa_03",
@@ -1482,7 +2616,28 @@
       24,
       45
     ],
-    "lore": "Surgical dueling mech interfaced directly into the pilot's spinal cord via cyber-implants."
+    "lore": "Surgical dueling mech interfaced directly into the pilot's spinal cord via cyber-implants.",
+    "historical_lore": "Conceived in the subterranean cleanrooms of Olympus Mons by Hyperion Advanced Tactical Systems, the ZAI-03 Muramasa was designed for corporate wetwork and VIP duel interdiction. It features an experimental bio-neural interface that wires directly into the pilot's spinal implants, granting reflex latencies approaching zero.",
+    "manufacturing_quirks": "The bio-feedback loop generates severe neuro-thermal spikes in un-augmented pilots; Zaibatsu cockpit technicians mandate cryogenic nitrogen life-support flushes after every combat sortie.",
+    "battlefield_reputation": "Known in mercenary channels as 'The Black Scalpel'. Rival aces report that encountering a Muramasa in CQB feels less like a dogfight and more like an execution by a machine that moves before human eyes can track it.",
+    "doctrine_summary": "High-frequency tachyon blade dueling, rapid assassination, and line disruption.",
+    "production_count": 2150,
+    "active_units": 1720,
+    "casualty_count": 430,
+    "kill_count": 1680,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Olympus Mons Redoubt",
+      "Phobos Corporate Complex",
+      "Syrtis Major Orbital Array"
+    ],
+    "combat_loss_ratio": 0.26,
+    "survivability_rating": 80,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 2,150 units manufactured (1,720 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_zaibatsu_kage_07": {
     "id": "ms_zaibatsu_kage_07",
@@ -1509,7 +2664,28 @@
       18,
       35
     ],
-    "lore": "Stealth assassin chassis that bends light around its hull to vanish in open daylight."
+    "lore": "Stealth assassin chassis that bends light around its hull to vanish in open daylight.",
+    "historical_lore": "ZBT-K07 Kage was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Optical Camo Assassin. Designed by Olympus Mons Precision Armory to execute high-value asset decapitations. Featuring advanced optical refraction camo and hyper-focused electromagnetic rail weapons, it strikes from total sensory concealment before vanishing into the Martian red dust.",
+    "manufacturing_quirks": "Optical camouflage refractor panels degrade quickly if scratched by abrasive Martian dust storms, requiring meticulous cleanroom polishing between missions.",
+    "battlefield_reputation": "Enemy pilots report that fighting one feels unnatural\u2014it anticipates firing angles and missile trajectories before human reaction times would allow.",
+    "doctrine_summary": "Optical Camo Assassin doctrine tailored for faction_d strategic objectives.",
+    "production_count": 4582,
+    "active_units": 3815,
+    "casualty_count": 767,
+    "kill_count": 1040,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Valles Marineris Chasm",
+      "Hellas Planitia Basin",
+      "Cydonia Research Sector"
+    ],
+    "combat_loss_ratio": 0.74,
+    "survivability_rating": 58,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 4,582 units manufactured (3,815 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_zaibatsu_ronin_04": {
     "id": "ms_zaibatsu_ronin_04",
@@ -1536,7 +2712,28 @@
       20,
       35
     ],
-    "lore": "Coordinates autonomous AI sub-drones that harass enemy flanks with synchronized laser fire."
+    "lore": "Coordinates autonomous AI sub-drones that harass enemy flanks with synchronized laser fire.",
+    "historical_lore": "ZBT-R04 Ronin was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Autonomous Carrier. Engineered in the high-security orbital labs of Olympus Mons by Hyperion Advanced Tactical Systems. Created to enforce corporate dominance through ruthless surgical precision, the suit integrates bio-neural cockpit synchronization, sub-zero liquid nitrogen coolant loops, and high-frequency tachyon blade weaponry.",
+    "manufacturing_quirks": "High-frequency blade emitters consume massive energy spikes, momentarily dimming cabin displays and HUD overlays upon activation.",
+    "battlefield_reputation": "Corporate pilots regard piloting one as the pinnacle of military prestige, treating their chassis with the ritual reverence of an ancestral samurai blade.",
+    "doctrine_summary": "Autonomous Carrier doctrine tailored for faction_d strategic objectives.",
+    "production_count": 2910,
+    "active_units": 2067,
+    "casualty_count": 843,
+    "kill_count": 1108,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Olympus Mons Redoubt",
+      "Phobos Deep Vaults",
+      "Syrtis Major Corporate Corridor"
+    ],
+    "combat_loss_ratio": 0.76,
+    "survivability_rating": 57,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 2,910 units manufactured (2,067 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_zaibatsu_tessen_09": {
     "id": "ms_zaibatsu_tessen_09",
@@ -1563,7 +2760,28 @@
       22,
       45
     ],
-    "lore": "Fires concentrated EMP pulses that fry enemy targeting computers and freeze joint hydraulics."
+    "lore": "Fires concentrated EMP pulses that fry enemy targeting computers and freeze joint hydraulics.",
+    "historical_lore": "ZBT-T09 Tessen was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Electronic Dominance. Developed by Takahashi Cybernetics as the apex tool of corporate espionage and elite dueling. Its bio-synthetic neural link allows the pilot's subconscious reflexes to guide the machine's limbs with near-instantaneous reaction latencies.",
+    "manufacturing_quirks": "Optical camouflage refractor panels degrade quickly if scratched by abrasive Martian dust storms, requiring meticulous cleanroom polishing between missions.",
+    "battlefield_reputation": "Mercenaries speak of it in hushed tones, warning that duelists trained in the Olympus Mons academies fight with cold, mathematical precision and zero mercy.",
+    "doctrine_summary": "Electronic Dominance doctrine tailored for faction_d strategic objectives.",
+    "production_count": 3113,
+    "active_units": 2486,
+    "casualty_count": 627,
+    "kill_count": 867,
+    "adoption_status": "standard_issue",
+    "primary_theaters": [
+      "Tharsis Volcanic Plateau",
+      "Deimos Listening Station",
+      "Mars High Orbital Array"
+    ],
+    "combat_loss_ratio": 0.72,
+    "survivability_rating": 58,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 3,113 units manufactured (2,486 active in field). Status: STANDARD_ISSUE."
+    ]
   },
   "ms_zaibatsu_shinobi_01": {
     "id": "ms_zaibatsu_shinobi_01",
@@ -1590,7 +2808,28 @@
       16,
       30
     ],
-    "lore": "Corporate security scout deployed for industrial espionage raids."
+    "lore": "Corporate security scout deployed for industrial espionage raids.",
+    "historical_lore": "HATS-01 Shinobi Recon was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Recon Infiltrator. Engineered in the high-security orbital labs of Olympus Mons by Hyperion Advanced Tactical Systems. Created to enforce corporate dominance through ruthless surgical precision, the suit integrates bio-neural cockpit synchronization, sub-zero liquid nitrogen coolant loops, and high-frequency tachyon blade weaponry.",
+    "manufacturing_quirks": "The direct neural link causes intense sensory phantom feedback in pilots; extended combat operations without cybernetic cerebellum dampers cause severe migraines.",
+    "battlefield_reputation": "Mercenaries speak of it in hushed tones, warning that duelists trained in the Olympus Mons academies fight with cold, mathematical precision and zero mercy.",
+    "doctrine_summary": "Recon Infiltrator doctrine tailored for faction_d strategic objectives.",
+    "production_count": 639,
+    "active_units": 498,
+    "casualty_count": 141,
+    "kill_count": 224,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Olympus Mons Redoubt",
+      "Phobos Deep Vaults",
+      "Syrtis Major Corporate Corridor"
+    ],
+    "combat_loss_ratio": 0.63,
+    "survivability_rating": 61,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 639 units manufactured (498 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_shuriken_02": {
     "id": "ms_zaibatsu_shuriken_02",
@@ -1617,7 +2856,28 @@
       22,
       42
     ],
-    "lore": "Agile harasser equipped with high-speed micro-beam emitters."
+    "lore": "Agile harasser equipped with high-speed micro-beam emitters.",
+    "historical_lore": "ZBT-S02 Shuriken Skirmisher was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Fast Harasser. Designed by Olympus Mons Precision Armory to execute high-value asset decapitations. Featuring advanced optical refraction camo and hyper-focused electromagnetic rail weapons, it strikes from total sensory concealment before vanishing into the Martian red dust.",
+    "manufacturing_quirks": "Optical camouflage refractor panels degrade quickly if scratched by abrasive Martian dust storms, requiring meticulous cleanroom polishing between missions.",
+    "battlefield_reputation": "Mercenaries speak of it in hushed tones, warning that duelists trained in the Olympus Mons academies fight with cold, mathematical precision and zero mercy.",
+    "doctrine_summary": "Fast Harasser doctrine tailored for faction_d strategic objectives.",
+    "production_count": 1553,
+    "active_units": 1173,
+    "casualty_count": 380,
+    "kill_count": 407,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Valles Marineris Chasm",
+      "Hellas Planitia Basin",
+      "Cydonia Research Sector"
+    ],
+    "combat_loss_ratio": 0.93,
+    "survivability_rating": 52,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,553 units manufactured (1,173 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_takahashi_custom": {
     "id": "ms_zaibatsu_takahashi_custom",
@@ -1644,7 +2904,28 @@
       32,
       60
     ],
-    "lore": "Personal masterwork of Director Renzo Takahashi with gold-etched bio-neural circuitry."
+    "lore": "Personal masterwork of Director Renzo Takahashi with gold-etched bio-neural circuitry.",
+    "historical_lore": "ZAI-03C Muramasa Executive was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Executive Custom. Engineered in the high-security orbital labs of Olympus Mons by Hyperion Advanced Tactical Systems. Created to enforce corporate dominance through ruthless surgical precision, the suit integrates bio-neural cockpit synchronization, sub-zero liquid nitrogen coolant loops, and high-frequency tachyon blade weaponry.",
+    "manufacturing_quirks": "Optical camouflage refractor panels degrade quickly if scratched by abrasive Martian dust storms, requiring meticulous cleanroom polishing between missions.",
+    "battlefield_reputation": "Enemy pilots report that fighting one feels unnatural\u2014it anticipates firing angles and missile trajectories before human reaction times would allow.",
+    "doctrine_summary": "Executive Custom doctrine tailored for faction_d strategic objectives.",
+    "production_count": 169,
+    "active_units": 144,
+    "casualty_count": 25,
+    "kill_count": 92,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Olympus Mons Redoubt",
+      "Phobos Deep Vaults",
+      "Syrtis Major Corporate Corridor"
+    ],
+    "combat_loss_ratio": 0.27,
+    "survivability_rating": 79,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 169 units manufactured (144 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_zaibatsu_kamaitachi_03": {
     "id": "ms_zaibatsu_kamaitachi_03",
@@ -1671,7 +2952,28 @@
       26,
       48
     ],
-    "lore": "Rapid strike mech capable of eviscerating unshielded mechs in a single pass."
+    "lore": "Rapid strike mech capable of eviscerating unshielded mechs in a single pass.",
+    "historical_lore": "ZBT-K03 Kamaitachi Slicer was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of High-Speed Slicer. Developed by Takahashi Cybernetics as the apex tool of corporate espionage and elite dueling. Its bio-synthetic neural link allows the pilot's subconscious reflexes to guide the machine's limbs with near-instantaneous reaction latencies.",
+    "manufacturing_quirks": "Sub-zero liquid nitrogen cooling jackets frost over the external armor seams, creating a ghostly white mist during high-output blade ignition.",
+    "battlefield_reputation": "Mercenaries speak of it in hushed tones, warning that duelists trained in the Olympus Mons academies fight with cold, mathematical precision and zero mercy.",
+    "doctrine_summary": "High-Speed Slicer doctrine tailored for faction_d strategic objectives.",
+    "production_count": 1335,
+    "active_units": 939,
+    "casualty_count": 396,
+    "kill_count": 407,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Tharsis Volcanic Plateau",
+      "Deimos Listening Station",
+      "Mars High Orbital Array"
+    ],
+    "combat_loss_ratio": 0.97,
+    "survivability_rating": 51,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,335 units manufactured (939 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_ronin_guardian_02": {
     "id": "ms_zaibatsu_ronin_guardian_02",
@@ -1698,7 +3000,28 @@
       30,
       55
     ],
-    "lore": "Defends Zaibatsu research laboratories with heavy energy shields and autonomous drones."
+    "lore": "Defends Zaibatsu research laboratories with heavy energy shields and autonomous drones.",
+    "historical_lore": "HATS-02 Ronin Guardian was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Heavy Guardian. Designed by Olympus Mons Precision Armory to execute high-value asset decapitations. Featuring advanced optical refraction camo and hyper-focused electromagnetic rail weapons, it strikes from total sensory concealment before vanishing into the Martian red dust.",
+    "manufacturing_quirks": "High-frequency blade emitters consume massive energy spikes, momentarily dimming cabin displays and HUD overlays upon activation.",
+    "battlefield_reputation": "Mercenaries speak of it in hushed tones, warning that duelists trained in the Olympus Mons academies fight with cold, mathematical precision and zero mercy.",
+    "doctrine_summary": "Heavy Guardian doctrine tailored for faction_d strategic objectives.",
+    "production_count": 1416,
+    "active_units": 1108,
+    "casualty_count": 308,
+    "kill_count": 336,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Valles Marineris Chasm",
+      "Hellas Planitia Basin",
+      "Cydonia Research Sector"
+    ],
+    "combat_loss_ratio": 0.92,
+    "survivability_rating": 52,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,416 units manufactured (1,108 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_oni_05": {
     "id": "ms_zaibatsu_oni_05",
@@ -1725,7 +3048,28 @@
       25,
       45
     ],
-    "lore": "Terrifying heavy assault suit wielding a plasma-charged kanabo club."
+    "lore": "Terrifying heavy assault suit wielding a plasma-charged kanabo club.",
+    "historical_lore": "ZBT-O05 Oni Heavy Assault was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Heavy Brawler. Engineered in the high-security orbital labs of Olympus Mons by Hyperion Advanced Tactical Systems. Created to enforce corporate dominance through ruthless surgical precision, the suit integrates bio-neural cockpit synchronization, sub-zero liquid nitrogen coolant loops, and high-frequency tachyon blade weaponry.",
+    "manufacturing_quirks": "The direct neural link causes intense sensory phantom feedback in pilots; extended combat operations without cybernetic cerebellum dampers cause severe migraines.",
+    "battlefield_reputation": "Known with dread in corporate boardrooms as 'The Black Scalpel'. When a Zaibatsu duel chassis appears on the horizon, corporate rival executives quickly settle their contracts.",
+    "doctrine_summary": "Heavy Brawler doctrine tailored for faction_d strategic objectives.",
+    "production_count": 586,
+    "active_units": 443,
+    "casualty_count": 143,
+    "kill_count": 228,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Tharsis Volcanic Plateau",
+      "Deimos Listening Station",
+      "Mars High Orbital Array"
+    ],
+    "combat_loss_ratio": 0.63,
+    "survivability_rating": 61,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 586 units manufactured (443 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_bushido_01": {
     "id": "ms_zaibatsu_bushido_01",
@@ -1752,7 +3096,28 @@
       34,
       58
     ],
-    "lore": "Frontline vanguard unit driven by hyper-experienced cybernetically linked pilots."
+    "lore": "Frontline vanguard unit driven by hyper-experienced cybernetically linked pilots.",
+    "historical_lore": "ZBT-B01 Bushido Vanguard was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Elite Vanguard. Developed by Takahashi Cybernetics as the apex tool of corporate espionage and elite dueling. Its bio-synthetic neural link allows the pilot's subconscious reflexes to guide the machine's limbs with near-instantaneous reaction latencies.",
+    "manufacturing_quirks": "The direct neural link causes intense sensory phantom feedback in pilots; extended combat operations without cybernetic cerebellum dampers cause severe migraines.",
+    "battlefield_reputation": "Mercenaries speak of it in hushed tones, warning that duelists trained in the Olympus Mons academies fight with cold, mathematical precision and zero mercy.",
+    "doctrine_summary": "Elite Vanguard doctrine tailored for faction_d strategic objectives.",
+    "production_count": 518,
+    "active_units": 321,
+    "casualty_count": 197,
+    "kill_count": 269,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Olympus Mons Redoubt",
+      "Phobos Deep Vaults",
+      "Syrtis Major Corporate Corridor"
+    ],
+    "combat_loss_ratio": 0.73,
+    "survivability_rating": 58,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 518 units manufactured (321 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_fudo_08": {
     "id": "ms_zaibatsu_fudo_08",
@@ -1779,7 +3144,28 @@
       28,
       50
     ],
-    "lore": "Anchors defense lines by projecting widespread energy barriers that deflect railgun rounds."
+    "lore": "Anchors defense lines by projecting widespread energy barriers that deflect railgun rounds.",
+    "historical_lore": "ZBT-F08 Fudo Defensive Wall was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Energy Bastion. Developed by Takahashi Cybernetics as the apex tool of corporate espionage and elite dueling. Its bio-synthetic neural link allows the pilot's subconscious reflexes to guide the machine's limbs with near-instantaneous reaction latencies.",
+    "manufacturing_quirks": "Sub-zero liquid nitrogen cooling jackets frost over the external armor seams, creating a ghostly white mist during high-output blade ignition.",
+    "battlefield_reputation": "Mercenaries speak of it in hushed tones, warning that duelists trained in the Olympus Mons academies fight with cold, mathematical precision and zero mercy.",
+    "doctrine_summary": "Energy Bastion doctrine tailored for faction_d strategic objectives.",
+    "production_count": 1414,
+    "active_units": 1019,
+    "casualty_count": 395,
+    "kill_count": 566,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Olympus Mons Redoubt",
+      "Phobos Deep Vaults",
+      "Syrtis Major Corporate Corridor"
+    ],
+    "combat_loss_ratio": 0.7,
+    "survivability_rating": 59,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,414 units manufactured (1,019 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_raiden_03": {
     "id": "ms_zaibatsu_raiden_03",
@@ -1806,7 +3192,28 @@
       35,
       65
     ],
-    "lore": "Discharges cascading arcs of artificial lightning across multiple enemy mechs."
+    "lore": "Discharges cascading arcs of artificial lightning across multiple enemy mechs.",
+    "historical_lore": "HATS-03 Raiden Storm was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Lightning Siege. Developed by Takahashi Cybernetics as the apex tool of corporate espionage and elite dueling. Its bio-synthetic neural link allows the pilot's subconscious reflexes to guide the machine's limbs with near-instantaneous reaction latencies.",
+    "manufacturing_quirks": "The direct neural link causes intense sensory phantom feedback in pilots; extended combat operations without cybernetic cerebellum dampers cause severe migraines.",
+    "battlefield_reputation": "Mercenaries speak of it in hushed tones, warning that duelists trained in the Olympus Mons academies fight with cold, mathematical precision and zero mercy.",
+    "doctrine_summary": "Lightning Siege doctrine tailored for faction_d strategic objectives.",
+    "production_count": 675,
+    "active_units": 473,
+    "casualty_count": 202,
+    "kill_count": 214,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Valles Marineris Chasm",
+      "Hellas Planitia Basin",
+      "Cydonia Research Sector"
+    ],
+    "combat_loss_ratio": 0.94,
+    "survivability_rating": 51,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 675 units manufactured (473 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_susanoo_04": {
     "id": "ms_zaibatsu_susanoo_04",
@@ -1833,7 +3240,28 @@
       38,
       72
     ],
-    "lore": "Supreme cybernetic war machine firing reality-tearing tachyon energy waves."
+    "lore": "Supreme cybernetic war machine firing reality-tearing tachyon energy waves.",
+    "historical_lore": "HATS-04 Susanoo Emperor was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Emperor Flagship. Engineered in the high-security orbital labs of Olympus Mons by Hyperion Advanced Tactical Systems. Created to enforce corporate dominance through ruthless surgical precision, the suit integrates bio-neural cockpit synchronization, sub-zero liquid nitrogen coolant loops, and high-frequency tachyon blade weaponry.",
+    "manufacturing_quirks": "The direct neural link causes intense sensory phantom feedback in pilots; extended combat operations without cybernetic cerebellum dampers cause severe migraines.",
+    "battlefield_reputation": "Known with dread in corporate boardrooms as 'The Black Scalpel'. When a Zaibatsu duel chassis appears on the horizon, corporate rival executives quickly settle their contracts.",
+    "doctrine_summary": "Emperor Flagship doctrine tailored for faction_d strategic objectives.",
+    "production_count": 582,
+    "active_units": 433,
+    "casualty_count": 149,
+    "kill_count": 156,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Tharsis Volcanic Plateau",
+      "Deimos Listening Station",
+      "Mars High Orbital Array"
+    ],
+    "combat_loss_ratio": 0.96,
+    "survivability_rating": 51,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 582 units manufactured (433 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_yamato_06": {
     "id": "ms_zaibatsu_yamato_06",
@@ -1860,7 +3288,28 @@
       30,
       56
     ],
-    "lore": "Walking battleship armed with long-range spinal particle beam turrets."
+    "lore": "Walking battleship armed with long-range spinal particle beam turrets.",
+    "historical_lore": "ZBT-Y06 Yamato Beam Siege was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Heavy Beam Cruiser. Designed by Olympus Mons Precision Armory to execute high-value asset decapitations. Featuring advanced optical refraction camo and hyper-focused electromagnetic rail weapons, it strikes from total sensory concealment before vanishing into the Martian red dust.",
+    "manufacturing_quirks": "The direct neural link causes intense sensory phantom feedback in pilots; extended combat operations without cybernetic cerebellum dampers cause severe migraines.",
+    "battlefield_reputation": "Corporate pilots regard piloting one as the pinnacle of military prestige, treating their chassis with the ritual reverence of an ancestral samurai blade.",
+    "doctrine_summary": "Heavy Beam Cruiser doctrine tailored for faction_d strategic objectives.",
+    "production_count": 604,
+    "active_units": 445,
+    "casualty_count": 159,
+    "kill_count": 263,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Valles Marineris Chasm",
+      "Hellas Planitia Basin",
+      "Cydonia Research Sector"
+    ],
+    "combat_loss_ratio": 0.6,
+    "survivability_rating": 62,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 604 units manufactured (445 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_kusanagi_05": {
     "id": "ms_zaibatsu_kusanagi_05",
@@ -1887,7 +3336,28 @@
       36,
       68
     ],
-    "lore": "Piloted through complete cerebral symbiosis, mirroring human thought instantaneously."
+    "lore": "Piloted through complete cerebral symbiosis, mirroring human thought instantaneously.",
+    "historical_lore": "ZBT-X05 Kusanagi Blade was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Cyber Dueling Ace. Engineered in the high-security orbital labs of Olympus Mons by Hyperion Advanced Tactical Systems. Created to enforce corporate dominance through ruthless surgical precision, the suit integrates bio-neural cockpit synchronization, sub-zero liquid nitrogen coolant loops, and high-frequency tachyon blade weaponry.",
+    "manufacturing_quirks": "High-frequency blade emitters consume massive energy spikes, momentarily dimming cabin displays and HUD overlays upon activation.",
+    "battlefield_reputation": "Known with dread in corporate boardrooms as 'The Black Scalpel'. When a Zaibatsu duel chassis appears on the horizon, corporate rival executives quickly settle their contracts.",
+    "doctrine_summary": "Cyber Dueling Ace doctrine tailored for faction_d strategic objectives.",
+    "production_count": 1579,
+    "active_units": 1112,
+    "casualty_count": 467,
+    "kill_count": 473,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Tharsis Volcanic Plateau",
+      "Deimos Listening Station",
+      "Mars High Orbital Array"
+    ],
+    "combat_loss_ratio": 0.99,
+    "survivability_rating": 50,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,579 units manufactured (1,112 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_null07_phantom_x07": {
     "id": "ms_zaibatsu_null07_phantom_x07",
@@ -1914,7 +3384,28 @@
       20,
       38
     ],
-    "lore": "Personal black-ops chassis of Null-07, capable of hacking enemy mechs mid-combat."
+    "lore": "Personal black-ops chassis of Null-07, capable of hacking enemy mechs mid-combat.",
+    "historical_lore": "ZBT-X07 Null-07 Phantom was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Cybernetic Phantom. Engineered in the high-security orbital labs of Olympus Mons by Hyperion Advanced Tactical Systems. Created to enforce corporate dominance through ruthless surgical precision, the suit integrates bio-neural cockpit synchronization, sub-zero liquid nitrogen coolant loops, and high-frequency tachyon blade weaponry.",
+    "manufacturing_quirks": "High-frequency blade emitters consume massive energy spikes, momentarily dimming cabin displays and HUD overlays upon activation.",
+    "battlefield_reputation": "Enemy pilots report that fighting one feels unnatural\u2014it anticipates firing angles and missile trajectories before human reaction times would allow.",
+    "doctrine_summary": "Cybernetic Phantom doctrine tailored for faction_d strategic objectives.",
+    "production_count": 774,
+    "active_units": 537,
+    "casualty_count": 237,
+    "kill_count": 294,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Tharsis Volcanic Plateau",
+      "Deimos Listening Station",
+      "Mars High Orbital Array"
+    ],
+    "combat_loss_ratio": 0.81,
+    "survivability_rating": 55,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 774 units manufactured (537 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_amaterasu_x01": {
     "id": "ms_zaibatsu_amaterasu_x01",
@@ -1941,7 +3432,28 @@
       45,
       80
     ],
-    "lore": "Apex cybernetic prototype wielding forbidden transhumanist quantum processors."
+    "lore": "Apex cybernetic prototype wielding forbidden transhumanist quantum processors.",
+    "historical_lore": "HATS-X01 Amaterasu Zero was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Apex Cyber Prototype. Engineered in the high-security orbital labs of Olympus Mons by Hyperion Advanced Tactical Systems. Created to enforce corporate dominance through ruthless surgical precision, the suit integrates bio-neural cockpit synchronization, sub-zero liquid nitrogen coolant loops, and high-frequency tachyon blade weaponry.",
+    "manufacturing_quirks": "High-frequency blade emitters consume massive energy spikes, momentarily dimming cabin displays and HUD overlays upon activation.",
+    "battlefield_reputation": "Corporate pilots regard piloting one as the pinnacle of military prestige, treating their chassis with the ritual reverence of an ancestral samurai blade.",
+    "doctrine_summary": "Apex Cyber Prototype doctrine tailored for faction_d strategic objectives.",
+    "production_count": 94,
+    "active_units": 70,
+    "casualty_count": 24,
+    "kill_count": 68,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Olympus Mons Redoubt",
+      "Phobos Deep Vaults",
+      "Syrtis Major Corporate Corridor"
+    ],
+    "combat_loss_ratio": 0.35,
+    "survivability_rating": 74,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 94 units manufactured (70 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "bp_player_vanguard_heavy": {
     "id": "bp_player_vanguard_heavy",
@@ -1968,7 +3480,28 @@
       100,
       140
     ],
-    "lore": "Player proprietary heavy frontline chassis with modular component hardpoints."
+    "lore": "Player proprietary heavy frontline chassis with modular component hardpoints.",
+    "historical_lore": "The proprietary crown jewel of PMC Hephaestus engineering. Designed aboard the forge dreadnought by the player's R&D department, the Vanguard Linebreaker integrates modular alloy crucible metallurgy with universal weapon hardpoints, bridging the gap between Terran armor survivability and Colony power efficiency.",
+    "manufacturing_quirks": "The modular hardpoint lockpins require recalibration when swapping between ballistic and beam configurations, but the crucible alloy composition boasts zero thermal micro-fractures under repeated stress testing.",
+    "battlefield_reputation": "Mercenary pilots view the Vanguard as the ultimate survivor's chassis\u2014a custom combat platform that turns corporate battlefields into high-margin salvage operations.",
+    "doctrine_summary": "Proprietary PMC frontline assault, modular multi-role offensive anchor.",
+    "production_count": 120,
+    "active_units": 94,
+    "casualty_count": 26,
+    "kill_count": 142,
+    "adoption_status": "contested",
+    "primary_theaters": [
+      "Sector 4 Contested Periphery",
+      "Hephaestus Proving Grounds",
+      "Neutral Commerce Waypoints"
+    ],
+    "combat_loss_ratio": 0.18,
+    "survivability_rating": 85,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 120 units manufactured (94 active in field). Status: CONTESTED."
+    ]
   },
   "bp_player_stratos_interceptor": {
     "id": "bp_player_stratos_interceptor",
@@ -1995,7 +3528,27 @@
       110,
       150
     ],
-    "lore": "Player proprietary interceptor with lightning-fast lateral evasive thrusters."
+    "lore": "Player proprietary interceptor with lightning-fast lateral evasive thrusters.",
+    "historical_lore": "Engineered aboard PMC Hephaestus to contest corporate air and space corridors. The Stratos pairs aerodynamic lifting body geometry with dual vector thrusters, enabling hypersonic atmospheric re-entry strikes and lightning-fast orbital interception without expensive launch boosters.",
+    "manufacturing_quirks": "Vernier fuel feed valves can ice over during rapid atmospheric-to-vacuum transition unless the pilot maintains active heat dissipation cycling.",
+    "battlefield_reputation": "Enemy aces fear its sudden radar bloom on high-altitude recon sensors, knowing that a Stratos descent vector is usually followed by twin railgun precision fire.",
+    "doctrine_summary": "PMC air-superiority interceptor, long-range orbital interdiction.",
+    "production_count": 85,
+    "active_units": 68,
+    "casualty_count": 17,
+    "kill_count": 98,
+    "adoption_status": "contested",
+    "primary_theaters": [
+      "Upper Mesosphere Corridors",
+      "L-2 Lagrange Jump Points"
+    ],
+    "combat_loss_ratio": 0.17,
+    "survivability_rating": 85,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 85 units manufactured (68 active in field). Status: CONTESTED."
+    ]
   },
   "bp_player_scrapper_brawler": {
     "id": "bp_player_scrapper_brawler",
@@ -2022,7 +3575,27 @@
       80,
       50
     ],
-    "lore": "Player proprietary CQB brawler designed to grapple and crush hostile armor."
+    "lore": "Player proprietary CQB brawler designed to grapple and crush hostile armor.",
+    "historical_lore": "Born from the dreadnought's bottom-tier reclamation decks, the Scrapper Brawler refines outlaw Asteroid Syndicate chassis into a disciplined mercenary strike unit. Reinforced with adamantine-carbide structural ribs, it is purpose-built to break through fortified defense gates and crush armored cockpits.",
+    "manufacturing_quirks": "Heavy vibration dampeners in the torso must be inspected for slag buildup after extended hydraulic hammer impacts.",
+    "battlefield_reputation": "Syndicate warlords hate it because it turns their own salvage doctrines against them with military-grade precision and unyielding armor density.",
+    "doctrine_summary": "CQB urban breach, kinetic demolition, and close-quarters melee brawling.",
+    "production_count": 110,
+    "active_units": 82,
+    "casualty_count": 28,
+    "kill_count": 115,
+    "adoption_status": "contested",
+    "primary_theaters": [
+      "Sub-surface Mining Tunnels",
+      "Derelict Hulk Interdiction"
+    ],
+    "combat_loss_ratio": 0.24,
+    "survivability_rating": 80,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 110 units manufactured (82 active in field). Status: CONTESTED."
+    ]
   },
   "bp_player_ghost_sniper": {
     "id": "bp_player_ghost_sniper",
@@ -2049,7 +3622,27 @@
       50,
       70
     ],
-    "lore": "Player proprietary sniper platform tuned for single-shot lethal cockpit assassinations."
+    "lore": "Player proprietary sniper platform tuned for single-shot lethal cockpit assassinations.",
+    "historical_lore": "A covert long-range marksman suit developed using reverse-engineered Mars Zaibatsu optical cloaking and Colony superconducting capacitors. The Ghost Sniper engages high-value enemy targets from beyond visual and thermal detection envelopes.",
+    "manufacturing_quirks": "Supercooled capacitor discharge leaves a temporary Cherenkov luminescence in the gun barrel that must be shielded during stealth extraction.",
+    "battlefield_reputation": "Corporate commanders describe it as an unseen ghost; entire platoon lead mechs have had their reactors vaporized before alert sirens even triggered.",
+    "doctrine_summary": "Extreme-range anti-materiel sniper, electronic warfare concealment.",
+    "production_count": 65,
+    "active_units": 54,
+    "casualty_count": 11,
+    "kill_count": 89,
+    "adoption_status": "contested",
+    "primary_theaters": [
+      "Asteroid Belt Ambush Chokepoints",
+      "Orbital Mirror Shadow Zones"
+    ],
+    "combat_loss_ratio": 0.12,
+    "survivability_rating": 89,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 65 units manufactured (54 active in field). Status: CONTESTED."
+    ]
   },
   "ms_terran_ironclad_custom_cole": {
     "id": "ms_terran_ironclad_custom_cole",
@@ -2076,7 +3669,28 @@
       82,
       68
     ],
-    "lore": "Lt. Marcus Cole custom Ironclad, reinforced with doubled tungsten plates to endure close-quarters trench combat."
+    "lore": "Lt. Marcus Cole custom Ironclad, reinforced with doubled tungsten plates to endure close-quarters trench combat.",
+    "historical_lore": "GHA-07X Iron Bastion [Cole Custom] was manufactured by Valkyrie Heavy Industries to fill the critical role of Heavy Fortress Vanguard. Developed at the Lake Baikal metallurgical complex during the height of the Lunar border disputes. Its structural design emphasizes sheer mass and redundant hydraulic circuitry, ensuring the machine remains operational even after catastrophic armor breaches across secondary limbs.",
+    "manufacturing_quirks": "Recoil forces from the primary heavy cannon shake loose cabin telemetry wiring harnesses; pilots are taught to kick the lower dashboard console to reset failing sensor readouts.",
+    "battlefield_reputation": "Known affectionately by ground grunts as 'The Iron Wall' and cursed by rookie pilots as a brutal, unforgiving machine that punishes over-eager maneuvering.",
+    "doctrine_summary": "Heavy Fortress Vanguard doctrine tailored for faction_a strategic objectives.",
+    "production_count": 101,
+    "active_units": 84,
+    "casualty_count": 17,
+    "kill_count": 55,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Gobi Desert Proving Grounds",
+      "Pacific Floating Hub",
+      "Sub-Orbital Drop Corridors"
+    ],
+    "combat_loss_ratio": 0.31,
+    "survivability_rating": 76,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 101 units manufactured (84 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_terran_centurion_praetorian": {
     "id": "ms_terran_centurion_praetorian",
@@ -2103,7 +3717,28 @@
       80,
       62
     ],
-    "lore": "Elite Terran Coalition guard suit deployed to escort planetary governors and spearhead armor breaches."
+    "lore": "Elite Terran Coalition guard suit deployed to escort planetary governors and spearhead armor breaches.",
+    "historical_lore": "TH-C02P Centurion Praetorian was manufactured by Valkyrie Heavy Industries to fill the critical role of Linebreaker Guard. Designed by Ural Defense Dynamics as a counter to agile zero-gravity Colony incursions. The chassis integrates reinforced recoil dampeners and heavy kinetic armor plating, sacrificing top-speed maneuverability for unyielding structural integrity.",
+    "manufacturing_quirks": "The main diesel-fusion boiler vents dense superheated steam through dorsal baffles, creating a distinctive thermal plume that infrared scanners can track for kilometers.",
+    "battlefield_reputation": "Pilots nickname its cockpit 'The Iron Sarcophagus' because surviving a direct hit often leaves the hatches warped shut until extraction teams torch them open.",
+    "doctrine_summary": "Linebreaker Guard doctrine tailored for faction_a strategic objectives.",
+    "production_count": 671,
+    "active_units": 403,
+    "casualty_count": 268,
+    "kill_count": 444,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Ural Trench Network",
+      "Mare Crisium Crater",
+      "Kamchatka Defense Arc"
+    ],
+    "combat_loss_ratio": 0.6,
+    "survivability_rating": 62,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 671 units manufactured (403 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_goliath_siege": {
     "id": "ms_terran_goliath_siege",
@@ -2130,7 +3765,28 @@
       65,
       52
     ],
-    "lore": "Colossal quadruped artillery walking fortress capable of flattening entire planetary fortifications."
+    "lore": "Colossal quadruped artillery walking fortress capable of flattening entire planetary fortifications.",
+    "historical_lore": "TH-G09 Goliath Heavy Howitzer was manufactured by Valkyrie Heavy Industries to fill the critical role of Quadruped Siege Wall. Designed by Ural Defense Dynamics as a counter to agile zero-gravity Colony incursions. The chassis integrates reinforced recoil dampeners and heavy kinetic armor plating, sacrificing top-speed maneuverability for unyielding structural integrity.",
+    "manufacturing_quirks": "Coolant lines in the hip joints are prone to freezing in sub-zero lunar or Siberian conditions, requiring grease monkeys to pre-heat the limbs with plasma torches before morning sorties.",
+    "battlefield_reputation": "Mercenaries consider it the most reliable machine in the Sol system\u2014impossible to flip, impossible to crush, and simple enough to repair with scrap and an arc welder.",
+    "doctrine_summary": "Quadruped Siege Wall doctrine tailored for faction_a strategic objectives.",
+    "production_count": 1416,
+    "active_units": 1061,
+    "casualty_count": 355,
+    "kill_count": 484,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Ural Trench Network",
+      "Mare Crisium Crater",
+      "Kamchatka Defense Arc"
+    ],
+    "combat_loss_ratio": 0.73,
+    "survivability_rating": 58,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,416 units manufactured (1,061 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_terran_valkyrie_odin": {
     "id": "ms_terran_valkyrie_odin",
@@ -2157,7 +3813,28 @@
       66,
       56
     ],
-    "lore": "Valkyrie flagship prototype walking fortress designed to withstand capital ship orbital bombardment."
+    "lore": "Valkyrie flagship prototype walking fortress designed to withstand capital ship orbital bombardment.",
+    "historical_lore": "VHD-X02 Odin Dread-Chassis was manufactured by Valkyrie Heavy Industries to fill the critical role of Apex Orbital Bastion. Designed by Ural Defense Dynamics as a counter to agile zero-gravity Colony incursions. The chassis integrates reinforced recoil dampeners and heavy kinetic armor plating, sacrificing top-speed maneuverability for unyielding structural integrity.",
+    "manufacturing_quirks": "Coolant lines in the hip joints are prone to freezing in sub-zero lunar or Siberian conditions, requiring grease monkeys to pre-heat the limbs with plasma torches before morning sorties.",
+    "battlefield_reputation": "Mercenaries consider it the most reliable machine in the Sol system\u2014impossible to flip, impossible to crush, and simple enough to repair with scrap and an arc welder.",
+    "doctrine_summary": "Apex Orbital Bastion doctrine tailored for faction_a strategic objectives.",
+    "production_count": 867,
+    "active_units": 543,
+    "casualty_count": 324,
+    "kill_count": 464,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Baikal Redoubt",
+      "Copernicus Lunar Base",
+      "Low Earth Orbit Fortress Rings"
+    ],
+    "combat_loss_ratio": 0.7,
+    "survivability_rating": 59,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 867 units manufactured (543 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_aether_custom_nadia": {
     "id": "ms_colony_aether_custom_nadia",
@@ -2184,7 +3861,28 @@
       65,
       110
     ],
-    "lore": "Commander Nadia Cruz tuned Aether, fitted with high-efficiency Cherenkov beam carbines and auxiliary verniers."
+    "lore": "Commander Nadia Cruz tuned Aether, fitted with high-efficiency Cherenkov beam carbines and auxiliary verniers.",
+    "historical_lore": "AET-01S Starlight Valkyrie [Nadia Custom] was manufactured by Jovian Commonwealth Consortium to fill the critical role of High-Speed Ace Superiority. Conceived in the zero-G orbital foundries of L-5 by Astraea Orbital Dynamics. Rejecting Earth's obsolete heavy armor philosophy, Colony engineers utilized hyper-light aerosteel matrices, Cherenkov blue plasma thrusters, and superconductive particle conduits for supreme vacuum agility.",
+    "manufacturing_quirks": "The Cherenkov superconductor core induces slight magnetic interference with the pilot's helmet comms, creating a faint, rhythmic whine dubbed the 'Jovian Chorus'.",
+    "battlefield_reputation": "Considered the gold standard for zero-G dogfighting; aces who master its high-frequency pitch controls can evade entire missile salvos without taking armor damage.",
+    "doctrine_summary": "High-Speed Ace Superiority doctrine tailored for faction_b strategic objectives.",
+    "production_count": 131,
+    "active_units": 100,
+    "casualty_count": 31,
+    "kill_count": 136,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Europa Cryo-Refinery Arc",
+      "Lagrange Point 4",
+      "Deep Void Patrol Sector"
+    ],
+    "combat_loss_ratio": 0.23,
+    "survivability_rating": 81,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 131 units manufactured (100 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_colony_zephyr_custom_dahl": {
     "id": "ms_colony_zephyr_custom_dahl",
@@ -2211,7 +3909,28 @@
       60,
       100
     ],
-    "lore": "Kira Dahl personal reconnaissance machine, capable of vanishing completely from military radar grids."
+    "lore": "Kira Dahl personal reconnaissance machine, capable of vanishing completely from military radar grids.",
+    "historical_lore": "JCC-Z05X Ghost Zephyr [Dahl Custom] was manufactured by Jovian Commonwealth Consortium to fill the critical role of EW Infiltrator & Scout. Born from Selene Vector Laboratories as a high-speed skirmishing doctrine. The design prioritizes particle beam efficiency and rapid heat dissipation, allowing it to harass enemy capital formations from beyond counter-battery range.",
+    "manufacturing_quirks": "The lightweight aerosteel chassis is prone to micro-fracturing under high atmospheric drag; pilots must disengage limiter clamps before attempting high-speed atmospheric dives.",
+    "battlefield_reputation": "Admired across the Jovian colonies as an elegant guardian of freedom; Terran tank crews call it 'The Flying Scalpel' for its precision beam attacks.",
+    "doctrine_summary": "EW Infiltrator & Scout doctrine tailored for faction_b strategic objectives.",
+    "production_count": 161,
+    "active_units": 133,
+    "casualty_count": 28,
+    "kill_count": 77,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Callisto Deep Mining Station",
+      "Ganymede Logistics Belt",
+      "High Lunar Orbit"
+    ],
+    "combat_loss_ratio": 0.36,
+    "survivability_rating": 73,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 161 units manufactured (133 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_colony_helios_archon": {
     "id": "ms_colony_helios_archon",
@@ -2238,7 +3957,28 @@
       75,
       125
     ],
-    "lore": "High-orbital skirmisher drawing power directly from concentrated solar collection arrays."
+    "lore": "High-orbital skirmisher drawing power directly from concentrated solar collection arrays.",
+    "historical_lore": "HOF-X01 Helios Archon was manufactured by Hyperion Orbital Foundry to fill the critical role of Solar Particle Skirmisher. Born from Selene Vector Laboratories as a high-speed skirmishing doctrine. The design prioritizes particle beam efficiency and rapid heat dissipation, allowing it to harass enemy capital formations from beyond counter-battery range.",
+    "manufacturing_quirks": "Continuous micro-vernier burns create rapid fuel cell pressure fluctuations that require pilots to manually feather the thruster valves during dogfights.",
+    "battlefield_reputation": "Considered the gold standard for zero-G dogfighting; aces who master its high-frequency pitch controls can evade entire missile salvos without taking armor damage.",
+    "doctrine_summary": "Solar Particle Skirmisher doctrine tailored for faction_b strategic objectives.",
+    "production_count": 891,
+    "active_units": 558,
+    "casualty_count": 333,
+    "kill_count": 563,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Europa Cryo-Refinery Arc",
+      "Lagrange Point 4",
+      "Deep Void Patrol Sector"
+    ],
+    "combat_loss_ratio": 0.59,
+    "survivability_rating": 63,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 891 units manufactured (558 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_colony_selene_interceptor": {
     "id": "ms_colony_selene_interceptor",
@@ -2265,7 +4005,28 @@
       62,
       98
     ],
-    "lore": "Ultra-fast interceptor built for deep-space fleet interception at interplanetary velocity."
+    "lore": "Ultra-fast interceptor built for deep-space fleet interception at interplanetary velocity.",
+    "historical_lore": "HOF-X02 Selene Interceptor was manufactured by Hyperion Orbital Foundry to fill the critical role of Apex Deep-Space Interceptor. Conceived in the zero-G orbital foundries of L-5 by Astraea Orbital Dynamics. Rejecting Earth's obsolete heavy armor philosophy, Colony engineers utilized hyper-light aerosteel matrices, Cherenkov blue plasma thrusters, and superconductive particle conduits for supreme vacuum agility.",
+    "manufacturing_quirks": "The lightweight aerosteel chassis is prone to micro-fracturing under high atmospheric drag; pilots must disengage limiter clamps before attempting high-speed atmospheric dives.",
+    "battlefield_reputation": "Admired across the Jovian colonies as an elegant guardian of freedom; Terran tank crews call it 'The Flying Scalpel' for its precision beam attacks.",
+    "doctrine_summary": "Apex Deep-Space Interceptor doctrine tailored for faction_b strategic objectives.",
+    "production_count": 1427,
+    "active_units": 1130,
+    "casualty_count": 297,
+    "kill_count": 464,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Callisto Deep Mining Station",
+      "Ganymede Logistics Belt",
+      "High Lunar Orbit"
+    ],
+    "combat_loss_ratio": 0.64,
+    "survivability_rating": 61,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,427 units manufactured (1,130 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_hyena_custom_vance": {
     "id": "ms_syndicate_hyena_custom_vance",
@@ -2292,7 +4053,28 @@
       55,
       40
     ],
-    "lore": "Jax Vance flagship war machine, adorned with skulls and reinforced with armor ripped from federal cruisers."
+    "lore": "Jax Vance flagship war machine, adorned with skulls and reinforced with armor ripped from federal cruisers.",
+    "historical_lore": "SCR-12R Jackal King [Vance Custom] was manufactured by Ares Salvage Guild to fill the critical role of Scavenger Warlord. Jury-rigged across lawless asteroid shipyards by the Rustworks Salvage Cartel. Constructed from welded derelict transport hulls, repurposed industrial mining claws, and contraband military reactors, the chassis reflects the brutal, scavenged survival ethos of the Asteroid Belt.",
+    "manufacturing_quirks": "Cockpit seals are often patched with industrial sealant tape and re-welded bulkhead scraps; cabin pressure alarms frequently sound false warnings in vacuum.",
+    "battlefield_reputation": "Pilots wear their suits' battle scars and mismatched armor plates like badges of honor, boasting that no corporate cleanroom suit has the guts to brawl at point-blank range.",
+    "doctrine_summary": "Scavenger Warlord doctrine tailored for faction_c strategic objectives.",
+    "production_count": 53,
+    "active_units": 46,
+    "casualty_count": 7,
+    "kill_count": 27,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Psyche Heavy Metal Drift",
+      "Sector 7 Scrap Fields",
+      "Inner Belt Ambush Corridors"
+    ],
+    "combat_loss_ratio": 0.26,
+    "survivability_rating": 79,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 53 units manufactured (46 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_syndicate_gorgon_custom_scrapper": {
     "id": "ms_syndicate_gorgon_custom_scrapper",
@@ -2319,7 +4101,28 @@
       50,
       35
     ],
-    "lore": "Custom masterwork of the Syndicate Scrap-Masters, capable of punching through starship airlocks in seconds."
+    "lore": "Custom masterwork of the Syndicate Scrap-Masters, capable of punching through starship airlocks in seconds.",
+    "historical_lore": "ARC-G04X Titan Crusher [Guild Master Custom] was manufactured by Ares Salvage Guild to fill the critical role of Heavy Boarding Breaker. Engineered by the Ceres Iron Outlaws as an intimidating shock-assault platform. With dual rotary flak cannons and spiked kinetic ramming cowls, it excels at terrorizing civilian trade convoys and ambushing corporate supply lines.",
+    "manufacturing_quirks": "Asymmetrical scrap plating creates an off-center center-of-gravity; pilots must learn to compensate for a persistent leftward yaw during boost maneuvers.",
+    "battlefield_reputation": "Mercenaries nickname it 'The Junkyard Dog'\u2014ugly, loud, and vicious, with an uncanny ability to keep crawling forward after losing half its torso armor.",
+    "doctrine_summary": "Heavy Boarding Breaker doctrine tailored for faction_c strategic objectives.",
+    "production_count": 55,
+    "active_units": 46,
+    "casualty_count": 9,
+    "kill_count": 42,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Ceres Mining Outposts",
+      "Vesta Debris Belt",
+      "Trojan Asteroid Corridors"
+    ],
+    "combat_loss_ratio": 0.21,
+    "survivability_rating": 82,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 55 units manufactured (46 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_syndicate_scrap_chimera": {
     "id": "ms_syndicate_scrap_chimera",
@@ -2346,7 +4149,28 @@
       48,
       32
     ],
-    "lore": "Monstrous 4-armed war machine assembled from parts of four different destroyed faction chassis."
+    "lore": "Monstrous 4-armed war machine assembled from parts of four different destroyed faction chassis.",
+    "historical_lore": "AJS-X01 Scrap Chimera was manufactured by Ares Junk-Works Syndicate to fill the critical role of Quad-Arm Brawler. Assembled in clandestine asteroid hollows by the Asteroid Reclamation Guild. Designed to outlast corporate attrition, its frame features asymmetrical slag armor plates and heavy pneumatic harpoon winches designed for boarding raids and piracy.",
+    "manufacturing_quirks": "The scavenged reactor runs hot and loud, occasionally venting caustic sulfurous exhaust directly past the cockpit intake filters.",
+    "battlefield_reputation": "Terran and Colony militaries officially designate it as 'Irregular Terror Armor', advising pilots to destroy them on sight rather than negotiate.",
+    "doctrine_summary": "Quad-Arm Brawler doctrine tailored for faction_c strategic objectives.",
+    "production_count": 662,
+    "active_units": 485,
+    "casualty_count": 177,
+    "kill_count": 244,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Deimos Wreckage Graveyard",
+      "Pallas Smuggling Hub",
+      "Outer Kuiper Gateway"
+    ],
+    "combat_loss_ratio": 0.73,
+    "survivability_rating": 58,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 662 units manufactured (485 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_syndicate_rust_behemoth": {
     "id": "ms_syndicate_rust_behemoth",
@@ -2373,7 +4197,28 @@
       45,
       30
     ],
-    "lore": "Massive walking scrap fortress with firepower equivalent to an armored cruiser broadside."
+    "lore": "Massive walking scrap fortress with firepower equivalent to an armored cruiser broadside.",
+    "historical_lore": "AJS-X02 Rust Behemoth was manufactured by Ares Junk-Works Syndicate to fill the critical role of Apex Salvage Dreadnought. Engineered by the Ceres Iron Outlaws as an intimidating shock-assault platform. With dual rotary flak cannons and spiked kinetic ramming cowls, it excels at terrorizing civilian trade convoys and ambushing corporate supply lines.",
+    "manufacturing_quirks": "The scavenged reactor runs hot and loud, occasionally venting caustic sulfurous exhaust directly past the cockpit intake filters.",
+    "battlefield_reputation": "Terran and Colony militaries officially designate it as 'Irregular Terror Armor', advising pilots to destroy them on sight rather than negotiate.",
+    "doctrine_summary": "Apex Salvage Dreadnought doctrine tailored for faction_c strategic objectives.",
+    "production_count": 595,
+    "active_units": 411,
+    "casualty_count": 184,
+    "kill_count": 314,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Deimos Wreckage Graveyard",
+      "Pallas Smuggling Hub",
+      "Outer Kuiper Gateway"
+    ],
+    "combat_loss_ratio": 0.59,
+    "survivability_rating": 63,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 595 units manufactured (411 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_muramasa_custom_renzo": {
     "id": "ms_zaibatsu_muramasa_custom_renzo",
@@ -2400,7 +4245,28 @@
       24,
       45
     ],
-    "lore": "Renzo Takahashi supreme dueling mobile suit with neural nanite repair weave and dual high-frequency blades."
+    "lore": "Renzo Takahashi supreme dueling mobile suit with neural nanite repair weave and dual high-frequency blades.",
+    "historical_lore": "ZAI-03X Oni-Blade [Renzo Custom] was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Supreme Cyber Dueling. Engineered in the high-security orbital labs of Olympus Mons by Hyperion Advanced Tactical Systems. Created to enforce corporate dominance through ruthless surgical precision, the suit integrates bio-neural cockpit synchronization, sub-zero liquid nitrogen coolant loops, and high-frequency tachyon blade weaponry.",
+    "manufacturing_quirks": "High-frequency blade emitters consume massive energy spikes, momentarily dimming cabin displays and HUD overlays upon activation.",
+    "battlefield_reputation": "Mercenaries speak of it in hushed tones, warning that duelists trained in the Olympus Mons academies fight with cold, mathematical precision and zero mercy.",
+    "doctrine_summary": "Supreme Cyber Dueling doctrine tailored for faction_d strategic objectives.",
+    "production_count": 173,
+    "active_units": 144,
+    "casualty_count": 29,
+    "kill_count": 100,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Valles Marineris Chasm",
+      "Hellas Planitia Basin",
+      "Cydonia Research Sector"
+    ],
+    "combat_loss_ratio": 0.29,
+    "survivability_rating": 78,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 173 units manufactured (144 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_zaibatsu_kage_custom_null07": {
     "id": "ms_zaibatsu_kage_custom_null07",
@@ -2427,7 +4293,28 @@
       18,
       35
     ],
-    "lore": "Master assassin chassis piloted by Null-07, capable of turning completely invisible before striking."
+    "lore": "Master assassin chassis piloted by Null-07, capable of turning completely invisible before striking.",
+    "historical_lore": "ZBT-K07X Void Shinobi [Null-07 Custom] was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Sub-Space Assassin. Developed by Takahashi Cybernetics as the apex tool of corporate espionage and elite dueling. Its bio-synthetic neural link allows the pilot's subconscious reflexes to guide the machine's limbs with near-instantaneous reaction latencies.",
+    "manufacturing_quirks": "Optical camouflage refractor panels degrade quickly if scratched by abrasive Martian dust storms, requiring meticulous cleanroom polishing between missions.",
+    "battlefield_reputation": "Known with dread in corporate boardrooms as 'The Black Scalpel'. When a Zaibatsu duel chassis appears on the horizon, corporate rival executives quickly settle their contracts.",
+    "doctrine_summary": "Sub-Space Assassin doctrine tailored for faction_d strategic objectives.",
+    "production_count": 102,
+    "active_units": 82,
+    "casualty_count": 20,
+    "kill_count": 81,
+    "adoption_status": "ace_custom",
+    "primary_theaters": [
+      "Tharsis Volcanic Plateau",
+      "Deimos Listening Station",
+      "Mars High Orbital Array"
+    ],
+    "combat_loss_ratio": 0.25,
+    "survivability_rating": 80,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 102 units manufactured (82 active in field). Status: ACE_CUSTOM."
+    ]
   },
   "ms_zaibatsu_ronin_master": {
     "id": "ms_zaibatsu_ronin_master",
@@ -2454,7 +4341,28 @@
       22,
       42
     ],
-    "lore": "Command carrier coordinating six autonomous combat sub-drones while wielding dual plasma naginatas."
+    "lore": "Command carrier coordinating six autonomous combat sub-drones while wielding dual plasma naginatas.",
+    "historical_lore": "ZBT-R04M Ronin Shogun was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Drone Carrier Master. Engineered in the high-security orbital labs of Olympus Mons by Hyperion Advanced Tactical Systems. Created to enforce corporate dominance through ruthless surgical precision, the suit integrates bio-neural cockpit synchronization, sub-zero liquid nitrogen coolant loops, and high-frequency tachyon blade weaponry.",
+    "manufacturing_quirks": "The direct neural link causes intense sensory phantom feedback in pilots; extended combat operations without cybernetic cerebellum dampers cause severe migraines.",
+    "battlefield_reputation": "Enemy pilots report that fighting one feels unnatural\u2014it anticipates firing angles and missile trajectories before human reaction times would allow.",
+    "doctrine_summary": "Drone Carrier Master doctrine tailored for faction_d strategic objectives.",
+    "production_count": 1267,
+    "active_units": 798,
+    "casualty_count": 469,
+    "kill_count": 832,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Olympus Mons Redoubt",
+      "Phobos Deep Vaults",
+      "Syrtis Major Corporate Corridor"
+    ],
+    "combat_loss_ratio": 0.56,
+    "survivability_rating": 64,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,267 units manufactured (798 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_zaibatsu_tessen_empress": {
     "id": "ms_zaibatsu_tessen_empress",
@@ -2481,7 +4389,28 @@
       25,
       48
     ],
-    "lore": "Apex electronic warfare mecha capable of shutting down entire battlegroups with directed EMP pulse waves."
+    "lore": "Apex electronic warfare mecha capable of shutting down entire battlegroups with directed EMP pulse waves.",
+    "historical_lore": "ZBT-T09E Tessen Empress was manufactured by Hyperion Advanced Tactical Systems to fill the critical role of Electronic Warfare Apex. Developed by Takahashi Cybernetics as the apex tool of corporate espionage and elite dueling. Its bio-synthetic neural link allows the pilot's subconscious reflexes to guide the machine's limbs with near-instantaneous reaction latencies.",
+    "manufacturing_quirks": "The direct neural link causes intense sensory phantom feedback in pilots; extended combat operations without cybernetic cerebellum dampers cause severe migraines.",
+    "battlefield_reputation": "Known with dread in corporate boardrooms as 'The Black Scalpel'. When a Zaibatsu duel chassis appears on the horizon, corporate rival executives quickly settle their contracts.",
+    "doctrine_summary": "Electronic Warfare Apex doctrine tailored for faction_d strategic objectives.",
+    "production_count": 938,
+    "active_units": 607,
+    "casualty_count": 331,
+    "kill_count": 341,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Olympus Mons Redoubt",
+      "Phobos Deep Vaults",
+      "Syrtis Major Corporate Corridor"
+    ],
+    "combat_loss_ratio": 0.97,
+    "survivability_rating": 51,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 938 units manufactured (607 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_prewar_hephaestus_avatar": {
     "id": "ms_prewar_hephaestus_avatar",
@@ -2508,7 +4437,28 @@
       45,
       70
     ],
-    "lore": "Autonomous defense mecha discovered slumbering in the reactor depths of the dreadnought Hephaestus."
+    "lore": "Autonomous defense mecha discovered slumbering in the reactor depths of the dreadnought Hephaestus.",
+    "historical_lore": "Pre-War Hephaestus Sentinel was manufactured by Pre-War Sol Arsenal to fill the critical role of Autonomous Flagship Escort. Commissioned under the Terran Military Council to fortify Earth's planetary perimeter against insurgent fleets. Valkyrie Heavy Industries opted for heavy layered composite alloy armor, heavy diesel-fusion thermal turbines, and high-caliber rifled ballistics capable of holding entrenched ground redoubts under continuous orbital bombardments.",
+    "manufacturing_quirks": "Heavy frontal armor plates cause chronic stress fractures on forward knee actuator bearings during high-g descent landings; maintenance crews routinely reinforce the limb pins with field-welded tungsten rods.",
+    "battlefield_reputation": "Opposing Colony skirmishers mock its sluggish ground pace until its 120mm solid shot punches through their light aerosteel bulkheads at extreme ranges.",
+    "doctrine_summary": "Autonomous Flagship Escort doctrine tailored for faction_a strategic objectives.",
+    "production_count": 1533,
+    "active_units": 1019,
+    "casualty_count": 514,
+    "kill_count": 606,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Gobi Desert Proving Grounds",
+      "Pacific Floating Hub",
+      "Sub-Orbital Drop Corridors"
+    ],
+    "combat_loss_ratio": 0.85,
+    "survivability_rating": 54,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,533 units manufactured (1,019 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_prewar_chronos_proto": {
     "id": "ms_prewar_chronos_proto",
@@ -2535,7 +4485,28 @@
       50,
       75
     ],
-    "lore": "Pre-war prototype harnessing compressed tachyon fields for near-instantaneous evasive maneuvers."
+    "lore": "Pre-war prototype harnessing compressed tachyon fields for near-instantaneous evasive maneuvers.",
+    "historical_lore": "Pre-War Chronos Vector was manufactured by Pre-War Sol Arsenal to fill the critical role of Lost-Tech Tachyon Skirmisher. Born from Selene Vector Laboratories as a high-speed skirmishing doctrine. The design prioritizes particle beam efficiency and rapid heat dissipation, allowing it to harass enemy capital formations from beyond counter-battery range.",
+    "manufacturing_quirks": "The lightweight aerosteel chassis is prone to micro-fracturing under high atmospheric drag; pilots must disengage limiter clamps before attempting high-speed atmospheric dives.",
+    "battlefield_reputation": "Mercenaries love its high salvage value; black market cartels pay top dollar for intact Astraea superconducting capacitor banks and vernier nozzles.",
+    "doctrine_summary": "Lost-Tech Tachyon Skirmisher doctrine tailored for faction_b strategic objectives.",
+    "production_count": 510,
+    "active_units": 312,
+    "casualty_count": 198,
+    "kill_count": 289,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Europa Cryo-Refinery Arc",
+      "Lagrange Point 4",
+      "Deep Void Patrol Sector"
+    ],
+    "combat_loss_ratio": 0.69,
+    "survivability_rating": 59,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 510 units manufactured (312 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_valkyrie_titan_juggernaut": {
     "id": "ms_valkyrie_titan_juggernaut",
@@ -2562,7 +4533,28 @@
       62,
       52
     ],
-    "lore": "Terrifying 100-ton superheavy walking fortress armed with quad synchronized 140mm autocannons."
+    "lore": "Terrifying 100-ton superheavy walking fortress armed with quad synchronized 140mm autocannons.",
+    "historical_lore": "VHD-X01 Juggernaut Prime was manufactured by Valkyrie Heavy Industries to fill the critical role of 100t Superheavy Bastion. Developed at the Lake Baikal metallurgical complex during the height of the Lunar border disputes. Its structural design emphasizes sheer mass and redundant hydraulic circuitry, ensuring the machine remains operational even after catastrophic armor breaches across secondary limbs.",
+    "manufacturing_quirks": "Recoil forces from the primary heavy cannon shake loose cabin telemetry wiring harnesses; pilots are taught to kick the lower dashboard console to reset failing sensor readouts.",
+    "battlefield_reputation": "Opposing Colony skirmishers mock its sluggish ground pace until its 120mm solid shot punches through their light aerosteel bulkheads at extreme ranges.",
+    "doctrine_summary": "100t Superheavy Bastion doctrine tailored for faction_a strategic objectives.",
+    "production_count": 1511,
+    "active_units": 1060,
+    "casualty_count": 451,
+    "kill_count": 732,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Baikal Redoubt",
+      "Copernicus Lunar Base",
+      "Low Earth Orbit Fortress Rings"
+    ],
+    "combat_loss_ratio": 0.62,
+    "survivability_rating": 62,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,511 units manufactured (1,060 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_rebel_partisan_guerilla": {
     "id": "ms_rebel_partisan_guerilla",
@@ -2589,7 +4581,28 @@
       60,
       45
     ],
-    "lore": "Industrial mining mobile suit modified with heavy rock-cutters to fight corporate security forces."
+    "lore": "Industrial mining mobile suit modified with heavy rock-cutters to fight corporate security forces.",
+    "historical_lore": "Frontier Militia Partisan was manufactured by Frontier Free Assembly to fill the critical role of Improvised Mining Guerrilla. Assembled in clandestine asteroid hollows by the Asteroid Reclamation Guild. Designed to outlast corporate attrition, its frame features asymmetrical slag armor plates and heavy pneumatic harpoon winches designed for boarding raids and piracy.",
+    "manufacturing_quirks": "Ammunition feed chutes for the heavy flak cannons tend to jam if low-grade non-standard propellant rounds are loaded under high-g maneuvers.",
+    "battlefield_reputation": "Mercenaries nickname it 'The Junkyard Dog'\u2014ugly, loud, and vicious, with an uncanny ability to keep crawling forward after losing half its torso armor.",
+    "doctrine_summary": "Improvised Mining Guerrilla doctrine tailored for faction_c strategic objectives.",
+    "production_count": 603,
+    "active_units": 449,
+    "casualty_count": 154,
+    "kill_count": 173,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Deimos Wreckage Graveyard",
+      "Pallas Smuggling Hub",
+      "Outer Kuiper Gateway"
+    ],
+    "combat_loss_ratio": 0.89,
+    "survivability_rating": 53,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 603 units manufactured (449 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_rebel_partisan_striker": {
     "id": "ms_rebel_partisan_striker",
@@ -2616,7 +4629,28 @@
       65,
       48
     ],
-    "lore": "Frontier insurgent machine built from converted ore haulers, armed with jury-rigged mining rockets."
+    "lore": "Frontier insurgent machine built from converted ore haulers, armed with jury-rigged mining rockets.",
+    "historical_lore": "Frontier Vanguard Striker was manufactured by Frontier Free Assembly to fill the critical role of Improvised Rocket Skirmisher. Engineered by the Ceres Iron Outlaws as an intimidating shock-assault platform. With dual rotary flak cannons and spiked kinetic ramming cowls, it excels at terrorizing civilian trade convoys and ambushing corporate supply lines.",
+    "manufacturing_quirks": "The scavenged reactor runs hot and loud, occasionally venting caustic sulfurous exhaust directly past the cockpit intake filters.",
+    "battlefield_reputation": "Feared by merchant convoy captains across the Sol system; the harsh shriek of its pneumatic boarding harpoon usually signals total cargo confiscation.",
+    "doctrine_summary": "Improvised Rocket Skirmisher doctrine tailored for faction_c strategic objectives.",
+    "production_count": 1151,
+    "active_units": 865,
+    "casualty_count": 286,
+    "kill_count": 291,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Psyche Heavy Metal Drift",
+      "Sector 7 Scrap Fields",
+      "Inner Belt Ambush Corridors"
+    ],
+    "combat_loss_ratio": 0.98,
+    "survivability_rating": 50,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,151 units manufactured (865 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_pirate_corsair_marauder": {
     "id": "ms_pirate_corsair_marauder",
@@ -2643,7 +4677,28 @@
       52,
       38
     ],
-    "lore": "Notorious pirate boarding machine designed to pierce freighter hulls and harvest element cargo."
+    "lore": "Notorious pirate boarding machine designed to pierce freighter hulls and harvest element cargo.",
+    "historical_lore": "Outer Ring Corsair Marauder was manufactured by Outer Ring Pirate Fleets to fill the critical role of Boarding Raider. Engineered by the Ceres Iron Outlaws as an intimidating shock-assault platform. With dual rotary flak cannons and spiked kinetic ramming cowls, it excels at terrorizing civilian trade convoys and ambushing corporate supply lines.",
+    "manufacturing_quirks": "Asymmetrical scrap plating creates an off-center center-of-gravity; pilots must learn to compensate for a persistent leftward yaw during boost maneuvers.",
+    "battlefield_reputation": "Terran and Colony militaries officially designate it as 'Irregular Terror Armor', advising pilots to destroy them on sight rather than negotiate.",
+    "doctrine_summary": "Boarding Raider doctrine tailored for faction_c strategic objectives.",
+    "production_count": 1594,
+    "active_units": 1084,
+    "casualty_count": 510,
+    "kill_count": 652,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Psyche Heavy Metal Drift",
+      "Sector 7 Scrap Fields",
+      "Inner Belt Ambush Corridors"
+    ],
+    "combat_loss_ratio": 0.78,
+    "survivability_rating": 56,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 1,594 units manufactured (1,084 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_ancient_derelict_sentry": {
     "id": "ms_ancient_derelict_sentry",
@@ -2670,7 +4725,28 @@
       55,
       80
     ],
-    "lore": "Mysterious autonomous sentry recovered from an uncharted deep-space derelict station."
+    "lore": "Mysterious autonomous sentry recovered from an uncharted deep-space derelict station.",
+    "historical_lore": "Precursor Derelict Sentry-00 was manufactured by Unknown Precursor to fill the critical role of Autonomous Ancient Sentinel. Engineered in the high-security orbital labs of Olympus Mons by Hyperion Advanced Tactical Systems. Created to enforce corporate dominance through ruthless surgical precision, the suit integrates bio-neural cockpit synchronization, sub-zero liquid nitrogen coolant loops, and high-frequency tachyon blade weaponry.",
+    "manufacturing_quirks": "Sub-zero liquid nitrogen cooling jackets frost over the external armor seams, creating a ghostly white mist during high-output blade ignition.",
+    "battlefield_reputation": "Corporate pilots regard piloting one as the pinnacle of military prestige, treating their chassis with the ritual reverence of an ancestral samurai blade.",
+    "doctrine_summary": "Autonomous Ancient Sentinel doctrine tailored for faction_d strategic objectives.",
+    "production_count": 812,
+    "active_units": 564,
+    "casualty_count": 248,
+    "kill_count": 396,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Olympus Mons Redoubt",
+      "Phobos Deep Vaults",
+      "Syrtis Major Corporate Corridor"
+    ],
+    "combat_loss_ratio": 0.63,
+    "survivability_rating": 61,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 812 units manufactured (564 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   },
   "ms_apex_apocalypse_harvester": {
     "id": "ms_apex_apocalypse_harvester",
@@ -2697,6 +4773,27 @@
       52,
       45
     ],
-    "lore": "Apocalyptic super-weapon mecha created by unshackled bio-neural research, capable of harvesting planetary crusts."
+    "lore": "Apocalyptic super-weapon mecha created by unshackled bio-neural research, capable of harvesting planetary crusts.",
+    "historical_lore": "Apex Apocalypse Harvester was manufactured by Forbidden Cyber-Foundry to fill the critical role of Planetary Siege Leviathan. Designed by Ural Defense Dynamics as a counter to agile zero-gravity Colony incursions. The chassis integrates reinforced recoil dampeners and heavy kinetic armor plating, sacrificing top-speed maneuverability for unyielding structural integrity.",
+    "manufacturing_quirks": "Coolant lines in the hip joints are prone to freezing in sub-zero lunar or Siberian conditions, requiring grease monkeys to pre-heat the limbs with plasma torches before morning sorties.",
+    "battlefield_reputation": "Pilots nickname its cockpit 'The Iron Sarcophagus' because surviving a direct hit often leaves the hatches warped shut until extraction teams torch them open.",
+    "doctrine_summary": "Planetary Siege Leviathan doctrine tailored for faction_a strategic objectives.",
+    "production_count": 622,
+    "active_units": 430,
+    "casualty_count": 192,
+    "kill_count": 317,
+    "adoption_status": "specialized_deployment",
+    "primary_theaters": [
+      "Gobi Desert Proving Grounds",
+      "Pacific Floating Hub",
+      "Sub-Orbital Drop Corridors"
+    ],
+    "combat_loss_ratio": 0.61,
+    "survivability_rating": 62,
+    "replaced_by": "",
+    "adoption_turn": 0,
+    "dynamic_lore_chronicle": [
+      "[Cycle 1 - COMMISSION] Officially logged in system military registries with 622 units manufactured (430 active in field). Status: SPECIALIZED_DEPLOYMENT."
+    ]
   }
 }

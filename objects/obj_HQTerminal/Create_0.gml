@@ -720,6 +720,8 @@ bp_archive_faction_filter = "all"; // "all", "faction_terran", "faction_colony",
 bp_archive_selected_idx = 0;       // Index in currently filtered list
 bp_archive_view_mode = 0;          // 0 = Tactical Sprite & Alloy Tint, 1 = Technical Schematics, 2 = Modular Components, 3 = Production Variants
 bp_archive_scroll = 0;             // Scroll offset for left list
+bp_archive_dossier_tab = 0;        // 0 = Specs & Armament, 1 = Global Stats & Attrition, 2 = Historical & Dynamic Lore
+bp_archive_chronicle_scroll = 0;   // Scroll offset for dynamic chronicle entries
 
 // 7c. Metallurgy Codex, Periodic Table & Solar Mining UI State (Docs 02, 06, 14)
 crucible_subview = 0;              // 0 = Furnace & Batch Preview, 1 = Discovered Alloy Codex, 2 = 118-Element Periodic Table

@@ -2377,6 +2377,13 @@ resolve_combat_impact = function(_atk, _def, _wpn, _hit_chance) {
                 add_floating_text(_def_sx, _def_sy - 80, "REACTOR DETONATION // CHASSIS DESTROYED", c_red);
                 add_log("[CATASTROPHIC KILL] " + _def.callsign + " REACTOR BREACH! Unit neutralized.");
 
+                // Mobile Suit Global Attrition & Service Record Hook (docs/35)
+                if (instance_exists(obj_BlueprintManager)) {
+                    var _vic_chassis = _def[$ "chassis_id"] ?? (_def[$ "mech_type"] ?? "ironclad");
+                    var _atk_chassis = _atk[$ "chassis_id"] ?? (_atk[$ "mech_type"] ?? "ironclad");
+                    obj_BlueprintManager.record_suit_casualty(_vic_chassis, _atk_chassis);
+                }
+
                 // Nemesis System Event Dispatch Hook (Document 19)
                 if (instance_exists(obj_NemesisManager)) {
                     var _vic_id = _def[$ "character_id"] ?? _def[$ "pilot_name"] ?? _def.id;

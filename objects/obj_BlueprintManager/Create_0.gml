@@ -92,9 +92,18 @@ get_blueprints_by_faction = function(_fid) {
     var _filtered = [];
     for (var i = 0; i < array_length(all_blueprint_list); i++) {
         var _bp = all_blueprint_list[i];
-        if (variable_struct_exists(_bp, "faction_id") && _bp.faction_id == _fid) {
+        var _bfac = _bp[$ "faction_id"] ?? "";
+        if (_fid == "faction_terran" && (_bfac == "faction_terran" || _bfac == "faction_a")) {
             array_push(_filtered, _bp);
-        } else if (_fid == "player" && (string_pos("player", _bp.blueprint_id) > 0 || string_pos("Player", _bp[$ "class"] ?? "") > 0)) {
+        } else if (_fid == "faction_colony" && (_bfac == "faction_colony" || _bfac == "faction_b")) {
+            array_push(_filtered, _bp);
+        } else if (_fid == "faction_syndicate" && (_bfac == "faction_syndicate" || _bfac == "faction_c")) {
+            array_push(_filtered, _bp);
+        } else if (_fid == "faction_zaibatsu" && (_bfac == "faction_zaibatsu" || _bfac == "faction_d")) {
+            array_push(_filtered, _bp);
+        } else if (_fid == "player" && (_bfac == "player" || _bfac == "pmc_player" || string_pos("player", _bp.blueprint_id) > 0 || string_pos("Player", _bp[$ "class"] ?? "") > 0)) {
+            array_push(_filtered, _bp);
+        } else if (_bfac == _fid) {
             array_push(_filtered, _bp);
         }
     }
@@ -373,6 +382,160 @@ for (var b = 0; b < array_length(_canonical_files); b++) {
     }
 }
 show_debug_message("[obj_BlueprintManager] Loaded all 20 canonical blueprint JSONs from datafiles/blueprints/ into registry.");
+
+// 8c. Load & Register All 100 Mobile Suits from mobile_suit_catalog.json (docs/10 & 35)
+var _cat_paths = ["mobile_suits/mobile_suit_catalog.json", "mobile_suit_catalog.json"];
+for (var cp = 0; cp < array_length(_cat_paths); cp++) {
+    var _cp_file = _cat_paths[cp];
+    if (file_exists(_cp_file)) {
+        try {
+            var _c_buf = buffer_load(_cp_file);
+            var _c_str = buffer_read(_c_buf, buffer_string);
+            buffer_delete(_c_buf);
+            var _c_parsed = json_parse(_c_str);
+            if (is_struct(_c_parsed)) {
+                var _c_names = variable_struct_get_names(_c_parsed);
+                for (var cn = 0; cn < array_length(_c_names); cn++) {
+                    var _suit_id = _c_names[cn];
+                    var _ms = _c_parsed[$ _suit_id];
+                    if (is_struct(_ms)) {
+                        _ms.blueprint_id = _suit_id;
+                        var _spr_asset = spr_ms_ironclad_idle;
+                        if (variable_struct_exists(_ms, "sprite_asset") && is_string(_ms.sprite_asset)) {
+                            var _idx = asset_get_index(_ms.sprite_asset);
+                            if (_idx != -1) _spr_asset = _idx;
+                        } else {
+                            if (_ms[$ "faction_id"] == "faction_b" || _ms[$ "faction_id"] == "faction_colony") _spr_asset = spr_ms_aether_idle;
+                            else if (_ms[$ "faction_id"] == "faction_c" || _ms[$ "faction_id"] == "faction_syndicate") _spr_asset = spr_ms_hyena_idle;
+                            else if (_ms[$ "faction_id"] == "faction_d" || _ms[$ "faction_id"] == "faction_zaibatsu") _spr_asset = spr_ms_muramasa_idle;
+                        }
+                        _ms.associated_sprite = _spr_asset;
+                        _ms.schematic_sprite = spr_mech_schematic;
+
+                        unlocked_blueprints[$ _suit_id] = _ms;
+                        if (variable_struct_exists(_ms, "model_code")) {
+                            unlocked_blueprints[$ _ms.model_code] = _ms;
+                        }
+                        if (variable_struct_exists(_ms, "short_name")) {
+                            unlocked_blueprints[$ _ms.short_name] = _ms;
+                        }
+
+                        // Check if already in all_blueprint_list
+                        var _exists_in_list = false;
+                        for (var bl = 0; bl < array_length(all_blueprint_list); bl++) {
+                            if (all_blueprint_list[bl][$ "blueprint_id"] == _suit_id || all_blueprint_list[bl][$ "id"] == _suit_id) {
+                                _exists_in_list = true;
+                                break;
+                            }
+                        }
+                        if (!_exists_in_list) {
+                            array_push(all_blueprint_list, _ms);
+                        }
+                    }
+                }
+                show_debug_message("[obj_BlueprintManager] Loaded " + string(array_length(_c_names)) + " mobile suits from " + _cp_file + " into master catalog.");
+                break;
+            }
+        } catch (_c_ex) {
+            show_debug_message("[obj_BlueprintManager] Warning loading " + _cp_file + ": " + string(_c_ex));
+        }
+    }
+}
+
+// 8d. Dynamic Suit Lore, Global Production & Attrition State Machine
+get_suit_record = function(_suit_id) {
+    if (is_struct(_suit_id)) return _suit_id;
+    if (variable_struct_exists(unlocked_blueprints, _suit_id)) {
+        return unlocked_blueprints[$ _suit_id];
+    }
+    for (var i = 0; i < array_length(all_blueprint_list); i++) {
+        var _s = all_blueprint_list[i];
+        if (_s[$ "id"] == _suit_id || _s[$ "blueprint_id"] == _suit_id || _s[$ "name"] == _suit_id || _s[$ "short_name"] == _suit_id || _s[$ "model_code"] == _suit_id) {
+            return _s;
+        }
+    }
+    if (instance_exists(obj_GameManager) && is_struct(obj_GameManager.mobile_suit_catalog)) {
+        if (variable_struct_exists(obj_GameManager.mobile_suit_catalog, _suit_id)) {
+            return obj_GameManager.mobile_suit_catalog[$ _suit_id];
+        }
+    }
+    return undefined;
+};
+
+append_suit_dynamic_lore = function(_suit_id, _log_entry) {
+    var _s = get_suit_record(_suit_id);
+    if (!is_undefined(_s)) {
+        if (!variable_struct_exists(_s, "dynamic_lore_chronicle") || !is_array(_s.dynamic_lore_chronicle)) {
+            _s.dynamic_lore_chronicle = [];
+        }
+        array_push(_s.dynamic_lore_chronicle, _log_entry);
+        show_debug_message("[obj_BlueprintManager] Dynamic Lore Chronicle logged for " + string(_s[$ "name"] ?? _suit_id) + ": " + _log_entry);
+    }
+};
+
+record_suit_production = function(_suit_id, _quantity, _reason) {
+    var _s = get_suit_record(_suit_id);
+    if (!is_undefined(_s)) {
+        var _cur_prod = _s[$ "production_count"] ?? 0;
+        var _cur_act = _s[$ "active_units"] ?? 0;
+        _s.production_count = _cur_prod + _quantity;
+        _s.active_units = _cur_act + _quantity;
+        var _turn = instance_exists(obj_GameManager) ? obj_GameManager.turn_number : 1;
+        append_suit_dynamic_lore(_suit_id, "[Cycle " + string(_turn) + " - BATCH PRODUCTION] +" + string(_quantity) + " units manufactured (" + _reason + "). Active in field: " + string(_s.active_units) + ".");
+    }
+};
+
+record_suit_casualty = function(_victim_suit_id, _killer_suit_id) {
+    var _vic = get_suit_record(_victim_suit_id);
+    if (!is_undefined(_vic)) {
+        var _cas = _vic[$ "casualty_count"] ?? 0;
+        var _act = _vic[$ "active_units"] ?? 100;
+        _vic.casualty_count = _cas + 1;
+        _vic.active_units = max(0, _act - 1);
+        var _kills = _vic[$ "kill_count"] ?? 0;
+        _vic.combat_loss_ratio = round((_vic.casualty_count / max(1, _kills)) * 100.0) / 100.0;
+        _vic.survivability_rating = round(100.0 * _kills / max(1, _kills + _vic.casualty_count));
+    }
+    var _kil = get_suit_record(_killer_suit_id);
+    if (!is_undefined(_kil)) {
+        var _kills = _kil[$ "kill_count"] ?? 0;
+        _kil.kill_count = _kills + 1;
+        var _cas = _kil[$ "casualty_count"] ?? 0;
+        _kil.combat_loss_ratio = round((_cas / max(1, _kil.kill_count)) * 100.0) / 100.0;
+        _kil.survivability_rating = round(100.0 * _kil.kill_count / max(1, _kil.kill_count + _cas));
+        if (_kil.kill_count mod 25 == 0) {
+            var _turn = instance_exists(obj_GameManager) ? obj_GameManager.turn_number : 1;
+            append_suit_dynamic_lore(_killer_suit_id, "[Cycle " + string(_turn) + " - BATTLE CITATION] Confirmed " + string(_kil.kill_count) + " kills. Frontline survivability: " + string(_kil.survivability_rating) + "%.");
+        }
+    }
+};
+
+record_suit_adoption = function(_suit_id, _faction_id, _winner_name, _is_player, _units) {
+    var _s = get_suit_record(_suit_id);
+    if (!is_undefined(_s)) {
+        var _turn = instance_exists(obj_GameManager) ? obj_GameManager.turn_number : 1;
+        _s.adoption_status = "adopted";
+        _s.adoption_turn = _turn;
+        var _cur_prod = _s[$ "production_count"] ?? 0;
+        var _cur_act = _s[$ "active_units"] ?? 0;
+        _s.production_count = _cur_prod + _units;
+        _s.active_units = _cur_act + _units;
+        append_suit_dynamic_lore(_suit_id, "[Cycle " + string(_turn) + " - TENDER ADOPTED] Formally adopted by " + string_upper(_faction_id) + " as mainline doctrine! Tender won by " + _winner_name + ". Authorized +" + string(_units) + " active units.");
+    }
+};
+
+record_suit_replacement = function(_old_suit_id, _new_suit_name, _is_player, _faction_id) {
+    var _s = get_suit_record(_old_suit_id);
+    if (!is_undefined(_s)) {
+        var _turn = instance_exists(obj_GameManager) ? obj_GameManager.turn_number : 1;
+        _s.adoption_status = _is_player ? "replaced_by_player" : "replaced_by_competitor";
+        _s.replaced_by = _new_suit_name;
+        _s.adoption_turn = _turn;
+        var _who = _is_player ? "PMC Hephaestus blueprint "" + _new_suit_name + """ : "Competitor model "" + _new_suit_name + """;
+        append_suit_dynamic_lore(_old_suit_id, "[Cycle " + string(_turn) + " - OBSOLESCENCE NOTICE] Procurement canceled by " + string_upper(_faction_id) + ". Replaced on frontline assembly by " + _who + ". Retooling active.");
+    }
+};
+
 
 show_debug_message("[obj_BlueprintManager] Total Blueprints Active: " + string(array_length(all_blueprint_list)) + ". Ready for Prototyping & Assembly.");
 
