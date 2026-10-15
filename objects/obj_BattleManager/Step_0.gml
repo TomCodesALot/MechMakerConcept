@@ -504,6 +504,10 @@ switch (state) {
 
         // Substate 0: Warning Siren & Camera Pan (Frames 0 to 50)
         if (nemesis_incursion_state == 0) {
+            if (nemesis_incursion_timer == 1) {
+                scr_audio_play_sfx(snd_alarm_critical, 1.0, 0.0);
+                scr_audio_play_location_bgm("nemesis");
+            }
             screen_shake = max(screen_shake, 3.5);
             var _t_c = incursion_data.target_c;
             var _t_r = incursion_data.target_r;
@@ -545,6 +549,8 @@ switch (state) {
             if (!incursion_data.impact_fx_played) {
                 incursion_data.impact_fx_played = true;
                 screen_shake = 26.0;
+                scr_audio_play_sfx(snd_explosion_large, 1.0, 0.05);
+                scr_audio_play_impact("kinetic", true);
 
                 var _tc = incursion_data.target_c;
                 var _tr = incursion_data.target_r;
