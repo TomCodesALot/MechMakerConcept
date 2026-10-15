@@ -15,6 +15,12 @@ scr_audio_play_ui("boot");
 scr_audio_play_location_bgm((active_tab == 0) ? "prototyping" : "hq");
 
 // 1. Navigation State
+// Intro Briefing & Commander Selection State
+intro_active = (instance_exists(obj_GameManager) && !obj_GameManager.has_completed_intro);
+intro_page = 0; // 0 = Situation Briefing, 1 = Commander Selection Dossier
+selected_commander_choice = "silhouette"; // "silhouette", "male", "female"
+show_commander_modal = false;
+
 active_tab = 0;              // 0 = R&D Lab, 1 = Factory Floor, 2 = Contracts, 3 = War Map
 rd_subtab = 0;               // 0 = Crucible Synthesis (Doc 02), 1 = Prototyping Minigames (Doc 03), 2 = Blueprint Specs
 war_subtab = 0;              // 0 = Sector War Map & Mining, 1 = Faction Dossiers, 2 = Faction Diplomacy Matrix (Doc 21), 3 = Decade Mecha Timeline, 4 = PMC Expedition (Doc 12)

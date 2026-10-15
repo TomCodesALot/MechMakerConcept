@@ -499,10 +499,15 @@ function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _exp
         _base_spr = _c.portrait;
         _has_explicit_port = true;
     } else if (variable_struct_exists(_c, "portrait_asset")) {
-        var _cand_spr = asset_get_index(_c.portrait_asset);
-        if (sprite_exists(_cand_spr)) {
-            _base_spr = _cand_spr;
+        if (is_numeric(_c.portrait_asset) && sprite_exists(_c.portrait_asset)) {
+            _base_spr = _c.portrait_asset;
             _has_explicit_port = true;
+        } else if (is_string(_c.portrait_asset)) {
+            var _cand_spr = asset_get_index(_c.portrait_asset);
+            if (sprite_exists(_cand_spr)) {
+                _base_spr = _cand_spr;
+                _has_explicit_port = true;
+            }
         }
     }
     if (!_has_explicit_port) {

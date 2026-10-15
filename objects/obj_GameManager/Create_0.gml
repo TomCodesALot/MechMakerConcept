@@ -33,6 +33,55 @@ timeline_era = 2; // 1 = Early War (Y214), 2 = Industrial Escalation (Y215-216),
 timeline_era_name = "ERA II: INDUSTRIAL ESCALATION";
 timeline_era_year_start = 214;
 
+// 3d. Player Commander Executive Dossier & New Game Intro State (Male / Female / Silhouette)
+has_completed_intro = false;
+player_commander = {
+    id: "player_commander_01",
+    callsign: "SHADOW",
+    name: "Commander [CLASSIFIED]",
+    gender: "silhouette", // "silhouette", "male", "female"
+    portrait_asset: spr_portrait_commander_silhouette,
+    rank: "Commander",
+    pmc_name: "Iron Ridge Dynamics",
+    flagship_name: "Pre-War Dreadnought Hephaestus",
+    background: "Encrypted black-budget mercenary profile operating under an anonymous registry.",
+    doctrine: "Black Ops Logistics (+10% Scrap Salvage, Volatility Dampening)",
+    leadership: 9,
+    tactics: 9,
+    morale: 100
+};
+
+select_commander = function(_gender_type) {
+    switch (_gender_type) {
+        case "male":
+            player_commander.gender = "male";
+            player_commander.name = "Commander Alexei Kane";
+            player_commander.callsign = "RAVEN";
+            player_commander.portrait_asset = spr_portrait_commander_male;
+            player_commander.background = "Former Terran Naval Strike Commander. Refused orbital saturation orders; founded an independent tactical design bureau.";
+            player_commander.doctrine = "Heavy Vanguard (+12% Kinetic Armor, +10% Contract Bounty)";
+            break;
+        case "female":
+            player_commander.gender = "female";
+            player_commander.name = "Commander Morgan Vance";
+            player_commander.callsign = "VALKYRIE";
+            player_commander.portrait_asset = spr_portrait_commander_female;
+            player_commander.background = "Former Colony Fleet Tactical Prodigy. Escaped Jovian corporate conscription to pioneer modular mobile suit metallurgy.";
+            player_commander.doctrine = "Vernier Synthesis (+15% Prototyping Stability, +10% Thruster Evasion)";
+            break;
+        case "silhouette":
+        default:
+            player_commander.gender = "silhouette";
+            player_commander.name = "Commander [CLASSIFIED]";
+            player_commander.callsign = "SHADOW";
+            player_commander.portrait_asset = spr_portrait_commander_silhouette;
+            player_commander.background = "Encrypted black-budget mercenary profile operating under an anonymous registry.";
+            player_commander.doctrine = "Black Ops Logistics (+10% Scrap Salvage, Volatility Dampening)";
+            break;
+    }
+};
+
+
 // 4c. Procedural Competitor R&D Catalog & Lineages (docs/27)
 competitor_catalog = {};
 
