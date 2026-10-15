@@ -29,5 +29,19 @@ if (!instance_exists(obj_NemesisManager)) {
     show_debug_message("[rm_init] Created obj_NemesisManager");
 }
 
+// 4b. Instantiate persistent obj_AudioManager if not already created
+if (!instance_exists(obj_AudioManager)) {
+    instance_create_depth(0, 0, 0, obj_AudioManager);
+    show_debug_message("[rm_init] Created obj_AudioManager");
+}
+
+// 5. Synchronize pilot hiring market between obj_GameManager and obj_NemesisManager
+if (instance_exists(obj_GameManager)) {
+    var _gm = instance_find(obj_GameManager, 0);
+    if (_gm != noone && variable_instance_exists(_gm, "populate_market_from_nemesis")) {
+        _gm.populate_market_from_nemesis();
+    }
+}
+
 show_debug_message("[rm_init] Core managers initialized. Transitioning to rm_hq_terminal...");
 room_goto(rm_hq_terminal);

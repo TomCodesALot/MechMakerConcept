@@ -65,6 +65,20 @@ for (var i = array_length(projectiles) - 1; i >= 0; i--) {
     }
 }
 
+// 4b. Pre-Battle Deployment Deck Modal State Intercept
+if (deployment_deck_active) {
+    if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("H"))) {
+        deployment_deck_active = false;
+    }
+    // Update idle animations for units while paused
+    for (var i = 0; i < array_length(units); i++) {
+        var _u = units[i];
+        _u.anim_frame += _u.anim_speed;
+        if (_u.anim_frame >= 4.0) _u.anim_frame = 0.0;
+    }
+    exit;
+}
+
 // 5. Camera Navigation (WASD / Drag / Wheel Zoom)
 var _pan_spd = 14.0 / max(0.5, zoom);
 if (keyboard_check(ord("W")) || keyboard_check(vk_up)) cam_target_y += _pan_spd;
@@ -173,6 +187,7 @@ switch (state) {
         }
 
         // Hotkeys
+        if (keyboard_check_pressed(ord("H"))) { deployment_deck_active = !deployment_deck_active; }
         if (keyboard_check_pressed(vk_tab)) cycle_allied_unit();
         if (keyboard_check_pressed(ord("F"))) cycle_unit_facing(units[selected_unit_idx]);
         if (keyboard_check_pressed(ord("M"))) { recalculate_moves(); state = COMBAT_STATE.MOVE_MODE; }
@@ -231,6 +246,7 @@ switch (state) {
                     _cur_u.current_ap -= _tile.cost;
                     _cur_u.anim_state = (_cur_u.mech_type == "hyena") ? "walk" : ((_cur_u.mech_type == "aether") ? "boost" : "idle");
                     _cur_u.anim_timer = 20;
+                    scr_audio_play_sfx((_cur_u.mech_type == "aether") ? snd_mech_boost : snd_mech_step, 0.85, 0.08);
 
                     add_log("[TACTICAL MOVE] " + _cur_u.callsign + " relocated to (" + string(hover_c) + ", " + string(hover_r) + ") [- " + string(_tile.cost) + " AP]");
                     state = COMBAT_STATE.PLAYER_PHASE;
@@ -244,9 +260,36 @@ switch (state) {
     // C. TARGET MODE: Selecting Enemy Target Within Weapon Range
     // ---------------------------------------------------------------------
     case COMBAT_STATE.TARGET_MODE:
-        if (_rclick) {
+        if (_rclick || keyboard_check_pressed(vk_escape)) {
             state = COMBAT_STATE.PLAYER_PHASE;
             exit;
+        }
+
+        var _cur_u = units[selected_unit_idx];
+
+        // Aimed Shot Hotkeys: [Z] Toggle Aimed Shot, [T] Cycle Targeted Limb
+        if (keyboard_check_pressed(ord("Z"))) {
+            _cur_u.is_aimed_shot = !_cur_u.is_aimed_shot;
+            add_log("[AIMED SHOT] " + (_cur_u.is_aimed_shot ? ("Precision lock: " + string_upper(_cur_u.targeted_limb)) : "Auto scatter mode."));
+        }
+        if (keyboard_check_pressed(ord("T"))) {
+            var _parts = ["torso", "arm_left", "arm_right", "legs", "head"];
+            var _p_idx = 0;
+            for (var p = 0; p < array_length(_parts); p++) {
+                if (_parts[p] == _cur_u.targeted_limb) { _p_idx = (p + 1) % array_length(_parts); break; }
+            }
+            _cur_u.targeted_limb = _parts[_p_idx];
+            _cur_u.is_aimed_shot = true;
+            add_log("[AIMED SHOT LOCK] Designated component -> " + string_upper(_cur_u.targeted_limb));
+        }
+
+        // Auto-update target_unit_idx when hovering over enemy
+        for (var u = 0; u < array_length(units); u++) {
+            var _target = units[u];
+            if (_target.team == "HOSTILE" && !_target.is_destroyed && _target.grid_c == hover_c && _target.grid_r == hover_r) {
+                target_unit_idx = u;
+                break;
+            }
         }
 
         if (_click && !_hud_blocked) {
@@ -298,6 +341,7 @@ switch (state) {
             }
             if (!_any_hostile) {
                 state = COMBAT_STATE.VICTORY_AAR;
+                scr_audio_play_location_bgm("victory");
                 add_log("[SECTOR SECURED] ALL HOSTILE FORCES NEUTRALIZED! Mission accomplished.");
                 exit;
             }
@@ -312,6 +356,7 @@ switch (state) {
             }
             if (!_any_allied) {
                 state = COMBAT_STATE.DEFEAT_AAR;
+                scr_audio_play_location_bgm("defeat");
                 add_log("[CRITICAL FAILURE] ALL ALLIED MOBILE SUITS DESTROYED!");
                 exit;
             }
@@ -414,6 +459,7 @@ switch (state) {
                             _ai_u.elev = grid_elev[_new_c][_new_r];
                             _ai_u.current_ap -= 2;
                             add_log("[HOSTILE ADVANCE] " + _ai_u.callsign + " maneuvers along trench line!");
+                            scr_audio_play_sfx(snd_mech_step, 0.75, 0.10);
                         }
                     }
                 }
@@ -561,7 +607,7 @@ switch (state) {
                     accuracy: 94,
                     evasion: 55,
                     braced: false,
-                    components: _create_components(850, 520, 680, 240, 310, 36),
+                    components: create_components(850, 520, 680, 240, 310, 36),
                     weapons: [
                         { name: "Nemesis Overcharged Cannon", short_name: "120MM SABOT", proj_type: "KINETIC_CANNON", ap_cost: 3, heat_cost: 16, range_min: 1, range_max: 7, damage: 220, anim_state: "fire_rifle", desc: "Overcharged sabot with explosive breach." },
                         { name: "Blood-Feud Heavy Vulcan", short_name: "HEAVY VULCAN", proj_type: "ROTARY_VULCAN", ap_cost: 2, heat_cost: 10, range_min: 1, range_max: 4, damage: 115, anim_state: "fire_chaingun", desc: "Sustained kinetic barrage." },

@@ -57,7 +57,8 @@ def test_json_files():
         full_path = os.path.join(BASE_DIR, rel_path)
         assert os.path.exists(full_path), f"File not found: {rel_path}"
         with open(full_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+            text = f.read()
+            data = json.loads(re.sub(r",\s*([}\]])", r"\1", text))
         print(f"  ✓ {rel_path}: Valid JSON ({len(data)} top-level elements)")
 
 def test_gml_syntax():

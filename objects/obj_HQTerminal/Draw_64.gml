@@ -151,7 +151,17 @@ for (var tb = 0; tb < 5; tb++) {
     var _tb_active = (active_tab == tb);
     var _tb_hov = (_mx >= _tbx && _mx <= _tbx + _tab_w - 6 && _my >= _tab_y && _my <= _tab_y + _tab_h);
 
-    if (_tb_hov && _click) active_tab = tb;
+    if (_tb_hov && _click) {
+        if (active_tab != tb) {
+            active_tab = tb;
+            scr_audio_play_ui("tab");
+            if (active_tab == 0) {
+                scr_audio_play_location_bgm("prototyping");
+            } else {
+                scr_audio_play_location_bgm("hq");
+            }
+        }
+    }
 
     draw_set_color(_tb_active ? make_color_rgb(24, 48, 76) : (_tb_hov ? make_color_rgb(18, 32, 50) : make_color_rgb(12, 18, 26)));
     draw_rectangle(_tbx + _sx, _tab_y + _sy, _tbx + _tab_w - 6 + _sx, _tab_y + _tab_h + _sy, false);
@@ -201,7 +211,7 @@ if (active_tab == 0) {
         var _stbx = _pan_x + 16 + stb * (_sub_w + 12);
         var _stb_active = (rd_subtab == stb);
         var _stb_hov = (_mx >= _stbx && _mx <= _stbx + _sub_w && _my >= _sub_y && _my <= _sub_y + 28);
-        if (_stb_hov && _click) rd_subtab = stb;
+        if (_stb_hov && _click) { rd_subtab = stb; scr_audio_play_ui("click"); }
 
         draw_set_color(_stb_active ? make_color_rgb(30, 70, 110) : (_stb_hov ? make_color_rgb(20, 40, 60) : make_color_rgb(14, 22, 32)));
         draw_rectangle(_stbx + _sx, _sub_y + _sy, _stbx + _sub_w + _sx, _sub_y + 28 + _sy, false);
@@ -240,64 +250,131 @@ if (active_tab == 0) {
         draw_set_color(c_white);
         draw_text(_tut_btn_x + 10, _tut_btn_y + 5, "[?] CRUCIBLE TUTORIAL");
 
-        // Chamber Visualizer
+        // Chamber Visualizer (16-Bit Front Mission Animated Thermal Furnace)
         var _win_x = _c_x + 24;
         var _win_y = _c_y + 44;
         var _win_w = 260;
         var _win_h = 220;
 
-        draw_set_color(c_black);
-        draw_rectangle(_win_x + _sx, _win_y + _sy, _win_x + _win_w + _sx, _win_y + _win_h + _sy, false);
+        // 1. Heavy Industrial Beveled Frame Housing
+        scr_draw_snes_panel(_win_x + _sx, _win_y + _sy, _win_w, _win_h, "THERMAL CORE", make_color_rgb(255, 120, 40), true);
 
+        // 2. High-Temperature Quartz Observation Viewport
+        var _qz_x = _win_x + 10 + _sx;
+        var _qz_y = _win_y + 28 + _sy;
+        var _qz_w = _win_w - 20;
+        var _qz_h = _win_h - 38;
+
+        draw_set_color(make_color_rgb(8, 12, 16));
+        draw_rectangle(_qz_x, _qz_y, _qz_x + _qz_w, _qz_y + _qz_h, false);
+
+        // Heat Incandescence Glow Dynamics
         var _temp_norm = clamp((crucible_temp_c - 25.0) / 4975.0, 0, 1);
-        var _glow_r = lerp(40, 255, _temp_norm);
-        var _glow_g = lerp(60, 180, _temp_norm);
-        var _glow_b = lerp(120, 255, max(0, (_temp_norm - 0.7) * 3.3));
-        draw_set_color(make_color_rgb(_glow_r, _glow_g, _glow_b));
-        draw_set_alpha(0.3 + _temp_norm * 0.7);
-        draw_circle(_win_x + _win_w / 2 + _sx, _win_y + _win_h / 2 + _sy, 50 + _temp_norm * 45, false);
+        var _glow_r = lerp(45, 255, _temp_norm);
+        var _glow_g = lerp(20, 200, clamp((_temp_norm - 0.2) * 1.25, 0, 1));
+        var _glow_b = lerp(15, 255, clamp((_temp_norm - 0.7) * 3.3, 0, 1));
+        var _core_glow_col = make_color_rgb(_glow_r, _glow_g, _glow_b);
+
+        // Convection Molten Magma Bed (Undulating Wave Layer)
+        var _bed_h = 32 + (_temp_norm * 40);
+        var _bed_y = _qz_y + _qz_h - _bed_h;
+        for (var bx = 0; bx < _qz_w; bx += 4) {
+            var _wave_off = sin((current_time * 0.004) + (bx * 0.08)) * (3 + _temp_norm * 4);
+            var _wave_top = clamp(_bed_y + _wave_off, _qz_y + 10, _qz_y + _qz_h - 2);
+            draw_set_color(_core_glow_col);
+            draw_set_alpha(0.75 + _temp_norm * 0.25);
+            draw_rectangle(_qz_x + bx, _wave_top, _qz_x + bx + 3, _qz_y + _qz_h, false);
+        }
         draw_set_alpha(1.0);
 
-        draw_set_color(make_color_rgb(60, 100, 140));
-        draw_rectangle(_win_x + _sx, _win_y + _sy, _win_x + _win_w + _sx, _win_y + _win_h + _sy, true);
+        // Radial Thermal Corona in Center
+        draw_set_color(_core_glow_col);
+        draw_set_alpha(0.20 + _temp_norm * 0.55);
+        draw_circle(_qz_x + _qz_w / 2, _qz_y + _qz_h / 2, 28 + _temp_norm * 42, false);
+        draw_set_alpha(1.0);
 
-        // Gauges
+        // Dynamic Procedural Elemental Reaction Sparks
+        var _spark_col = make_color_rgb(255, 140, 40);
+        if (crucible_batch.mat_tritium > 0) _spark_col = make_color_rgb(0, 245, 255);
+        else if (crucible_batch.mat_syn_flux > 0) _spark_col = make_color_rgb(255, 185, 50);
+        else if (crucible_batch.mat_tungsten > 0) _spark_col = make_color_rgb(230, 240, 255);
+        else if (crucible_batch.mat_silica_carb > 0) _spark_col = make_color_rgb(110, 140, 175);
+
+        var _total_loaded = crucible_batch.mat_tungsten + crucible_batch.mat_silica_carb + crucible_batch.mat_tritium + crucible_batch.mat_syn_flux;
+        var _spark_count = clamp(_total_loaded * 3 + floor(_temp_norm * 8), 4, 16);
+
+        gpu_set_blendmode(bm_add);
+        for (var sp = 0; sp < _spark_count; sp++) {
+            var _sp_seed = sp * 73 + floor(current_time * 0.06);
+            var _sp_norm_y = frac((current_time * 0.0012) + (sp / _spark_count));
+            var _sp_x = _qz_x + 8 + ((_sp_seed mod (_qz_w - 16)));
+            var _sp_y = _qz_y + _qz_h - (_sp_norm_y * (_qz_h - 10));
+
+            if (sprite_exists(spr_fx_spark)) {
+                draw_sprite_ext(spr_fx_spark, (current_time div 80) mod 4, _sp_x, _sp_y, 0.35, 0.35, sp * 45, _spark_col, 0.85);
+            } else {
+                draw_set_color(_spark_col);
+                draw_set_alpha(0.85);
+                draw_circle(_sp_x, _sp_y, 2, false);
+                draw_set_alpha(1.0);
+            }
+        }
+        gpu_set_blendmode(bm_normal);
+
+        // Top Pressure Relief Steam Vents
+        if (crucible_shake > 0 || crucible_pressure_psi > 6000.0) {
+            draw_set_color(c_white);
+            draw_set_alpha(0.40);
+            for (var sv = 0; sv < 3; sv++) {
+                var _svx = _qz_x + 20 + sv * 40;
+                draw_line(_svx, _qz_y + 4, _svx + random_range(-4, 4), _qz_y + 24);
+            }
+            draw_set_alpha(1.0);
+        }
+
+        // Viewport Inner Border & Bevel
+        draw_set_color(make_color_rgb(20, 28, 38));
+        draw_rectangle(_qz_x, _qz_y, _qz_x + _qz_w, _qz_y + _qz_h, true);
+        draw_set_color(make_color_rgb(70, 95, 125));
+        draw_rectangle(_qz_x - 1, _qz_y - 1, _qz_x + _qz_w + 1, _qz_y + _qz_h + 1, true);
+
+        // =====================================================================
+        // Segmented SNES LED Gauges (Front Mission / Gihren's Greed Telemetry)
+        // =====================================================================
         var _gauge_x = _win_x + _win_w + 24;
         var _gauge_y = _win_y;
+        var _gw_w = 280;
 
-        // Temperature Gauge
+        // 1. Temperature Gauge
+        var _temp_col = (crucible_temp_c >= 2200 && crucible_temp_c <= 2500) ? c_lime : ((crucible_temp_c >= 4000 && crucible_temp_c <= 4950) ? c_aqua : ((crucible_temp_c > 2500 && crucible_temp_c < 4000) ? make_color_rgb(255, 180, 80) : make_color_rgb(255, 100, 60)));
         draw_set_color(c_white);
         draw_text(_gauge_x, _gauge_y, "CHAMBER TEMPERATURE:");
-        var _temp_col = (crucible_temp_c >= 2200 && crucible_temp_c <= 2500) ? c_lime : ((crucible_temp_c >= 4000 && crucible_temp_c <= 4500) ? c_aqua : make_color_rgb(255, 180, 80));
         draw_set_color(_temp_col);
-        draw_text(_gauge_x, _gauge_y + 20, string(floor(crucible_temp_c)) + " °C (Target: 2200-2500°C)");
-        draw_set_color(make_color_rgb(20, 30, 40));
-        draw_rectangle(_gauge_x, _gauge_y + 44, _gauge_x + 280, _gauge_y + 58, false);
-        draw_set_color(_temp_col);
-        draw_rectangle(_gauge_x, _gauge_y + 44, _gauge_x + (280 * _temp_norm), _gauge_y + 58, false);
+        draw_text(_gauge_x, _gauge_y + 18, string(floor(crucible_temp_c)) + " °C  [OP RANGE: 1700 - 4950°C]");
+        scr_draw_snes_gauge(_gauge_x, _gauge_y + 38, _gw_w, 16, crucible_temp_c, 5000.0, _temp_col, -1, 6);
 
-        // Pressure Gauge
+        // 2. Pressure Gauge
         var _psi_norm = clamp(crucible_pressure_psi / 10000.0, 0, 1);
+        var _psi_col = (crucible_pressure_psi > 1200 && crucible_batch.mat_silica_carb > 0 && crucible_batch.mat_tritium == 0) ? c_red : ((crucible_pressure_psi >= 4000) ? make_color_rgb(100, 240, 255) : make_color_rgb(120, 200, 255));
         draw_set_color(c_white);
-        draw_text(_gauge_x, _gauge_y + 70, "PRESSURE CHAMBER:");
-        var _psi_col = (crucible_pressure_psi > 1200 && crucible_batch.mat_silica_carb > 0) ? c_red : make_color_rgb(100, 200, 255);
+        draw_text(_gauge_x, _gauge_y + 64, "PRESSURE CHAMBER:");
         draw_set_color(_psi_col);
-        draw_text(_gauge_x, _gauge_y + 90, string(floor(crucible_pressure_psi)) + " PSI (Safe: <1200 PSI)");
-        draw_set_color(make_color_rgb(20, 30, 40));
-        draw_rectangle(_gauge_x, _gauge_y + 114, _gauge_x + 280, _gauge_y + 128, false);
-        draw_set_color(_psi_col);
-        draw_rectangle(_gauge_x, _gauge_y + 114, _gauge_x + (280 * _psi_norm), _gauge_y + 128, false);
+        draw_text(_gauge_x, _gauge_y + 82, string(floor(crucible_pressure_psi)) + " PSI  [VAC <800 | COMP >4000]");
+        scr_draw_snes_gauge(_gauge_x, _gauge_y + 102, _gw_w, 16, crucible_pressure_psi, 10000.0, _psi_col, -1, 6);
 
-        // Volatility Gauge
-        draw_set_color(c_white);
-        draw_text(_gauge_x, _gauge_y + 140, "CHEMICAL VOLATILITY:");
+        // 3. Volatility Gauge
         var _vol_col = (volatility_meter > 70) ? c_red : ((volatility_meter > 35) ? c_yellow : c_lime);
+        draw_set_color(c_white);
+        draw_text(_gauge_x, _gauge_y + 128, "CHEMICAL VOLATILITY:");
         draw_set_color(_vol_col);
-        draw_text(_gauge_x, _gauge_y + 160, string(floor(volatility_meter)) + " % (Breach at 90%)");
-        draw_set_color(make_color_rgb(20, 30, 40));
-        draw_rectangle(_gauge_x, _gauge_y + 184, _gauge_x + 280, _gauge_y + 198, false);
-        draw_set_color(_vol_col);
-        draw_rectangle(_gauge_x, _gauge_y + 184, _gauge_x + (280 * (volatility_meter / 100.0)), _gauge_y + 198, false);
+        draw_text(_gauge_x, _gauge_y + 146, string(floor(volatility_meter)) + " %  [BREACH LIMIT: 90%]");
+
+        if (volatility_meter > 70) {
+            scr_draw_snes_hazard_bar(_gauge_x, _gauge_y + 164, _gw_w, 8, true);
+            scr_draw_snes_gauge(_gauge_x, _gauge_y + 174, _gw_w, 14, volatility_meter, 100.0, _vol_col, -1, 6);
+        } else {
+            scr_draw_snes_gauge(_gauge_x, _gauge_y + 166, _gw_w, 16, volatility_meter, 100.0, _vol_col, -1, 6);
+        }
 
         // Discrete Step Thermal & Pressure Controls
         var _act_y = _win_y + _win_h + 18;
@@ -379,35 +456,20 @@ if (active_tab == 0) {
             var _lb_y = _my_box + 46;
             var _lb_hov = (_mx >= _mx_box + 8 && _mx <= _mx_box + 130 && _my >= _lb_y && _my <= _lb_y + 24);
             if (_lb_hov && _click) crucible_load_mat(_mats[mi]);
-            draw_set_color(_lb_hov ? make_color_rgb(30, 70, 45) : make_color_rgb(16, 36, 24));
-            draw_rectangle(_mx_box + 8, _lb_y, _mx_box + 130, _lb_y + 24, false);
-            draw_set_color(make_color_rgb(60, 200, 100));
-            draw_rectangle(_mx_box + 8, _lb_y, _mx_box + 130, _lb_y + 24, true);
-            draw_set_color(c_white);
-            draw_text(_mx_box + 24, _lb_y + 4, "[+1 LOAD]");
+            scr_draw_snes_button(_mx_box + 8, _lb_y, 122, 24, "[+1 LOAD]", _lb_hov, false, make_color_rgb(60, 200, 100));
         }
 
         // Action: Purge & Execute Synthesis Buttons
         var _exec_y = _hop_y + 112;
         var _purg_hov = (_mx >= _win_x && _mx <= _win_x + 180 && _my >= _exec_y && _my <= _exec_y + 38);
         if (_purg_hov && _click) crucible_purge_hopper();
-        draw_set_color(_purg_hov ? make_color_rgb(80, 30, 30) : make_color_rgb(40, 16, 16));
-        draw_rectangle(_win_x, _exec_y, _win_x + 180, _exec_y + 38, false);
-        draw_set_color(make_color_rgb(240, 80, 80));
-        draw_rectangle(_win_x, _exec_y, _win_x + 180, _exec_y + 38, true);
-        draw_set_color(c_white);
-        draw_text(_win_x + 22, _exec_y + 11, "[PURGE HOPPER]");
+        scr_draw_snes_button(_win_x, _exec_y, 180, 38, "[PURGE HOPPER]", _purg_hov, false, make_color_rgb(240, 80, 80));
 
         var _syn_btn_x = _win_x + 196;
         var _syn_btn_w = 398;
         var _syn_hov = (_mx >= _syn_btn_x && _mx <= _syn_btn_x + _syn_btn_w && _my >= _exec_y && _my <= _exec_y + 38);
         if (_syn_hov && _click) crucible_execute_synthesis();
-        draw_set_color(_syn_hov ? make_color_rgb(30, 95, 60) : make_color_rgb(18, 52, 32));
-        draw_rectangle(_syn_btn_x, _exec_y, _syn_btn_x + _syn_btn_w, _exec_y + 38, false);
-        draw_set_color(make_color_rgb(60, 240, 120));
-        draw_rectangle(_syn_btn_x, _exec_y, _syn_btn_x + _syn_btn_w, _exec_y + 38, true);
-        draw_set_color(c_white);
-        draw_text(_syn_btn_x + 40, _exec_y + 11, ">> EXECUTE ALLOY SYNTHESIS BATCH <<");
+        scr_draw_snes_button(_syn_btn_x, _exec_y, _syn_btn_w, 38, ">> EXECUTE ALLOY SYNTHESIS BATCH <<", _syn_hov, false, make_color_rgb(60, 240, 120));
 
         // =========================================================================
         // RIGHT PANEL: CHROMATIC ALLOY METALLURGY CODEX & LIVE COLOR PREVIEW (DOC 14)
@@ -443,62 +505,121 @@ if (active_tab == 0) {
             draw_text(_cvx + 10, _met_y + 13, _c_views[cv]);
         }
 
-        // --- SUBVIEW 0: FURNACE LIVE PREVIEW & MASTER CODEX ---
+        // --- SUBVIEW 0: LIVE STOICHIOMETRIC REACTION PREVIEW & 8 MASTER ALLOYS ---
         if (crucible_subview == 0) {
-            // 1. Current Batch Ingot Real-Time Color Preview
+            // 1. Detect Target Canonical Sintering Alloy from Current Batch
+            var _tgt_name = "PROCEDURAL METALLURGICAL DISCOVERY";
+            var _tgt_tier = "TIER ?";
+            var _tgt_t_min = 1500; var _tgt_t_max = 5000;
+            var _tgt_p_min = 0; var _tgt_p_max = 10000;
+            var _tgt_bonus = "Combinatorial Material Exploration";
+            var _tgt_purity = 95;
+            var _is_known_tgt = false;
+
+            if (crucible_batch.mat_tungsten == 2 && crucible_batch.mat_silica_carb == 1 && crucible_batch.mat_syn_flux == 0 && crucible_batch.mat_tritium == 0) {
+                _tgt_name = "VANGUARD COMPOSITE ARMOR"; _tgt_tier = "TIER 1";
+                _tgt_t_min = 2200; _tgt_t_max = 2500; _tgt_p_min = 0; _tgt_p_max = 1200;
+                _tgt_bonus = "+30% Kinetic Defense Plating"; _tgt_purity = 99; _is_known_tgt = true;
+            } else if (crucible_batch.mat_tritium >= 1 && crucible_batch.mat_syn_flux >= 1 && crucible_batch.mat_tungsten >= 1 && crucible_batch.mat_silica_carb == 0) {
+                _tgt_name = "HYPERION SUPERCONDUCTOR MATRIX"; _tgt_tier = "TIER 2";
+                _tgt_t_min = 4000; _tgt_t_max = 4600; _tgt_p_min = 4000; _tgt_p_max = 10000;
+                _tgt_bonus = "Apex Tokamak Core Superconductor"; _tgt_purity = 98; _is_known_tgt = true;
+            } else if (crucible_batch.mat_silica_carb >= 1 && crucible_batch.mat_syn_flux >= 2 && crucible_batch.mat_tungsten == 0 && crucible_batch.mat_tritium == 0) {
+                _tgt_name = "AEROSTEEL VERNIER FLUX"; _tgt_tier = "TIER 2";
+                _tgt_t_min = 1800; _tgt_t_max = 2250; _tgt_p_min = 0; _tgt_p_max = 1200;
+                _tgt_bonus = "Lightweight High-G Thruster Shell"; _tgt_purity = 97; _is_known_tgt = true;
+            } else if (crucible_batch.mat_tungsten >= 3 && crucible_batch.mat_silica_carb >= 1 && crucible_batch.mat_syn_flux >= 1 && crucible_batch.mat_tritium == 0) {
+                _tgt_name = "ADAMANTINE HEAVY CARBIDE"; _tgt_tier = "TIER 3";
+                _tgt_t_min = 3000; _tgt_t_max = 3550; _tgt_p_min = 3000; _tgt_p_max = 10000;
+                _tgt_bonus = "Superheavy Ballistic Deflection"; _tgt_purity = 98; _is_known_tgt = true;
+            } else if (crucible_batch.mat_tungsten >= 3 && crucible_batch.mat_syn_flux >= 2 && crucible_batch.mat_tritium >= 1 && crucible_batch.mat_silica_carb == 0) {
+                _tgt_name = "REACTIVE DAMASCUS COMPOSITE"; _tgt_tier = "TIER 5";
+                _tgt_t_min = 3400; _tgt_t_max = 3800; _tgt_p_min = 4500; _tgt_p_max = 7000;
+                _tgt_bonus = "+35% Explosive Kinetic Deflection"; _tgt_purity = 99; _is_known_tgt = true;
+            } else if (crucible_batch.mat_tungsten >= 1 && crucible_batch.mat_tritium >= 2 && crucible_batch.mat_syn_flux >= 2 && crucible_batch.mat_silica_carb == 0) {
+                _tgt_name = "TACHYON SUPERALLOY MATRIX"; _tgt_tier = "APEX 5";
+                _tgt_t_min = 4600; _tgt_t_max = 4950; _tgt_p_min = 8000; _tgt_p_max = 10000;
+                _tgt_bonus = "+40% Energy Weapon Output Conduit"; _tgt_purity = 99; _is_known_tgt = true;
+            } else if (crucible_batch.mat_silica_carb >= 3 && crucible_batch.mat_syn_flux >= 2 && crucible_batch.mat_tungsten == 0 && crucible_batch.mat_tritium == 0) {
+                _tgt_name = "LUNAR AEROGEL MATRIX"; _tgt_tier = "TIER 4";
+                _tgt_t_min = 1700; _tgt_t_max = 2100; _tgt_p_min = 0; _tgt_p_max = 800;
+                _tgt_bonus = "-40% Chassis Mass / +50% Heat Venting"; _tgt_purity = 96; _is_known_tgt = true;
+            } else if (crucible_batch.mat_tungsten >= 3 && crucible_batch.mat_silica_carb >= 1 && crucible_batch.mat_tritium >= 2 && crucible_batch.mat_syn_flux == 0) {
+                _tgt_name = "SOL FERRITE HIGH-PERMEABILITY"; _tgt_tier = "TIER 5";
+                _tgt_t_min = 4100; _tgt_t_max = 4400; _tgt_p_min = 5500; _tgt_p_max = 8500;
+                _tgt_bonus = "+45% Railgun Velocity & Shield Pierce"; _tgt_purity = 98; _is_known_tgt = true;
+            }
+
+            var _temp_ok = (crucible_temp_c >= _tgt_t_min && crucible_temp_c <= _tgt_t_max);
+            var _psi_ok = (crucible_pressure_psi >= _tgt_p_min && crucible_pressure_psi <= _tgt_p_max);
+
+            // 2. Render Live Stoichiometric Reaction Plaque
             var _bw_y = _met_y + 44;
-            draw_set_color(make_color_rgb(14, 20, 28));
-            draw_rectangle(_met_x + 16, _bw_y, _met_x + _met_w - 16, _bw_y + 110, false);
-            draw_set_color(make_color_rgb(35, 55, 80));
-            draw_rectangle(_met_x + 16, _bw_y, _met_x + _met_w - 16, _bw_y + 110, true);
+            scr_draw_snes_panel(_met_x + 16, _bw_y, _met_w - 32, 116, "LIVE STOICHIOMETRIC REACTION PLAQUE", make_color_rgb(100, 220, 255), true);
 
-            draw_set_color(make_color_rgb(240, 210, 100));
-            draw_text(_met_x + 28, _bw_y + 10, "LIVE HOPPER ALLOY CHROMATIC SYNTHESIS:");
-
-            scr_draw_alloy_swatch(_met_x + 28, _bw_y + 36, 120, 56, crucible_batch);
+            // Ingot Swatch Preview
+            scr_draw_alloy_swatch(_met_x + 28, _bw_y + 36, 110, 64, crucible_batch);
 
             var _cur_hex = scr_alloy_get_hex(crucible_batch);
-            draw_set_color(c_white);
-            draw_text(_met_x + 164, _bw_y + 36, "Synthesized Color: " + _cur_hex);
             var _batch_tot = crucible_batch.mat_tungsten + crucible_batch.mat_silica_carb + crucible_batch.mat_tritium + crucible_batch.mat_syn_flux;
-            draw_set_color(make_color_rgb(160, 200, 230));
-            draw_text(_met_x + 164, _bw_y + 56, "Composition Ratio: W:" + string(crucible_batch.mat_tungsten) + " | C:" + string(crucible_batch.mat_silica_carb) + " | Tr:" + string(crucible_batch.mat_tritium) + " | Fx:" + string(crucible_batch.mat_syn_flux) + " (Total: " + string(_batch_tot) + ")");
-            draw_set_color(make_color_rgb(100, 220, 255));
-            draw_text(_met_x + 164, _bw_y + 76, "Thermal Glow Shift: " + string(floor(crucible_temp_c)) + "°C | Crystal Densification: " + string(floor(crucible_pressure_psi)) + " PSI");
 
-            // 2. Known Master Alloy Codex Grid
-            var _cdx_y = _bw_y + 125;
+            // Target Alloy Header & Classification
+            draw_set_color(make_color_rgb(255, 215, 80));
+            draw_text(_met_x + 150, _bw_y + 32, _tgt_name + " [" + _tgt_tier + "]");
+
+            // Stoichiometric Status Checkmarks
+            var _stat_t_str = _temp_ok ? "[TEMP: OPTIMAL " + string(floor(crucible_temp_c)) + "°C]" : ((crucible_temp_c < _tgt_t_min) ? "[TEMP LOW: NEED +" + string(floor(_tgt_t_min - crucible_temp_c)) + "°C]" : "[TEMP HIGH: -" + string(floor(crucible_temp_c - _tgt_t_max)) + "°C]");
+            var _stat_p_str = _psi_ok ? "[PRESS: OPTIMAL]" : ((crucible_pressure_psi < _tgt_p_min) ? "[PRESS LOW: COMPRESS]" : "[PRESS HIGH: VENT]");
+
+            draw_set_color(_temp_ok ? c_lime : make_color_rgb(255, 160, 60));
+            draw_text(_met_x + 150, _bw_y + 52, _stat_t_str);
+
+            draw_set_color(_psi_ok ? c_lime : make_color_rgb(255, 120, 60));
+            draw_text(_met_x + 360, _bw_y + 52, _stat_p_str);
+
+            draw_set_color(make_color_rgb(160, 205, 235));
+            draw_text(_met_x + 150, _bw_y + 72, "Ratio: W:" + string(crucible_batch.mat_tungsten) + " C:" + string(crucible_batch.mat_silica_carb) + " Tr:" + string(crucible_batch.mat_tritium) + " Fx:" + string(crucible_batch.mat_syn_flux) + " (Total: " + string(_batch_tot) + ") | Hex: " + _cur_hex);
+
+            draw_set_color(make_color_rgb(100, 240, 160));
+            draw_text(_met_x + 150, _bw_y + 92, "PROJECTED YIELD: 1x Ingot (" + string(_tgt_purity) + "% Purity) // " + _tgt_bonus);
+
+            // 3. Known Master Alloy Codex Grid (Expanded to all 8 Canonical Alloys)
+            var _cdx_y = _bw_y + 128;
             draw_set_color(make_color_rgb(100, 210, 255));
-            draw_text(_met_x + 16, _cdx_y, "MASTER METALLURGICAL ALLOY CODEX (ENGINEERING STANDARDS):");
+            draw_text(_met_x + 16, _cdx_y, "MASTER METALLURGICAL ALLOY CODEX (CANONICAL RECIPES):");
 
             var _known_alloys = [
-                { id: "alloy_vanguard_comp", name: "Vanguard Composite Plating", formula: "2x Tungsten + 1x Silica-Carbon", role: "Heavy Ballistic Plating" },
-                { id: "alloy_hyperion_matrix", name: "Hyperion Superconductor Matrix", formula: "1x Tungsten + 2x Tritium + 1x Flux", role: "Tokamak Core Superconductor" },
-                { id: "alloy_aerosteel_flux", name: "Aerosteel Vernier Flux", formula: "2x Flux + 1x Tritium + 1x Silica", role: "High-G Orbital Thrusters" },
-                { id: "alloy_adamantine_carbide", name: "Adamantine Carbide", formula: "3x Tungsten + 2x Silica + 1x Flux", role: "AP Kinetic Shells & Pincer Blades" }
+                { id: "alloy_vanguard_comp", name: "Vanguard Composite Plating", formula: "2W + 1C | 2200-2500°C | <1.2k PSI", role: "+30% Kinetic Defense" },
+                { id: "alloy_hyperion_matrix", name: "Hyperion Superconductor Matrix", formula: "1W + 2Tr + 1Fx | 4000-4600°C | >4k PSI", role: "Tokamak Core Superconductor" },
+                { id: "alloy_aerosteel_flux", name: "Aerosteel Vernier Flux", formula: "1C + 2Fx | 1800-2250°C | <1.2k PSI", role: "Lightweight High-G Thruster" },
+                { id: "alloy_adamantine_carbide", name: "Adamantine Heavy Carbide", formula: "3W + 1C + 1Fx | 3000-3550°C | >3k PSI", role: "Superheavy AP Armor Plating" },
+                { id: "alloy_reactive_damascus", name: "Reactive Damascus Composite", formula: "3W + 2Fx + 1Tr | 3400-3800°C | 4.5-7k PSI", role: "+35% Explosive Kinetic Deflect" },
+                { id: "alloy_tachyon_superalloy", name: "Tachyon Superalloy Matrix", formula: "1W + 2Tr + 2Fx | 4600-4950°C | 8-10k PSI", role: "+40% Energy Weapon Output" },
+                { id: "alloy_lunar_aerogel", name: "Lunar Aerogel Matrix", formula: "3C + 2Fx | 1700-2100°C | <800 PSI", role: "-40% Mass / +50% Heat Venting" },
+                { id: "alloy_sol_ferrite", name: "Sol Ferrite Conductor", formula: "3W + 1C + 2Tr | 4100-4400°C | 5.5-8.5k PSI", role: "+45% Railgun Velocity & Pierce" }
             ];
 
             var _al_box_w = (_met_w - 48) / 2;
-            var _al_box_h = 80;
+            var _al_box_h = 44;
 
-            for (var ai = 0; ai < 4; ai++) {
+            for (var ai = 0; ai < 8; ai++) {
                 var _al = _known_alloys[ai];
                 var _ax = _met_x + 16 + (ai mod 2) * (_al_box_w + 16);
-                var _ay = _cdx_y + 24 + (ai div 2) * (_al_box_h + 12);
+                var _ay = _cdx_y + 20 + (ai div 2) * (_al_box_h + 6);
 
                 draw_set_color(make_color_rgb(12, 18, 26));
                 draw_rectangle(_ax, _ay, _ax + _al_box_w, _ay + _al_box_h, false);
                 draw_set_color(make_color_rgb(35, 60, 90));
                 draw_rectangle(_ax, _ay, _ax + _al_box_w, _ay + _al_box_h, true);
 
-                scr_draw_alloy_swatch(_ax + 12, _ay + 14, 48, 52, _al.id);
+                scr_draw_alloy_swatch(_ax + 6, _ay + 6, 32, 32, _al.id);
 
                 draw_set_color(make_color_rgb(240, 215, 100));
-                draw_text(_ax + 70, _ay + 10, _al.name);
+                draw_text(_ax + 44, _ay + 4, _al.name);
                 draw_set_color(c_white);
-                draw_text(_ax + 70, _ay + 30, "Recipe: " + _al.formula);
+                draw_text(_ax + 44, _ay + 18, _al.formula);
                 draw_set_color(make_color_rgb(100, 220, 255));
-                draw_text(_ax + 70, _ay + 50, "Class: " + _al.role + " (" + scr_alloy_get_hex(_al.id) + ")");
+                draw_text(_ax + 44, _ay + 30, _al.role + " (" + scr_alloy_get_hex(_al.id) + ")");
             }
 
             // 3. Technical Notes & Art Shader Pipeline Architecture
@@ -591,11 +712,11 @@ if (active_tab == 0) {
             draw_rectangle(_pt_x, _pt_y, _pt_x + _pt_box_w, _pt_y + _pt_box_h, true);
 
             var _pt_vis = 8;
-            for (var pi = 0; pi < min(_pt_vis, _pt_len); pi++) {
-                var _pidx = pi + pt_scroll_offset;
+            for (var _pt_i = 0; _pt_i < min(_pt_vis, _pt_len); _pt_i++) {
+                var _pidx = _pt_i + pt_scroll_offset;
                 if (_pidx >= _pt_len) break;
                 var _elem = _pt_list[_pidx];
-                var _ey = _pt_y + 8 + pi * 44;
+                var _ey = _pt_y + 8 + _pt_i * 44;
                 var _is_sel = (pt_selected_idx == _pidx);
                 var _e_hov = (_mx >= _pt_x + 6 && _mx <= _pt_x + _pt_box_w - 6 && _my >= _ey && _my <= _ey + 40);
                 if (_e_hov && _click) pt_selected_idx = _pidx;
@@ -1503,8 +1624,8 @@ else if (rd_subtab == 1) {
 
             // Sub-Mode 0: Tactical Sprite & Finish
             if (bp_archive_view_mode == 0) {
-                var _spr = _active_suit[$ "associated_sprite"] ?? spr_ms_ironclad_mp;
-                if (!sprite_exists(_spr)) _spr = spr_ms_ironclad_mp;
+                var _spr = _active_suit[$ "associated_sprite"] ?? spr_ms_ironclad_idle;
+                if (!sprite_exists(_spr)) _spr = spr_ms_ironclad_idle;
 
                 // Tactical Grid Pedestal
                 var _ped_x = _col2_x + 24;
@@ -1743,7 +1864,7 @@ else if (active_tab == 1) {
         var _fsx = _pan_x + 30 + fst * (_fsub_w + 14);
         var _fst_active = (factory_subtab == fst);
         var _fst_hov = (_mx >= _fsx && _mx <= _fsx + _fsub_w && _my >= _fsub_y && _my <= _fsub_y + 30);
-        if (_fst_hov && _click) factory_subtab = fst;
+        if (_fst_hov && _click) { factory_subtab = fst; scr_audio_play_ui("click"); }
 
         draw_set_color(_fst_active ? make_color_rgb(25, 55, 88) : (_fst_hov ? make_color_rgb(18, 38, 60) : make_color_rgb(12, 20, 32)));
         draw_rectangle(_fsx, _fsub_y, _fsx + _fsub_w, _fsub_y + 30, false);
@@ -1765,10 +1886,7 @@ else if (active_tab == 1) {
 
         // Left Column: Facility Upgrades & Assembly Lines
         var _col1_w = 580;
-        draw_set_color(make_color_rgb(10, 16, 24));
-        draw_rectangle(_f_x, _f_y + 24, _f_x + _col1_w, _f_y + 580, false);
-        draw_set_color(make_color_rgb(35, 60, 90));
-        draw_rectangle(_f_x, _f_y + 24, _f_x + _col1_w, _f_y + 580, true);
+        scr_draw_snes_panel(_f_x, _f_y + 24, _col1_w, 556, "FACILITY UPGRADES & ASSEMBLY LINES", make_color_rgb(80, 180, 240), false, 0.04);
 
         draw_set_color(make_color_rgb(240, 210, 100));
         draw_text(_f_x + 16, _f_y + 36, "FACILITY SPECIFICATIONS & MANUFACTURING UPGRADES:");
@@ -1792,12 +1910,7 @@ else if (active_tab == 1) {
                     show_toast("INSUFFICIENT FUNDS! (Requires 250,000 Cr)", c_red);
                 }
             }
-            draw_set_color(_u1_hov ? make_color_rgb(30, 70, 50) : make_color_rgb(18, 40, 28));
-            draw_rectangle(_f_x + 16, _u1_y, _f_x + 550, _u1_y + 32, false);
-            draw_set_color(make_color_rgb(80, 220, 120));
-            draw_rectangle(_f_x + 16, _u1_y, _f_x + 550, _u1_y + 32, true);
-            draw_set_color(c_white);
-            draw_text(_f_x + 24, _u1_y + 8, _gm.facilities.crucible_tier > 1 ? "[CRUCIBLE TIER 2 INSTALLED]" : "[UPGRADE CRUCIBLE: TIER 2 - 250,000 Cr]");
+            scr_draw_snes_button(_f_x + 16, _u1_y, 534, 32, _gm.facilities.crucible_tier > 1 ? "[CRUCIBLE TIER 2 INSTALLED]" : "[UPGRADE CRUCIBLE: TIER 2 - 250,000 Cr]", _u1_hov, false, make_color_rgb(80, 220, 120));
 
             // 2. Expand Assembly Lines
             var _u2_y = _u1_y + 40;
@@ -1810,12 +1923,7 @@ else if (active_tab == 1) {
                     show_toast("INSUFFICIENT FUNDS! (Requires 300,000 Cr)", c_red);
                 }
             }
-            draw_set_color(_u2_hov ? make_color_rgb(30, 60, 80) : make_color_rgb(18, 35, 48));
-            draw_rectangle(_f_x + 16, _u2_y, _f_x + 550, _u2_y + 32, false);
-            draw_set_color(make_color_rgb(80, 180, 240));
-            draw_rectangle(_f_x + 16, _u2_y, _f_x + 550, _u2_y + 32, true);
-            draw_set_color(c_white);
-            draw_text(_f_x + 24, _u2_y + 8, "[COMMISSION NEW ASSEMBLY LINE - 300,000 Cr]");
+            scr_draw_snes_button(_f_x + 16, _u2_y, 534, 32, "[COMMISSION NEW ASSEMBLY LINE - 300,000 Cr]", _u2_hov, false, make_color_rgb(80, 180, 240));
 
             // Queue Fabrication Button
             var _fab_y = _u2_y + 50;
@@ -1866,10 +1974,7 @@ else if (active_tab == 1) {
         var _col2_x = _f_x + _col1_w + 30;
         var _col2_w = _pan_w - _col1_w - 70;
 
-        draw_set_color(make_color_rgb(10, 16, 24));
-        draw_rectangle(_col2_x, _f_y + 24, _col2_x + _col2_w, _f_y + 580, false);
-        draw_set_color(make_color_rgb(35, 60, 90));
-        draw_rectangle(_col2_x, _f_y + 24, _col2_x + _col2_w, _f_y + 580, true);
+        scr_draw_snes_panel(_col2_x, _f_y + 24, _col2_w, 556, "ACTIVE PERSONNEL & PILOT ROSTER", make_color_rgb(255, 195, 60), false, 0.04);
 
         draw_set_color(make_color_rgb(240, 210, 100));
         draw_text(_col2_x + 16, _f_y + 36, "ACTIVE PERSONNEL & PILOT ROSTER:");
@@ -1879,12 +1984,18 @@ else if (active_tab == 1) {
             var _py_start = _f_y + 64;
             for (var p = 0; p < array_length(_gm.facilities.roster_pilots); p++) {
                 var _plt = _gm.facilities.roster_pilots[p];
+                if (!is_struct(_plt)) continue;
                 var _p_stat = _plt[$ "status"] ?? "ACTIVE";
                 var _plt_ref = _plt[$ "character_id"] ?? (_plt[$ "id"] ?? _plt);
                 scr_draw_composite_portrait(_plt_ref, _col2_x + 16, _py_start + p * 30, 24, true, "");
                 draw_set_color(_p_stat == "HOSPITALIZED" ? make_color_rgb(255, 180, 80) : c_white);
-                var _stat_tag = (_p_stat == "HOSPITALIZED") ? " [HOSPITALIZED - " + string(_plt.recovery_days_left) + "d]" : "";
-                draw_text(_col2_x + 46, _py_start + p * 30 + 4, string(p + 1) + ". " + _plt.name + " (" + _plt.callsign + ")" + _stat_tag + " - Acc: " + string(_plt.combat_stat * 10) + "% | Sal: " + string(_plt.salary_daily) + " Cr");
+                var _rec_days = _plt[$ "recovery_days_left"] ?? (_plt[$ "recovery_days"] ?? 0);
+                var _stat_tag = (_p_stat == "HOSPITALIZED") ? " [HOSPITALIZED - " + string(_rec_days) + "d]" : "";
+                var _p_name = _plt[$ "name"] ?? "Pilot";
+                var _p_call = _plt[$ "callsign"] ?? "ACE";
+                var _p_acc = _plt[$ "accuracy"] ?? ((_plt[$ "combat_stat"] ?? 8) * 10);
+                var _p_sal = _plt[$ "salary_daily"] ?? 150;
+                draw_text(_col2_x + 46, _py_start + p * 30 + 4, string(p + 1) + ". " + _p_name + " (" + _p_call + ")" + _stat_tag + " - Acc: " + string(_p_acc) + "% | Sal: " + string(_p_sal) + " Cr");
             }
 
             // Available Hire Candidates
@@ -1895,6 +2006,7 @@ else if (active_tab == 1) {
             var _hovered_cand = undefined;
             for (var h = 0; h < array_length(_gm.facilities.available_hire_pilots); h++) {
                 var _cand = _gm.facilities.available_hire_pilots[h];
+                if (!is_struct(_cand)) continue;
                 var _cy = _hire_y + 26 + h * 74;
                 var _c_h = 66;
 
@@ -1907,13 +2019,22 @@ else if (active_tab == 1) {
                 var _cand_ref = _cand[$ "character_id"] ?? (_cand[$ "id"] ?? _cand);
                 scr_draw_composite_portrait(_cand_ref, _col2_x + 22, _cy + 6, 54, true, "");
 
+                var _c_name = _cand[$ "name"] ?? "Candidate";
+                var _c_call = _cand[$ "callsign"] ?? "ACE";
+                var _c_bg = _cand[$ "background"] ?? (_cand[$ "bio"] ?? (_cand[$ "traits"] ?? "Mercenary Pilot"));
+                var _c_combat = _cand[$ "combat_stat"] ?? floor((_cand[$ "accuracy"] ?? 80) / 10);
+                var _c_tactics = _cand[$ "tactics_stat"] ?? floor((_cand[$ "reflexes"] ?? 70) / 10);
+                var _c_salary = _cand[$ "salary_daily"] ?? 150;
+                var _c_bonus = _cand[$ "signing_bonus"] ?? (_cand[$ "bonus_hire"] ?? 35000);
+                var _disc = _cand[$ "referral_discount"] ?? 0;
+                var _disc_tag = (_disc > 0) ? " [FRIEND REFERRAL -25%]" : "";
+
                 draw_set_color(make_color_rgb(240, 210, 100));
-                draw_text(_col2_x + 84, _cy + 8, _cand.name + " [" + _cand.callsign + "] - " + _cand.background);
+                draw_text(_col2_x + 84, _cy + 8, _c_name + " [" + _c_call + "] - " + _c_bg);
                 draw_set_color(c_white);
-                draw_text(_col2_x + 84, _cy + 26, "Combat Rating: " + string(_cand.combat_stat) + " | Tactics: " + string(_cand.tactics_stat) + " | Salary: " + string(_cand.salary_daily) + " Cr/day");
+                draw_text(_col2_x + 84, _cy + 26, "Combat Rating: " + string(_c_combat) + " | Tactics: " + string(_c_tactics) + " | Salary: " + string(_c_salary) + " Cr/day");
                 draw_set_color(make_color_rgb(100, 220, 255));
-                var _disc_tag = (_cand[$ "referral_discount"] ?? 0 > 0) ? " [FRIEND REFERRAL -25%]" : "";
-                draw_text(_col2_x + 84, _cy + 44, "Signing Bonus: " + string(_cand.signing_bonus) + " Cr" + _disc_tag);
+                draw_text(_col2_x + 84, _cy + 44, "Signing Bonus: " + string(_c_bonus) + " Cr" + _disc_tag);
 
                 // Check Card Hover for floating dossier
                 if (_mx >= _col2_x + 16 && _mx <= _col2_x + _col2_w - 160 && _my >= _cy && _my <= _cy + _c_h) {
@@ -1925,13 +2046,26 @@ else if (active_tab == 1) {
                 var _hbtn_y = _cy + 16;
                 var _h_hov = (_mx >= _hbtn_x && _mx <= _hbtn_x + 130 && _my >= _hbtn_y && _my <= _hbtn_y + 34);
                 if (_h_hov && _click) {
-                    if (_gm.spend_funds(_cand.signing_bonus)) {
+                    if (_gm.spend_funds(_c_bonus)) {
+                        _cand.name = _c_name;
+                        _cand.callsign = _c_call;
+                        _cand.combat_stat = _c_combat;
+                        _cand.tactics_stat = _c_tactics;
+                        _cand.accuracy = _cand[$ "accuracy"] ?? (_c_combat * 10);
+                        _cand.reflexes = _cand[$ "reflexes"] ?? (_c_tactics * 10);
+                        _cand.salary_daily = _c_salary;
+                        _cand.status = _cand[$ "status"] ?? "ACTIVE";
+                        _cand.is_deployed = _cand[$ "is_deployed"] ?? false;
+                        _cand.recovery_days = _cand[$ "recovery_days"] ?? 0;
+                        _cand.recovery_days_left = _cand[$ "recovery_days_left"] ?? 0;
+                        _cand.kills = _cand[$ "kills"] ?? 0;
+                        _cand.sorties = _cand[$ "sorties"] ?? 0;
                         array_push(_gm.facilities.roster_pilots, _cand);
                         array_delete(_gm.facilities.available_hire_pilots, h, 1);
-                        show_toast("NEW ACE COMMISSIONED: " + _cand.name + " joined squad!", c_lime);
+                        show_toast("NEW ACE COMMISSIONED: " + _c_name + " joined squad!", c_lime);
                         break;
                     } else {
-                        show_toast("INSUFFICIENT FUNDS! Need " + string(_cand.signing_bonus) + " Cr", c_red);
+                        show_toast("INSUFFICIENT FUNDS! Need " + string(_c_bonus) + " Cr", c_red);
                     }
                 }
                 draw_set_color(_h_hov ? make_color_rgb(20, 80, 40) : make_color_rgb(12, 45, 22));
@@ -1944,8 +2078,9 @@ else if (active_tab == 1) {
 
             // Floating Character Dossier Tooltip
             if (!is_undefined(_hovered_cand) && instance_exists(obj_NemesisManager)) {
-                var _hov_char = obj_NemesisManager.get_character(_hovered_cand[$ "character_id"] ?? _hovered_cand[$ "id"]);
-                if (!is_undefined(_hov_char)) {
+                var _cand_lookup = _hovered_cand[$ "character_id"] ?? (_hovered_cand[$ "id"] ?? undefined);
+                var _hov_char = (!is_undefined(_cand_lookup)) ? obj_NemesisManager.get_character(_cand_lookup) : undefined;
+                if (!is_undefined(_hov_char) && is_struct(_hov_char)) {
                     var _tt_w = 420;
                     var _tt_h = 130;
                     var _tt_x = clamp(_mx + 16, 50, _gw - _tt_w - 20);
@@ -1956,28 +2091,43 @@ else if (active_tab == 1) {
                     draw_set_color(make_color_rgb(70, 130, 190));
                     draw_rectangle(_tt_x, _tt_y, _tt_x + _tt_w, _tt_y + _tt_h, true);
 
-                    scr_draw_composite_portrait(_hov_char.id, _tt_x + 10, _tt_y + 10, 110, true, "stoic");
+                    var _h_id = _hov_char[$ "id"] ?? _cand_lookup;
+                    scr_draw_composite_portrait(_h_id, _tt_x + 10, _tt_y + 10, 110, true, "stoic");
+
+                    var _h_name = _hov_char[$ "name"] ?? "Pilot";
+                    var _h_call = _hov_char[$ "callsign"] ?? "ACE";
+                    var _h_tier = string(_hov_char[$ "tier"] ?? 1);
+                    var _h_grudge = string(_hov_char[$ "grudge"] ?? 0);
 
                     draw_set_color(make_color_rgb(240, 210, 100));
-                    draw_text(_tt_x + 130, _tt_y + 10, _hov_char.name + " [" + _hov_char.callsign + "]");
+                    draw_text(_tt_x + 130, _tt_y + 10, _h_name + " [" + _h_call + "]");
                     draw_set_color(make_color_rgb(100, 220, 255));
-                    draw_text(_tt_x + 130, _tt_y + 30, "Loyalty Tier: " + _hov_char.loyalty_tier + " | Grudge: " + string(_hov_char.grudge));
+                    draw_text(_tt_x + 130, _tt_y + 30, "Tier: " + _h_tier + " | Grudge: " + _h_grudge);
 
-                    var _li = _hov_char.love_interest;
+                    var _li = _hov_char[$ "love_interest"];
                     var _li_str = "None";
-                    if (!is_undefined(_li) && _li.target_id != "") {
-                        _li_str = _li.target_name + " (" + _li.archetype + ")";
+                    if (!is_undefined(_li) && is_struct(_li) && (_li[$ "target_id"] ?? "") != "") {
+                        var _li_tname = _li[$ "target_name"] ?? "Unknown";
+                        var _li_rel = _li[$ "relationship_type"] ?? (_li[$ "archetype"] ?? "Affiliation");
+                        _li_str = _li_tname + " (" + _li_rel + ")";
                     }
                     draw_set_color(make_color_rgb(255, 150, 180));
                     draw_text(_tt_x + 130, _tt_y + 50, "Romance: " + _li_str);
 
-                    var _fr_count = array_length(_hov_char.friendships);
+                    var _fr = _hov_char[$ "friendships"];
+                    var _fr_count = 0;
+                    if (is_struct(_fr) && is_array(_fr[$ "friend_ids"])) {
+                        _fr_count = array_length(_fr.friend_ids);
+                    } else if (is_array(_fr)) {
+                        _fr_count = array_length(_fr);
+                    }
                     draw_set_color(make_color_rgb(130, 220, 150));
                     draw_text(_tt_x + 130, _tt_y + 70, "Comrades: " + string(_fr_count) + " affiliated pilots");
 
-                    if (_hov_char.active_defection_hook != "") {
+                    var _def_hook = _hov_char[$ "active_defection_hook"] ?? "";
+                    if (_def_hook != "") {
                         draw_set_color(make_color_rgb(255, 200, 80));
-                        draw_text_ext(_tt_x + 130, _tt_y + 90, "History: " + _hov_char.active_defection_hook, 14, _tt_w - 140);
+                        draw_text_ext(_tt_x + 130, _tt_y + 90, "History: " + _def_hook, 14, _tt_w - 140);
                     }
                 }
             }
@@ -1999,40 +2149,66 @@ else if (active_tab == 1) {
         if (instance_exists(obj_GameManager)) {
             var _gm = obj_GameManager;
 
-            // Alloy Stockpile Header Banner
-            var _sb_y = _pf_y + 40;
+            // Alloy Stockpile Header Banner (All 8 Canonical Sintered Alloys)
+            var _sb_y = _pf_y + 38;
             var _sb_w = _pan_w - 60;
             draw_set_color(make_color_rgb(12, 18, 28));
-            draw_rectangle(_pf_x, _sb_y, _pf_x + _sb_w, _sb_y + 36, false);
+            draw_rectangle(_pf_x, _sb_y, _pf_x + _sb_w, _sb_y + 54, false);
             draw_set_color(make_color_rgb(35, 60, 90));
-            draw_rectangle(_pf_x, _sb_y, _pf_x + _sb_w, _sb_y + 36, true);
+            draw_rectangle(_pf_x, _sb_y, _pf_x + _sb_w, _sb_y + 54, true);
 
             draw_set_color(make_color_rgb(255, 215, 80));
-            draw_text(_pf_x + 14, _sb_y + 10, "AVAILABLE ALLOY STOCKPILE:");
-            scr_draw_alloy_swatch(_pf_x + 230, _sb_y + 8, 20, 14, "alloy_vanguard_comp");
-            draw_set_color(make_color_rgb(100, 240, 140));
-            draw_text(_pf_x + 256, _sb_y + 10, "Vanguard: " + string(_gm.get_alloy("alloy_vanguard_comp")));
-            scr_draw_alloy_swatch(_pf_x + 400, _sb_y + 8, 20, 14, "alloy_hyperion_matrix");
-            draw_set_color(make_color_rgb(100, 220, 255));
-            draw_text(_pf_x + 426, _sb_y + 10, "Hyperion: " + string(_gm.get_alloy("alloy_hyperion_matrix")));
-            scr_draw_alloy_swatch(_pf_x + 570, _sb_y + 8, 20, 14, "alloy_aerosteel_flux");
-            draw_set_color(make_color_rgb(220, 140, 255));
-            draw_text(_pf_x + 596, _sb_y + 10, "Aerosteel: " + string(_gm.get_alloy("alloy_aerosteel_flux")));
-            scr_draw_alloy_swatch(_pf_x + 740, _sb_y + 8, 20, 14, "alloy_adamantine_carbide");
-            draw_set_color(make_color_rgb(255, 160, 90));
-            draw_text(_pf_x + 766, _sb_y + 10, "Adamantine: " + string(_gm.get_alloy("alloy_adamantine_carbide")));
+            draw_text(_pf_x + 14, _sb_y + 8, "ALLOY STOCK:");
+
+            // Row 1 of Alloys
+            scr_draw_alloy_swatch(_pf_x + 120, _sb_y + 6, 18, 14, "alloy_vanguard_comp");
+            draw_set_color(make_color_rgb(180, 210, 235));
+            draw_text(_pf_x + 144, _sb_y + 8, "Vanguard: " + string(_gm.get_alloy("alloy_vanguard_comp")));
+
+            scr_draw_alloy_swatch(_pf_x + 280, _sb_y + 6, 18, 14, "alloy_hyperion_matrix");
+            draw_set_color(make_color_rgb(100, 240, 255));
+            draw_text(_pf_x + 304, _sb_y + 8, "Hyperion: " + string(_gm.get_alloy("alloy_hyperion_matrix")));
+
+            scr_draw_alloy_swatch(_pf_x + 440, _sb_y + 6, 18, 14, "alloy_aerosteel_flux");
+            draw_set_color(make_color_rgb(215, 170, 255));
+            draw_text(_pf_x + 464, _sb_y + 8, "Aerosteel: " + string(_gm.get_alloy("alloy_aerosteel_flux")));
+
+            scr_draw_alloy_swatch(_pf_x + 600, _sb_y + 6, 18, 14, "alloy_adamantine_carbide");
+            draw_set_color(make_color_rgb(255, 170, 80));
+            draw_text(_pf_x + 624, _sb_y + 8, "Adamantine: " + string(_gm.get_alloy("alloy_adamantine_carbide")));
+
+            // Row 2 of Alloys (Canonical Apex Alloys)
+            scr_draw_alloy_swatch(_pf_x + 120, _sb_y + 30, 18, 14, "alloy_reactive_damascus");
+            draw_set_color(make_color_rgb(240, 120, 140));
+            draw_text(_pf_x + 144, _sb_y + 32, "Damascus: " + string(_gm.get_alloy("alloy_reactive_damascus")));
+
+            scr_draw_alloy_swatch(_pf_x + 280, _sb_y + 30, 18, 14, "alloy_tachyon_superalloy");
+            draw_set_color(make_color_rgb(100, 255, 255));
+            draw_text(_pf_x + 304, _sb_y + 32, "Tachyon: " + string(_gm.get_alloy("alloy_tachyon_superalloy")));
+
+            scr_draw_alloy_swatch(_pf_x + 440, _sb_y + 30, 18, 14, "alloy_lunar_aerogel");
+            draw_set_color(make_color_rgb(220, 240, 255));
+            draw_text(_pf_x + 464, _sb_y + 32, "Aerogel: " + string(_gm.get_alloy("alloy_lunar_aerogel")));
+
+            scr_draw_alloy_swatch(_pf_x + 600, _sb_y + 30, 18, 14, "alloy_sol_ferrite");
+            draw_set_color(make_color_rgb(255, 220, 60));
+            draw_text(_pf_x + 624, _sb_y + 32, "Sol Ferrite: " + string(_gm.get_alloy("alloy_sol_ferrite")));
+
+            // Treasury display on right side of stockpile ribbon
+            draw_set_color(make_color_rgb(255, 215, 80));
+            draw_text(_pf_x + _sb_w - 240, _sb_y + 18, "PMC FUNDS: " + string(_gm.funds) + " Cr");
 
             // Slot Selector Bar (6 slots)
             var _slot_names = [
-                "[1. HEAD SENSORS]",
-                "[2. TORSO CORES]",
-                "[3. ARMS ACTUATORS]",
-                "[4. LEGS HYDRAULICS]",
-                "[5. BACKPACK BOOSTERS]",
-                "[6. PRIMARY WEAPONS]"
+                "[1. HEADS]",
+                "[2. TORSOS]",
+                "[3. ARMS]",
+                "[4. LEGS]",
+                "[5. BOOSTERS]",
+                "[6. WEAPONS]"
             ];
-            var _sl_w = 188;
-            var _sl_y = _sb_y + 46;
+            var _sl_w = floor((_sb_w - 50) / 6);
+            var _sl_y = _sb_y + 64;
 
             for (var sl = 0; sl < 6; sl++) {
                 var _slx = _pf_x + sl * (_sl_w + 10);
@@ -2045,99 +2221,105 @@ else if (active_tab == 1) {
                 draw_set_color(_sl_active ? make_color_rgb(100, 220, 255) : make_color_rgb(45, 75, 110));
                 draw_rectangle(_slx, _sl_y, _slx + _sl_w, _sl_y + 28, true);
                 draw_set_color(_sl_active ? c_white : make_color_rgb(160, 190, 220));
-                draw_text(_slx + 10, _sl_y + 6, _slot_names[sl]);
+                draw_text(_slx + 12, _sl_y + 6, _slot_names[sl]);
             }
 
-            // 3 Blueprint Cards for the selected slot
+            // 5 Blueprint Cards for the selected slot
             var _cat_parts = modular_crafting_catalog[forge_selected_slot];
-            var _card_w = 380;
-            var _card_h = 360;
-            var _card_y = _sl_y + 40;
+            var _num_parts = array_length(_cat_parts);
+            var _card_gap = 12;
+            var _card_w = floor((_sb_w - ((_num_parts - 1) * _card_gap)) / max(1, _num_parts));
+            var _card_h = 410;
+            var _card_y = _sl_y + 36;
 
-            for (var ci = 0; ci < array_length(_cat_parts); ci++) {
+            for (var ci = 0; ci < _num_parts; ci++) {
                 var _pitem = _cat_parts[ci];
-                var _cx = _pf_x + ci * (_card_w + 20);
+                var _cx = _pf_x + ci * (_card_w + _card_gap);
 
-                draw_set_color(make_color_rgb(14, 20, 30));
-                draw_rectangle(_cx, _card_y, _cx + _card_w, _card_y + _card_h, false);
-                draw_set_color(make_color_rgb(45, 75, 110));
-                draw_rectangle(_cx, _card_y, _cx + _card_w, _card_y + _card_h, true);
+                // Card panel
+                scr_draw_snes_panel(_cx, _card_y, _card_w, _card_h, _pitem.id, make_color_rgb(80, 180, 240), false);
 
                 // Part Title
                 draw_set_color(make_color_rgb(240, 215, 100));
-                draw_text(_cx + 16, _card_y + 14, _pitem.name);
-                draw_set_color(make_color_rgb(160, 190, 220));
-                draw_text(_cx + 16, _card_y + 36, "Classification: " + string_upper(_pitem.slot));
+                draw_text(_cx + 12, _card_y + 28, _pitem.name);
+                draw_set_color(make_color_rgb(150, 180, 210));
+                draw_text(_cx + 12, _card_y + 46, "Slot: " + string_upper(_pitem.slot));
 
                 // Stats Box
-                var _st_y = _card_y + 64;
+                var _st_y = _card_y + 68;
+                var _st_w = _card_w - 20;
+                var _st_h = 160;
                 draw_set_color(make_color_rgb(10, 14, 22));
-                draw_rectangle(_cx + 14, _st_y, _cx + _card_w - 14, _st_y + 130, false);
+                draw_rectangle(_cx + 10, _st_y, _cx + 10 + _st_w, _st_y + _st_h, false);
                 draw_set_color(make_color_rgb(30, 50, 75));
-                draw_rectangle(_cx + 14, _st_y, _cx + _card_w - 14, _st_y + 130, true);
+                draw_rectangle(_cx + 10, _st_y, _cx + 10 + _st_w, _st_y + _st_h, true);
 
                 draw_set_color(c_white);
-                draw_text(_cx + 24, _st_y + 10, "Armor Integrity: " + string(_pitem.armor) + " HP");
-                draw_text(_cx + 24, _st_y + 30, "Component Mass: " + string(_pitem.mass) + " Tonnes");
+                draw_text(_cx + 18, _st_y + 10, "Armor: " + string(_pitem.armor) + " HP");
+                draw_text(_cx + 18, _st_y + 28, "Mass: " + string(_pitem.mass) + " Tonnes");
 
                 if (variable_struct_exists(_pitem, "power_output")) {
                     draw_set_color(make_color_rgb(100, 255, 140));
-                    draw_text(_cx + 24, _st_y + 50, "Reactor Output: +" + string(_pitem.power_output) + " MW Surplus");
+                    draw_text(_cx + 18, _st_y + 46, "Core: +" + string(_pitem.power_output) + " MW Surplus");
                 } else {
                     draw_set_color(make_color_rgb(255, 180, 100));
-                    draw_text(_cx + 24, _st_y + 50, "Reactor Power Draw: -" + string(_pitem.power_draw) + " MW");
+                    draw_text(_cx + 18, _st_y + 46, "Power Draw: -" + string(_pitem.power_draw) + " MW");
                 }
 
                 if (variable_struct_exists(_pitem, "base_speed")) {
-                    draw_set_color(c_white);
-                    draw_text(_cx + 24, _st_y + 70, "Base Walk Speed: " + string(_pitem.base_speed) + " kph");
+                    draw_set_color(make_color_rgb(200, 240, 255));
+                    draw_text(_cx + 18, _st_y + 64, "Speed: " + string(_pitem.base_speed) + " kph");
                 } else if (variable_struct_exists(_pitem, "boost_bonus")) {
-                    draw_set_color(c_white);
-                    draw_text(_cx + 24, _st_y + 70, "Vernier Boost: +" + string(_pitem.boost_bonus) + " kph");
+                    draw_set_color(make_color_rgb(200, 240, 255));
+                    draw_text(_cx + 18, _st_y + 64, "Boost: +" + string(_pitem.boost_bonus) + " kph");
                 } else if (variable_struct_exists(_pitem, "damage")) {
                     draw_set_color(make_color_rgb(255, 120, 120));
-                    draw_text(_cx + 24, _st_y + 70, "Weapon Firepower: " + string(_pitem.damage) + " Dmg Rating");
+                    draw_text(_cx + 18, _st_y + 64, "Damage: " + string(_pitem.damage) + " Dmg");
                 }
 
                 draw_set_color(make_color_rgb(255, 215, 80));
-                draw_text(_cx + 24, _st_y + 95, "Bonus: " + _pitem.bonus);
+                draw_text(_cx + 18, _st_y + 86, "Tactical Bonus:");
+                draw_set_color(make_color_rgb(240, 240, 180));
+                draw_text(_cx + 18, _st_y + 104, _pitem.bonus);
 
                 // Material & Credit Costs
-                var _cost_y = _st_y + 145;
+                var _cost_y = _st_y + _st_h + 12;
                 var _cur_alloy_stock = _gm.get_alloy(_pitem.req_alloy);
                 var _has_alloy = (_cur_alloy_stock >= _pitem.req_alloy_amount);
                 var _has_cr = (_gm.funds >= _pitem.cost_cr);
                 var _can_forge = (_has_alloy && _has_cr);
 
                 draw_set_color(make_color_rgb(160, 190, 220));
-                draw_text(_cx + 16, _cost_y, "REQUIRED ALLOY:");
-                scr_draw_alloy_swatch(_cx + 16, _cost_y + 20, 22, 16, _pitem.req_alloy);
+                draw_text(_cx + 14, _cost_y, "REQUIRED ALLOY:");
+                scr_draw_alloy_swatch(_cx + 14, _cost_y + 20, 26, 18, _pitem.req_alloy);
                 draw_set_color(_has_alloy ? c_lime : c_red);
-                draw_text(_cx + 44, _cost_y + 20, string(_pitem.req_alloy_amount) + "x " + _pitem.req_alloy + " (Stock: " + string(_cur_alloy_stock) + ")");
-
-                draw_set_color(_has_cr ? c_white : c_red);
-                draw_text(_cx + 16, _cost_y + 40, "Fabrication Cost: " + string(_pitem.cost_cr) + " Cr");
+                draw_text(_cx + 46, _cost_y + 20, string(_pitem.req_alloy_amount) + "x " + _pitem.req_alloy);
+                draw_set_color(make_color_rgb(140, 170, 200));
+                draw_text(_cx + 14, _cost_y + 44, "Stock: " + string(_cur_alloy_stock) + " | Cost: " + string(_pitem.cost_cr) + " Cr");
 
                 // Forge Button
-                var _fb_y = _cost_y + 68;
-                var _fb_w = _card_w - 32;
-                var _fb_h = 36;
-                var _fb_hov = (_mx >= _cx + 16 && _mx <= _cx + 16 + _fb_w && _my >= _fb_y && _my <= _fb_y + _fb_h);
-                if (_fb_hov && _click && _can_forge) {
-                    _gm.craft_modular_part(_pitem, _pitem.req_alloy, _pitem.req_alloy_amount, _pitem.cost_cr);
+                var _f_btn_y = _cost_y + 70;
+                var _f_btn_w = _card_w - 24;
+                var _f_hov = (_mx >= _cx + 12 && _mx <= _cx + 12 + _f_btn_w && _my >= _f_btn_y && _my <= _f_btn_y + 32);
+
+                if (_f_hov && _click) {
+                    if (!_has_cr) {
+                        show_toast("INSUFFICIENT FUNDS! (Requires " + string(_pitem.cost_cr) + " Cr)", c_red);
+                    } else if (!_has_alloy) {
+                        show_toast("INSUFFICIENT ALLOYS! (Requires " + string(_pitem.req_alloy_amount) + "x " + _pitem.req_alloy + ")", c_red);
+                    } else {
+                        _gm.craft_modular_part(_pitem, _pitem.req_alloy, _pitem.req_alloy_amount, _pitem.cost_cr);
+                    }
                 }
-                draw_set_color(_can_forge ? (_fb_hov ? make_color_rgb(25, 95, 55) : make_color_rgb(16, 60, 34)) : make_color_rgb(40, 20, 20));
-                draw_rectangle(_cx + 16, _fb_y, _cx + 16 + _fb_w, _fb_y + _fb_h, false);
-                draw_set_color(_can_forge ? make_color_rgb(60, 240, 120) : make_color_rgb(160, 50, 50));
-                draw_rectangle(_cx + 16, _fb_y, _cx + 16 + _fb_w, _fb_y + _fb_h, true);
-                draw_set_color(c_white);
-                draw_text(_cx + 60, _fb_y + 10, _can_forge ? ">> FORGE THIS COMPONENT <<" : "[INSUFFICIENT RESOURCES]");
+
+                scr_draw_snes_button(_cx + 12, _f_btn_y, _f_btn_w, 32, _can_forge ? "[FORGE PART]" : "[INSUFFICIENT]", _f_hov, false, _can_forge ? make_color_rgb(60, 220, 120) : make_color_rgb(160, 60, 60));
             }
         }
     }
 
     // =========================================================================
     // SUBTAB 2: CUSTOM MECH COMBINATIONS ASSEMBLY BAY (docs/13)
+    // 3-COLUMN TACTICAL MECHA ENGINEERING DECK
     // =========================================================================
     else if (factory_subtab == 2) {
         var _ab_x = _pan_x + 30;
@@ -2169,60 +2351,74 @@ else if (active_tab == 1) {
 
             var _has_all_6 = (!is_undefined(_hd) && !is_undefined(_tr) && !is_undefined(_am) && !is_undefined(_lg) && !is_undefined(_bp) && !is_undefined(_wp));
 
-            // Left Column: The 6 Equipped Modular Component Slots
-            var _col1_w = 580;
-            var _col1_h = 580;
-            var _col1_y = _ab_y + 40;
+            var _deck_y = _ab_y + 40;
+            var _deck_h = 560;
 
-            draw_set_color(make_color_rgb(12, 18, 28));
-            draw_rectangle(_ab_x, _col1_y, _ab_x + _col1_w, _col1_y + _col1_h, false);
-            draw_set_color(make_color_rgb(35, 60, 90));
-            draw_rectangle(_ab_x, _col1_y, _ab_x + _col1_w, _col1_y + _col1_h, true);
+            // -----------------------------------------------------------------
+            // COLUMN 1 (LEFT): EQUIPPED MODULAR HARDPOINTS (380px)
+            // -----------------------------------------------------------------
+            var _col1_x = _ab_x;
+            var _col1_w = 380;
 
-            draw_set_color(make_color_rgb(255, 215, 80));
-            draw_text(_ab_x + 16, _col1_y + 12, "CHASSIS MODULAR HARDPOINTS & LOADOUT:");
+            scr_draw_snes_panel(_col1_x, _deck_y, _col1_w, _deck_h, "MODULAR HARDPOINTS", make_color_rgb(100, 220, 255), true);
 
-            // Slot Cards (6 slots)
             var _slot_items = [
                 { title: "SLOT 1: HEAD SENSORS", part: _hd, list: _pts.heads, cur_idx: assembly_head_idx, key: "head" },
                 { title: "SLOT 2: TORSO REACTOR CORE", part: _tr, list: _pts.torsos, cur_idx: assembly_torso_idx, key: "torso" },
                 { title: "SLOT 3: ARMS & ACTUATORS", part: _am, list: _pts.arms, cur_idx: assembly_arms_idx, key: "arms" },
                 { title: "SLOT 4: LEGS & HYDRAULICS", part: _lg, list: _pts.legs, cur_idx: assembly_legs_idx, key: "legs" },
-                { title: "SLOT 5: BACKPACK THRUSTERS", part: _bp, list: _pts.backpacks, cur_idx: assembly_bp_idx, key: "backpack" },
+                { title: "SLOT 5: BACKPACK BOOSTERS", part: _bp, list: _pts.backpacks, cur_idx: assembly_bp_idx, key: "backpack" },
                 { title: "SLOT 6: PRIMARY WEAPON", part: _wp, list: _pts.weapons, cur_idx: assembly_wp_idx, key: "weapon" }
             ];
 
             for (var si = 0; si < 6; si++) {
                 var _sitem = _slot_items[si];
-                var _sy_pos = _col1_y + 38 + si * 88;
+                var _sy_pos = _deck_y + 32 + si * 84;
+                var _is_sel_slot = (assembly_selected_slot == si);
 
-                draw_set_color(make_color_rgb(16, 24, 36));
-                draw_rectangle(_ab_x + 14, _sy_pos, _ab_x + _col1_w - 14, _sy_pos + 80, false);
-                draw_set_color(make_color_rgb(45, 75, 110));
-                draw_rectangle(_ab_x + 14, _sy_pos, _ab_x + _col1_w - 14, _sy_pos + 80, true);
+                // Slot Card Hitbox
+                var _card_hov = (_mx >= _col1_x + 12 && _mx <= _col1_x + _col1_w - 12 && _my >= _sy_pos && _my <= _sy_pos + 78);
+                if (_card_hov && _click && _mx < _col1_x + _col1_w - 100) {
+                    assembly_selected_slot = si;
+                }
 
-                draw_set_color(make_color_rgb(100, 220, 255));
-                draw_text(_ab_x + 22, _sy_pos + 8, _sitem.title);
+                draw_set_color(_is_sel_slot ? make_color_rgb(24, 40, 60) : (_card_hov ? make_color_rgb(18, 30, 46) : make_color_rgb(12, 18, 28)));
+                draw_rectangle(_col1_x + 12, _sy_pos, _col1_x + _col1_w - 12, _sy_pos + 78, false);
+                draw_set_color(_is_sel_slot ? make_color_rgb(255, 180, 50) : make_color_rgb(45, 75, 110));
+                draw_rectangle(_col1_x + 12, _sy_pos, _col1_x + _col1_w - 12, _sy_pos + 78, true);
+
+                // Slot Title & Cursor
+                draw_set_color(_is_sel_slot ? make_color_rgb(255, 215, 80) : make_color_rgb(100, 220, 255));
+                draw_text(_col1_x + 20, _sy_pos + 6, (_is_sel_slot ? "> " : "") + _sitem.title);
 
                 var _p = _sitem.part;
                 if (!is_undefined(_p)) {
-                    draw_set_color(c_white);
-                    draw_text(_ab_x + 22, _sy_pos + 26, _p.name);
+                    // Mini Alloy Swatch if part has alloy
+                    if (variable_struct_exists(_p, "req_alloy")) {
+                        scr_draw_alloy_swatch(_col1_x + 20, _sy_pos + 24, 18, 14, _p.req_alloy);
+                        draw_set_color(c_white);
+                        draw_text(_col1_x + 44, _sy_pos + 22, _p.name);
+                    } else {
+                        draw_set_color(c_white);
+                        draw_text(_col1_x + 20, _sy_pos + 22, _p.name);
+                    }
+
                     draw_set_color(make_color_rgb(160, 190, 220));
-                    var _stat_str = "Armor: " + string(_p.armor) + " | Mass: " + string(_p.mass) + "t";
-                    if (variable_struct_exists(_p, "power_output")) _stat_str += " | Output: +" + string(_p.power_output) + " MW";
-                    else _stat_str += " | Draw: -" + string(_p.power_draw) + " MW";
-                    draw_text(_ab_x + 22, _sy_pos + 44, _stat_str);
-                    draw_set_color(make_color_rgb(255, 215, 80));
-                    draw_text(_ab_x + 22, _sy_pos + 60, "Effect: " + _p.bonus);
+                    var _stat_str = "HP: " + string(_p.armor) + " | " + string(_p.mass) + "t";
+                    if (variable_struct_exists(_p, "power_output")) _stat_str += " | +" + string(_p.power_output) + " MW";
+                    else _stat_str += " | -" + string(_p.power_draw) + " MW";
+                    draw_text(_col1_x + 20, _sy_pos + 40, _stat_str);
+
+                    draw_set_color(make_color_rgb(240, 215, 100));
+                    draw_text(_col1_x + 20, _sy_pos + 56, _p.bonus);
                 } else {
                     draw_set_color(c_red);
-                    draw_text(_ab_x + 22, _sy_pos + 36, "[NO PART IN INVENTORY - FORGE IN PART FORGE]");
+                    draw_text(_col1_x + 20, _sy_pos + 32, "[NO PART IN INVENTORY - FORGE]");
                 }
 
-                // Cycle Buttons
+                // Cycle Buttons (< and >)
                 var _len = array_length(_sitem.list);
-                var _btn_p_hov = (_mx >= _ab_x + 420 && _mx <= _ab_x + 480 && _my >= _sy_pos + 24 && _my <= _sy_pos + 52);
+                var _btn_p_hov = (_mx >= _col1_x + _col1_w - 92 && _mx <= _col1_x + _col1_w - 56 && _my >= _sy_pos + 24 && _my <= _sy_pos + 52);
                 if (_btn_p_hov && _click && _len > 1) {
                     if (si == 0) assembly_head_idx = (assembly_head_idx - 1 + _len) % _len;
                     else if (si == 1) assembly_torso_idx = (assembly_torso_idx - 1 + _len) % _len;
@@ -2231,14 +2427,9 @@ else if (active_tab == 1) {
                     else if (si == 4) assembly_bp_idx = (assembly_bp_idx - 1 + _len) % _len;
                     else if (si == 5) assembly_wp_idx = (assembly_wp_idx - 1 + _len) % _len;
                 }
-                draw_set_color(_btn_p_hov ? make_color_rgb(30, 60, 90) : make_color_rgb(18, 30, 48));
-                draw_rectangle(_ab_x + 420, _sy_pos + 24, _ab_x + 480, _sy_pos + 52, false);
-                draw_set_color(make_color_rgb(80, 180, 255));
-                draw_rectangle(_ab_x + 420, _sy_pos + 24, _ab_x + 480, _sy_pos + 52, true);
-                draw_set_color(c_white);
-                draw_text(_ab_x + 430, _sy_pos + 30, "< PREV");
+                scr_draw_snes_button(_col1_x + _col1_w - 92, _sy_pos + 24, 34, 28, "<", _btn_p_hov, false, make_color_rgb(100, 220, 255));
 
-                var _btn_n_hov = (_mx >= _ab_x + 495 && _mx <= _ab_x + 555 && _my >= _sy_pos + 24 && _my <= _sy_pos + 52);
+                var _btn_n_hov = (_mx >= _col1_x + _col1_w - 52 && _mx <= _col1_x + _col1_w - 16 && _my >= _sy_pos + 24 && _my <= _sy_pos + 52);
                 if (_btn_n_hov && _click && _len > 1) {
                     if (si == 0) assembly_head_idx = (assembly_head_idx + 1) % _len;
                     else if (si == 1) assembly_torso_idx = (assembly_torso_idx + 1) % _len;
@@ -2247,47 +2438,180 @@ else if (active_tab == 1) {
                     else if (si == 4) assembly_bp_idx = (assembly_bp_idx + 1) % _len;
                     else if (si == 5) assembly_wp_idx = (assembly_wp_idx + 1) % _len;
                 }
-                draw_set_color(_btn_n_hov ? make_color_rgb(30, 60, 90) : make_color_rgb(18, 30, 48));
-                draw_rectangle(_ab_x + 495, _sy_pos + 24, _ab_x + 555, _sy_pos + 52, false);
-                draw_set_color(make_color_rgb(80, 180, 255));
-                draw_rectangle(_ab_x + 495, _sy_pos + 24, _ab_x + 555, _sy_pos + 52, true);
-                draw_set_color(c_white);
-                draw_text(_ab_x + 505, _sy_pos + 30, "NEXT >");
+                scr_draw_snes_button(_col1_x + _col1_w - 52, _sy_pos + 24, 34, 28, ">", _btn_n_hov, false, make_color_rgb(100, 220, 255));
             }
 
-            // Right Column: Engineering Calculus & Commissioning Bay
-            var _col2_x = _ab_x + _col1_w + 20;
-            var _col2_w = 600;
+            // -----------------------------------------------------------------
+            // COLUMN 2 (CENTER): WANZER CAD SCHEMATIC WIREFRAME (440px)
+            // -----------------------------------------------------------------
+            var _col2_x = _col1_x + _col1_w + 14;
+            var _col2_w = 440;
+
+            scr_draw_snes_panel(_col2_x, _deck_y, _col2_w, _deck_h, "TACTICAL CAD SCHEMATIC", make_color_rgb(100, 220, 255), true);
+
+            // CAD Viewport Enclosure
+            var _cad_x = _col2_x + 12;
+            var _cad_y = _deck_y + 32;
+            var _cad_w = _col2_w - 24;
+            var _cad_h = 280;
+
+            draw_set_color(make_color_rgb(8, 12, 18));
+            draw_rectangle(_cad_x, _cad_y, _cad_x + _cad_w, _cad_y + _cad_h, false);
+            draw_set_color(make_color_rgb(30, 48, 70));
+            draw_rectangle(_cad_x, _cad_y, _cad_x + _cad_w, _cad_y + _cad_h, true);
+
+            // CAD Grid Lines
+            draw_set_color(make_color_rgb(18, 28, 42));
+            for (var cdx = _cad_x + 20; cdx < _cad_x + _cad_w; cdx += 32) draw_line(cdx, _cad_y, cdx, _cad_y + _cad_h);
+            for (var cdy = _cad_y + 20; cdy < _cad_y + _cad_h; cdy += 32) draw_line(_cad_x, cdy, _cad_x + _cad_w, cdy);
+
+            // Technical Grid Overlay text
+            draw_set_color(make_color_rgb(80, 140, 190));
+            draw_text(_cad_x + 8, _cad_y + 6, "CAD REF: 07.24 // CHASSIS: COMBINATIONS-MK5");
+
+            // Draw Schematic Sprite Centerfold
+            var _schem_cx = _cad_x + _cad_w / 2;
+            var _schem_cy = _cad_y + _cad_h / 2;
+            var _sc_scale = 0.38;
+            var _sc_w = 1024 * _sc_scale;
+            var _sc_h = 576 * _sc_scale;
+
+            if (sprite_exists(spr_mech_schematic)) {
+                // Base wireframe
+                draw_sprite_ext(spr_mech_schematic, 0, _schem_cx - _sc_w / 2, _schem_cy - _sc_h / 2, _sc_scale, _sc_scale, 0, c_white, 0.40);
+
+                // Procedural alloy armor plating tint from equipped torso
+                if (!is_undefined(_tr) && variable_struct_exists(_tr, "req_alloy")) {
+                    var _torso_col = scr_get_alloy_procedural_color(_tr.req_alloy);
+                    draw_sprite_ext(spr_mech_schematic, 0, _schem_cx - _sc_w / 2, _schem_cy - _sc_h / 2, _sc_scale, _sc_scale, 0, _torso_col, 0.48);
+                }
+            }
+
+            // Hardpoint Socket Coordinates on Schematic
+            var _sock_coords = [
+                { x: _schem_cx, y: _schem_cy - 72, label: "HEAD" },
+                { x: _schem_cx, y: _schem_cy - 12, label: "CORE" },
+                { x: _schem_cx - 70, y: _schem_cy - 12, label: "ARMS" },
+                { x: _schem_cx, y: _schem_cy + 68, label: "LEGS" },
+                { x: _schem_cx - 48, y: _schem_cy - 48, label: "BOOST" },
+                { x: _schem_cx + 86, y: _schem_cy + 16, label: "WEAPON" }
+            ];
+
+            // Render Socket Connectors & Hitboxes
+            for (var si = 0; si < 6; si++) {
+                var _sc = _sock_coords[si];
+                var _is_sel = (assembly_selected_slot == si);
+
+                // Socket reticle ring
+                draw_set_color(_is_sel ? make_color_rgb(255, 215, 80) : make_color_rgb(80, 200, 255));
+                var _ring_r = _is_sel ? (7 + sin(current_time * 0.006) * 3) : 5;
+                draw_circle(_sc.x, _sc.y, _ring_r, true);
+                draw_circle(_sc.x, _sc.y, 2, false);
+
+                // Targeting brackets if selected
+                if (_is_sel) {
+                    draw_set_color(make_color_rgb(255, 220, 80));
+                    draw_text(_sc.x - 18, _sc.y - 18, "[");
+                    draw_text(_sc.x + 12, _sc.y - 18, "]");
+                    draw_text(_sc.x - 16, _sc.y + 8, _sc.label);
+                }
+
+                // Click on socket
+                var _sock_hov = point_distance(_mx, _my, _sc.x, _sc.y) < 16;
+                if (_sock_hov && _click) {
+                    assembly_selected_slot = si;
+                }
+            }
+
+            // Lower Section: Active Alloy Armor Composition Plaque
+            var _plaq_y = _cad_y + _cad_h + 10;
+            var _plaq_w = _col2_w - 24;
+            var _plaq_h = 135;
+
             draw_set_color(make_color_rgb(12, 18, 28));
-            draw_rectangle(_col2_x, _col1_y, _col2_x + _col2_w, _col1_y + _col1_h, false);
+            draw_rectangle(_cad_x, _plaq_y, _cad_x + _plaq_w, _plaq_y + _plaq_h, false);
             draw_set_color(make_color_rgb(35, 60, 90));
-            draw_rectangle(_col2_x, _col1_y, _col2_x + _col2_w, _col1_y + _col1_h, true);
+            draw_rectangle(_cad_x, _plaq_y, _cad_x + _plaq_w, _plaq_y + _plaq_h, true);
 
             draw_set_color(make_color_rgb(255, 215, 80));
-            draw_text(_col2_x + 18, _col1_y + 12, "REAL-TIME DIAGNOSTICS & SYSTEM COMBINATIONS CALCULUS:");
+            draw_text(_cad_x + 12, _plaq_y + 8, "ACTIVE ALLOY ARMOR COMPOSITION:");
 
-            // Suit Call Designation & Preset Buttons
+            if (!is_undefined(_tr) && variable_struct_exists(_tr, "req_alloy")) {
+                scr_draw_alloy_swatch(_cad_x + 12, _plaq_y + 30, 48, 48, _tr.req_alloy);
+                var _al_hex = scr_alloy_get_hex(_tr.req_alloy);
+                draw_set_color(c_white);
+                draw_text(_cad_x + 68, _plaq_y + 30, _tr.req_alloy + " (" + _al_hex + ")");
+                draw_set_color(make_color_rgb(160, 205, 235));
+                draw_text(_cad_x + 68, _plaq_y + 48, "Sintered Hull Matrix // " + _tr.name);
+                draw_set_color(make_color_rgb(100, 240, 160));
+                draw_text(_cad_x + 68, _plaq_y + 66, "Armor Deflection: " + _tr.bonus);
+            } else {
+                draw_set_color(make_color_rgb(160, 190, 220));
+                draw_text(_cad_x + 12, _plaq_y + 32, "Equip a forged Torso to analyze composite metallurgy.");
+            }
+
+            // Weight Class Assessment Ribbon
+            var _total_mass_calc = (_has_all_6) ? (_hd.mass + _tr.mass + _am.mass + _lg.mass + _bp.mass + _wp.mass) : 0;
+            var _wclass_name = "MEDIUM MAINSTAY";
+            var _wclass_desc = "Balanced Multi-Role Linebreaker";
+            var _wclass_col = make_color_rgb(100, 220, 255);
+
+            if (_total_mass_calc < 55) {
+                _wclass_name = "LIGHT SKIRMISHER";
+                _wclass_desc = "High Agility // +20% Evasion Rating";
+                _wclass_col = make_color_rgb(120, 255, 160);
+            } else if (_total_mass_calc >= 55 && _total_mass_calc < 85) {
+                _wclass_name = "MEDIUM MAINSTAY";
+                _wclass_desc = "Standard Linebreaker // Tactical Equilibrium";
+                _wclass_col = make_color_rgb(100, 220, 255);
+            } else if (_total_mass_calc >= 85 && _total_mass_calc < 110) {
+                _wclass_name = "HEAVY ASSAULT";
+                _wclass_desc = "Fortified Armor // Heavy Kinetic Ordnance";
+                _wclass_col = make_color_rgb(255, 190, 60);
+            } else {
+                _wclass_name = "SUPERHEAVY SIEGEBREAKER";
+                _wclass_desc = "Impenetrable Trench Fortress // Siege Rail";
+                _wclass_col = make_color_rgb(255, 100, 80);
+            }
+
+            draw_set_color(_wclass_col);
+            draw_text(_cad_x + 12, _plaq_y + 90, "WEIGHT CLASS: [ " + _wclass_name + " ]");
+            draw_set_color(make_color_rgb(180, 210, 235));
+            draw_text(_cad_x + 12, _plaq_y + 110, "R&D Doctrine: " + _wclass_desc);
+
+            // Telemetry Status Ribbon
+            var _link_y = _plaq_y + _plaq_h + 10;
+            draw_set_color(make_color_rgb(10, 16, 24));
+            draw_rectangle(_cad_x, _link_y, _cad_x + _plaq_w, _link_y + 24, false);
+            draw_set_color(_has_all_6 ? make_color_rgb(80, 220, 120) : make_color_rgb(220, 70, 70));
+            draw_rectangle(_cad_x, _link_y, _cad_x + _plaq_w, _link_y + 24, true);
+            draw_text(_cad_x + 12, _link_y + 5, _has_all_6 ? "LINK: 6/6 HARDPOINTS SYNCHRONIZED" : "LINK: HARDPOINTS INCOMPLETE");
+
+            // -----------------------------------------------------------------
+            // COLUMN 3 (RIGHT): REAL-TIME ENGINEERING CALCULUS & ACTIONS (410px)
+            // -----------------------------------------------------------------
+            var _col3_x = _col2_x + _col2_w + 14;
+            var _col3_w = 410;
+
+            scr_draw_snes_panel(_col3_x, _deck_y, _col3_w, _deck_h, "ENGINEERING DIAGNOSTICS", make_color_rgb(255, 215, 80), true);
+
+            // Designation & Preset Buttons
             draw_set_color(c_white);
-            draw_text(_col2_x + 18, _col1_y + 36, "Designation: " + assembly_custom_name);
+            draw_text(_col3_x + 14, _deck_y + 32, "Designation: " + assembly_custom_name);
 
             var _presets = ["CHIMERA-X", "AEGIS-II", "VALKYRIE-S", "COLOSSUS-M"];
-            var _pw = 120;
+            var _pw = floor((_col3_w - 48) / 4);
             for (var pr = 0; pr < 4; pr++) {
-                var _px = _col2_x + 18 + pr * (_pw + 10);
-                var _py = _col1_y + 58;
-                var _p_hov = (_mx >= _px && _mx <= _px + _pw && _my >= _py && _my <= _py + 26);
+                var _px = _col3_x + 14 + pr * (_pw + 6);
+                var _py = _deck_y + 54;
+                var _p_hov = (_mx >= _px && _mx <= _px + _pw && _my >= _py && _my <= _py + 24);
                 if (_p_hov && _click) {
                     assembly_custom_name = _presets[pr];
                 }
-                draw_set_color(_p_hov ? make_color_rgb(30, 55, 80) : make_color_rgb(16, 26, 38));
-                draw_rectangle(_px, _py, _px + _pw, _py + 26, false);
-                draw_set_color(make_color_rgb(60, 120, 180));
-                draw_rectangle(_px, _py, _px + _pw, _py + 26, true);
-                draw_set_color(c_white);
-                draw_text(_px + 12, _py + 5, "[" + _presets[pr] + "]");
+                scr_draw_snes_button(_px, _py, _pw, 24, _presets[pr], _p_hov, false, make_color_rgb(100, 220, 255));
             }
 
-            // Real-Time Engineering Calculations
+            // Real-Time Calculus
             if (_has_all_6) {
                 var _total_armor = _hd.armor + _tr.armor + _am.armor + _lg.armor + _bp.armor + _wp.armor;
                 var _power_draw = _hd.power_draw + _am.power_draw + _lg.power_draw + _bp.power_draw + _wp.power_draw;
@@ -2296,147 +2620,112 @@ else if (active_tab == 1) {
                 var _walk_speed = max(20, floor(_lg.base_speed * (1.0 - (_total_mass / 220.0))));
                 var _boost_speed = _walk_speed + _bp.boost_bonus;
                 var _combat_rating = floor((_total_armor / 5) + _wp.damage + (_boost_speed / 2) + (_net_power * 3));
-
-                var _diag_y = _col1_y + 100;
-
-                // 1. Armor Meter
-                draw_set_color(make_color_rgb(100, 220, 255));
-                draw_text(_col2_x + 18, _diag_y, "1. COMBINED ARMOR INTEGRITY:");
-                draw_set_color(c_white);
-                draw_text(_col2_x + 360, _diag_y, string(_total_armor) + " HP / 2,000 HP");
-                draw_set_color(make_color_rgb(18, 30, 48));
-                draw_rectangle(_col2_x + 18, _diag_y + 20, _col2_x + _col2_w - 18, _diag_y + 30, false);
-                draw_set_color(make_color_rgb(60, 180, 240));
-                draw_rectangle(_col2_x + 18, _diag_y + 20, _col2_x + 18 + ((_col2_w - 36) * clamp(_total_armor / 2000.0, 0, 1)), _diag_y + 30, false);
-
-                // 2. Power Balance Meter (The core physics rule!)
-                var _p_diag_y = _diag_y + 44;
                 var _is_power_stable = (_net_power >= 0);
-                draw_set_color(_is_power_stable ? make_color_rgb(100, 255, 140) : make_color_rgb(255, 90, 90));
-                draw_text(_col2_x + 18, _p_diag_y, "2. TOKAMAK FUSION POWER BALANCE:");
-                draw_text(_col2_x + 340, _p_diag_y, "Surplus: " + string(_net_power) + " MW (Core: " + string(_tr.power_output) + " MW, Draw: " + string(_power_draw) + " MW)");
 
-                draw_set_color(make_color_rgb(18, 30, 48));
-                draw_rectangle(_col2_x + 18, _p_diag_y + 20, _col2_x + _col2_w - 18, _p_diag_y + 30, false);
-                draw_set_color(_is_power_stable ? make_color_rgb(80, 220, 120) : make_color_rgb(240, 60, 60));
-                var _pw_norm = _is_power_stable ? clamp(_net_power / 30.0, 0.05, 1.0) : 1.0;
-                draw_rectangle(_col2_x + 18, _p_diag_y + 20, _col2_x + 18 + ((_col2_w - 36) * _pw_norm), _p_diag_y + 30, false);
+                var _diag_y = _deck_y + 86;
+                var _gw_gauge = _col3_w - 28;
+
+                // 1. Armor Integrity
+                draw_set_color(c_white);
+                draw_text(_col3_x + 14, _diag_y, "1. ARMOR INTEGRITY: " + string(_total_armor) + " HP / 2,500 HP");
+                scr_draw_snes_gauge(_col3_x + 14, _diag_y + 18, _gw_gauge, 14, _total_armor, 2500, make_color_rgb(60, 200, 240), -1, 6);
+
+                // 2. Tokamak Power Balance
+                var _p_diag_y = _diag_y + 38;
+                draw_set_color(_is_power_stable ? make_color_rgb(100, 255, 140) : make_color_rgb(255, 90, 90));
+                draw_text(_col3_x + 14, _p_diag_y, "2. POWER BALANCE: Surplus " + string(_net_power) + " MW (Core: +" + string(_tr.power_output) + " / -" + string(_power_draw) + ")");
+                scr_draw_snes_gauge(_col3_x + 14, _p_diag_y + 18, _gw_gauge, 14, max(0, _net_power), 40, _is_power_stable ? make_color_rgb(80, 220, 120) : c_red, -1, 6);
 
                 if (!_is_power_stable) {
+                    scr_draw_snes_hazard_bar(_col3_x + 14, _p_diag_y + 34, _gw_gauge, 8, true);
                     draw_set_color(make_color_rgb(255, 70, 70));
-                    draw_text(_col2_x + 18, _p_diag_y + 34, "!! REACTOR OVERLOAD WARNING: POWER DRAW EXCEEDS CORE OUTPUT !!");
+                    draw_text(_col3_x + 14, _p_diag_y + 44, "!! REACTOR OVERLOAD: DEFICIT " + string(abs(_net_power)) + " MW !!");
                 }
 
                 // 3. Mass & Mobility
-                var _m_diag_y = _p_diag_y + 55;
+                var _m_diag_y = _p_diag_y + (_is_power_stable ? 40 : 58);
                 draw_set_color(make_color_rgb(200, 220, 240));
-                draw_text(_col2_x + 18, _m_diag_y, "3. MASS & SPEED DYNAMICS:");
-                draw_set_color(c_white);
-                draw_text(_col2_x + 18, _m_diag_y + 20, "Total Mass: " + string(_total_mass) + " Tonnes   |   Walk: " + string(_walk_speed) + " kph   |   Boost: " + string(_boost_speed) + " kph");
+                draw_text(_col3_x + 14, _m_diag_y, "3. MOBILITY: " + string(_total_mass) + "t | Walk: " + string(_walk_speed) + " kph | Boost: " + string(_boost_speed) + " kph");
 
                 // 4. Armament Firepower
-                var _w_diag_y = _m_diag_y + 48;
+                var _w_diag_y = _m_diag_y + 24;
                 draw_set_color(make_color_rgb(255, 180, 100));
-                draw_text(_col2_x + 18, _w_diag_y, "4. PRIMARY WEAPON ARSENAL:");
-                draw_set_color(c_white);
-                draw_text(_col2_x + 18, _w_diag_y + 20, _wp.name + " (" + string(_wp.damage) + " Dmg Rating) - " + _wp.bonus);
+                draw_text(_col3_x + 14, _w_diag_y, "4. PRIMARY WEAPON: " + _wp.name + " (" + string(_wp.damage) + " Dmg)");
 
                 // 5. Tactical Rating Banner
-                var _t_diag_y = _w_diag_y + 50;
+                var _t_diag_y = _w_diag_y + 26;
                 draw_set_color(make_color_rgb(16, 26, 38));
-                draw_rectangle(_col2_x + 18, _t_diag_y, _col2_x + _col2_w - 18, _t_diag_y + 60, false);
+                draw_rectangle(_col3_x + 14, _t_diag_y, _col3_x + _col3_w - 14, _t_diag_y + 38, false);
                 draw_set_color(make_color_rgb(255, 215, 80));
-                draw_rectangle(_col2_x + 18, _t_diag_y, _col2_x + _col2_w - 18, _t_diag_y + 60, true);
-
+                draw_rectangle(_col3_x + 14, _t_diag_y, _col3_x + _col3_w - 14, _t_diag_y + 38, true);
                 draw_set_color(make_color_rgb(255, 225, 100));
-                draw_text(_col2_x + 30, _t_diag_y + 12, "PROJECTED TACTICAL COMBAT RATING: " + string(_combat_rating) + " PTS");
-                draw_set_color(make_color_rgb(100, 240, 160));
-                draw_text(_col2_x + 30, _t_diag_y + 34, "Ready for Strategic Sorties, Sector Offensives & Mass-Production Licensure!");
+                draw_text(_col3_x + 22, _t_diag_y + 10, "TACTICAL COMBAT RATING: " + string(_combat_rating) + " PTS");
 
-                // 6. Gihren's Greed & Front Mission Operational Telemetry (Doc 20)
-                var _gg_y = _t_diag_y + 68;
-                draw_set_color(make_color_rgb(10, 16, 24));
-                draw_rectangle(_col2_x + 18, _gg_y, _col2_x + _col2_w - 18, _gg_y + 46, false);
-                draw_set_color(make_color_rgb(45, 75, 110));
-                draw_rectangle(_col2_x + 18, _gg_y, _col2_x + _col2_w - 18, _gg_y + 46, true);
-
+                // 6. Gihren's Greed Operational Telemetry
+                var _gg_y = _t_diag_y + 46;
                 var _lim_disp = 125;
                 var _prop_disp = 140;
                 var _ecm_disp = 35;
-                var _tun_tag = "BASELINE LINE UNIT";
                 if (instance_exists(obj_BlueprintManager)) {
                     var _pt = obj_BlueprintManager.active_prototype_tuning;
                     if (_pt.hydraulics.grade != "UNTESTED") _lim_disp = _pt.hydraulics.pilot_limit_pct;
                     if (_pt.thrusters.grade != "UNTESTED") _prop_disp = floor(150 * _pt.thrusters.fuel_eff_mult);
-                    if (_pt.reactor.grade == "S" || _pt.hydraulics.grade == "S" || _pt.thrusters.grade == "S") _tun_tag = "ACE PROTOTYPE SPEC-X";
-                    else if (_pt.reactor.grade == "A" || _pt.hydraulics.grade == "A" || _pt.thrusters.grade == "A") _tun_tag = "MASTERWORK SPEC";
                 }
+                draw_set_color(make_color_rgb(10, 16, 24));
+                draw_rectangle(_col3_x + 14, _gg_y, _col3_x + _col3_w - 14, _gg_y + 40, false);
+                draw_set_color(make_color_rgb(45, 75, 110));
+                draw_rectangle(_col3_x + 14, _gg_y, _col3_x + _col3_w - 14, _gg_y + 40, true);
 
                 draw_set_color(make_color_rgb(255, 215, 80));
-                draw_text(_col2_x + 24, _gg_y + 6, "GIHREN'S GREED TELEMETRY: LIMIT (GENKAI): " + string(_lim_disp) + "% | PROPELLANT: " + string(_prop_disp) + " EN | ECM: " + string(_ecm_disp) + "%");
+                draw_text(_col3_x + 20, _gg_y + 4, "LIMIT: " + string(_lim_disp) + "% | PROPELLANT: " + string(_prop_disp) + " EN | ECM: " + string(_ecm_disp) + "%");
                 draw_set_color(make_color_rgb(100, 220, 255));
-                draw_text(_col2_x + 24, _gg_y + 26, "TERRAIN: G:A S:A U:A T:B | TUNING STATUS: [" + _tun_tag + "]");
+                draw_text(_col3_x + 20, _gg_y + 22, "TERRAIN: G:A S:A U:A T:B // 16-BIT TACTICAL CORE");
 
-                var _tune_btn_x = _col2_x + _col2_w - 190;
-                var _tune_btn_y = _gg_y + 6;
-                var _tune_hov = (_mx >= _tune_btn_x && _mx <= _tune_btn_x + 170 && _my >= _tune_btn_y && _my <= _tune_btn_y + 34);
-                if (_tune_hov && _click) {
-                    active_tab = 0;
-                    rd_subtab = 1;
-                    show_toast("TRANSFERRED TO R&D PROTOTYPING MINIGAMES BENCH!", c_aqua);
-                }
-                draw_set_color(_tune_hov ? make_color_rgb(30, 70, 110) : make_color_rgb(16, 35, 58));
-                draw_rectangle(_tune_btn_x, _tune_btn_y, _tune_btn_x + 170, _tune_btn_y + 34, false);
-                draw_set_color(make_color_rgb(100, 220, 255));
-                draw_rectangle(_tune_btn_x, _tune_btn_y, _tune_btn_x + 170, _tune_btn_y + 34, true);
-                draw_set_color(c_white);
-                draw_text(_tune_btn_x + 10, _tune_btn_y + 9, "[TUNE IN R&D LAB]");
-
-                // Commission Button
-                var _com_y = _gg_y + 56;
-                var _com_w = _col2_w - 36;
-                var _com_h = 52;
-                var _can_com = _is_power_stable;
-                var _com_hov = (_mx >= _col2_x + 18 && _mx <= _col2_x + 18 + _com_w && _my >= _com_y && _my <= _com_y + _com_h);
+                // Action 1: Commission Custom Combination into Hangar
+                var _com_y = _gg_y + 50;
+                var _com_w = _col3_w - 28;
+                var _com_hov = (_mx >= _col3_x + 14 && _mx <= _col3_x + 14 + _com_w && _my >= _com_y && _my <= _com_y + 42);
 
                 if (_com_hov && _click) {
-                    if (!_can_com) {
+                    if (!_is_power_stable) {
                         show_toast("ASSEMBLY REJECTED: Resolve Reactor Overload first!", c_red);
                     } else {
                         _gm.assemble_custom_mech(assembly_custom_name, assembly_head_idx, assembly_torso_idx, assembly_arms_idx, assembly_legs_idx, assembly_bp_idx, assembly_wp_idx);
                     }
                 }
+                scr_draw_snes_button(_col3_x + 14, _com_y, _com_w, 42, _is_power_stable ? ">> COMMISSION INTO HANGAR <<" : "[OVERLOAD - CANNOT COMMISSION]", _com_hov, false, _is_power_stable ? make_color_rgb(60, 240, 120) : make_color_rgb(180, 50, 50));
 
-                draw_set_color(_can_com ? (_com_hov ? make_color_rgb(25, 95, 55) : make_color_rgb(16, 60, 34)) : make_color_rgb(40, 20, 20));
-                draw_rectangle(_col2_x + 18, _com_y, _col2_x + 18 + _com_w, _com_y + _com_h, false);
-                draw_set_color(_can_com ? make_color_rgb(60, 240, 120) : make_color_rgb(160, 50, 50));
-                draw_rectangle(_col2_x + 18, _com_y, _col2_x + 18 + _com_w, _com_y + _com_h, true);
-
-                draw_set_color(c_white);
-                if (_can_com) {
-                    draw_text(_col2_x + 80, _com_y + 16, ">> COMMISSION CUSTOM COMBINATION INTO HANGAR <<");
-                } else {
-                    draw_text(_col2_x + 65, _com_y + 16, "[CANNOT COMMISSION: RESOLVE REACTOR OVERLOAD]");
+                // Action 2: Archive as Canonical Blueprint
+                var _arc_y = _com_y + 48;
+                var _arc_hov = (_mx >= _col3_x + 14 && _mx <= _col3_x + 14 + _com_w && _my >= _arc_y && _my <= _arc_y + 36);
+                if (_arc_hov && _click) {
+                    save_custom_blueprint();
                 }
+                scr_draw_snes_button(_col3_x + 14, _arc_y, _com_w, 36, "[★ SAVE AS PMC CANONICAL BLUEPRINT]", _arc_hov, false, make_color_rgb(255, 185, 50));
 
-                // Quick Shortcut to Fly-Off Trials (docs/15)
-                var _fly_nav_y = _com_y + _com_h + 10;
-                var _fly_nav_h = 36;
-                var _fly_nav_hov = (_mx >= _col2_x + 18 && _mx <= _col2_x + 18 + _com_w && _my >= _fly_nav_y && _my <= _fly_nav_y + _fly_nav_h);
-                if (_fly_nav_hov && _click) {
+                // Action 3: Dual Navigation Shortcuts
+                var _nav_y = _arc_y + 42;
+                var _half_w = floor((_com_w - 8) / 2);
+
+                var _t_hov = (_mx >= _col3_x + 14 && _mx <= _col3_x + 14 + _half_w && _my >= _nav_y && _my <= _nav_y + 30);
+                if (_t_hov && _click) {
+                    active_tab = 0;
+                    rd_subtab = 1;
+                    show_toast("TRANSFERRED TO R&D PROTOTYPING BENCH!", c_aqua);
+                }
+                scr_draw_snes_button(_col3_x + 14, _nav_y, _half_w, 30, "[TUNE IN LAB]", _t_hov, false, make_color_rgb(80, 180, 240));
+
+                var _f_nav_hov = (_mx >= _col3_x + 14 + _half_w + 8 && _mx <= _col3_x + 14 + _com_w && _my >= _nav_y && _my <= _nav_y + 30);
+                if (_f_nav_hov && _click) {
                     active_tab = 2;
                     contracts_subtab = 1;
                     show_toast("TRANSFERRED TO FLY-OFF PROCUREMENT ARENA!", c_aqua);
                 }
-                draw_set_color(_fly_nav_hov ? make_color_rgb(25, 55, 88) : make_color_rgb(16, 32, 52));
-                draw_rectangle(_col2_x + 18, _fly_nav_y, _col2_x + 18 + _com_w, _fly_nav_y + _fly_nav_h, false);
-                draw_set_color(make_color_rgb(100, 220, 255));
-                draw_rectangle(_col2_x + 18, _fly_nav_y, _col2_x + 18 + _com_w, _fly_nav_y + _fly_nav_h, true);
-                draw_set_color(c_white);
-                draw_text(_col2_x + 60, _fly_nav_y + 10, ">> ENTER SUITS INTO FACTION PROCUREMENT FLY-OFF TRIALS (TAB 2) <<");
+                scr_draw_snes_button(_col3_x + 14 + _half_w + 8, _nav_y, _half_w, 30, "[FLY-OFF ARENA]", _f_nav_hov, false, make_color_rgb(255, 120, 180));
+
             } else {
                 draw_set_color(c_red);
-                draw_text(_col2_x + 18, _col1_y + 120, "PARTS MISSING: Must equip all 6 component slots to compute diagnostics!");
+                draw_text(_col3_x + 18, _deck_y + 120, "PARTS MISSING: Must equip all 6 component slots to compute diagnostics!");
             }
         }
     }
@@ -2454,7 +2743,7 @@ else if (active_tab == 2) {
         var _csx = _pan_x + 30 + cst * (_csub_w + 14);
         var _cst_active = (contracts_subtab == cst);
         var _cst_hov = (_mx >= _csx && _mx <= _csx + _csub_w && _my >= _csub_y && _my <= _csub_y + 30);
-        if (_cst_hov && _click) contracts_subtab = cst;
+        if (_cst_hov && _click) { contracts_subtab = cst; scr_audio_play_ui("click"); }
 
         draw_set_color(_cst_active ? make_color_rgb(25, 55, 88) : (_cst_hov ? make_color_rgb(18, 38, 60) : make_color_rgb(12, 20, 32)));
         draw_rectangle(_csx, _csub_y, _csx + _csub_w, _csub_y + 30, false);
@@ -2686,141 +2975,488 @@ else if (active_tab == 2) {
 
                     draw_set_color(_m_sel ? make_color_rgb(255, 220, 100) : c_white);
                     draw_text(_tr_x + 14, _my_box + 6, _mitem.name);
-                    draw_set_color(make_color_rgb(160, 190, 220));
-                    draw_text(_tr_x + 14, _my_box + 24, "Class: " + (_mitem[$ "class"] ?? "Mobile Suit") + " | Status: " + _mitem.status);
+                    var _ped_badge = "UNTESTED";
+                    var _ped_bonus = 0.0;
+                    if (variable_struct_exists(_mitem, "combat_pedigree") && is_struct(_mitem.combat_pedigree)) {
+                        _ped_badge = _mitem.combat_pedigree[$ "pedigree_rating"] ?? "UNTESTED";
+                        _ped_bonus = _mitem.combat_pedigree[$ "telemetry_bonus"] ?? 0.0;
+                    }
+                    draw_set_color((_ped_bonus > 0) ? make_color_rgb(255, 215, 80) : make_color_rgb(140, 160, 180));
+                    draw_text(_tr_x + 14, _my_box + 24, "Pedigree: " + _ped_badge + ((_ped_bonus > 0) ? " (+" + string(_ped_bonus) + " pts)" : "") + " | " + _mitem.status);
                     draw_set_color(make_color_rgb(80, 220, 140));
                     draw_text(_tr_x + 14, _my_box + 44, "Armor: " + string(_mitem.armor_rating) + " | Output: +" + string(_mitem.power_output) + " MW | Spd: " + string(_mitem.speed) + " | CR: " + string(_mitem.combat_rating));
                 }
             }
 
-            // Right Box: Fly-Off Diagnostic & Benchmark Arena
+            // Right Box: 4-Phase Fly-Off Tournament Arena & Fleet Adoption Lifecycle (docs/26)
+            var _cur_mp = _mpc[$ trial_selected_faction];
+            var _is_adopted = (!is_undefined(_cur_mp) && _cur_mp.replaced);
+            var _inc = _fm.get_incumbent_specs(trial_selected_faction);
+            var _cur_cand = (trial_selected_mech_idx >= 0 && trial_selected_mech_idx < array_length(_mechs)) ? _mechs[trial_selected_mech_idx] : undefined;
+
             draw_set_color(make_color_rgb(10, 16, 24));
             draw_rectangle(_col2_x, _arena_y, _col2_x + _col2_w, _arena_y + _arena_h, false);
             draw_set_color(make_color_rgb(35, 60, 90));
             draw_rectangle(_col2_x, _arena_y, _col2_x + _col2_w, _arena_y + _arena_h, true);
 
-            var _inc = _fm.get_incumbent_specs(trial_selected_faction);
-            var _cur_cand = (trial_selected_mech_idx >= 0 && trial_selected_mech_idx < array_length(_mechs)) ? _mechs[trial_selected_mech_idx] : undefined;
-
+            // Top Header: Title + Adoption & Candidate Pool Toggles
             draw_set_color(make_color_rgb(255, 215, 80));
-            draw_text(_col2_x + 14, _arena_y + 10, "FLY-OFF BENCHMARK ARENA: " + _inc.faction_name);
+            draw_text(_col2_x + 14, _arena_y + 10, "PROCUREMENT BUREAU: " + _inc.faction_name);
             draw_set_color(make_color_rgb(160, 190, 220));
-            draw_text(_col2_x + 14, _arena_y + 28, "Evaluator: " + _inc.evaluator + " | Doctrine: " + _inc.doctrine_focus);
+            draw_text(_col2_x + 14, _arena_y + 28, "Evaluator: " + _inc.evaluator + " | Doctrine Focus: " + _inc.doctrine_focus);
 
-            // Side-by-side comparison table
-            var _cmp_y = _arena_y + 52;
-            draw_set_color(make_color_rgb(14, 24, 36));
-            draw_rectangle(_col2_x + 12, _cmp_y, _col2_x + _col2_w - 12, _cmp_y + 130, false);
-            draw_set_color(make_color_rgb(45, 75, 110));
-            draw_rectangle(_col2_x + 12, _cmp_y, _col2_x + _col2_w - 12, _cmp_y + 130, true);
+            var _cand_btn_w = 210;
+            var _cand_btn_x = _col2_x + _col2_w - _cand_btn_w - 14;
+            var _cand_btn_y = _arena_y + 8;
+            var _cand_btn_hov = (_mx >= _cand_btn_x && _mx <= _cand_btn_x + _cand_btn_w && _my >= _cand_btn_y && _my <= _cand_btn_y + 28);
+            if (_cand_btn_hov && _click) {
+                trial_view_candidates_mode = !trial_view_candidates_mode;
+            }
+            scr_draw_snes_button(_cand_btn_x, _cand_btn_y, _cand_btn_w, 28, trial_view_candidates_mode ? "[<< FLY-OFF ARENA]" : "[INSPECT 4 MP CANDIDATES >>]", _cand_btn_hov, trial_view_candidates_mode, make_color_rgb(255, 215, 80));
 
-            // Column Headers
-            draw_set_color(make_color_rgb(100, 220, 255));
-            draw_text(_col2_x + 24, _cmp_y + 8, "METRIC");
-            draw_text(_col2_x + 240, _cmp_y + 8, "CANDIDATE: " + (!is_undefined(_cur_cand) ? _cur_cand.name : "None"));
-            draw_text(_col2_x + 500, _cmp_y + 8, "INCUMBENT: " + _inc.name);
-
-            // Metrics: Armor, Power, Speed, Combat Rating
-            var _cand_arm = !is_undefined(_cur_cand) ? _cur_cand.armor_rating : 0;
-            var _cand_pwr = !is_undefined(_cur_cand) ? _cur_cand.power_output : 0;
-            var _cand_spd = !is_undefined(_cur_cand) ? _cur_cand.speed : 0;
-            var _cand_cr = !is_undefined(_cur_cand) ? _cur_cand.combat_rating : 0;
-
-            var _rows = [
-                { label: "1. Armor Plating", c_val: string(_cand_arm) + " HP", i_val: string(_inc.armor) + " HP", pass: (_cand_arm >= _inc.armor) },
-                { label: "2. Reactor Surplus", c_val: "+" + string(_cand_pwr) + " MW", i_val: "+" + string(_inc.power) + " MW", pass: (_cand_pwr >= _inc.power) },
-                { label: "3. Maximum Speed", c_val: string(_cand_spd) + " kph", i_val: string(_inc.speed) + " kph", pass: (_cand_spd >= _inc.speed) },
-                { label: "4. Combat Rating", c_val: string(_cand_cr) + " PTS", i_val: string(_inc.combat_rating) + " PTS", pass: (_cand_cr >= _inc.combat_rating) }
-            ];
-
-            for (var r = 0; r < 4; r++) {
-                var _ry = _cmp_y + 30 + r * 24;
-                var _rw = _rows[r];
-                draw_set_color(make_color_rgb(180, 200, 220));
-                draw_text(_col2_x + 24, _ry, _rw.label);
-                draw_set_color(_rw.pass ? c_lime : make_color_rgb(240, 160, 60));
-                draw_text(_col2_x + 240, _ry, _rw.c_val);
-                draw_set_color(make_color_rgb(200, 200, 200));
-                draw_text(_col2_x + 500, _ry, _rw.i_val);
+            if (_is_adopted && !trial_view_candidates_mode) {
+                var _tgl_w = 170;
+                var _tgl_x = _cand_btn_x - _tgl_w - 8;
+                var _tgl_y = _arena_y + 8;
+                var _tgl_hov = (_mx >= _tgl_x && _mx <= _tgl_x + _tgl_w && _my >= _tgl_y && _my <= _tgl_y + 28);
+                if (_tgl_hov && _click) {
+                    trial_view_adoption_panel = !trial_view_adoption_panel;
+                }
+                scr_draw_snes_button(_tgl_x, _tgl_y, _tgl_w, 28, trial_view_adoption_panel ? "[FLY-OFF ARENA]" : "[FLEET ADOPTION]", _tgl_hov, trial_view_adoption_panel, make_color_rgb(80, 220, 140));
             }
 
-            // Fly-Off Test Simulation Button
-            var _fly_btn_y = _cmp_y + 140;
-            var _fly_btn_w = _col2_w - 24;
-            var _fly_btn_h = 44;
-            var _can_fly = (!is_undefined(_cur_cand));
-            var _fly_hov = (_mx >= _col2_x + 12 && _mx <= _col2_x + 12 + _fly_btn_w && _my >= _fly_btn_y && _my <= _fly_btn_y + _fly_btn_h);
+            // =========================================================================
+            // VIEW C: 4-CANDIDATE MASS PRODUCTION PROCUREMENT DOSSIERS (docs/29 & docs/30)
+            // =========================================================================
+            if (trial_view_candidates_mode) {
+                var _cp_y = _arena_y + 44;
+                var _cp_h = _arena_h - 54;
 
-            if (_fly_hov && _click) {
-                if (_can_fly) {
-                    trial_last_result = _fm.run_procurement_trial(trial_selected_faction, _cur_cand);
-                    if (trial_last_result.passed) {
-                        show_toast("TRIAL SUCCESS: " + _cur_cand.name + " OUTPERFORMED " + _inc.name + "! (" + string(trial_last_result.composite_score) + "/100)", c_lime);
+                // Perspective Toggle Header Button for 4-Candidate Comparison
+                var _p_tgl_x = _arena_x + _arena_w - 240;
+                var _p_tgl_y = _arena_y + 8;
+                var _p_tgl_w = 110;
+                var _p_tgl_hov = (_mx >= _p_tgl_x && _mx <= _p_tgl_x + _p_tgl_w && _my >= _p_tgl_y && _my <= _p_tgl_y + 26);
+                if (_p_tgl_hov && _click) {
+                    catalog_perspective = (catalog_perspective == "front") ? "back" : "front";
+                }
+                var _p_tgl_lbl = (catalog_perspective == "back") ? "ISO: REAR" : "ISO: FRONT";
+                scr_draw_snes_button(_p_tgl_x, _p_tgl_y, _p_tgl_w, 26, _p_tgl_lbl, _p_tgl_hov, catalog_perspective == "back", make_color_rgb(100, 220, 255));
+                var _cand_pool = variable_struct_exists(_fm.mass_production_candidates, trial_selected_faction) ? _fm.mass_production_candidates[$ trial_selected_faction] : [];
+                var _card_w = floor((_col2_w - 32) / 4);
+
+                for (var ci = 0; ci < min(4, array_length(_cand_pool)); ci++) {
+                    var _cdata = _cand_pool[ci];
+                    var _cx = _col2_x + 12 + ci * (_card_w + 4);
+                    var _is_incumbent = (!is_undefined(_cur_mp) && _cur_mp.baseline_suit_id == _cdata.id);
+                    var _is_sel_cand = (trial_candidate_dossier_idx == ci);
+                    var _chov = (_mx >= _cx && _mx <= _cx + _card_w && _my >= _cp_y && _my <= _cp_y + _cp_h);
+                    if (_chov && _click) trial_candidate_dossier_idx = ci;
+
+                    // Card Enclosure
+                    draw_set_color(_is_incumbent ? make_color_rgb(24, 32, 20) : (_is_sel_cand ? make_color_rgb(18, 30, 48) : make_color_rgb(12, 18, 26)));
+                    draw_rectangle(_cx, _cp_y, _cx + _card_w, _cp_y + _cp_h, false);
+                    draw_set_color(_is_incumbent ? make_color_rgb(255, 215, 80) : (_is_sel_cand ? make_color_rgb(80, 200, 255) : make_color_rgb(40, 60, 85)));
+                    draw_rectangle(_cx, _cp_y, _cx + _card_w, _cp_y + _cp_h, true);
+
+                    // Candidate Badge & Title
+                    if (_is_incumbent) {
+                        draw_set_color(make_color_rgb(255, 215, 80));
+                        draw_rectangle(_cx + 4, _cp_y + 4, _cx + _card_w - 4, _cp_y + 20, false);
+                        draw_set_color(c_black);
+                        draw_text(_cx + 8, _cp_y + 5, "*** RATIFIED LINE ***");
                     } else {
-                        show_toast("TRIAL DEFICIT: Candidate scored " + string(trial_last_result.composite_score) + "/100. Requirements unmet!", c_red);
+                        draw_set_color(make_color_rgb(45, 65, 90));
+                        draw_rectangle(_cx + 4, _cp_y + 4, _cx + _card_w - 4, _cp_y + 20, false);
+                        draw_set_color(make_color_rgb(180, 210, 240));
+                        draw_text(_cx + 8, _cp_y + 5, "CANDIDATE " + string(ci + 1) + "/4");
                     }
-                } else {
-                    show_toast("SELECT A CANDIDATE MECH IN HANGAR FIRST!", c_red);
+
+                    draw_set_color(make_color_rgb(240, 240, 240));
+                    draw_text(_cx + 6, _cp_y + 26, _cdata.name);
+                    draw_set_color(make_color_rgb(160, 190, 220));
+                    draw_text(_cx + 6, _cp_y + 42, string_copy(_cdata.doctrine, 1, 18));
+
+                    // Animated Sprite Box (160x160 rendered at 0.52 scale across Front and Back Isometric Perspectives)
+                    var _spr_cy = _cp_y + 165;
+                    scr_draw_animated_mobile_suit(_cdata.id, _cx + _card_w / 2, _spr_cy, 0.52, 1, catalog_anim_state, -1, c_white, catalog_perspective);
+
+                    // Animation Mode Buttons
+                    var _an_btns = ["idle", "walk", "fire", "hit"];
+                    var _ab_w = floor((_card_w - 16) / 4);
+                    for (var bi = 0; bi < 4; bi++) {
+                        var _ab_x = _cx + 6 + bi * (_ab_w + 1);
+                        var _ab_y = _cp_y + 175;
+                        var _ab_act = (catalog_anim_state == _an_btns[bi]);
+                        var _ab_hov = (_mx >= _ab_x && _mx <= _ab_x + _ab_w && _my >= _ab_y && _my <= _ab_y + 18);
+                        if (_ab_hov && _click) catalog_anim_state = _an_btns[bi];
+                        draw_set_color(_ab_act ? make_color_rgb(100, 220, 255) : (_ab_hov ? make_color_rgb(45, 75, 105) : make_color_rgb(18, 28, 40)));
+                        draw_rectangle(_ab_x, _ab_y, _ab_x + _ab_w, _ab_y + 18, false);
+                        draw_set_color(_ab_act ? c_black : make_color_rgb(180, 200, 220));
+                        draw_text(_ab_x + 2, _ab_y + 3, string_upper(string_copy(_an_btns[bi], 1, 3)));
+                    }
+
+                    // Specs Telemetry
+                    var _sy = _cp_y + 200;
+                    draw_set_color(make_color_rgb(120, 160, 200));
+                    draw_text(_cx + 6, _sy, "Armor: " + string(_cdata.armor) + " HP");
+                    draw_text(_cx + 6, _sy + 16, "Reactor: +" + string(_cdata.power) + " MW");
+                    draw_text(_cx + 6, _sy + 32, "Speed: " + string(_cdata.speed) + " kph");
+                    draw_text(_cx + 6, _sy + 48, "Combat: " + string(_cdata.combat) + " PTS");
+                    draw_set_color(make_color_rgb(255, 180, 80));
+                    draw_text(_cx + 6, _sy + 68, "Wpn: " + string_copy(_cdata.weapon, 1, 16));
+                    draw_set_color(make_color_rgb(100, 240, 140));
+                    draw_text(_cx + 6, _sy + 86, "Royalty: +" + string(_cdata.royalty) + "/t");
+
+                    // Select as Fly-Off Target
+                    var _sel_btn_y = _cp_y + _cp_h - 26;
+                    var _sb_hov = (_mx >= _cx + 4 && _mx <= _cx + _card_w - 4 && _my >= _sel_btn_y && _my <= _sel_btn_y + 22);
+                    if (_sb_hov && _click) {
+                        _cur_mp.baseline_suit_id = _cdata.id;
+                        _cur_mp.baseline_suit_name = _cdata.name;
+                        _cur_mp.doctrine = _cdata.doctrine;
+                        _cur_mp.signature_weapon = _cdata.weapon;
+                        _cur_mp.sprite_asset = _cdata.sprite;
+                        _cur_mp.req_armor = _cdata.req_armor;
+                        _cur_mp.req_power = _cdata.req_power;
+                        _cur_mp.licensing_bounty = _cdata.bounty;
+                        _cur_mp.royalty_per_turn = _cdata.royalty;
+                        trial_view_candidates_mode = false;
+                    }
+                    draw_set_color(_sb_hov ? make_color_rgb(40, 80, 120) : make_color_rgb(20, 35, 55));
+                    draw_rectangle(_cx + 4, _sel_btn_y, _cx + _card_w - 4, _sel_btn_y + 22, false);
+                    draw_set_color(_is_incumbent ? make_color_rgb(255, 215, 80) : make_color_rgb(80, 200, 255));
+                    draw_rectangle(_cx + 4, _sel_btn_y, _cx + _card_w - 4, _sel_btn_y + 22, true);
+                    draw_text(_cx + 8, _sel_btn_y + 4, _is_incumbent ? "[RATIFIED LINE]" : "[FLY-OFF TARGET]");
                 }
             }
+            // =========================================================================
+            // VIEW A: FLEET ADOPTION & MODERNIZATION DASHBOARD (docs/26 Pillar II & III)
+            // =========================================================================
+            if (_is_adopted && trial_view_adoption_panel) {
+                var _dash_y = _arena_y + 48;
+                draw_set_color(make_color_rgb(14, 22, 32));
+                draw_rectangle(_col2_x + 12, _dash_y, _col2_x + _col2_w - 12, _arena_y + _arena_h - 12, false);
+                draw_set_color(make_color_rgb(45, 75, 110));
+                draw_rectangle(_col2_x + 12, _dash_y, _col2_x + _col2_w - 12, _arena_y + _arena_h - 12, true);
 
-            draw_set_color(_can_fly ? (_fly_hov ? make_color_rgb(25, 75, 110) : make_color_rgb(18, 48, 72)) : make_color_rgb(30, 20, 20));
-            draw_rectangle(_col2_x + 12, _fly_btn_y, _col2_x + 12 + _fly_btn_w, _fly_btn_y + _fly_btn_h, false);
-            draw_set_color(_can_fly ? make_color_rgb(100, 220, 255) : make_color_rgb(140, 60, 60));
-            draw_rectangle(_col2_x + 12, _fly_btn_y, _col2_x + 12 + _fly_btn_w, _fly_btn_y + _fly_btn_h, true);
+                var _stg = _cur_mp[$ "adoption_stage"] ?? "MATURE";
+                var _blk = _cur_mp[$ "block_level"] ?? 1;
+                var _units = _cur_mp[$ "active_frontline_units"] ?? 50;
 
-            draw_set_color(c_white);
-            draw_text(_col2_x + 160, _fly_btn_y + 13, ">> COMMENCE COMPETITIVE FLY-OFF TRIAL // RUN 4 DIAGNOSTIC PHASES <<");
+                // Stamp & Header
+                var _stamp_idx = (_stg == "TOOLING") ? 5 : ((_blk >= 3) ? 0 : ((_blk == 2) ? 4 : 1));
+                scr_draw_snes_trial_stamp(_col2_x + 24, _dash_y + 14, _stamp_idx);
 
-            // Diagnostic Results Banner & Ratification
-            if (!is_undefined(trial_last_result)) {
-                var _res_y = _fly_btn_y + 52;
-                var _res_w = _col2_w - 24;
-                var _res_h = 175;
+                draw_set_color(make_color_rgb(255, 220, 100));
+                draw_text(_col2_x + 120, _dash_y + 12, "ADOPTED DOCTRINE: " + _cur_mp.replacement_name + " (BLOCK " + string(_blk) + ")");
+                draw_set_color(make_color_rgb(160, 200, 230));
+                draw_text(_col2_x + 120, _dash_y + 30, "Lifecycle Status: " + _stg + " | Base Doctrine Bonus: +" + string(_cur_mp.combat_bonus));
 
-                draw_set_color(trial_last_result.passed ? make_color_rgb(12, 36, 20) : make_color_rgb(36, 16, 16));
-                draw_rectangle(_col2_x + 12, _res_y, _col2_x + 12 + _res_w, _res_y + _res_h, false);
-                draw_set_color(trial_last_result.passed ? make_color_rgb(60, 240, 120) : make_color_rgb(240, 60, 60));
-                draw_rectangle(_col2_x + 12, _res_y, _col2_x + 12 + _res_w, _res_y + _res_h, true);
+                // Status Cards & Progress
+                if (_stg == "TOOLING") {
+                    var _tool_rem = _cur_mp[$ "tooling_turns_remaining"] ?? 2;
+                    draw_set_color(make_color_rgb(255, 200, 60));
+                    draw_text(_col2_x + 24, _dash_y + 56, "SHIPYARD TOOLING IN PROGRESS: " + string(_tool_rem) + " Turn(s) until first flight wing deployment.");
+                    scr_draw_snes_hazard_bar(_col2_x + 24, _dash_y + 76, _col2_w - 48, 12, true);
 
-                draw_set_color(trial_last_result.passed ? make_color_rgb(255, 220, 100) : make_color_rgb(255, 100, 100));
-                draw_text(_col2_x + 24, _res_y + 8, trial_last_result.passed ? "*** FLY-OFF VICTORY: DOCTRINE CANDIDACY QUALIFIED ***" : "!!! FLY-OFF DEFICIT: DOCTRINE CANDIDACY REJECTED !!!");
-
-                draw_set_color(c_white);
-                draw_text(_col2_x + 24, _res_y + 28, "Phase 1 Armor Stress: " + string(trial_last_result.score_armor) + "/100   |   Phase 2 Reactor Sustained: " + string(trial_last_result.score_power) + "/100");
-                draw_text(_col2_x + 24, _res_y + 46, "Phase 3 High-G Mobility: " + string(trial_last_result.score_speed) + "/100   |   Phase 4 Live-Fire Combat: " + string(trial_last_result.score_combat) + "/100");
-                draw_set_color(make_color_rgb(100, 220, 255));
-                draw_text(_col2_x + 24, _res_y + 66, "Faction Standing Bonus: +" + string(trial_last_result.standing_bonus) + " pts   ==>   COMPOSITE SCORE: " + string(trial_last_result.composite_score) + " / 100.0 PTS");
-
-                draw_set_color(trial_last_result.passed ? make_color_rgb(140, 255, 180) : make_color_rgb(255, 180, 180));
-                draw_text(_col2_x + 24, _res_y + 88, trial_last_result.report);
-
-                // Ratification Button if passed
-                if (trial_last_result.passed) {
-                    var _rat_btn_y = _res_y + 115;
-                    var _rat_btn_w = _res_w - 24;
-                    var _rat_btn_h = 48;
-                    var _rat_hov = (_mx >= _col2_x + 24 && _mx <= _col2_x + 24 + _rat_btn_w && _my >= _rat_btn_y && _my <= _rat_btn_y + _rat_btn_h);
-
-                    if (_rat_hov && _click) {
-                        _fm.award_procurement_contract(trial_selected_faction, _cur_cand, trial_last_result);
-                        trial_last_result = undefined;
+                    // Expedite Button
+                    var _exp_btn_y = _dash_y + 105;
+                    var _exp_btn_w = _col2_w - 48;
+                    var _exp_btn_h = 44;
+                    var _exp_hov = (_mx >= _col2_x + 24 && _mx <= _col2_x + 24 + _exp_btn_w && _my >= _exp_btn_y && _my <= _exp_btn_y + _exp_btn_h);
+                    if (_exp_hov && _click) {
+                        _fm.expedite_adoption_tooling(trial_selected_faction);
                     }
+                    scr_draw_snes_button(_col2_x + 24, _exp_btn_y, _exp_btn_w, _exp_btn_h, ">> EXPEDITE TOOLING (-40,000 Cr) // ADVANCE TIMELINE BY 1 TURN <<", _exp_hov, false, make_color_rgb(255, 200, 60));
+                } else {
+                    // Fleet Rollout Metrics
+                    draw_set_color(make_color_rgb(100, 220, 255));
+                    draw_text(_col2_x + 24, _dash_y + 56, "Active Frontline Fleet: " + string(_units) + " / 250 Units in Combat Service");
+                    scr_draw_snes_gauge(_col2_x + 24, _dash_y + 76, _col2_w - 48, 14, _units, 250, c_lime);
 
-                    draw_set_color(_rat_hov ? make_color_rgb(35, 115, 65) : make_color_rgb(22, 80, 44));
-                    draw_rectangle(_col2_x + 24, _rat_btn_y, _col2_x + 24 + _rat_btn_w, _rat_btn_y + _rat_btn_h, false);
-                    draw_set_color(make_color_rgb(80, 255, 140));
-                    draw_rectangle(_col2_x + 24, _rat_btn_y, _col2_x + 24 + _rat_btn_w, _rat_btn_y + _rat_btn_h, true);
+                    draw_set_color(make_color_rgb(180, 210, 240));
+                    draw_text(_col2_x + 24, _dash_y + 100, "Turn Royalty Revenue: +" + string(_cur_mp.royalty_per_turn) + " Cr/turn   |   Cumulative Paid: +" + string(_cur_mp.cumulative_royalties_paid) + " Cr");
+                    draw_text(_col2_x + 24, _dash_y + 120, "Arms Dealer Paradox: Player squad gains +15% Crit / +20% AP against this chassis.");
 
-                    var _cur_mp_target = _fm.mass_production_contracts[$ trial_selected_faction];
-                    var _is_upg_tender = _cur_mp_target.replaced;
-                    var _bounty_val = _is_upg_tender ? floor(_cur_mp_target.licensing_bounty * 0.6) : _cur_mp_target.licensing_bounty;
-                    draw_set_color(c_white);
-                    if (_is_upg_tender) {
-                        draw_text(_col2_x + 40, _rat_btn_y + 14, ">> RATIFY NEXT-GEN UPGRADE // CLAIM +" + string(_bounty_val) + " Cr & BOOST ROYALTIES <<");
+                    // Modernization Upgrade Cards (Block II / Block III)
+                    var _upg_btn_y = _dash_y + 155;
+                    var _upg_btn_w = _col2_w - 48;
+                    var _upg_btn_h = 46;
+
+                    if (_blk == 1) {
+                        var _can_b2 = (_units >= 50);
+                        var _b2_hov = (_can_b2 && _mx >= _col2_x + 24 && _mx <= _col2_x + 24 + _upg_btn_w && _my >= _upg_btn_y && _my <= _upg_btn_y + _upg_btn_h);
+                        if (_b2_hov && _click) {
+                            _fm.upgrade_adoption_block_ii(trial_selected_faction);
+                        }
+                        scr_draw_snes_button(_col2_x + 24, _upg_btn_y, _upg_btn_w, _upg_btn_h, ">> RATIFY BLOCK II MODERNIZATION // CLAIM +450,000 Cr BOUNTY & +25% ROYALTIES <<", _b2_hov, false, _can_b2 ? make_color_rgb(255, 215, 80) : c_dkgray);
+                    } else if (_blk == 2) {
+                        var _b3_hov = (_mx >= _col2_x + 24 && _mx <= _col2_x + 24 + _upg_btn_w && _my >= _upg_btn_y && _my <= _upg_btn_y + _upg_btn_h);
+                        if (_b3_hov && _click) {
+                            _fm.upgrade_adoption_block_iii(trial_selected_faction);
+                        }
+                        scr_draw_snes_button(_col2_x + 24, _upg_btn_y, _upg_btn_w, _upg_btn_h, ">> UPGRADE TO BLOCK III ACE CUSTOM // CLAIM +750,000 Cr & FREE ACE HANGAR MECH <<", _b3_hov, false, make_color_rgb(80, 240, 180));
                     } else {
-                        draw_text(_col2_x + 60, _rat_btn_y + 14, ">> RATIFY TENDER: REPLACE DOCTRINE // CLAIM +" + string(_bounty_val) + " Cr & ROYALTIES <<");
+                        draw_set_color(make_color_rgb(80, 255, 140));
+                        draw_text(_col2_x + 24, _upg_btn_y + 14, "*** APEX PROTOCOL: BLOCK III VANGUARD STANDARD ACHIEVED // MAXIMUM REFINEMENT ***");
                     }
+                }
+
+                // Switch back button
+                var _sw_btn_y = _arena_y + _arena_h - 48;
+                var _sw_hov = (_mx >= _col2_x + 24 && _mx <= _col2_x + 280 && _my >= _sw_btn_y && _my <= _sw_btn_y + 32);
+                if (_sw_hov && _click) {
+                    trial_view_adoption_panel = false;
+                }
+                scr_draw_snes_button(_col2_x + 24, _sw_btn_y, 256, 32, ">> CHALLENGE WITH NEW MECH >>", _sw_hov, false, make_color_rgb(100, 200, 255));
+            }
+            // =========================================================================
+            // VIEW B: 4-PHASE FLY-OFF TOURNAMENT ARENA (docs/26 Pillar I)
+            // =========================================================================
+            else {
+                // 4-Phase Breadcrumb Bar Header
+                var _bc_y = _arena_y + 46;
+                var _bc_w = floor((_col2_w - 24) / 4);
+                var _phase_names = ["[1. STATIC AUDIT]", "[2. STRESS GAUNTLET]", "[3. COMBAT FLY-OFF]", "[4. RATIFICATION]"];
+                for (var ph = 0; ph < 4; ph++) {
+                    var _bx = _col2_x + 12 + ph * _bc_w;
+                    var _is_cur_ph = (trial_phase == (ph + 1) || (trial_phase == 0 && ph == 0));
+                    var _is_past_ph = (trial_phase > (ph + 1));
+                    draw_set_color(_is_cur_ph ? make_color_rgb(18, 54, 76) : (_is_past_ph ? make_color_rgb(12, 34, 20) : make_color_rgb(12, 16, 22)));
+                    draw_rectangle(_bx, _bc_y, _bx + _bc_w - 4, _bc_y + 24, false);
+                    draw_set_color(_is_cur_ph ? make_color_rgb(100, 240, 255) : (_is_past_ph ? c_lime : make_color_rgb(60, 80, 100)));
+                    draw_rectangle(_bx, _bc_y, _bx + _bc_w - 4, _bc_y + 24, true);
+                    draw_text(_bx + 6, _bc_y + 5, _phase_names[ph]);
+                }
+
+                // --- PHASE 0 & 1: STATIC VIABILITY AUDIT & MID-TRIAL REFINEMENTS ---
+                if (trial_phase <= 1) {
+                    var _cmp_y = _bc_y + 32;
+                    draw_set_color(make_color_rgb(14, 24, 36));
+                    draw_rectangle(_col2_x + 12, _cmp_y, _col2_x + _col2_w - 12, _cmp_y + 115, false);
+                    draw_set_color(make_color_rgb(45, 75, 110));
+                    draw_rectangle(_col2_x + 12, _cmp_y, _col2_x + _col2_w - 12, _cmp_y + 115, true);
+
+                    draw_set_color(make_color_rgb(100, 220, 255));
+                    draw_text(_col2_x + 24, _cmp_y + 6, "METRIC");
+                    draw_text(_col2_x + 240, _cmp_y + 6, "CANDIDATE: " + (!is_undefined(_cur_cand) ? _cur_cand.name : "None"));
+                    var _cand_tag = (!is_undefined(_cur_mp) && variable_struct_exists(_cur_mp, "candidate_index")) ? (" [CANDIDATE " + string(_cur_mp.candidate_index + 1) + "/4]") : "";
+                    draw_text(_col2_x + 500, _cmp_y + 6, "INCUMBENT: " + _inc.name + _cand_tag);
+
+                    // Render Animated Preview of Incumbent Mass Production Chassis (docs/29)
+                    scr_draw_animated_mobile_suit(_inc.id, _col2_x + _col2_w - 75, _cmp_y + 98, 0.65, -1, "idle");
+
+                    var _cand_arm = !is_undefined(_cur_cand) ? _cur_cand.armor_rating : 0;
+                    var _cand_pwr = !is_undefined(_cur_cand) ? _cur_cand.power_output : 0;
+                    var _cand_spd = !is_undefined(_cur_cand) ? _cur_cand.speed : 0;
+                    var _cand_cr = !is_undefined(_cur_cand) ? _cur_cand.combat_rating : 0;
+
+                    var _rows = [
+                        { label: "1. Armor Plating", c_val: string(_cand_arm) + " HP", i_val: string(_inc.armor) + " HP", pass: (_cand_arm >= _inc.armor) },
+                        { label: "2. Reactor Surplus", c_val: "+" + string(_cand_pwr) + " MW", i_val: "+" + string(_inc.power) + " MW", pass: (_cand_pwr >= _inc.power) },
+                        { label: "3. Maximum Speed", c_val: string(_cand_spd) + " kph", i_val: string(_inc.speed) + " kph", pass: (_cand_spd >= _inc.speed) },
+                        { label: "4. Combat Rating", c_val: string(_cand_cr) + " PTS", i_val: string(_inc.combat_rating) + " PTS", pass: (_cand_cr >= _inc.combat_rating) }
+                    ];
+
+                    for (var r = 0; r < 4; r++) {
+                        var _ry = _cmp_y + 24 + r * 22;
+                        var _rw = _rows[r];
+                        draw_set_color(make_color_rgb(180, 200, 220));
+                        draw_text(_col2_x + 24, _ry, _rw.label);
+                        draw_set_color(_rw.pass ? c_lime : make_color_rgb(240, 160, 60));
+                        draw_text(_col2_x + 240, _ry, _rw.c_val);
+                        draw_set_color(make_color_rgb(200, 200, 200));
+                        draw_text(_col2_x + 500, _ry, _rw.i_val);
+                    }
+
+                    // Emergency Field Refinements Section (docs/26)
+                    var _ref_y = _cmp_y + 125;
+                    draw_set_color(make_color_rgb(255, 215, 80));
+                    draw_text(_col2_x + 14, _ref_y, "EMERGENCY FIELD REFINEMENTS (APPLY BEFORE STRESS GAUNTLET):");
+
+                    var _ref_opts = [
+                        { id: "OVERCLOCK_REACTOR", label: "+15% Core (25k)", cost: 25000 },
+                        { id: "WELD_ARMOR", label: "+12% Armor (20k)", cost: 20000 },
+                        { id: "TUNE_VERNIERS", label: "+15% Vernier (25k)", cost: 25000 },
+                        { id: "RECALIBRATE_SENSORS", label: "+10% Sensors (30k)", cost: 30000 }
+                    ];
+                    var _rw_btn = floor((_col2_w - 28) / 4);
+                    for (var ro = 0; ro < 4; ro++) {
+                        var _opt = _ref_opts[ro];
+                        var _rx = _col2_x + 14 + ro * _rw_btn;
+                        var _is_on = (array_get_index(trial_refinements, _opt.id) != -1);
+                        var _rhov = (_mx >= _rx && _mx <= _rx + _rw_btn - 6 && _my >= _ref_y + 20 && _my <= _ref_y + 52);
+                        if (_rhov && _click) {
+                            if (_is_on) {
+                                var _idx_rem = array_get_index(trial_refinements, _opt.id);
+                                array_delete(trial_refinements, _idx_rem, 1);
+                                _gm.funds += _opt.cost;
+                            } else {
+                                if (_gm.funds >= _opt.cost) {
+                                    _gm.funds -= _opt.cost;
+                                    array_push(trial_refinements, _opt.id);
+                                    show_toast("APPLIED REFINEMENT: " + _opt.id + "!", c_lime);
+                                } else {
+                                    show_toast("INSUFFICIENT FUNDS FOR REFINEMENT!", c_red);
+                                }
+                            }
+                        }
+                        scr_draw_snes_button(_rx, _ref_y + 20, _rw_btn - 6, 32, _opt.label, _rhov, _is_on, _is_on ? make_color_rgb(80, 240, 140) : make_color_rgb(100, 150, 190));
+                    }
+
+                    // Advance to Phase 2 Button
+                    var _p2_btn_y = _ref_y + 62;
+                    var _can_run = (!is_undefined(_cur_cand));
+                    var _p2_hov = (_can_run && _mx >= _col2_x + 14 && _mx <= _col2_x + _col2_w - 14 && _my >= _p2_btn_y && _my <= _p2_btn_y + 40);
+                    if (_p2_hov && _click) {
+                        trial_phase_results = _fm.run_procurement_trial_phase(trial_selected_faction, _cur_cand, 2, trial_refinements);
+                        trial_phase = 2;
+                        show_toast("PHASE 2 INITIATED: PROVING GROUNDS STRESS RIGS ACTIVATED!", c_aqua);
+                    }
+                    scr_draw_snes_button(_col2_x + 14, _p2_btn_y, _col2_w - 28, 40, ">> ADVANCE TO PHASE 2: PROVING GROUNDS STRESS GAUNTLET >>", _p2_hov, false, make_color_rgb(100, 220, 255));
+
+                    // Quick Evaluate Button (Runs all 4 phases immediately)
+                    var _qk_btn_y = _p2_btn_y + 46;
+                    var _qk_hov = (_can_run && _mx >= _col2_x + 14 && _mx <= _col2_x + _col2_w - 14 && _my >= _qk_btn_y && _my <= _qk_btn_y + 30);
+                    if (_qk_hov && _click) {
+                        trial_last_result = _fm.run_procurement_trial_phase(trial_selected_faction, _cur_cand, 4, trial_refinements);
+                        trial_phase_results = trial_last_result;
+                        trial_phase = 4;
+                    }
+                    scr_draw_snes_button(_col2_x + 14, _qk_btn_y, _col2_w - 28, 30, "[QUICK SIMULATE: RESOLVE ALL 4 PHASES INSTANTLY]", _qk_hov, false, c_gray);
+                }
+                // --- PHASE 2: DYNAMIC STRESS GAUNTLET ---
+                else if (trial_phase == 2) {
+                    var _p2_box_y = _bc_y + 36;
+                    draw_set_color(make_color_rgb(14, 24, 36));
+                    draw_rectangle(_col2_x + 12, _p2_box_y, _col2_x + _col2_w - 12, _p2_box_y + 240, false);
+                    draw_set_color(make_color_rgb(45, 75, 110));
+                    draw_rectangle(_col2_x + 12, _p2_box_y, _col2_x + _col2_w - 12, _p2_box_y + 240, true);
+
+                    draw_set_color(make_color_rgb(255, 215, 80));
+                    draw_text(_col2_x + 24, _p2_box_y + 12, "PHASE 2: DYNAMIC PROVING GROUNDS TELEMETRY");
+
+                    var _bm = trial_phase_results.p2_benchmarks;
+                    var _stress_items = [
+                        { label: "1. Kinetic Ballistics Impact Rig", val: _bm.kinetic },
+                        { label: "2. Thermal Dissipation Plasma Burn", val: _bm.thermal },
+                        { label: "3. High-G Vacuum Vernier Stress", val: _bm.vernier },
+                        { label: "4. ECM & Avionics Pulse Chamber", val: _bm.ecm }
+                    ];
+
+                    for (var si = 0; si < 4; si++) {
+                        var _sy = _p2_box_y + 40 + si * 46;
+                        var _it = _stress_items[si];
+                        draw_set_color(make_color_rgb(180, 210, 240));
+                        draw_text(_col2_x + 24, _sy, _it.label + " : " + string(_it.val) + " / 100 PTS");
+                        scr_draw_snes_gauge(_col2_x + 24, _sy + 20, _col2_w - 48, 14, _it.val, 140, (_it.val >= 100) ? c_lime : make_color_rgb(240, 160, 40));
+                    }
+
+                    // Advance to Phase 3 Button
+                    var _p3_btn_y = _p2_box_y + 252;
+                    var _p3_hov = (_mx >= _col2_x + 14 && _mx <= _col2_x + _col2_w - 14 && _my >= _p3_btn_y && _my <= _p3_btn_y + 44);
+                    if (_p3_hov && _click) {
+                        trial_phase_results = _fm.run_procurement_trial_phase(trial_selected_faction, _cur_cand, 3, trial_refinements);
+                        trial_phase = 3;
+                        show_toast("PHASE 3 INITIATED: OPERATIONAL FLY-OFF DUEL COMMENCED!", c_aqua);
+                    }
+                    scr_draw_snes_button(_col2_x + 14, _p3_btn_y, _col2_w - 28, 44, ">> PROCEED TO PHASE 3: OPERATIONAL FLY-OFF COMBAT DUEL >>", _p3_hov, false, make_color_rgb(100, 220, 255));
+                }
+                // --- PHASE 3: OPERATIONAL FLY-OFF COMBAT DUEL ---
+                else if (trial_phase == 3) {
+                    var _p3_box_y = _bc_y + 36;
+                    draw_set_color(make_color_rgb(14, 24, 36));
+                    draw_rectangle(_col2_x + 12, _p3_box_y, _col2_x + _col2_w - 12, _p3_box_y + 240, false);
+                    draw_set_color(make_color_rgb(45, 75, 110));
+                    draw_rectangle(_col2_x + 12, _p3_box_y, _col2_x + _col2_w - 12, _p3_box_y + 240, true);
+
+                    draw_set_color(make_color_rgb(255, 215, 80));
+                    draw_text(_col2_x + 24, _p3_box_y + 12, "PHASE 3: OPERATIONAL COMBAT FLY-OFF DUEL");
+
+                    // Duel Rival Matchup Banner
+                    var _rc = trial_phase_results.p3_rival_corp;
+                    var _rs = trial_phase_results.p3_rival_score;
+                    var _cs = trial_phase_results.composite_score;
+                    draw_set_color(make_color_rgb(100, 220, 255));
+                    draw_text(_col2_x + 24, _p3_box_y + 40, "MATCHUP: " + _cur_cand.name + " (Vanguard PMC)  vs  " + _rc + " Champion");
+
+                    draw_set_color(make_color_rgb(180, 210, 240));
+                    draw_text(_col2_x + 24, _p3_box_y + 68, "Rival Contractor Standard: " + string(_rs) + " PTS   |   Candidate Score: " + string(_cs) + " PTS");
+
+                    // Combat Pedigree Showcase
+                    var _ped_pts = trial_phase_results.pedigree_bonus;
+                    var _ped_tag = trial_phase_results.pedigree_rating;
+                    draw_set_color((_ped_pts > 0) ? make_color_rgb(255, 215, 80) : make_color_rgb(140, 160, 180));
+                    draw_text(_col2_x + 24, _p3_box_y + 96, "PMC Combat Telemetry: " + _ped_tag + " (+" + string(_ped_pts) + " pts from live combat sorties)");
+
+                    // Telemetry Duel Outcome
+                    var _duel_win = trial_phase_results.p3_duel_win;
+                    draw_set_color(_duel_win ? make_color_rgb(80, 255, 140) : make_color_rgb(255, 100, 100));
+                    draw_text(_col2_x + 24, _p3_box_y + 130, _duel_win ? "*** TACTICAL SUPERIORITY ACHIEVED: Candidate out-flew " + _rc + " in live trial! ***" : "!!! TACTICAL DEFICIT: Candidate was out-maneuvered by " + _rc + " entry !!!");
+
+                    // Advance to Phase 4 Button
+                    var _p4_btn_y = _p3_box_y + 252;
+                    var _p4_hov = (_mx >= _col2_x + 14 && _mx <= _col2_x + _col2_w - 14 && _my >= _p4_btn_y && _my <= _p4_btn_y + 44);
+                    if (_p4_hov && _click) {
+                        trial_last_result = _fm.run_procurement_trial_phase(trial_selected_faction, _cur_cand, 4, trial_refinements);
+                        trial_phase_results = trial_last_result;
+                        trial_phase = 4;
+                        show_toast("PHASE 4 CONCLUDED: BOARD VERDICT DELIVERED!", c_lime);
+                    }
+                    scr_draw_snes_button(_col2_x + 14, _p4_btn_y, _col2_w - 28, 44, ">> ADVANCE TO PHASE 4: PROCUREMENT BOARD FINAL VERDICT >>", _p4_hov, false, make_color_rgb(80, 255, 140));
+                }
+                // --- PHASE 4: FINAL BOARD VERDICT & RATIFICATION ---
+                else if (trial_phase == 4) {
+                    var _res_y = _bc_y + 36;
+                    var _res_w = _col2_w - 24;
+                    var _res_h = 245;
+
+                    draw_set_color(trial_last_result.passed ? make_color_rgb(12, 36, 20) : make_color_rgb(36, 16, 16));
+                    draw_rectangle(_col2_x + 12, _res_y, _col2_x + 12 + _res_w, _res_y + _res_h, false);
+                    draw_set_color(trial_last_result.passed ? make_color_rgb(60, 240, 120) : make_color_rgb(240, 60, 60));
+                    draw_rectangle(_col2_x + 12, _res_y, _col2_x + 12 + _res_w, _res_y + _res_h, true);
+
+                    // Official Stamp
+                    var _st_idx = (trial_last_result.grade == "GRADE S") ? 0 : ((trial_last_result.grade == "GRADE A") ? 1 : ((trial_last_result.grade == "GRADE B") ? 2 : 3));
+                    scr_draw_snes_trial_stamp(_col2_x + 24, _res_y + 10, _st_idx);
+
+                    draw_set_color(trial_last_result.passed ? make_color_rgb(255, 220, 100) : make_color_rgb(255, 100, 100));
+                    draw_text(_col2_x + 120, _res_y + 14, trial_last_result.passed ? "*** BOARD VERDICT: TENDER APPROVED (" + trial_last_result.grade + ") ***" : "!!! BOARD VERDICT: CANDIDACY REJECTED (" + trial_last_result.grade + ") !!!");
+
+                    draw_set_color(c_white);
+                    draw_text(_col2_x + 24, _res_y + 44, "Stress Armor: " + string(trial_last_result.score_armor) + "/100  |  Reactor: " + string(trial_last_result.score_power) + "/100  |  Mobility: " + string(trial_last_result.score_speed) + "/100  |  Combat: " + string(trial_last_result.score_combat) + "/100");
+                    draw_set_color(make_color_rgb(100, 220, 255));
+                    draw_text(_col2_x + 24, _res_y + 66, "Standing Bonus: +" + string(trial_last_result.standing_bonus) + " pts  |  Combat Pedigree: +" + string(trial_last_result.pedigree_bonus) + " pts  ==>  COMPOSITE: " + string(trial_last_result.composite_score) + " / 100 PTS");
+
+                    draw_set_color(trial_last_result.passed ? make_color_rgb(140, 255, 180) : make_color_rgb(255, 180, 180));
+                    draw_text(_col2_x + 24, _res_y + 92, trial_last_result.report);
+
+                    // Ratification Action Button
+                    if (trial_last_result.passed) {
+                        var _rat_btn_y = _res_y + 130;
+                        var _rat_btn_w = _res_w - 24;
+                        var _rat_btn_h = 46;
+                        var _rat_hov = (_mx >= _col2_x + 24 && _mx <= _col2_x + 24 + _rat_btn_w && _my >= _rat_btn_y && _my <= _rat_btn_y + _rat_btn_h);
+                        if (_rat_hov && _click) {
+                            _fm.award_procurement_contract(trial_selected_faction, _cur_cand, trial_last_result);
+                            trial_phase = 0;
+                            trial_view_adoption_panel = true;
+                        }
+                        var _bounty_val = _cur_mp.replaced ? floor(_cur_mp.licensing_bounty * 0.6) : _cur_mp.licensing_bounty;
+                        scr_draw_snes_button(_col2_x + 24, _rat_btn_y, _rat_btn_w, _rat_btn_h, ">> RATIFY TENDER TREATY // CLAIM +" + string(_bounty_val) + " Cr & ENTER SHIPYARD TOOLING <<", _rat_hov, false, make_color_rgb(80, 255, 140));
+                    }
+
+                    // Reset / Return to Phase 0 Button
+                    var _rst_btn_y = _res_y + 184;
+                    var _rst_hov = (_mx >= _col2_x + 24 && _mx <= _col2_x + 220 && _my >= _rst_btn_y && _my <= _rst_btn_y + 32);
+                    if (_rst_hov && _click) {
+                        trial_phase = 0;
+                        trial_last_result = undefined;
+                        trial_phase_results = undefined;
+                        trial_refinements = [];
+                    }
+                    scr_draw_snes_button(_col2_x + 24, _rst_btn_y, 196, 32, "<< RESET TO PHASE 1 <<", _rst_hov, false, c_dkgray);
                 }
             }
         }
@@ -2990,7 +3626,7 @@ else if (active_tab == 2) {
                 var _sa_x = _s1_x + _s1_w + 8;
                 var _sa_w = 90;
                 var _sa_h = 44;
-                var _sa_hov = (_mx >= _sa_x && _mx <= _sa_x + _sa_w && _my >= _b1_y && _my <= _sa_y + _sa_h);
+                var _sa_hov = (_mx >= _sa_x && _mx <= _sa_x + _sa_w && _my >= _b1_y && _my <= _b1_y + _sa_h);
                 if (_sa_hov && _click) {
                     if (_owned > 0) _fm.execute_trade_sell(trade_selected_faction, _item, _owned);
                 }
@@ -3020,7 +3656,7 @@ else if (active_tab == 3) {
         var _wstbx = _pan_x + 16 + wst * (_wsub_w + 8);
         var _wstb_active = (war_subtab == wst);
         var _wstb_hov = (_mx >= _wstbx && _mx <= _wstbx + _wsub_w && _my >= _wsub_y && _my <= _wsub_y + 28);
-        if (_wstb_hov && _click) war_subtab = wst;
+        if (_wstb_hov && _click) { war_subtab = wst; scr_audio_play_ui("click"); }
 
         draw_set_color(_wstb_active ? make_color_rgb(30, 70, 110) : (_wstb_hov ? make_color_rgb(20, 40, 60) : make_color_rgb(14, 22, 32)));
         draw_rectangle(_wstbx + _sx, _wsub_y + _sy, _wstbx + _wsub_w + _sx, _wsub_y + 28 + _sy, false);
@@ -3273,32 +3909,292 @@ else if (active_tab == 3) {
         var _fw_pan = _pan_w - 48;
         var _fh_pan = _pan_h - 56;
 
-        // Faction Selector Buttons (4 Factions)
+        // Faction Selector Buttons (4 Factions) + 100-Suit Encyclopedia Toggle
         var _f_tabs = [
-            { id: "faction_terran", label: "1. THE TERRAN COALITION", col: make_color_rgb(60, 130, 240) },
-            { id: "faction_colony", label: "2. THE OUTER COLONIES", col: make_color_rgb(40, 210, 180) },
-            { id: "faction_syndicate", label: "3. RIM-SYNDICATE CARTEL", col: make_color_rgb(240, 140, 40) },
-            { id: "faction_zaibatsu", label: "4. APEX BIO-ZAIBATSU", col: make_color_rgb(180, 90, 240) }
+            { id: "faction_terran", label: "1. TERRAN COALITION", col: make_color_rgb(60, 130, 240) },
+            { id: "faction_colony", label: "2. OUTER COLONIES", col: make_color_rgb(40, 210, 180) },
+            { id: "faction_syndicate", label: "3. RIM-SYNDICATES", col: make_color_rgb(240, 140, 40) },
+            { id: "faction_zaibatsu", label: "4. APEX ZAIBATSU", col: make_color_rgb(180, 90, 240) },
+            { id: "catalog_100", label: "5. [100-SUIT ENCYCLOPEDIA]", col: make_color_rgb(255, 215, 80) }
         ];
-        var _fb_w = (_fw_pan - 36) / 4;
-        for (var fti = 0; fti < 4; fti++) {
+        var _fb_w = (_fw_pan - 48) / 5;
+        for (var fti = 0; fti < 5; fti++) {
             var _ft_dat = _f_tabs[fti];
             var _fbx = _fx_pan + fti * (_fb_w + 12);
-            var _fb_act = (selected_faction_dossier == _ft_dat.id);
+            var _fb_act = (fti == 4 ? (catalog_view_mode == 1) : (catalog_view_mode == 0 && selected_faction_dossier == _ft_dat.id));
             var _fb_hov = (_mx >= _fbx && _mx <= _fbx + _fb_w && _my >= _fy_pan && _my <= _fy_pan + 32);
-            if (_fb_hov && _click) selected_faction_dossier = _ft_dat.id;
+            if (_fb_hov && _click) {
+                if (fti == 4) {
+                    catalog_view_mode = 1;
+                } else {
+                    catalog_view_mode = 0;
+                    selected_faction_dossier = _ft_dat.id;
+                }
+            }
 
             draw_set_color(_fb_act ? make_color_rgb(24, 48, 76) : (_fb_hov ? make_color_rgb(18, 32, 50) : make_color_rgb(12, 18, 26)));
             draw_rectangle(_fbx, _fy_pan, _fbx + _fb_w, _fy_pan + 32, false);
             draw_set_color(_fb_act ? _ft_dat.col : make_color_rgb(40, 60, 80));
             draw_rectangle(_fbx, _fy_pan, _fbx + _fb_w, _fy_pan + 32, true);
             draw_set_color(_fb_act ? c_white : make_color_rgb(170, 195, 220));
-            draw_text(_fbx + 12, _fy_pan + 8, _ft_dat.label);
+            draw_text(_fbx + 8, _fy_pan + 8, _ft_dat.label);
         }
 
-        // Left Card: Faction Standing & Military Mech Representative
         var _d_y = _fy_pan + 44;
-        var _col1_w = 340;
+
+        // =========================================================================
+        // BRANCH A: 100-SUIT MASTER UNIVERSE ENCYCLOPEDIA & LIVE ANIMATOR (DOC-30)
+        // =========================================================================
+        if (catalog_view_mode == 1) {
+            var _enc_w = _fw_pan;
+            var _enc_h = _fh_pan - 44;
+
+            // Top Filter Toolbar
+            var _flt_y = _d_y;
+            var _flt_h = 32;
+            draw_set_color(make_color_rgb(12, 18, 28));
+            draw_rectangle(_fx_pan, _flt_y, _fx_pan + _enc_w, _flt_y + _flt_h, false);
+            draw_set_color(make_color_rgb(35, 60, 90));
+            draw_rectangle(_fx_pan, _flt_y, _fx_pan + _enc_w, _flt_y + _flt_h, true);
+
+            // Faction Filter Buttons
+            var _fac_flts = [
+                { id: "ALL", label: "ALL (100)" },
+                { id: "faction_a", label: "TERRAN (25)" },
+                { id: "faction_b", label: "COLONIES (23)" },
+                { id: "faction_c", label: "SYNDICATES (25)" },
+                { id: "faction_d", label: "ZAIBATSU (23)" },
+                { id: "pmc_player", label: "PMC (4)" }
+            ];
+            var _ff_w = 110;
+            for (var ffi = 0; ffi < array_length(_fac_flts); ffi++) {
+                var _ffx = _fx_pan + 8 + ffi * (_ff_w + 6);
+                var _ff_act = (catalog_filter_faction == _fac_flts[ffi].id);
+                var _ff_hov = (_mx >= _ffx && _mx <= _ffx + _ff_w && _my >= _flt_y + 4 && _my <= _flt_y + 28);
+                if (_ff_hov && _click) {
+                    catalog_filter_faction = _fac_flts[ffi].id;
+                    catalog_scroll_offset = 0;
+                }
+                draw_set_color(_ff_act ? make_color_rgb(80, 200, 255) : (_ff_hov ? make_color_rgb(25, 45, 70) : make_color_rgb(16, 24, 36)));
+                draw_rectangle(_ffx, _flt_y + 4, _ffx + _ff_w, _flt_y + 28, false);
+                draw_set_color(_ff_act ? c_white : make_color_rgb(45, 75, 110));
+                draw_rectangle(_ffx, _flt_y + 4, _ffx + _ff_w, _flt_y + 28, true);
+                draw_set_color(_ff_act ? c_black : make_color_rgb(180, 210, 240));
+                draw_text(_ffx + 6, _flt_y + 8, _fac_flts[ffi].label);
+            }
+
+            // Era Filter Buttons
+            var _era_flts = [
+                { id: 0, label: "ALL ERAS" },
+                { id: 1, label: "ERA 1" },
+                { id: 2, label: "ERA 2" },
+                { id: 3, label: "ERA 3" },
+                { id: 4, label: "ERA 4" }
+            ];
+            var _ef_w = 75;
+            var _ef_start_x = _fx_pan + _enc_w - (array_length(_era_flts) * (_ef_w + 6)) - 8;
+            for (var efi = 0; efi < array_length(_era_flts); efi++) {
+                var _efx = _ef_start_x + efi * (_ef_w + 6);
+                var _ef_act = (catalog_filter_era == _era_flts[efi].id);
+                var _ef_hov = (_mx >= _efx && _mx <= _efx + _ef_w && _my >= _flt_y + 4 && _my <= _flt_y + 28);
+                if (_ef_hov && _click) {
+                    catalog_filter_era = _era_flts[efi].id;
+                    catalog_scroll_offset = 0;
+                }
+                draw_set_color(_ef_act ? make_color_rgb(255, 215, 80) : (_ef_hov ? make_color_rgb(45, 40, 25) : make_color_rgb(20, 24, 30)));
+                draw_rectangle(_efx, _flt_y + 4, _efx + _ef_w, _flt_y + 28, false);
+                draw_set_color(_ef_act ? c_white : make_color_rgb(70, 60, 40));
+                draw_rectangle(_efx, _flt_y + 4, _efx + _ef_w, _flt_y + 28, true);
+                draw_set_color(_ef_act ? c_black : make_color_rgb(220, 200, 160));
+                draw_text(_efx + 6, _flt_y + 8, _era_flts[efi].label);
+            }
+
+            // Build filtered list from GameManager catalog
+            var _matching_suits = [];
+            if (instance_exists(obj_GameManager) && is_struct(obj_GameManager.mobile_suit_catalog)) {
+                var _c_keys = variable_struct_get_names(obj_GameManager.mobile_suit_catalog);
+                for (var ki = 0; ki < array_length(_c_keys); ki++) {
+                    var _s = obj_GameManager.mobile_suit_catalog[$ _c_keys[ki]];
+                    if (!is_struct(_s)) continue;
+                    if (catalog_filter_faction != "ALL" && (_s[$ "faction_id"] ?? "") != catalog_filter_faction) continue;
+                    if (catalog_filter_era != 0 && (_s[$ "era"] ?? 0) != catalog_filter_era) continue;
+                    array_push(_matching_suits, _s);
+                }
+            }
+
+            var _body_y = _flt_y + 40;
+            var _body_h = _enc_h - 40;
+            var _col1_w = 400;
+
+            // LEFT COLUMN: SUIT DIRECTORY LIST
+            draw_set_color(make_color_rgb(10, 16, 24));
+            draw_rectangle(_fx_pan, _body_y, _fx_pan + _col1_w, _body_y + _body_h, false);
+            draw_set_color(make_color_rgb(35, 60, 90));
+            draw_rectangle(_fx_pan, _body_y, _fx_pan + _col1_w, _body_y + _body_h, true);
+
+            // Scroll Bar / Navigation Header
+            draw_set_color(make_color_rgb(100, 220, 255));
+            draw_text(_fx_pan + 12, _body_y + 10, "MOBILE SUIT DIRECTORY (" + string(array_length(_matching_suits)) + " MATCHES):");
+
+            var _up_hov = (_mx >= _fx_pan + _col1_w - 70 && _mx <= _fx_pan + _col1_w - 40 && _my >= _body_y + 6 && _my <= _body_y + 26);
+            if (_up_hov && _click) catalog_scroll_offset = max(0, catalog_scroll_offset - 1);
+            scr_draw_snes_button(_fx_pan + _col1_w - 70, _body_y + 6, 26, 20, "^", _up_hov, false);
+
+            var _dn_hov = (_mx >= _fx_pan + _col1_w - 36 && _mx <= _col1_w + _fx_pan - 6 && _my >= _body_y + 6 && _my <= _body_y + 26);
+            if (_dn_hov && _click) catalog_scroll_offset = min(max(0, array_length(_matching_suits) - 8), catalog_scroll_offset + 1);
+            scr_draw_snes_button(_fx_pan + _col1_w - 36, _body_y + 6, 26, 20, "v", _dn_hov, false);
+
+            // Render visible suits (8 rows)
+            var _row_h = 56;
+            for (var ri = 0; ri < 8; ri++) {
+                var _idx = catalog_scroll_offset + ri;
+                if (_idx >= array_length(_matching_suits)) break;
+                var _st = _matching_suits[_idx];
+                var _ry = _body_y + 34 + ri * (_row_h + 4);
+                var _is_cur_sel = (catalog_selected_suit_id == _st.id);
+                var _r_hov = (_mx >= _fx_pan + 8 && _mx <= _fx_pan + _col1_w - 8 && _my >= _ry && _my <= _ry + _row_h);
+                if (_r_hov && _click) catalog_selected_suit_id = _st.id;
+
+                draw_set_color(_is_cur_sel ? make_color_rgb(24, 48, 76) : (_r_hov ? make_color_rgb(18, 30, 44) : make_color_rgb(14, 20, 28)));
+                draw_rectangle(_fx_pan + 8, _ry, _fx_pan + _col1_w - 8, _ry + _row_h, false);
+                draw_set_color(_is_cur_sel ? make_color_rgb(255, 215, 80) : make_color_rgb(35, 55, 80));
+                draw_rectangle(_fx_pan + 8, _ry, _fx_pan + _col1_w - 8, _ry + _row_h, true);
+
+                draw_set_color(_is_cur_sel ? c_white : make_color_rgb(220, 230, 240));
+                draw_text(_fx_pan + 14, _ry + 6, _st.name);
+
+                var _era_num = _st[$ "era"] ?? 1;
+                draw_set_color(make_color_rgb(140, 180, 220));
+                draw_text(_fx_pan + 14, _ry + 24, "ERA " + string(_era_num) + " // " + string(_st[$ "chassis_class"] ?? "Combat"));
+
+                if (_st[$ "mass_production_line"] ?? false) {
+                    draw_set_color(make_color_rgb(255, 180, 50));
+                    draw_text(_fx_pan + 14, _ry + 40, "[MASS-PRODUCTION LINE]");
+                } else {
+                    draw_set_color(make_color_rgb(100, 240, 160));
+                    draw_text(_fx_pan + 14, _ry + 40, "Rating: " + string(_st[$ "combat"] ?? 450) + " PTS | " + string(_st[$ "armor"] ?? 2000) + " HP");
+                }
+            }
+
+            // RIGHT COLUMN: LIVE CAD CHAMBER & TELEMETRY
+            var _col2_x = _fx_pan + _col1_w + 16;
+            var _col2_w = _enc_w - _col1_w - 16;
+            var _active_suit = (instance_exists(obj_GameManager) ? obj_GameManager.get_mobile_suit(catalog_selected_suit_id) : undefined);
+
+            draw_set_color(make_color_rgb(10, 16, 24));
+            draw_rectangle(_col2_x, _body_y, _col2_x + _col2_w, _body_y + _body_h, false);
+            draw_set_color(make_color_rgb(35, 60, 90));
+            draw_rectangle(_col2_x, _body_y, _col2_x + _col2_w, _body_y + _body_h, true);
+
+            if (!is_undefined(_active_suit)) {
+                // CAD Viewport Enclosure (Top of Right Deck)
+                var _cad_x = _col2_x + 12;
+                var _cad_y = _body_y + 12;
+                var _cad_w = _col2_w - 24;
+                var _cad_h = 240;
+
+                draw_set_color(make_color_rgb(6, 10, 16));
+                draw_rectangle(_cad_x, _cad_y, _cad_x + _cad_w, _cad_y + _cad_h, false);
+                draw_set_color(make_color_rgb(25, 45, 70));
+                draw_rectangle(_cad_x, _cad_y, _cad_x + _cad_w, _cad_y + _cad_h, true);
+
+                // Technical Grid Lines
+                draw_set_color(make_color_rgb(14, 24, 38));
+                for (var gx = _cad_x + 30; gx < _cad_x + _cad_w; gx += 40) draw_line(gx, _cad_y, gx, _cad_y + _cad_h);
+                for (var gy = _cad_y + 30; gy < _cad_y + _cad_h; gy += 40) draw_line(_cad_x, gy, _cad_x + _cad_w, gy);
+
+                draw_set_color(make_color_rgb(80, 180, 240));
+                var _view_str = (catalog_perspective == "back") ? "REAR 3/4 ISOMETRIC" : "FRONT 3/4 ISOMETRIC";
+                draw_text(_cad_x + 12, _cad_y + 8, "CAD TELEMETRY // CHASSIS: " + string_upper(_active_suit.name) + " [" + _view_str + "]");
+
+                // Render Live Mobile Suit with Universal Animator Script (Front/Back Isometric)
+                var _cad_cx = _cad_x + _cad_w / 2;
+                var _cad_cy = _cad_y + _cad_h - 25;
+                scr_draw_animated_mobile_suit(_active_suit.id, _cad_cx, _cad_cy, 1.1, catalog_facing, catalog_anim_state, -1, c_white, catalog_perspective);
+
+                // Animation Mode Toolbar (Bottom of CAD Chamber)
+                var _ctrl_btns = [
+                    { id: "idle", label: "IDLE" },
+                    { id: "walk", label: "STRIDE" },
+                    { id: "fire", label: "FIRE WEAPON" },
+                    { id: "hit", label: "HIT DEFLECT" }
+                ];
+                var _cb_w = 95;
+                for (var cbi = 0; cbi < 4; cbi++) {
+                    var _cbx = _cad_x + 12 + cbi * (_cb_w + 6);
+                    var _cby = _cad_y + _cad_h - 32;
+                    var _cb_act = (catalog_anim_state == _ctrl_btns[cbi].id);
+                    var _cb_hov = (_mx >= _cbx && _mx <= _cbx + _cb_w && _my >= _cby && _my <= _cby + 24);
+                    if (_cb_hov && _click) catalog_anim_state = _ctrl_btns[cbi].id;
+                    scr_draw_snes_button(_cbx, _cby, _cb_w, 24, _ctrl_btns[cbi].label, _cb_hov, _cb_act);
+                }
+
+                // Isometric Perspective Toggle Button (Front vs Rear 3/4)
+                var _persp_x = _cad_x + _cad_w - 235;
+                var _persp_y = _cad_y + _cad_h - 32;
+                var _persp_hov = (_mx >= _persp_x && _mx <= _persp_x + 115 && _my >= _persp_y && _my <= _persp_y + 24);
+                if (_persp_hov && _click) {
+                    catalog_perspective = (catalog_perspective == "front") ? "back" : "front";
+                }
+                var _persp_label = (catalog_perspective == "back") ? "ISO: REAR" : "ISO: FRONT";
+                scr_draw_snes_button(_persp_x, _persp_y, 115, 24, _persp_label, _persp_hov, catalog_perspective == "back");
+
+                // Flip Facing Button (Mirror Left/Right)
+                var _flip_x = _cad_x + _cad_w - 110;
+                var _flip_y = _cad_y + _cad_h - 32;
+                var _flip_hov = (_mx >= _flip_x && _mx <= _flip_x + 98 && _my >= _flip_y && _my <= _flip_y + 24);
+                if (_flip_hov && _click) catalog_facing = -catalog_facing;
+                scr_draw_snes_button(_flip_x, _flip_y, 98, 24, catalog_facing == 1 ? "FACE >" : "< FACE", _flip_hov, false);
+
+                // Specs Readout (Lower Half of Right Deck)
+                var _spec_y = _cad_y + _cad_h + 14;
+                draw_set_color(make_color_rgb(255, 215, 80));
+                draw_text(_col2_x + 14, _spec_y, _active_suit.name + " [" + string(_active_suit[$ "short_name"] ?? "") + "]");
+                draw_set_color(make_color_rgb(160, 200, 230));
+                draw_text(_col2_x + 14, _spec_y + 18, "Manufacturer: " + string(_active_suit[$ "manufacturer"] ?? "Classified") + " | Doctrine: " + string(_active_suit[$ "doctrine"] ?? "Tactical"));
+
+                // 4 Telemetry Gauges
+                var _stat_rows = [
+                    { label: "Armor Integrity", val: _active_suit[$ "armor"] ?? 2000, max_v: 5500, unit: " HP", col: c_lime },
+                    { label: "Reactor Power", val: _active_suit[$ "power"] ?? 14, max_v: 30, unit: " MW", col: make_color_rgb(80, 220, 255) },
+                    { label: "Max Speed", val: _active_suit[$ "speed"] ?? 65, max_v: 120, unit: " kph", col: make_color_rgb(255, 180, 50) },
+                    { label: "Combat Rating", val: _active_suit[$ "combat"] ?? 500, max_v: 900, unit: " PTS", col: make_color_rgb(220, 100, 255) }
+                ];
+                for (var si = 0; si < 4; si++) {
+                    var _sr = _stat_rows[si];
+                    var _sry = _spec_y + 42 + si * 22;
+                    draw_set_color(make_color_rgb(180, 200, 220));
+                    draw_text(_col2_x + 14, _sry, _sr.label + ":");
+                    draw_set_color(_sr.col);
+                    draw_text(_col2_x + 140, _sry, string(_sr.val) + _sr.unit);
+                    scr_draw_snes_gauge(_col2_x + 230, _sry + 2, 240, 10, _sr.val, _sr.max_v, _sr.col);
+                }
+
+                // Armament & Alloy
+                var _eq_y = _spec_y + 135;
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_col2_x + 14, _eq_y, "PRIMARY WEAPON: " + string(_active_suit[$ "primary_weapon"] ?? "None"));
+                draw_text(_col2_x + 14, _eq_y + 18, "SECONDARY: " + string(_active_suit[$ "secondary_weapon"] ?? "None"));
+                draw_text(_col2_x + 14, _eq_y + 36, "FEATURE: " + string(_active_suit[$ "signature_feature"] ?? "Standard"));
+                draw_set_color(make_color_rgb(240, 210, 80));
+                draw_text(_col2_x + 14, _eq_y + 54, "ALLOY MATRIX: " + string(_active_suit[$ "alloy_type"] ?? "Standard"));
+
+                // Historical Lore Dossier
+                var _lore_y = _eq_y + 76;
+                draw_set_color(make_color_rgb(12, 18, 28));
+                draw_rectangle(_col2_x + 12, _lore_y, _col2_x + _col2_w - 12, _body_y + _body_h - 12, false);
+                draw_set_color(make_color_rgb(35, 55, 80));
+                draw_rectangle(_col2_x + 12, _lore_y, _col2_x + _col2_w - 12, _body_y + _body_h - 12, true);
+                draw_set_color(make_color_rgb(200, 220, 240));
+                draw_text_ext(_col2_x + 18, _lore_y + 8, string(_active_suit[$ "lore"] ?? "No classified records available."), 16, _col2_w - 36);
+            }
+        }
+        // =========================================================================
+        // BRANCH B: FACTION DOSSIERS & STRATEGIC CITADELS (STANDARD VIEW)
+        // =========================================================================
+        else {
+            // Left Card: Faction Standing & Military Mech Representative
+            var _col1_w = 340;
         draw_set_color(make_color_rgb(10, 16, 24));
         draw_rectangle(_fx_pan, _d_y, _fx_pan + _col1_w, _d_y + _fh_pan - 44, false);
         draw_set_color(make_color_rgb(35, 60, 90));
@@ -3329,11 +4225,20 @@ else if (active_tab == 3) {
         draw_set_color(c_white);
         draw_rectangle(_fx_pan + 16, _d_y + 56, _fx_pan + _col1_w - 16, _d_y + 70, true);
 
-        // Standing Mobile Suit Artwork
-        var _unit_spr = (selected_faction_dossier == "faction_terran") ? spr_mech_terran_ironclad : ((selected_faction_dossier == "faction_colony") ? spr_mech_colony_aether : ((selected_faction_dossier == "faction_syndicate") ? spr_mech_syndicate_hyena : spr_mech_zaibatsu_muramasa));
-        if (sprite_exists(_unit_spr)) {
-            draw_sprite_ext(_unit_spr, 0, _fx_pan + _col1_w / 2, _d_y + 390, 0.72, 0.72, 0, c_white, 0.95);
+        // Standing Mobile Suit Artwork & Active Playthrough Mass-Production Line (docs/29 & docs/30)
+        var _active_mp_id = "ms_terran_ironclad_07";
+        var _active_mp_name = "GHA-07 Ironclad";
+        if (instance_exists(obj_FactionManager) && variable_struct_exists(obj_FactionManager.mass_production_contracts, _fid_curr)) {
+            var _active_cnt = obj_FactionManager.mass_production_contracts[$ _fid_curr];
+            _active_mp_id = _active_cnt.baseline_suit_id;
+            _active_mp_name = _active_cnt.baseline_suit_name;
         }
+
+        draw_set_color(make_color_rgb(255, 215, 80));
+        draw_text(_fx_pan + 16, _d_y + 80, "[ACTIVE LINE: " + _active_mp_name + "]");
+
+        // Render animated 160x160 active mass production suit with thruster pulse and idle breathing
+        scr_draw_animated_mobile_suit(_active_mp_id, _fx_pan + _col1_w / 2, _d_y + 360, 0.90, 1, "idle");
 
         // Right Deck: Dossier, Leadership & Recruitable Aces
         var _col2_x = _fx_pan + _col1_w + 20;
@@ -3373,7 +4278,7 @@ else if (active_tab == 3) {
             if (_h1_hov && _click && instance_exists(obj_GameManager)) {
                 if (obj_GameManager.spend_funds(45000)) {
                     array_push(obj_GameManager.facilities.roster_pilots, {
-                        name: "Lt. Marcus Cole", callsign: "BREAKER", accuracy: 78, reflexes: 42, morale: 95, salary_daily: 250, is_deployed: false, status: "ACTIVE", recovery_days: 0, kills: 4, sorties: 6
+                        id: "plt_terran_cole", character_id: "pilot_terran_cole", name: "Lt. Marcus Cole", callsign: "BREAKER", combat_stat: 8, tactics_stat: 4, accuracy: 78, reflexes: 42, morale: 95, salary_daily: 250, is_deployed: false, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 4, sorties: 6
                     });
                     show_toast("MARCUS 'BREAKER' COLE HIRED TO PMC ROSTER!", c_lime);
                 } else show_toast("INSUFFICIENT FUNDS! (Requires 45,000 Cr)", c_red);
@@ -3400,7 +4305,7 @@ else if (active_tab == 3) {
             if (_h2_hov && _click && instance_exists(obj_GameManager)) {
                 if (obj_GameManager.spend_funds(38000)) {
                     array_push(obj_GameManager.facilities.roster_pilots, {
-                        name: "Ensign Elena Rostova", callsign: "DEAD-EYE", accuracy: 92, reflexes: 55, morale: 80, salary_daily: 220, is_deployed: false, status: "ACTIVE", recovery_days: 0, kills: 2, sorties: 3
+                        id: "plt_terran_02", character_id: "pilot_terran_rostova", name: "Ensign Elena Rostova", callsign: "DEAD-EYE", combat_stat: 9, tactics_stat: 6, accuracy: 92, reflexes: 55, morale: 80, salary_daily: 220, is_deployed: false, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 2, sorties: 3
                     });
                     show_toast("ELENA ROSTOVA HIRED TO PMC ROSTER!", c_lime);
                 } else show_toast("INSUFFICIENT FUNDS! (Requires 38,000 Cr)", c_red);
@@ -3449,7 +4354,7 @@ else if (active_tab == 3) {
             if (_h1_hov && _click && instance_exists(obj_GameManager)) {
                 if (obj_GameManager.spend_funds(52000)) {
                     array_push(obj_GameManager.facilities.roster_pilots, {
-                        name: "Sorren Lin", callsign: "GHOST", accuracy: 85, reflexes: 92, morale: 85, salary_daily: 280, is_deployed: false, status: "ACTIVE", recovery_days: 0, kills: 5, sorties: 7
+                        id: "plt_colony_01", character_id: "pilot_colony_sorren", name: "Sorren Lin", callsign: "GHOST", combat_stat: 9, tactics_stat: 9, accuracy: 85, reflexes: 92, morale: 85, salary_daily: 280, is_deployed: false, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 5, sorties: 7
                     });
                     show_toast("SORREN 'GHOST' LIN HIRED TO PMC ROSTER!", c_lime);
                 } else show_toast("INSUFFICIENT FUNDS! (Requires 52,000 Cr)", c_red);
@@ -3475,7 +4380,7 @@ else if (active_tab == 3) {
             if (_h2_hov && _click && instance_exists(obj_GameManager)) {
                 if (obj_GameManager.spend_funds(34000)) {
                     array_push(obj_GameManager.facilities.roster_pilots, {
-                        name: "Kira Dahl", callsign: "SPECTER", accuracy: 70, reflexes: 80, morale: 90, salary_daily: 190, is_deployed: false, status: "ACTIVE", recovery_days: 0, kills: 1, sorties: 2
+                        id: "plt_colony_02", character_id: "pilot_colony_kira", name: "Kira Dahl", callsign: "SPECTER", combat_stat: 7, tactics_stat: 8, accuracy: 70, reflexes: 80, morale: 90, salary_daily: 190, is_deployed: false, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 1, sorties: 2
                     });
                     show_toast("KIRA DAHL HIRED TO PMC ROSTER!", c_lime);
                 } else show_toast("INSUFFICIENT FUNDS! (Requires 34,000 Cr)", c_red);
@@ -3524,7 +4429,7 @@ else if (active_tab == 3) {
             if (_h1_hov && _click && instance_exists(obj_GameManager)) {
                 if (obj_GameManager.spend_funds(31000)) {
                     array_push(obj_GameManager.facilities.roster_pilots, {
-                        name: "Nadia Ortiz", callsign: "SPARK", accuracy: 72, reflexes: 65, morale: 95, salary_daily: 170, is_deployed: false, status: "ACTIVE", recovery_days: 0, kills: 2, sorties: 4
+                        id: "plt_syndicate_01", character_id: "pilot_syndicate_nadia", name: "Nadia Ortiz", callsign: "SPARK", combat_stat: 7, tactics_stat: 7, accuracy: 72, reflexes: 65, morale: 95, salary_daily: 170, is_deployed: false, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 2, sorties: 4
                     });
                     show_toast("NADIA 'SPARK' ORTIZ HIRED TO PMC ROSTER!", c_lime);
                 } else show_toast("INSUFFICIENT FUNDS! (Requires 31,000 Cr)", c_red);
@@ -3550,7 +4455,7 @@ else if (active_tab == 3) {
             if (_h2_hov && _click && instance_exists(obj_GameManager)) {
                 if (obj_GameManager.spend_funds(41000)) {
                     array_push(obj_GameManager.facilities.roster_pilots, {
-                        name: "Jax Vance", callsign: "JACKAL", accuracy: 80, reflexes: 78, morale: 65, salary_daily: 230, is_deployed: false, status: "ACTIVE", recovery_days: 0, kills: 3, sorties: 5
+                        id: "plt_syndicate_02", character_id: "pilot_syndicate_jackal", name: "Jax Vance", callsign: "JACKAL", combat_stat: 8, tactics_stat: 8, accuracy: 80, reflexes: 78, morale: 65, salary_daily: 230, is_deployed: false, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 3, sorties: 5
                     });
                     show_toast("JAX 'JACKAL' VANCE HIRED TO PMC ROSTER!", c_lime);
                 } else show_toast("INSUFFICIENT FUNDS! (Requires 41,000 Cr)", c_red);
@@ -3599,7 +4504,7 @@ else if (active_tab == 3) {
             if (_h1_hov && _click && instance_exists(obj_GameManager)) {
                 if (obj_GameManager.spend_funds(65000)) {
                     array_push(obj_GameManager.facilities.roster_pilots, {
-                        name: "Null-07 (Ren)", callsign: "NULL", accuracy: 96, reflexes: 88, morale: 50, salary_daily: 320, is_deployed: false, status: "ACTIVE", recovery_days: 0, kills: 6, sorties: 8
+                        id: "plt_zaibatsu_01", character_id: "pilot_zaibatsu_null07", name: "Null-07 (Ren)", callsign: "NULL", combat_stat: 10, tactics_stat: 9, accuracy: 96, reflexes: 88, morale: 50, salary_daily: 320, is_deployed: false, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 6, sorties: 8
                     });
                     show_toast("NULL-07 RECRUITED TO PMC ROSTER!", c_lime);
                 } else show_toast("INSUFFICIENT FUNDS! (Requires 65,000 Cr)", c_red);
@@ -3625,7 +4530,7 @@ else if (active_tab == 3) {
             if (_h2_hov && _click && instance_exists(obj_GameManager)) {
                 if (obj_GameManager.spend_funds(46000)) {
                     array_push(obj_GameManager.facilities.roster_pilots, {
-                        name: "Maya Zhao", callsign: "KESTREL", accuracy: 84, reflexes: 75, morale: 85, salary_daily: 240, is_deployed: false, status: "ACTIVE", recovery_days: 0, kills: 3, sorties: 5
+                        id: "plt_zaibatsu_02", character_id: "pilot_zaibatsu_maya", name: "Maya Zhao", callsign: "KESTREL", combat_stat: 8, tactics_stat: 8, accuracy: 84, reflexes: 75, morale: 85, salary_daily: 240, is_deployed: false, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 3, sorties: 5
                     });
                     show_toast("MAYA ZHAO HIRED TO PMC ROSTER!", c_lime);
                 } else show_toast("INSUFFICIENT FUNDS! (Requires 46,000 Cr)", c_red);
@@ -3647,6 +4552,7 @@ else if (active_tab == 3) {
             draw_text(_col2_x + 20, _by + 50, "• [EARTH] Neo-Kobe Megaplex & Sky-Spire (Osaka Bay) - Chrome spires on sea caissons housing police mech lines");
             draw_text(_col2_x + 20, _by + 66, "• [EARTH] Atacama Quantum Data Vault (Chile) - Subterranean computing vault training predictive combat AI");
         }
+        } // End Branch B else
     }
 
     // =====================================================================
@@ -3712,12 +4618,12 @@ else if (active_tab == 3) {
             var _card_y_start = _col1_y + 30;
             var _card_h = 68;
 
-            for (var pi = 0; pi < 6; pi++) {
-                var _pid = _pairs[pi];
+            for (var _pair_i = 0; _pair_i < 6; _pair_i++) {
+                var _pid = _pairs[_pair_i];
                 var _rel = _fm.diplomatic_relations[$ _pid];
                 if (is_undefined(_rel)) continue;
 
-                var _cy = _card_y_start + pi * (_card_h + 6);
+                var _cy = _card_y_start + _pair_i * (_card_h + 6);
                 var _is_sel = (selected_diplo_pair == _pid);
                 var _c_hov = (_mx >= _col1_x + 8 && _mx <= _col1_x + _col1_w - 8 && _my >= _cy && _my <= _cy + _card_h);
                 if (_c_hov && _click) selected_diplo_pair = _pid;
@@ -4359,13 +5265,19 @@ else if (active_tab == 3) {
             draw_rectangle(_col2_x + 18, _col1_y + 64, _col2_x + _col2_w - 18, _col1_y + 140, true);
 
             if (!is_undefined(_assigned_mech)) {
+                var _m_name = _assigned_mech[$ "name"] ?? (_assigned_mech[$ "callsign"] ?? "Mobile Suit");
+                var _m_class = _assigned_mech[$ "class"] ?? "Mobile Suit";
+                var _m_armor = _assigned_mech[$ "armor_rating"] ?? 850;
+                var _m_power = _assigned_mech[$ "power_output"] ?? 12;
+                var _m_status = _assigned_mech[$ "status"] ?? "READY";
+
                 draw_set_color(c_white);
-                draw_text(_col2_x + 30, _col1_y + 74, "Unit: " + _assigned_mech.name + " (" + _assigned_mech.class + ")");
+                draw_text(_col2_x + 30, _col1_y + 74, "Unit: " + _m_name + " (" + _m_class + ")");
                 draw_set_color(make_color_rgb(160, 190, 220));
-                draw_text(_col2_x + 30, _col1_y + 94, "Armor Rating: " + string(_assigned_mech.armor_rating) + " | Reactor Output: " + string(_assigned_mech.power_output) + " MW");
-                var _m_status_col = (_assigned_mech.status == "READY") ? c_lime : c_red;
+                draw_text(_col2_x + 30, _col1_y + 94, "Armor Rating: " + string(_m_armor) + " | Reactor Output: " + string(_m_power) + " MW");
+                var _m_status_col = (_m_status == "READY") ? c_lime : c_red;
                 draw_set_color(_m_status_col);
-                draw_text(_col2_x + 30, _col1_y + 114, "Operational Status: " + _assigned_mech.status);
+                draw_text(_col2_x + 30, _col1_y + 114, "Operational Status: " + _m_status);
             } else {
                 draw_set_color(c_red);
                 draw_text(_col2_x + 30, _col1_y + 90, "NO DEPLOYABLE MOBILE SUITS IN HANGAR!");
@@ -4411,13 +5323,19 @@ else if (active_tab == 3) {
                 var _p_ref = _assigned_pilot[$ "character_id"] ?? (_assigned_pilot[$ "id"] ?? _assigned_pilot);
                 scr_draw_composite_portrait(_p_ref, _col2_x + 28, _col1_y + 183, 62, true, "");
 
+                var _p_name = _assigned_pilot[$ "name"] ?? "Pilot";
+                var _p_call = _assigned_pilot[$ "callsign"] ?? "ACE";
+                var _p_cstat = _assigned_pilot[$ "combat_stat"] ?? floor((_assigned_pilot[$ "accuracy"] ?? 80) / 10);
+                var _p_tstat = _assigned_pilot[$ "tactics_stat"] ?? floor((_assigned_pilot[$ "reflexes"] ?? 70) / 10);
+                var _p_status = _assigned_pilot[$ "status"] ?? "ACTIVE";
+
                 draw_set_color(c_white);
-                draw_text(_col2_x + 98, _col1_y + 188, "Pilot: " + _assigned_pilot.name + " (" + _assigned_pilot.callsign + ")");
+                draw_text(_col2_x + 98, _col1_y + 188, "Pilot: " + _p_name + " (" + _p_call + ")");
                 draw_set_color(make_color_rgb(160, 190, 220));
-                draw_text(_col2_x + 98, _col1_y + 208, "Combat Rating: " + string(_assigned_pilot.combat_stat) + " | Tactics Rating: " + string(_assigned_pilot.tactics_stat));
-                var _p_status_col = (_assigned_pilot.status == "ACTIVE") ? c_lime : c_red;
+                draw_text(_col2_x + 98, _col1_y + 208, "Combat Rating: " + string(_p_cstat) + " | Tactics Rating: " + string(_p_tstat));
+                var _p_status_col = (_p_status == "ACTIVE") ? c_lime : c_red;
                 draw_set_color(_p_status_col);
-                draw_text(_col2_x + 98, _col1_y + 228, "Deployment Status: " + _assigned_pilot.status);
+                draw_text(_col2_x + 98, _col1_y + 228, "Deployment Status: " + _p_status);
             } else {
                 draw_set_color(c_red);
                 draw_text(_col2_x + 30, _col1_y + 208, "NO MERCENARY PILOTS IN ROSTER!");
@@ -4451,7 +5369,13 @@ else if (active_tab == 3) {
             draw_set_color(make_color_rgb(100, 220, 255));
             draw_text(_col2_x + 18, _calc_y, "3. TACTICAL COMBAT CALCULUS & PROJECTION:");
 
-            var _strike_est = (!is_undefined(_assigned_mech) && !is_undefined(_assigned_pilot)) ? (_assigned_mech.armor_rating + _assigned_mech.power_output + (_assigned_pilot.combat_stat * 12)) : 0;
+            var _strike_est = 0;
+            if (!is_undefined(_assigned_mech) && !is_undefined(_assigned_pilot)) {
+                var _m_armor = _assigned_mech[$ "armor_rating"] ?? 850;
+                var _m_power = _assigned_mech[$ "power_output"] ?? 12;
+                var _p_cstat = _assigned_pilot[$ "combat_stat"] ?? floor((_assigned_pilot[$ "accuracy"] ?? 80) / 10);
+                _strike_est = _m_armor + _m_power + (_p_cstat * 12);
+            }
             var _def_est = _cur_target.military_strength_score * 1.8;
 
             draw_set_color(c_white);
@@ -4463,7 +5387,9 @@ else if (active_tab == 3) {
             var _launch_btn_y = _calc_y + 75;
             var _launch_btn_w = _col2_w - 36;
             var _launch_btn_h = 52;
-            var _can_launch = (!_target_overthrown && !is_undefined(_assigned_mech) && _assigned_mech.status == "READY" && !is_undefined(_assigned_pilot) && _assigned_pilot.status == "ACTIVE");
+            var _m_ready = (!is_undefined(_assigned_mech) && (_assigned_mech[$ "status"] ?? "READY") == "READY");
+            var _p_ready = (!is_undefined(_assigned_pilot) && (_assigned_pilot[$ "status"] ?? "ACTIVE") == "ACTIVE");
+            var _can_launch = (!_target_overthrown && _m_ready && _p_ready);
             var _l_hov = (_mx >= _col2_x + 18 && _mx <= _col2_x + 18 + _launch_btn_w && _my >= _launch_btn_y && _my <= _launch_btn_y + _launch_btn_h);
 
             if (_l_hov && _click) {
@@ -4541,14 +5467,14 @@ else if (active_tab == 4) {
         // =====================================================================
         if (flagship_subtab == 0) {
             var _fx = _pan_x + 24;
-            var _fy = _pan_y + 44;
+            var _fy = _pan_y + 40;
             var _fw = _pan_w - 48;
 
             draw_set_color(make_color_rgb(100, 220, 255));
             draw_text(_fx, _fy, "== PRE-WAR EXPERIMENTAL DREADNOUGHT: " + string_upper(_fs.name) + " (" + _fs.class + ") ==");
 
             // Origin Lore Banner
-            var _lor_y = _fy + 22;
+            var _lor_y = _fy + 20;
             var _lor_h = 42;
             draw_set_color(make_color_rgb(14, 20, 30));
             draw_rectangle(_fx, _lor_y, _fx + _fw, _lor_y + _lor_h, false);
@@ -4561,14 +5487,14 @@ else if (active_tab == 4) {
             var _proto_label = (_fs.specialization_protocol == "forge_titan") ? "INDUSTRIAL FORGE TITAN" :
                                ((_fs.specialization_protocol == "siege_fortress") ? "ORBITAL SIEGE FORTRESS" :
                                ((_fs.specialization_protocol == "shadow_panopticon") ? "SHADOW PANOPTICON" : "STANDARD FLEET"));
-            draw_text(_fx + 12, _lor_y + 22, "Stationed Orbit: " + _fs.current_sphere + "  |  Hull Armor: " + string(_fs.hull_hp) + " / " + string(_fs.hull_max_hp) + " HP  |  Transit: " + (_fs.transit_turns_left > 0 ? ("En route to " + _fs.destination_sphere + " (" + string(_fs.transit_turns_left) + "T)") : "Stationary") + "  |  Doctrine: " + _proto_label);
+            draw_text(_fx + 12, _lor_y + 22, "Stationed Orbit: " + _fs.current_sphere + "  |  Hull: " + string(_fs.hull_hp) + " / " + string(_fs.hull_max_hp) + " HP  |  Transit: " + (_fs.transit_turns_left > 0 ? ("En route to " + _fs.destination_sphere + " (" + string(_fs.transit_turns_left) + "T)") : "Stationary") + "  |  Doctrine: " + _proto_label);
 
-            // 4-Category Division Switcher (y: 242 to 270)
+            // 4-Category Division Switcher (concise button labels to prevent overflow)
             var _cat_names = [
-                "[1. PRODUCTION & HARVEST (DIV 1 & 2)]",
-                "[2. DEFENSE & TACTICAL WEAPONS (DIV 3 & 4)]",
-                "[3. TACHYON DRIVES & PILOT SUITE (DIV 5 & 6)]",
-                "[4. SIGINT & FLEET COMMAND (DIV 7 & 8)]"
+                "[1. PRODUCTION & HARVEST]",
+                "[2. DEFENSE & WEAPONS]",
+                "[3. DRIVES & PILOT SUITE]",
+                "[4. SIGINT & FLEET COMMAND]"
             ];
             var _cat_w = (_fw - 36) / 4;
             var _cat_y = _lor_y + _lor_h + 8;
@@ -4585,7 +5511,7 @@ else if (active_tab == 4) {
                 draw_set_color(_is_cat_act ? make_color_rgb(100, 220, 255) : make_color_rgb(45, 75, 110));
                 draw_rectangle(_cx, _cat_y, _cx + _cat_w, _cat_y + _cat_h, true);
                 draw_set_color(_is_cat_act ? c_white : make_color_rgb(170, 200, 230));
-                draw_text(_cx + 10, _cat_y + 6, _cat_names[c]);
+                draw_text(_cx + 12, _cat_y + 6, _cat_names[c]);
             }
 
             // All 8 Divisions Data Structure (Docs 23 & 24)
@@ -4717,10 +5643,10 @@ else if (active_tab == 4) {
                 if (_divisions[d].cat == flagship_division_category) array_push(_cat_divs, _divisions[d]);
             }
 
-            // Render 2 Division Cards Side-by-Side (y: 284 to 594)
+            // Render 2 Division Cards Side-by-Side with clear vertical hierarchy
             var _card_y_start = _cat_y + _cat_h + 8;
             var _card_w = (_fw - 16) / 2;
-            var _card_h = 280;
+            var _card_h = 245;
 
             for (var cd = 0; cd < array_length(_cat_divs); cd++) {
                 var _div = _cat_divs[cd];
@@ -4737,25 +5663,25 @@ else if (active_tab == 4) {
                 draw_text(_card_x + 14, _card_y_start + 8, _div.title);
 
                 draw_set_color(make_color_rgb(0, 220, 255));
-                draw_text(_card_x + _card_w - 120, _card_y_start + 8, "[TIER " + string(_cur_t) + " / 5]");
+                draw_text(_card_x + _card_w - 110, _card_y_start + 8, "[TIER " + string(_cur_t) + " / 5]");
 
                 // 5 Visual Progression Pips
                 var _pip_x_start = _card_x + 14;
                 var _pip_y = _card_y_start + 28;
                 for (var p = 1; p <= 5; p++) {
-                    var _px = _pip_x_start + (p - 1) * 28;
+                    var _px = _pip_x_start + (p - 1) * 24;
                     var _p_unlocked = (p <= _cur_t);
                     draw_set_color(_p_unlocked ? make_color_rgb(0, 220, 120) : make_color_rgb(25, 35, 45));
-                    draw_rectangle(_px, _pip_y, _px + 22, _pip_y + 8, false);
+                    draw_rectangle(_px, _pip_y, _px + 18, _pip_y + 8, false);
                     draw_set_color(_p_unlocked ? make_color_rgb(140, 255, 180) : make_color_rgb(45, 60, 75));
-                    draw_rectangle(_px, _pip_y, _px + 22, _pip_y + 8, true);
+                    draw_rectangle(_px, _pip_y, _px + 18, _pip_y + 8, true);
                 }
 
                 draw_set_color(make_color_rgb(180, 205, 230));
-                draw_text_ext(_card_x + 160, _pip_y - 4, _div.desc, 16, _card_w - 174);
+                draw_text_ext(_card_x + 140, _card_y_start + 26, _div.desc, 14, _card_w - 154);
 
-                // 5 Tier Breakdown List
-                var _tier_list_y = _card_y_start + 44;
+                // 5 Tier Breakdown List with clean vertical spacing
+                var _tier_list_y = _card_y_start + 58;
                 for (var t = 0; t < 5; t++) {
                     var _t_num = t + 1;
                     var _is_cur = (_t_num == _cur_t);
@@ -4769,11 +5695,11 @@ else if (active_tab == 4) {
                     } else {
                         draw_set_color(make_color_rgb(120, 140, 160));
                     }
-                    draw_text(_card_x + 14, _tier_list_y + t * 24, _prefix + _div.tiers[t]);
+                    draw_text(_card_x + 14, _tier_list_y + t * 21, _prefix + _div.tiers[t]);
                 }
 
                 // Upgrade Button & Resource Checks
-                var _ub_y = _card_y_start + 180;
+                var _ub_y = _card_y_start + 192;
                 var _can_upg = (_cur_t < 5);
 
                 if (_can_upg) {
@@ -4781,28 +5707,28 @@ else if (active_tab == 4) {
                     var _req_a = _div.alloys[_cur_t - 1];
                     var _has_f = (_gm.funds >= _req_c);
                     var _has_a = (_gm.get_alloy(_req_a) >= 5);
-                    var _ub_hov = (_mx >= _card_x + 14 && _mx <= _card_x + _card_w - 14 && _my >= _ub_y && _my <= _ub_y + 46);
+                    var _ub_hov = (_mx >= _card_x + 14 && _mx <= _card_x + _card_w - 14 && _my >= _ub_y && _my <= _ub_y + 44);
 
                     if (_ub_hov && _click && _has_f && _has_a) {
                         _gm.flagship_upgrade(_div.id);
                     }
 
                     draw_set_color((_has_f && _has_a) ? (_ub_hov ? make_color_rgb(30, 70, 50) : make_color_rgb(18, 40, 28)) : make_color_rgb(18, 22, 28));
-                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 46, false);
+                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 44, false);
                     draw_set_color((_has_f && _has_a) ? make_color_rgb(80, 220, 120) : make_color_rgb(45, 60, 75));
-                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 46, true);
+                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 44, true);
 
                     draw_set_color((_has_f && _has_a) ? c_white : c_gray);
-                    draw_text(_card_x + 24, _ub_y + 6, "[★ UPGRADE TO TIER " + string(_cur_t + 1) + "]");
+                    draw_text(_card_x + 24, _ub_y + 5, "[★ UPGRADE TO TIER " + string(_cur_t + 1) + "]");
                     draw_set_color((_has_f && _has_a) ? make_color_rgb(200, 255, 200) : c_gray);
-                    draw_text(_card_x + 24, _ub_y + 24, "Cost: " + string(_req_c) + " Cr  +  5x " + _req_a + " (Have: " + string(_gm.get_alloy(_req_a)) + ")");
+                    draw_text(_card_x + 24, _ub_y + 23, "Cost: " + string(_req_c) + " Cr  +  5x " + _req_a + " (Have: " + string(_gm.get_alloy(_req_a)) + ")");
                 } else {
                     draw_set_color(make_color_rgb(20, 32, 45));
-                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 46, false);
+                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 44, false);
                     draw_set_color(make_color_rgb(60, 140, 220));
-                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 46, true);
+                    draw_rectangle(_card_x + 14, _ub_y, _card_x + _card_w - 14, _ub_y + 44, true);
                     draw_set_color(make_color_rgb(100, 220, 255));
-                    draw_text(_card_x + 24, _ub_y + 14, "★ APEX ARCHEOTECH TIER 5 RATIFIED (MAX PROGRESSION)");
+                    draw_text(_card_x + 24, _ub_y + 13, "★ APEX ARCHEOTECH TIER 5 RATIFIED (MAX PROGRESSION)");
                 }
             }
 
@@ -4815,9 +5741,9 @@ else if (active_tab == 4) {
                 if ((_fs.upgrades[$ _chk_tracks[tk]] ?? 1) >= 3) _t3_count++;
             }
 
-            var _proto_y = _card_y_start + _card_h + 10;
+            var _proto_y = _card_y_start + _card_h + 8;
             var _proto_w = (_fw - 20) / 3;
-            var _proto_h = 80;
+            var _proto_h = 145;
 
             draw_set_color(make_color_rgb(255, 220, 100));
             draw_text(_fx, _proto_y, "== FLAGSHIP SPECIALIZATION PROTOCOLS // MASTER ENDGAME DOCTRINES (Requires 4 Divisions at Tier 3+ | Current: " + string(_t3_count) + "/4) ==");
@@ -4826,24 +5752,30 @@ else if (active_tab == 4) {
                 {
                     id: "forge_titan",
                     name: "PROTOCOL A: INDUSTRIAL FORGE TITAN",
-                    desc: "-40% Chassis Fabrication Costs  |  +1 Assembly Bay  |  3.0x Mining Yield Multiplier"
+                    desc: "-40% Chassis Fabrication Costs
++1 Active Manufacturing Bay
+3.0x Planetary Mining Yield Multiplier"
                 },
                 {
                     id: "siege_fortress",
                     name: "PROTOCOL B: ORBITAL SIEGE FORTRESS",
-                    desc: "+50% Orbital Strike Bombardment Dmg  |  +25,000 Dreadnought HP  |  +35% Allied Grid Armor"
+                    desc: "+50% Orbital Strike Bombardment Dmg
++25,000 Warship Hull Integrity
++35% Allied Grid Armor Defense"
                 },
                 {
                     id: "shadow_panopticon",
                     name: "PROTOCOL C: SHADOW PANOPTICON",
-                    desc: "0-Turn Instant Tachyon Warp  |  Sabotage Bounty Defense  |  Siphons +2% Market Share Every 4T"
+                    desc: "Instant 0-Turn Planetary Tachyon Fold
+Nullifies Corporate Sabotage
+Siphons +2% Market Share Every 4T"
                 }
             ];
 
             for (var pr = 0; pr < 3; pr++) {
                 var _pdata = _protocols[pr];
                 var _px = _fx + pr * (_proto_w + 10);
-                var _py = _proto_y + 18;
+                var _py = _proto_y + 20;
                 var _is_active = (_fs.specialization_protocol == _pdata.id);
                 var _unlocked = (_t3_count >= 4);
 
@@ -4858,23 +5790,29 @@ else if (active_tab == 4) {
                 draw_rectangle(_px, _py, _px + _proto_w, _py + _proto_h, true);
 
                 draw_set_color(_is_active ? make_color_rgb(255, 220, 100) : (_unlocked ? c_white : c_gray));
-                draw_text(_px + 12, _py + 6, _pdata.name);
+                draw_text(_px + 12, _py + 8, _pdata.name);
 
                 draw_set_color(_unlocked ? make_color_rgb(170, 200, 220) : make_color_rgb(100, 110, 120));
-                draw_text_ext(_px + 12, _py + 24, _pdata.desc, 15, _proto_w - 24);
+                draw_text_ext(_px + 12, _py + 28, _pdata.desc, 17, _proto_w - 24);
 
+                var _btn_y = _py + _proto_h - 32;
                 var _badge = _is_active ? "★ [RATIFIED ACTIVE DOCTRINE]" : (_unlocked ? "[CLICK TO RATIFY DOCTRINE]" : "[LOCKED: Requires 4 T3+ Divisions]");
-                draw_set_color(_is_active ? make_color_rgb(80, 240, 120) : (_unlocked ? make_color_rgb(0, 220, 255) : c_dkgray));
-                draw_text(_px + 12, _py + _proto_h - 18, _badge);
+                draw_set_color(_is_active ? make_color_rgb(40, 100, 60) : (_unlocked ? make_color_rgb(18, 50, 75) : make_color_rgb(16, 20, 26)));
+                draw_rectangle(_px + 10, _btn_y, _px + _proto_w - 10, _btn_y + 24, false);
+                draw_set_color(_is_active ? make_color_rgb(80, 240, 120) : (_unlocked ? make_color_rgb(0, 220, 255) : make_color_rgb(45, 55, 65)));
+                draw_rectangle(_px + 10, _btn_y, _px + _proto_w - 10, _btn_y + 24, true);
+
+                draw_set_color(_is_active ? c_white : (_unlocked ? make_color_rgb(180, 240, 255) : c_gray));
+                draw_text(_px + 16, _btn_y + 4, _badge);
             }
         }
-        
-                // =====================================================================
+
+        // =====================================================================
         // SUBTAB 1: CELESTIAL NAVIGATION & ORBITAL TRANSIT (Doc 23)
         // =====================================================================
         else if (flagship_subtab == 1) {
             var _nx = _pan_x + 24;
-            var _ny = _pan_y + 44;
+            var _ny = _pan_y + 40;
             var _nw = _pan_w - 48;
 
             draw_set_color(make_color_rgb(100, 220, 255));
@@ -4892,7 +5830,7 @@ else if (active_tab == 4) {
             ];
 
             var _sp_y_start = _ny + 44;
-            var _sp_card_h = 72;
+            var _sp_card_h = 76;
 
             for (var si = 0; si < array_length(_spheres_data); si++) {
                 var _spd = _spheres_data[si];
@@ -4906,24 +5844,25 @@ else if (active_tab == 4) {
                 draw_rectangle(_nx, _spy, _nx + _nw, _spy + _sp_card_h, true);
 
                 draw_set_color(c_white);
-                draw_text(_nx + 16, _spy + 8, _spd.name);
+                draw_text(_nx + 16, _spy + 10, _spd.name);
 
                 var _m_pct = [25, 50, 100, 150, 250][clamp(_fs.upgrades.mining_tier - 1, 0, 4)];
                 if (_fs.specialization_protocol == "forge_titan") _m_pct = floor(_m_pct * 1.5);
                 var _stat_badge = _is_here ? ("[FLAGSHIP STATIONED HERE - +" + string(_m_pct) + "% ORE BOOST ACTIVE]") :
                                   (_is_target ? ("[TRANSIT IN PROGRESS: " + string(_fs.transit_turns_left) + " TURNS REMAINING]") : "[ORBITAL CONCESSION]");
                 draw_set_color(_is_here ? make_color_rgb(0, 240, 255) : (_is_target ? make_color_rgb(255, 200, 50) : make_color_rgb(140, 170, 200)));
-                draw_text(_nx + _nw - 16 - string_width(_stat_badge), _spy + 8, _stat_badge);
+                draw_text(_nx + 380, _spy + 10, _stat_badge);
 
+                // Constrain description width so it never touches the transit button
                 draw_set_color(make_color_rgb(170, 195, 220));
-                draw_text(_nx + 16, _spy + 28, _spd.desc);
+                draw_text_ext(_nx + 16, _spy + 34, _spd.desc, 16, _nw - 260);
 
                 // Transit Button
                 if (!_is_here && !_is_target) {
-                    var _tb_x = _nx + _nw - 220;
-                    var _tb_y = _spy + 34;
-                    var _tb_w = 205;
-                    var _tb_h = 28;
+                    var _tb_x = _nx + _nw - 225;
+                    var _tb_y = _spy + 20;
+                    var _tb_w = 210;
+                    var _tb_h = 36;
                     var _tb_hov = (_mx >= _tb_x && _mx <= _tb_x + _tb_w && _my >= _tb_y && _my <= _tb_y + _tb_h);
 
                     if (_tb_hov && _click) {
@@ -4936,7 +5875,7 @@ else if (active_tab == 4) {
                     draw_set_color(_is_instant ? make_color_rgb(255, 120, 240) : make_color_rgb(80, 180, 255));
                     draw_rectangle(_tb_x, _tb_y, _tb_x + _tb_w, _tb_y + _tb_h, true);
                     draw_set_color(c_white);
-                    draw_text(_tb_x + 14, _tb_y + 6, _is_instant ? "[0-TURN TACHYON FOLD]" : "[ENGAGE TRANSIT DRIVE]");
+                    draw_text(_tb_x + 14, _tb_y + 10, _is_instant ? "[0-TURN TACHYON FOLD]" : "[ENGAGE TRANSIT DRIVE]");
                 }
             }
         }
@@ -4946,19 +5885,54 @@ else if (active_tab == 4) {
         // =====================================================================
         else if (flagship_subtab == 2) {
             var _rx = _pan_x + 24;
-            var _ry = _pan_y + 44;
+            var _ry = _pan_y + 40;
             var _rw = _pan_w - 48;
 
             draw_set_color(make_color_rgb(100, 220, 255));
             draw_text(_rx, _ry, "== RIVAL CORPORATE ARMS CONGLOMERATES & SOL MARKET MONOPOLIES (docs/23) ==");
 
+            var _rc = _gm.rival_corporations;
+
+            // Timeline Tech Era Progression Banner (docs/27)
+            var _era_y = _ry + 20;
+            draw_set_color(make_color_rgb(14, 22, 32));
+            draw_rectangle(_rx, _era_y, _rx + _rw, _era_y + 26, false);
+            draw_set_color(make_color_rgb(45, 75, 110));
+            draw_rectangle(_rx, _era_y, _rx + _rw, _era_y + 26, true);
+
+            draw_set_color(make_color_rgb(255, 220, 100));
+            draw_text(_rx + 12, _era_y + 5, "ACTIVE TIMELINE ERA: " + _gm.timeline_era_name + " (YEAR " + string(_gm.current_cycle_year) + " // DAY " + string(_gm.current_cycle_day) + ")");
+
+            // 4 Segmented Era Status Indicators
+            var _era_w = 110;
+            var _era_labels = ["1. EARLY WAR", "2. ESCALATION", "3. TOTAL WAR", "4. APEX CRISIS"];
+            for (var er = 0; er < 4; er++) {
+                var _er_x = _rx + _rw - 475 + er * (_era_w + 6);
+                var _is_cur = (_gm.timeline_era == (er + 1));
+                var _is_past = (_gm.timeline_era > (er + 1));
+                draw_set_color(_is_cur ? make_color_rgb(20, 60, 85) : (_is_past ? make_color_rgb(12, 36, 20) : make_color_rgb(12, 16, 22)));
+                draw_rectangle(_er_x, _era_y + 3, _er_x + _era_w, _era_y + 23, false);
+                draw_set_color(_is_cur ? make_color_rgb(100, 240, 255) : (_is_past ? c_lime : make_color_rgb(60, 80, 100)));
+                draw_rectangle(_er_x, _era_y + 3, _er_x + _era_w, _era_y + 23, true);
+                draw_text(_er_x + 6, _era_y + 5, _era_labels[er]);
+            }
+
+            // Sol Market Share & Industrial Monopoly Banner (docs/28)
+            var _acquired_count = 0;
+            var _r_keys_all = ["corp_vhi", "corp_aod", "corp_rust", "corp_hats"];
+            for (var ak = 0; ak < 4; ak++) {
+                if (_rc[$ _r_keys_all[ak]].is_acquired) _acquired_count++;
+            }
+            draw_set_color((_acquired_count == 4) ? make_color_rgb(255, 220, 50) : make_color_rgb(255, 215, 80));
+            var _mono_tag = (_acquired_count == 4) ? "  [★ SOL INDUSTRIAL MONOPOLY ACHIEVED ★]" : ("  [MONOPOLY PROGRESS: " + string(_acquired_count) + "/4 ACQUIRED]");
+            draw_text(_rx, _era_y + 32, "SOL SYSTEM MARKET SHARE: VHI " + string(_rc.corp_vhi.market_share_pct) + "% | AOD " + string(_rc.corp_aod.market_share_pct) + "% | RUST " + string(_rc.corp_rust.market_share_pct) + "% | HATS " + string(_rc.corp_hats.market_share_pct) + "% | YOUR PMC: " + string(_gm.pmc_market_share_pct) + "%" + _mono_tag);
+
             // Sol Market Share Bar
-            var _mbar_y = _ry + 24;
-            var _mbar_h = 24;
+            var _mbar_y = _era_y + 50;
+            var _mbar_h = 16;
             draw_set_color(make_color_rgb(10, 16, 24));
             draw_rectangle(_rx, _mbar_y, _rx + _rw, _mbar_y + _mbar_h, false);
 
-            var _rc = _gm.rival_corporations;
             var _vhi_w = (_rw * (_rc.corp_vhi.market_share_pct / 100.0));
             var _aod_w = (_rw * (_rc.corp_aod.market_share_pct / 100.0));
             var _rst_w = (_rw * (_rc.corp_rust.market_share_pct / 100.0));
@@ -4975,14 +5949,11 @@ else if (active_tab == 4) {
             draw_set_color(make_color_rgb(45, 75, 110));
             draw_rectangle(_rx, _mbar_y, _rx + _rw, _mbar_y + _mbar_h, true);
 
-            draw_set_color(c_white);
-            draw_text(_rx + 12, _mbar_y + 4, "Sol Arms Market Share: VHI " + string(_rc.corp_vhi.market_share_pct) + "% | AOD " + string(_rc.corp_aod.market_share_pct) + "% | RUST " + string(_rc.corp_rust.market_share_pct) + "% | HATS " + string(_rc.corp_hats.market_share_pct) + "% | YOUR PMC: " + string(_gm.pmc_market_share_pct) + "%");
-
-            // 4 Corporate Dossiers Grid
+            // 4 Corporate Dossiers & Stock Exchange Trading Desks (docs/23, docs/28)
             var _corp_keys = ["corp_vhi", "corp_aod", "corp_rust", "corp_hats"];
-            var _cd_y_start = _mbar_y + _mbar_h + 12;
+            var _cd_y_start = _mbar_y + _mbar_h + 10;
             var _cd_w = (_rw - 16) / 2;
-            var _cd_h = 165;
+            var _cd_h = 248;
 
             for (var ci = 0; ci < 4; ci++) {
                 var _cid = _corp_keys[ci];
@@ -4990,29 +5961,55 @@ else if (active_tab == 4) {
                 var _col = ci % 2;
                 var _row = floor(ci / 2);
                 var _cdx = _rx + _col * (_cd_w + 16);
-                var _cdy = _cd_y_start + _row * (_cd_h + 12);
+                var _cdy = _cd_y_start + _row * (_cd_h + 10);
 
                 draw_set_color(make_color_rgb(10, 16, 24));
                 draw_rectangle(_cdx, _cdy, _cdx + _cd_w, _cdy + _cd_h, false);
-                draw_set_color(make_color_rgb(30, 50, 75));
+                draw_set_color(_cp.is_acquired ? make_color_rgb(180, 140, 40) : make_color_rgb(30, 50, 75));
                 draw_rectangle(_cdx, _cdy, _cdx + _cd_w, _cdy + _cd_h, true);
 
+                // Line 1: Header & Stock Price
                 draw_set_color(make_color_rgb(255, 215, 80));
                 draw_text(_cdx + 14, _cdy + 8, _cp.name + " [" + _cp.ticker + "]");
 
-                draw_set_color(make_color_rgb(100, 220, 255));
-                draw_text(_cdx + _cd_w - 140, _cdy + 8, "Market: " + string(_cp.market_share_pct) + "%");
+                if (_cp.is_acquired) {
+                    draw_set_color(c_lime);
+                    draw_text(_cdx + _cd_w - 220, _cdy + 8, "[100% OWNED SUBSIDIARY]");
+                } else {
+                    draw_set_color(make_color_rgb(100, 220, 255));
+                    draw_text(_cdx + _cd_w - 250, _cdy + 8, "Stock: " + string(_cp.share_price_cr) + " Cr/sh | Share: " + string(_cp.market_share_pct) + "%");
+                }
 
+                var _cp_cat = variable_struct_exists(_gm.competitor_catalog, _cid) ? _gm.competitor_catalog[$ _cid] : undefined;
+                var _b_name = (!is_undefined(_cp_cat)) ? _cp_cat.branch_name : _cp.specialty;
+                var _line_suit = (!is_undefined(_cp_cat) && !is_undefined(_cp_cat.active_line_chassis)) ? _cp_cat.active_line_chassis.name : _cp.flagship_chassis;
+
+                // Line 2: CEO & HQ
                 draw_set_color(make_color_rgb(170, 195, 220));
-                draw_text(_cdx + 14, _cdy + 28, "CEO: " + _cp.ceo + "  |  HQ: " + _cp.hq_location);
-                draw_text(_cdx + 14, _cdy + 46, "Alignment: " + _cp.alignment + "  |  Specialty: " + _cp.specialty);
-                draw_text(_cdx + 14, _cdy + 64, "Flagship Product: " + _cp.flagship_chassis);
+                draw_text(_cdx + 14, _cdy + 26, "CEO: " + _cp.ceo + "  |  HQ: " + _cp.hq_location);
 
-                // Corporate Hostility Gauge
+                // Line 3: R&D Doctrine & Active Line Chassis
+                draw_set_color(make_color_rgb(100, 220, 255));
+                draw_text(_cdx + 14, _cdy + 44, "R&D Doctrine: " + _b_name + "  |  Active Line Chassis: " + _line_suit);
+
+                // Render Animated Mobile Suit Preview for Corporate Dossier (docs/29)
+                scr_draw_animated_mobile_suit(_line_suit, _cdx + _cd_w - 55, _cdy + 75, 0.45, -1, "idle");
+
+                // Line 4: Prototype Spec & Player Equity Stake
+                var _x_spec_tag = (!is_undefined(_cp_cat) && _cp_cat.has_rare_x_spec && !is_undefined(_cp_cat.rare_x_chassis)) ? ("[PROTOTYPE X-SPEC: " + _cp_cat.rare_x_chassis.name + "] ") : "";
+                var _stake_badge = (_cp.player_equity_pct >= 100.0) ? "[ACQUIRED]" :
+                                  ((_cp.player_equity_pct >= 51.0) ? "[MAJORITY 51%+]" :
+                                  ((_cp.player_equity_pct >= 25.0) ? "[BOARD SEAT]" :
+                                  ((_cp.player_equity_pct >= 10.0) ? "[STAKEHOLDER]" : "")));
+                var _stk_col = (_cp.player_equity_pct >= 51.0) ? c_lime : ((_cp.player_equity_pct >= 25.0) ? make_color_rgb(100, 220, 255) : make_color_rgb(255, 215, 100));
+                draw_set_color(_stk_col);
+                draw_text(_cdx + 14, _cdy + 62, _x_spec_tag + "Stake: " + string(_cp.player_shares) + " sh (" + string(_cp.player_equity_pct) + "%) " + _stake_badge + " | Div: +" + string(_cp.dividend_per_turn) + " Cr/T");
+
+                // Line 5: Corporate Hostility Gauge
                 var _hbar_x = _cdx + 14;
-                var _hbar_y = _cdy + 86;
+                var _hbar_y = _cdy + 84;
                 var _hbar_w = _cd_w - 28;
-                var _hbar_h = 10;
+                var _hbar_h = 8;
                 draw_set_color(make_color_rgb(20, 28, 38));
                 draw_rectangle(_hbar_x, _hbar_y, _hbar_x + _hbar_w, _hbar_y + _hbar_h, false);
 
@@ -5022,29 +6019,104 @@ else if (active_tab == 4) {
                 draw_set_color(_hcol);
                 draw_rectangle(_hbar_x, _hbar_y, _hbar_x + _hw, _hbar_y + _hbar_h, false);
 
-                draw_set_color(make_color_rgb(180, 200, 220));
-                draw_text(_cdx + 14, _cdy + 100, "Corporate Hostility: " + string(_cp.hostility_pct) + "% " + (_cp.hostility_pct >= 75 ? "[KILL-TEAMS ACTIVE]" : ""));
+                // Line 6+: Actions Area (Trading Desk or Acquired Subsidiary Seal)
+                if (_cp.is_acquired) {
+                    var _seal_y = _cdy + 102;
+                    var _seal_h = _cd_h - 114;
+                    draw_set_color(make_color_rgb(45, 34, 12));
+                    draw_rectangle(_cdx + 14, _seal_y, _cdx + _cd_w - 14, _seal_y + _seal_h, false);
+                    draw_set_color(make_color_rgb(255, 200, 50));
+                    draw_rectangle(_cdx + 14, _seal_y, _cdx + _cd_w - 14, _seal_y + _seal_h, true);
 
-                // Sabotage Action Button
-                var _sb_y = _cdy + 124;
-                var _sb_hov = (_mx >= _cdx + 14 && _mx <= _cdx + 280 && _my >= _sb_y && _my <= _sb_y + 28);
-                if (_sb_hov && _click) {
-                    _gm.launch_corporate_sabotage(_cid);
+                    draw_set_color(make_color_rgb(255, 225, 80));
+                    draw_text(_cdx + 28, _seal_y + 16, "★ SUBSIDIARY OF " + string_upper(_gm.company_name) + " // 100% PMC EQUITY ★");
+                    draw_set_color(make_color_rgb(180, 240, 190));
+                    draw_text(_cdx + 28, _seal_y + 38, "All Proprietary Blueprints Absorbed  |  +1 Manufacturing Assembly Line Bay Unlocked");
+                    draw_text(_cdx + 28, _seal_y + 58, "Rival Eliminated from Procurement Trials  |  Full Sol Monopoly Rights Consolidated");
+                } else {
+                    // Stock Trading Desk Buttons
+                    var _btn_y1 = _cdy + 100;
+                    var _btn_h = 28;
+                    var _btn_w = (_cd_w - 38) / 3;
+
+                    // Button 1: Buy 5% (5,000 sh)
+                    var _b1_cost = floor(5000 * _cp.share_price_cr);
+                    var _b1_hov = (_mx >= _cdx + 14 && _mx <= _cdx + 14 + _btn_w && _my >= _btn_y1 && _my <= _btn_y1 + _btn_h);
+                    if (_b1_hov && _click) _gm.buy_rival_shares(_cid, 5000);
+                    draw_set_color(_b1_hov ? make_color_rgb(20, 65, 40) : make_color_rgb(12, 38, 24));
+                    draw_rectangle(_cdx + 14, _btn_y1, _cdx + 14 + _btn_w, _btn_y1 + _btn_h, false);
+                    draw_set_color(make_color_rgb(60, 220, 120));
+                    draw_rectangle(_cdx + 14, _btn_y1, _cdx + 14 + _btn_w, _btn_y1 + _btn_h, true);
+                    draw_set_color(c_white);
+                    draw_text(_cdx + 18, _btn_y1 + 6, "[BUY 5%] " + string(_b1_cost) + " Cr");
+
+                    // Button 2: Buy 25% (25,000 sh)
+                    var _b2_x = _cdx + 14 + _btn_w + 5;
+                    var _b2_cost = floor(25000 * _cp.share_price_cr);
+                    var _b2_hov = (_mx >= _b2_x && _mx <= _b2_x + _btn_w && _my >= _btn_y1 && _my <= _btn_y1 + _btn_h);
+                    if (_b2_hov && _click) _gm.buy_rival_shares(_cid, 25000);
+                    draw_set_color(_b2_hov ? make_color_rgb(20, 55, 80) : make_color_rgb(14, 32, 50));
+                    draw_rectangle(_b2_x, _btn_y1, _b2_x + _btn_w, _btn_y1 + _btn_h, false);
+                    draw_set_color(make_color_rgb(80, 200, 255));
+                    draw_rectangle(_b2_x, _btn_y1, _b2_x + _btn_w, _btn_y1 + _btn_h, true);
+                    draw_set_color(c_white);
+                    draw_text(_b2_x + 8, _btn_y1 + 6, "[BUY 25%] " + string(_b2_cost) + " Cr");
+
+                    // Button 3: Sell 5% (5,000 sh)
+                    var _b3_x = _b2_x + _btn_w + 5;
+                    var _can_sell = (_cp.player_shares >= 5000);
+                    var _b3_hov = (_mx >= _b3_x && _mx <= _b3_x + _btn_w && _my >= _btn_y1 && _my <= _btn_y1 + _btn_h && _can_sell);
+                    if (_b3_hov && _click) _gm.sell_rival_shares(_cid, 5000);
+                    draw_set_color(_b3_hov ? make_color_rgb(60, 25, 25) : (_can_sell ? make_color_rgb(35, 16, 16) : make_color_rgb(18, 14, 14)));
+                    draw_rectangle(_b3_x, _btn_y1, _b3_x + _btn_w, _btn_y1 + _btn_h, false);
+                    draw_set_color(_can_sell ? make_color_rgb(255, 100, 80) : make_color_rgb(70, 50, 50));
+                    draw_rectangle(_b3_x, _btn_y1, _b3_x + _btn_w, _btn_y1 + _btn_h, true);
+                    draw_set_color(_can_sell ? c_white : c_gray);
+                    draw_text(_b3_x + 10, _btn_y1 + 6, "[SELL 5%] Cash-Out");
+
+                    // Row 2 Actions: Hostile Takeover / Buyout Bid & Corporate Sabotage
+                    var _btn_y2 = _btn_y1 + 33;
+                    var _half_act_w = (_cd_w - 33) / 2;
+
+                    // Button 4: Full Hostile Takeover / Buyout Bid
+                    var _rem_sh = 100000 - _cp.player_shares;
+                    var _tender_val = floor(_rem_sh * _cp.share_price_cr * 1.15);
+                    var _can_takeover = (_cp.player_equity_pct >= 51.0 || _gm.funds >= _tender_val);
+                    var _to_hov = (_mx >= _cdx + 14 && _mx <= _cdx + 14 + _half_act_w && _my >= _btn_y2 && _my <= _btn_y2 + 34 && _can_takeover);
+                    if (_to_hov && _click) _gm.execute_hostile_takeover(_cid);
+
+                    draw_set_color(_to_hov ? make_color_rgb(85, 65, 15) : (_can_takeover ? make_color_rgb(45, 35, 10) : make_color_rgb(20, 18, 14)));
+                    draw_rectangle(_cdx + 14, _btn_y2, _cdx + 14 + _half_act_w, _btn_y2 + 34, false);
+                    draw_set_color(_can_takeover ? make_color_rgb(255, 205, 50) : make_color_rgb(75, 65, 30));
+                    draw_rectangle(_cdx + 14, _btn_y2, _cdx + 14 + _half_act_w, _btn_y2 + 34, true);
+                    draw_set_color(_can_takeover ? c_white : c_gray);
+                    draw_text(_cdx + 20, _btn_y2 + 9, ">> HOSTILE TAKEOVER BID <<");
+
+                    // Button 5: Launch Corporate Sabotage
+                    var _sab_x = _cdx + 14 + _half_act_w + 5;
+                    var _sb_hov = (_mx >= _sab_x && _mx <= _sab_x + _half_act_w && _my >= _btn_y2 && _my <= _btn_y2 + 34);
+                    if (_sb_hov && _click) _gm.launch_corporate_sabotage(_cid);
+
+                    draw_set_color(_sb_hov ? make_color_rgb(70, 35, 15) : make_color_rgb(38, 20, 10));
+                    draw_rectangle(_sab_x, _btn_y2, _sab_x + _half_act_w, _btn_y2 + 34, false);
+                    draw_set_color(make_color_rgb(255, 130, 40));
+                    draw_rectangle(_sab_x, _btn_y2, _sab_x + _half_act_w, _btn_y2 + 34, true);
+                    draw_set_color(c_white);
+                    draw_text(_sab_x + 14, _btn_y2 + 9, "[SABOTAGE R&D: -50k Cr]");
+
+                    // Line below buttons: Strategic Perks Notice
+                    draw_set_color(make_color_rgb(160, 190, 220));
+                    var _perk_note = (_cp.player_equity_pct >= 51.0) ? "Majority Stake active: 10% gross profit royalty extracted per turn & trial veto enabled!" :
+                                     ((_cp.player_equity_pct >= 25.0) ? "Board Seat active: +8 PTS Fly-Off trial insight bonus & R&D tree unlocked!" :
+                                     ((_cp.player_equity_pct >= 10.0) ? "Stakeholder active: +3 PTS Fly-Off trial insight bonus & steady per-turn dividend!" :
+                                     "Acquire 51%+ controlling interest or submit 100% tender offer to initiate hostile buyout."));
+                    draw_text_ext(_cdx + 14, _btn_y2 + 40, _perk_note, 14, _cd_w - 28);
                 }
-
-                draw_set_color(_sb_hov ? make_color_rgb(70, 40, 20) : make_color_rgb(38, 22, 12));
-                draw_rectangle(_cdx + 14, _sb_y, _cdx + 280, _sb_y + 28, false);
-                draw_set_color(make_color_rgb(255, 140, 40));
-                draw_rectangle(_cdx + 14, _sb_y, _cdx + 280, _sb_y + 28, true);
-                draw_set_color(c_white);
-                draw_text(_cdx + 20, _sb_y + 6, "[CORPORATE SABOTAGE (-50k Cr)]");
             }
         }
     }
 }
 
-
-// =========================================================================
 // 5. TOAST NOTIFICATION OVERLAY
 // =========================================================================
 if (toast_timer > 0) {
@@ -5105,6 +6177,9 @@ if (instance_exists(obj_GameManager) && !is_undefined(obj_GameManager.active_eve
             if (variable_struct_exists(_choice, "standing_terran") && instance_exists(obj_FactionManager)) obj_FactionManager.modify_standing("faction_a", _choice.standing_terran);
             if (variable_struct_exists(_choice, "standing_colony") && instance_exists(obj_FactionManager)) obj_FactionManager.modify_standing("faction_b", _choice.standing_colony);
             if (variable_struct_exists(_choice, "pilot")) array_push(obj_GameManager.facilities.roster_pilots, _choice.pilot);
+            if (variable_struct_exists(_choice, "market_share_delta")) {
+                obj_GameManager.pmc_market_share_pct = min(100, obj_GameManager.pmc_market_share_pct + _choice.market_share_delta);
+            }
 
             show_toast("COMMAND DIRECTIVE LOGGED: " + _choice.label, c_lime);
             obj_GameManager.active_event_popup = undefined;
@@ -5261,31 +6336,18 @@ if (show_turn_briefing_modal) {
 // 9. IN-ENGINE TUTORIAL & FIELD MANUAL MODAL
 // =========================================================================
 if (active_tutorial_modal != "") {
-    draw_set_alpha(0.90);
-    draw_set_color(c_black);
-    draw_rectangle(0, 0, _gw, _gh, false);
-    draw_set_alpha(1.0);
-
     var _tw = 920;
     var _th = 580;
     var _tx0 = (_gw - _tw) / 2;
     var _ty0 = (_gh - _th) / 2;
 
-    draw_set_color(make_color_rgb(10, 16, 24));
-    draw_rectangle(_tx0, _ty0, _tx0 + _tw, _ty0 + _th, false);
-    draw_set_color(make_color_rgb(255, 180, 60));
-    draw_rectangle(_tx0, _ty0, _tx0 + _tw, _ty0 + _th, true);
+    scr_draw_snes_window_modal(_tx0, _ty0, _tw, _th, "PMC OPERATIONAL MANUAL // TACTICAL ARCHIVE", "SYSTEM TUTORIALS & DOCTRINE SCHEMATICS");
 
     // Modal Close Button
     var _cl_w = 140;
-    var _cl_hov = (_mx >= _tx0 + _tw - _cl_w - 20 && _mx <= _tx0 + _tw - 20 && _my >= _ty0 + 16 && _my <= _ty0 + 44);
+    var _cl_hov = (_mx >= _tx0 + _tw - _cl_w - 20 && _mx <= _tx0 + _tw - 20 && _my >= _ty0 + 10 && _my <= _ty0 + 38);
     if ((_cl_hov && _click) || keyboard_check_pressed(vk_escape)) active_tutorial_modal = "";
-    draw_set_color(_cl_hov ? make_color_rgb(120, 40, 40) : make_color_rgb(60, 20, 20));
-    draw_rectangle(_tx0 + _tw - _cl_w - 20, _ty0 + 16, _tx0 + _tw - 20, _ty0 + 44, false);
-    draw_set_color(c_red);
-    draw_rectangle(_tx0 + _tw - _cl_w - 20, _ty0 + 16, _tx0 + _tw - 20, _ty0 + 44, true);
-    draw_set_color(c_white);
-    draw_text(_tx0 + _tw - _cl_w - 8, _ty0 + 22, "[X CLOSE (ESC)]");
+    scr_draw_snes_button(_tx0 + _tw - _cl_w - 20, _ty0 + 10, _cl_w, 28, "[X CLOSE (ESC)]", _cl_hov, false, c_red);
 
     // Modal Navigation Sub-Tabs
     var _mod_tabs = [
@@ -5304,12 +6366,7 @@ if (active_tutorial_modal != "") {
         var _mthov = (_mx >= _mt_x && _mx <= _mt_x + _mtw && _my >= _mt_y && _my <= _mt_y + 28);
         if (_mthov && _click) active_tutorial_modal = _mt_dat.id;
 
-        draw_set_color(_is_mact ? make_color_rgb(50, 100, 160) : (_mthov ? make_color_rgb(30, 60, 90) : make_color_rgb(16, 26, 38)));
-        draw_rectangle(_mt_x, _mt_y, _mt_x + _mtw, _mt_y + 28, false);
-        draw_set_color(_is_mact ? make_color_rgb(100, 220, 255) : make_color_rgb(45, 75, 110));
-        draw_rectangle(_mt_x, _mt_y, _mt_x + _mtw, _mt_y + 28, true);
-        draw_set_color(c_white);
-        draw_text(_mt_x + 10, _mt_y + 6, _mt_dat.label);
+        scr_draw_snes_button(_mt_x, _mt_y, _mtw, 28, _mt_dat.label, _mthov, _is_mact, make_color_rgb(255, 190, 60));
     }
 
     // Modal Content Body

@@ -55,6 +55,11 @@ if (is_undefined(suit_data)) {
     suit_data = !is_undefined(_loaded) ? scr_struct_clone(_loaded) : {};
 }
 
+// Bind dynamic sprite asset if present on blueprint or catalog
+if (is_struct(suit_data) && variable_struct_exists(suit_data, "sprite_asset") && sprite_exists(suit_data.sprite_asset)) {
+    sprite_index = suit_data.sprite_asset;
+}
+
 // Cache maximum HP values for HUD display
 max_hp = {
     head: suit_data.components.head.armor_hp ?? 160,

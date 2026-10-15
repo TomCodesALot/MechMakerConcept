@@ -28,6 +28,217 @@ time_speed = 0;              // Preserved as 0 (turn-based architecture)
 career_summary = undefined;  // Sid Meier's Pirates style retirement dossier struct
 total_sorties_won = 0;       // Total successful PMC sorties and sector conquests
 
+// 3c. Timeline Tech Eras & Progression (docs/27)
+timeline_era = 2; // 1 = Early War (Y214), 2 = Industrial Escalation (Y215-216), 3 = Total War (Y217-219), 4 = Apex Crisis (Y220+)
+timeline_era_name = "ERA II: INDUSTRIAL ESCALATION";
+timeline_era_year_start = 214;
+
+// 4c. Procedural Competitor R&D Catalog & Lineages (docs/27)
+competitor_catalog = {};
+
+init_competitor_catalog = function() {
+    competitor_catalog = {
+        corp_vhi: {
+            id: "corp_vhi",
+            name: "Valkyrie Heavy Industries",
+            ticker: "VHI",
+            branch: choose("BRANCH_A", "BRANCH_B"),
+            branch_name: "",
+            doctrine: "",
+            suits_by_era: {},
+            active_line_chassis: undefined,
+            has_rare_x_spec: (random(100) < 35.0),
+            rare_x_chassis: undefined
+        },
+        corp_aod: {
+            id: "corp_aod",
+            name: "Astraea Orbital Dynamics",
+            ticker: "AOD",
+            branch: choose("BRANCH_A", "BRANCH_B"),
+            branch_name: "",
+            doctrine: "",
+            suits_by_era: {},
+            active_line_chassis: undefined,
+            has_rare_x_spec: (random(100) < 35.0),
+            rare_x_chassis: undefined
+        },
+        corp_rust: {
+            id: "corp_rust",
+            name: "Rustworks Salvage Cartel",
+            ticker: "RUST",
+            branch: choose("BRANCH_A", "BRANCH_B"),
+            branch_name: "",
+            doctrine: "",
+            suits_by_era: {},
+            active_line_chassis: undefined,
+            has_rare_x_spec: (random(100) < 35.0),
+            rare_x_chassis: undefined
+        },
+        corp_hats: {
+            id: "corp_hats",
+            name: "Hyperion Advanced Tactical Systems",
+            ticker: "HATS",
+            branch: choose("BRANCH_A", "BRANCH_B"),
+            branch_name: "",
+            doctrine: "",
+            suits_by_era: {},
+            active_line_chassis: undefined,
+            has_rare_x_spec: (random(100) < 35.0),
+            rare_x_chassis: undefined
+        }
+    };
+
+    // Populate Valkyrie R&D Branch
+    var _vhi = competitor_catalog.corp_vhi;
+    if (_vhi.branch == "BRANCH_A") {
+        _vhi.branch_name = "Tungsten Citadel Doctrine";
+        _vhi.doctrine = "Impenetrable frontal kinetic armor & stationary siege artillery";
+        _vhi.suits_by_era = {
+            era_1: { id: "TCM-03", name: "TCM-03 Bulwark", armor: 1620, power: 8, speed: 38, combat: 380, class: "Line Defense", primary_weapon: "90mm Rifled Cannon" },
+            era_2: { id: "GHA-07", name: "GHA-07 Ironclad", armor: 2480, power: 12, speed: 45, combat: 480, class: "Assault Wall", primary_weapon: "Type-77 120mm Autocannon" },
+            era_3: { id: "GHA-08", name: "GHA-08 Ironclad Bastion", armor: 3200, power: 15, speed: 40, combat: 590, class: "Heavy Bastion", primary_weapon: "Twin 150mm Siege Howitzer" },
+            era_4: { id: "TCX-11", name: "TCX-11 Behemoth Mk.IV", armor: 4800, power: 22, speed: 35, combat: 720, class: "Heavy Dreadnought", primary_weapon: "Dual 400mm Hyper-Rail Batteries" }
+        };
+        _vhi.rare_x_chassis = { id: "VHI-X01", name: "VHI-X01 'Goliath Prime'", armor: 5400, power: 24, speed: 32, combat: 810, class: "Prototype Juggernaut", primary_weapon: "Supercritical Kinetic Ram" };
+    } else {
+        _vhi.branch_name = "Mobile Blitzkrieg Doctrine";
+        _vhi.doctrine = "Tracked trench stormers & continuous feed rotary cannons";
+        _vhi.suits_by_era = {
+            era_1: { id: "VHI-01", name: "VHI Centurion Scout", armor: 1450, power: 9, speed: 55, combat: 390, class: "Light Blitz", primary_weapon: "40mm Twin Autocannon" },
+            era_2: { id: "VHI-02", name: "VHI Centurion Assault", armor: 2200, power: 14, speed: 62, combat: 510, class: "Medium Striker", primary_weapon: "GAU-88 Rotary Heavy Vulcan" },
+            era_3: { id: "VHI-03", name: "VHI Warhammer Breaker", armor: 2950, power: 18, speed: 58, combat: 620, class: "Heavy Stormer", primary_weapon: "Quad Rotary Shredder Cannon" },
+            era_4: { id: "VHI-04", name: "VHI Titan Dreadnought", armor: 4300, power: 26, speed: 52, combat: 760, class: "Assault Dreadnought", primary_weapon: "Cyclic 200mm Autocannon Battery" }
+        };
+        _vhi.rare_x_chassis = { id: "VHI-X02", name: "VHI-X02 'Colossus Blitz'", armor: 4700, power: 28, speed: 60, combat: 830, class: "Prototype Breaker", primary_weapon: "Twin 50mm Continuous Chaingun" };
+    }
+
+    // Populate Astraea R&D Branch
+    var _aod = competitor_catalog.corp_aod;
+    if (_aod.branch == "BRANCH_A") {
+        _aod.branch_name = "Coherent Energy Monopoly";
+        _aod.doctrine = "Spinal particle beam accelerators & prism energy screen barriers";
+        _aod.suits_by_era = {
+            era_1: { id: "OCM-04", name: "OCM-04 Sylph", armor: 1180, power: 14, speed: 110, combat: 410, class: "Light Interceptor", primary_weapon: "Particle Carbine" },
+            era_2: { id: "AET-01", name: "AET-01 Aether", armor: 1580, power: 16, speed: 120, combat: 510, class: "Energy Striker", primary_weapon: "Coherent Beam Pulse Rifle" },
+            era_3: { id: "OCA-07", name: "OCA-07 Helios Arbalest", armor: 1850, power: 22, speed: 115, combat: 620, class: "Spinal Beam Sniper", primary_weapon: "Heavy Spinal Beam Accelerator" },
+            era_4: { id: "OCX-15", name: "OCX-15 Seraphim Trans-Am", armor: 2900, power: 30, speed: 135, combat: 780, class: "Supercritical Dominator", primary_weapon: "Dual Hyper-Beam Cannons" }
+        };
+        _aod.rare_x_chassis = { id: "AOD-X01", name: "AOD-X01 'Solarion Phoenix'", armor: 3200, power: 34, speed: 140, combat: 850, class: "Prototype Dominator", primary_weapon: "Linear Vector Plasma Lance" };
+    } else {
+        _aod.branch_name = "Micro-G Vector Acrobatics";
+        _aod.doctrine = "3D omni-directional vernier matrix & high-frequency plasma blades";
+        _aod.suits_by_era = {
+            era_1: { id: "AOD-01", name: "AOD Vector Dart", armor: 1050, power: 15, speed: 125, combat: 420, class: "Light Skirmisher", primary_weapon: "Twin Thermal Needles" },
+            era_2: { id: "AOD-02", name: "AOD Mirage Skirmisher", armor: 1420, power: 18, speed: 135, combat: 530, class: "Vector Striker", primary_weapon: "High-Frequency Plasma Saber" },
+            era_3: { id: "AOD-03", name: "AOD Valkyrie Wing", armor: 1750, power: 24, speed: 145, combat: 640, class: "Acrobatic Duelist", primary_weapon: "Twin Beam Naginata" },
+            era_4: { id: "AOD-04", name: "AOD Chronos Interceptor", armor: 2600, power: 32, speed: 160, combat: 800, class: "Omni-Vector Ace", primary_weapon: "Relativistic Phase Blades" }
+        };
+        _aod.rare_x_chassis = { id: "AOD-X02", name: "AOD-X02 'Astraea Seraph'", armor: 2800, power: 36, speed: 175, combat: 880, class: "Prototype Interceptor", primary_weapon: "Chrono-Phase Beam Claws" };
+    }
+
+    // Populate Rustworks R&D Branch
+    var _rust = competitor_catalog.corp_rust;
+    if (_rust.branch == "BRANCH_A") {
+        _rust.branch_name = "Molten Scrap Demolition";
+        _rust.doctrine = "Converted ore refinery slag mortars & incendiary cluster bombs";
+        _rust.suits_by_era = {
+            era_1: { id: "SCR-05", name: "SCR-05 Marauder", armor: 1350, power: 8, speed: 65, combat: 360, class: "Pirate Raider", primary_weapon: "90mm Shrapnel Gun" },
+            era_2: { id: "SCR-12", name: "SCR-12 Hyena", armor: 1720, power: 10, speed: 75, combat: 440, class: "Scav Raider", primary_weapon: "Flak Scattergun" },
+            era_3: { id: "SCA-14", name: "SCA-14 Slag-Lobber", armor: 2250, power: 14, speed: 70, combat: 540, class: "Scrap Mortar", primary_weapon: "Molten Slag Catapult" },
+            era_4: { id: "SCX-19", name: "SCX-19 Chimera Apex", armor: 3800, power: 20, speed: 78, combat: 710, class: "Hybrid Behemoth", primary_weapon: "Stolen Siege Railcannon" }
+        };
+        _rust.rare_x_chassis = { id: "RST-X01", name: "RST-X01 'Slag Titan'", armor: 4400, power: 22, speed: 65, combat: 790, class: "Prototype Demolisher", primary_weapon: "Thermal Slag Geyser" };
+    } else {
+        _rust.branch_name = "Overclocked Pirate Brawlers";
+        _rust.doctrine = "Overpowered diesel-fusion cores & hydraulic wrecking cleavers";
+        _rust.suits_by_era = {
+            era_1: { id: "RST-01", name: "SCR Junk Ripper", armor: 1200, power: 10, speed: 80, combat: 370, class: "Light Brawler", primary_weapon: "Serrated Scrap Saw" },
+            era_2: { id: "RST-02", name: "SCR Reaver Raider", armor: 1650, power: 13, speed: 90, combat: 470, class: "Medium Charger", primary_weapon: "Hydraulic Breaching Ram" },
+            era_3: { id: "RST-03", name: "RST Blood Hound", armor: 2100, power: 18, speed: 95, combat: 580, class: "Heavy Berserker", primary_weapon: "Dual Crushing Shears" },
+            era_4: { id: "RST-04", name: "RST Hellion Warlord", armor: 3400, power: 26, speed: 100, combat: 740, class: "Warlord Juggernaut", primary_weapon: "Spinal Kinetic Cleaver" }
+        };
+        _rust.rare_x_chassis = { id: "RST-X02", name: "RST-X02 'Junk Leviathan'", armor: 4100, power: 30, speed: 88, combat: 820, class: "Prototype Leviathan", primary_weapon: "Quad Wrecking Piles" };
+    }
+
+    // Populate Hyperion R&D Branch
+    var _hats = competitor_catalog.corp_hats;
+    if (_hats.branch == "BRANCH_A") {
+        _hats.branch_name = "Cybernetic Neural-Drive";
+        _hats.doctrine = "Transhuman brain-machine sync & predictive quantum combat AI";
+        _hats.suits_by_era = {
+            era_1: { id: "ZM-06", name: "ZM-06 Ronin", armor: 1250, power: 12, speed: 85, combat: 420, class: "Corporate Security", primary_weapon: "High-Frequency Vibro-Blade" },
+            era_2: { id: "ZAI-03", name: "ZAI-03 Muramasa", armor: 1610, power: 18, speed: 95, combat: 560, class: "Cyber-Striker", primary_weapon: "Muramasa Plasma Katana" },
+            era_3: { id: "ZMA-15", name: "ZMA-15 Raiden", armor: 1780, power: 24, speed: 100, combat: 670, class: "Precision Sniper", primary_weapon: "Hyper-Velocity Railgun" },
+            era_4: { id: "ZX-22", name: "ZX-22 Susanoo Cyber-Drive", armor: 2750, power: 34, speed: 125, combat: 820, class: "Transhuman Godframe", primary_weapon: "Relativistic Tachyon Sabers" }
+        };
+        _hats.rare_x_chassis = { id: "HATS-X01", name: "HATS-X01 'Zero Muramasa'", armor: 3100, power: 38, speed: 135, combat: 910, class: "Prototype Cyber-Frame", primary_weapon: "Quantum Singularity Blade" };
+    } else {
+        _hats.branch_name = "Thermo-Optic Infiltration";
+        _hats.doctrine = "Active light-bending camouflage & silent magnetic accelerators";
+        _hats.suits_by_era = {
+            era_1: { id: "HATS-01", name: "HATS Shadow Scout", armor: 1100, power: 13, speed: 95, combat: 430, class: "Stealth Scout", primary_weapon: "Suppressed Gauss Needle" },
+            era_2: { id: "HATS-02", name: "HATS Specter Infiltrator", armor: 1520, power: 20, speed: 105, combat: 580, class: "Ghost Striker", primary_weapon: "Silent Mag-Sniper" },
+            era_3: { id: "HATS-03", name: "HATS Phantom Recon", armor: 1720, power: 26, speed: 112, combat: 690, class: "EW Infiltrator", primary_weapon: "Disruptor Beam Pistol" },
+            era_4: { id: "HATS-04", name: "HATS Shadow Raven", armor: 2550, power: 35, speed: 130, combat: 830, class: "Stealth Assassin", primary_weapon: "Phase-Cloaked Thermal Lance" }
+        };
+        _hats.rare_x_chassis = { id: "HATS-X02", name: "HATS-X02 'Eclipse Ghost'", armor: 2900, power: 40, speed: 145, combat: 920, class: "Prototype Infiltrator", primary_weapon: "Null-Trace Plasma Sniper" };
+    }
+
+    update_competitors_for_new_era();
+};
+
+update_competitors_for_new_era = function() {
+    var _era_key = "era_" + string(timeline_era);
+    var _corps = ["corp_vhi", "corp_aod", "corp_rust", "corp_hats"];
+    for (var c = 0; c < 4; c++) {
+        var _cp = competitor_catalog[$ _corps[c]];
+        if (variable_struct_exists(_cp.suits_by_era, _era_key)) {
+            _cp.active_line_chassis = _cp.suits_by_era[$ _era_key];
+            if (variable_struct_exists(rival_corporations, _corps[c])) {
+                rival_corporations[$ _corps[c]].flagship_chassis = _cp.active_line_chassis.name;
+            }
+        }
+    }
+};
+
+evaluate_timeline_progression = function() {
+    var _old_era = timeline_era;
+    if (current_turn >= 200 || current_cycle_year >= 220) {
+        timeline_era = 4;
+        timeline_era_name = "ERA IV: APEX CRISIS & ARCHEOTECH";
+    } else if (current_turn >= 120 || current_cycle_year >= 217) {
+        timeline_era = 3;
+        timeline_era_name = "ERA III: TOTAL STRATEGIC WAR";
+    } else if (current_turn >= 60 || current_cycle_year >= 215) {
+        timeline_era = 2;
+        timeline_era_name = "ERA II: INDUSTRIAL ESCALATION";
+    } else {
+        timeline_era = 1;
+        timeline_era_name = "ERA I: EARLY WAR SHAKEDOWN";
+    }
+
+    if (timeline_era != _old_era) {
+        array_push(last_turn_events, "! TIMELINE TECH ADVANCEMENT: Sol System enters " + timeline_era_name + "!");
+        if (instance_exists(obj_HQTerminal)) {
+            obj_HQTerminal.show_toast("TECH ADVANCEMENT: " + timeline_era_name + "!", c_yellow);
+        }
+        update_competitors_for_new_era();
+    }
+};
+
+evaluate_corporate_random_events = function() {
+    if (!is_undefined(active_event_popup)) return false;
+    if (array_length(narrative_events_list) == 0) return false;
+
+    // 14% chance per turn to trigger an event
+    if (random(100) < 14.0) {
+        var _rand_idx = irandom(array_length(narrative_events_list) - 1);
+        trigger_event_by_id(narrative_events_list[_rand_idx].id);
+        return true;
+    }
+    return false;
+};
+
 // 4. PMC Company Profile
 pmc_profile = {
     name: "Iron Ridge Tactical Operations",
@@ -62,7 +273,7 @@ flagship = {
     orbital_strike_cooldown: 0
 };
 
-// 4c. Rival Corporate Mobile Suit Manufacturers (Doc 23)
+// 4c. Rival Corporate Mobile Suit Manufacturers & Stock Exchange (docs/23, docs/28)
 rival_corporations = {
     corp_vhi: {
         id: "corp_vhi",
@@ -74,7 +285,15 @@ rival_corporations = {
         specialty: "Super-Heavy Armor & Ballistic Artillery",
         flagship_chassis: "GHA-07 Ironclad",
         ceo: "Baroness Victoria Sterling",
-        hq_location: "Geneva Orbital Ring (Earth)"
+        hq_location: "Geneva Orbital Ring (Earth)",
+        base_share_price: 120,
+        share_price_cr: 120,
+        total_shares: 100000,
+        player_shares: 0,
+        player_equity_pct: 0.0,
+        dividend_per_turn: 0,
+        is_acquired: false,
+        controlling_interest: false
     },
     corp_aod: {
         id: "corp_aod",
@@ -86,7 +305,15 @@ rival_corporations = {
         specialty: "Micro-Gravity Verniers & Beam Weaponry",
         flagship_chassis: "AET-01 Aether",
         ceo: "Dr. Sorel Vance",
-        hq_location: "Galileo Aerospace Hub (Ganymede)"
+        hq_location: "Galileo Aerospace Hub (Ganymede)",
+        base_share_price: 135,
+        share_price_cr: 135,
+        total_shares: 100000,
+        player_shares: 0,
+        player_equity_pct: 0.0,
+        dividend_per_turn: 0,
+        is_acquired: false,
+        controlling_interest: false
     },
     corp_rust: {
         id: "corp_rust",
@@ -98,7 +325,15 @@ rival_corporations = {
         specialty: "Scavenged Junk Frames & Rotary Vulcans",
         flagship_chassis: "SCR-12 Hyena",
         ceo: "'Grease' Garvin",
-        hq_location: "Asteroid 433 Eros / Rust-Pike"
+        hq_location: "Asteroid 433 Eros / Rust-Pike",
+        base_share_price: 45,
+        share_price_cr: 45,
+        total_shares: 100000,
+        player_shares: 0,
+        player_equity_pct: 0.0,
+        dividend_per_turn: 0,
+        is_acquired: false,
+        controlling_interest: false
     },
     corp_hats: {
         id: "corp_hats",
@@ -110,10 +345,188 @@ rival_corporations = {
         specialty: "Neural Synapse Links & Predictive Combat AI",
         flagship_chassis: "ZAI-03 Muramasa",
         ceo: "Director Renzo Takahashi",
-        hq_location: "Neo-Tokyo Orbital Silo (Mars)"
+        hq_location: "Neo-Tokyo Orbital Silo (Mars)",
+        base_share_price: 95,
+        share_price_cr: 95,
+        total_shares: 100000,
+        player_shares: 0,
+        player_equity_pct: 0.0,
+        dividend_per_turn: 0,
+        is_acquired: false,
+        controlling_interest: false
     }
 };
 pmc_market_share_pct = 5;
+sol_monopoly_achieved = false;
+
+// Corporate Stock Exchange Trading Methods (docs/28)
+calculate_rival_share_price = function(_corp_id) {
+    if (!variable_struct_exists(rival_corporations, _corp_id)) return 0;
+    var _rc = rival_corporations[$ _corp_id];
+    if (_rc.is_acquired) {
+        _rc.share_price_cr = 0;
+        _rc.dividend_per_turn = 0;
+        return 0;
+    }
+    var _era_mult = 1.0 + (timeline_era - 1) * 0.35;
+    var _share_mult = _rc.market_share_pct / 25.0;
+    var _scandal_mult = (_rc.hostility_pct > 60) ? 0.75 : 1.0;
+    _rc.share_price_cr = clamp(round(_rc.base_share_price * _share_mult * _era_mult * _scandal_mult), 15, 650);
+    _rc.dividend_per_turn = floor(_rc.player_shares * (_rc.share_price_cr * 0.002));
+    return _rc.share_price_cr;
+};
+
+buy_rival_shares = function(_corp_id, _shares_count) {
+    if (!variable_struct_exists(rival_corporations, _corp_id)) return false;
+    var _rc = rival_corporations[$ _corp_id];
+    if (_rc.is_acquired) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("COMPANY ACQUIRED: Fully owned subsidiary!", c_yellow);
+        return false;
+    }
+    calculate_rival_share_price(_corp_id);
+    var _cost = floor(_shares_count * _rc.share_price_cr);
+    if (funds < _cost) {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT FUNDS! (Requires " + string(_cost) + " Cr)", c_red);
+        return false;
+    }
+    if (_rc.player_shares + _shares_count > 100000) {
+        _shares_count = 100000 - _rc.player_shares;
+        _cost = floor(_shares_count * _rc.share_price_cr);
+    }
+    if (_shares_count <= 0) return false;
+
+    funds -= _cost;
+    _rc.player_shares += _shares_count;
+    _rc.player_equity_pct = (_rc.player_shares / 100000.0) * 100.0;
+    if (_rc.player_equity_pct >= 51.0) _rc.controlling_interest = true;
+    _rc.dividend_per_turn = floor(_rc.player_shares * (_rc.share_price_cr * 0.002));
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("ACQUIRED " + string(_shares_count) + " SHARES OF " + _rc.ticker + " (" + string(_rc.player_equity_pct) + "% STAKE)!", c_lime);
+    }
+    if (_rc.player_shares >= 100000) {
+        execute_hostile_takeover(_corp_id);
+    }
+    return true;
+};
+
+sell_rival_shares = function(_corp_id, _shares_count) {
+    if (!variable_struct_exists(rival_corporations, _corp_id)) return false;
+    var _rc = rival_corporations[$ _corp_id];
+    if (_rc.is_acquired || _rc.player_shares <= 0) return false;
+    var _to_sell = min(_shares_count, _rc.player_shares);
+    calculate_rival_share_price(_corp_id);
+    var _payout = floor(_to_sell * _rc.share_price_cr * 0.95); // 5% broker fee
+    funds += _payout;
+    _rc.player_shares -= _to_sell;
+    _rc.player_equity_pct = (_rc.player_shares / 100000.0) * 100.0;
+    if (_rc.player_equity_pct < 51.0) _rc.controlling_interest = false;
+    _rc.dividend_per_turn = floor(_rc.player_shares * (_rc.share_price_cr * 0.002));
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("SOLD " + string(_to_sell) + " SHARES OF " + _rc.ticker + " (+" + string(_payout) + " Cr)!", c_yellow);
+    }
+    return true;
+};
+
+execute_hostile_takeover = function(_corp_id) {
+    if (!variable_struct_exists(rival_corporations, _corp_id)) return false;
+    var _rc = rival_corporations[$ _corp_id];
+    if (_rc.is_acquired) return false;
+
+    // Check if player has >= 51% stake or pays buyout tender offer
+    calculate_rival_share_price(_corp_id);
+    if (_rc.player_shares < 100000) {
+        var _rem_shares = 100000 - _rc.player_shares;
+        var _tender_cost = floor(_rem_shares * _rc.share_price_cr * 1.15); // 15% buyout premium
+        if (_rc.player_equity_pct < 51.0 && funds < _tender_cost) {
+            if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("BUYOUT DENIED: Need 51% controlling stake or " + string(_tender_cost) + " Cr!", c_red);
+            return false;
+        }
+        if (funds >= _tender_cost) {
+            funds -= _tender_cost;
+            _rc.player_shares = 100000;
+        } else {
+            return false;
+        }
+    }
+
+    _rc.player_shares = 100000;
+    _rc.player_equity_pct = 100.0;
+    _rc.is_acquired = true;
+    _rc.controlling_interest = true;
+
+    // 1. Absorb Sol Market Share
+    pmc_market_share_pct = min(100, pmc_market_share_pct + _rc.market_share_pct);
+    _rc.market_share_pct = 0;
+
+    // 2. Absorb Manufacturing Assembly Line (+1 Bay)
+    facilities.assembly_lines = min(4, facilities.assembly_lines + 1);
+
+    // 3. Absorb Proprietary R&D Lineage & Prototype Blueprints
+    if (variable_struct_exists(competitor_catalog, _corp_id)) {
+        var _cat = competitor_catalog[$ _corp_id];
+        _cat.is_eliminated = true;
+
+        if (!is_undefined(_cat.active_line_chassis)) {
+            var _suit = _cat.active_line_chassis;
+            array_push(inventory.deployable_mechs, {
+                id: "acquired_line_" + _suit.id + "_" + string(irandom(9999)),
+                blueprint_id: _suit.id,
+                callsign: _suit.name + " [ACQUIRED LINE]",
+                name: _suit.name,
+                class: _suit.class,
+                assigned_pilot: "Unassigned",
+                status: "READY",
+                current_condition_pct: 1.0,
+                armor_rating: _suit.armor,
+                power_output: _suit.power,
+                speed: _suit.speed,
+                combat_rating: _suit.combat,
+                spec_type: "CORPORATE_ACQUISITION",
+                combat_pedigree: { sorties_deployed: 0, sorties_survived: 0, confirmed_kills: 0, ace_kills: 0, damage_mitigated: 0, pedigree_rating: "FACTORY_SPEC", telemetry_bonus: 5.0 }
+            });
+        }
+        if (_cat.has_rare_x_spec && !is_undefined(_cat.rare_x_chassis)) {
+            var _x_suit = _cat.rare_x_chassis;
+            array_push(inventory.deployable_mechs, {
+                id: "acquired_x_" + _x_suit.id + "_" + string(irandom(9999)),
+                blueprint_id: _x_suit.id,
+                callsign: _x_suit.name + " [PROTOTYPE ACQUIRED]",
+                name: _x_suit.name,
+                class: _x_suit.class,
+                assigned_pilot: "Unassigned",
+                status: "READY",
+                current_condition_pct: 1.0,
+                armor_rating: _x_suit.armor,
+                power_output: _x_suit.power,
+                speed: _x_suit.speed,
+                combat_rating: _x_suit.combat,
+                spec_type: "BLACK_OPS_PROTOTYPE",
+                combat_pedigree: { sorties_deployed: 0, sorties_survived: 0, confirmed_kills: 0, ace_kills: 0, damage_mitigated: 0, pedigree_rating: "PROTOTYPE_MASTER", telemetry_bonus: 10.0 }
+            });
+        }
+    }
+
+    // Check Sol Industrial Monopoly Condition
+    var _all_acquired = true;
+    var _keys = ["corp_vhi", "corp_aod", "corp_rust", "corp_hats"];
+    for (var k = 0; k < 4; k++) {
+        if (!rival_corporations[$ _keys[k]].is_acquired) {
+            _all_acquired = false;
+            break;
+        }
+    }
+    if (_all_acquired) {
+        sol_monopoly_achieved = true;
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("TRIUMPH: SOL INDUSTRIAL MONOPOLY ACHIEVED!", c_yellow);
+    }
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("HOSTILE TAKEOVER COMPLETE: " + _rc.name + " ACQUIRED!", c_lime);
+    }
+    return true;
+};
 
 // 5. Active Inventory Struct (docs/02, 06, 07)
 inventory = {
@@ -130,6 +543,9 @@ inventory = {
         alloy_aerosteel_flux: 8,      // Aerosteel Vernier Alloy
         alloy_adamantine_carbide: 6,  // Adamantine Heavy Carbide
         alloy_reactive_damascus: 4,   // Reactive Damascus Composite (Tier 5 Masterwork)
+        alloy_tachyon_superalloy: 2,  // Tachyon Superalloy Superconductor (Tier 5 Masterwork)
+        alloy_lunar_aerogel: 4,       // Lunar Aerogel Ultralight Composite (Tier 4 Advanced)
+        alloy_sol_ferrite: 4,         // Sol Ferrite High-Permeability Alloy (Tier 5 Masterwork)
         alloy_chobham_reactive: 4,    // Chobham-X Reactive Composite (Tier 5 Masterwork)
         structural_alloys: 850,
         avionics_components: 240,
@@ -175,7 +591,17 @@ inventory = {
             armor_rating: 850,
             power_output: 12,
             speed: 45,
-            combat_rating: 480
+            combat_rating: 480,
+            spec_type: "COMMANDER_CUSTOM",
+            combat_pedigree: {
+                sorties_deployed: 2,
+                sorties_survived: 2,
+                confirmed_kills: 4,
+                ace_kills: 1,
+                damage_mitigated: 980,
+                pedigree_rating: "COMBAT_PROVEN",
+                telemetry_bonus: 8.0
+            }
         },
         {
             id: "unit_ironclad_02",
@@ -189,7 +615,17 @@ inventory = {
             armor_rating: 850,
             power_output: 12,
             speed: 45,
-            combat_rating: 480
+            combat_rating: 480,
+            spec_type: "COMMANDER_CUSTOM",
+            combat_pedigree: {
+                sorties_deployed: 0,
+                sorties_survived: 0,
+                confirmed_kills: 0,
+                ace_kills: 0,
+                damage_mitigated: 0,
+                pedigree_rating: "UNTESTED",
+                telemetry_bonus: 0.0
+            }
         }
     ]
 };
@@ -208,8 +644,8 @@ facilities = {
         }
     ],
     roster_pilots: [
-        { name: "Lt. Marcus Vance", callsign: "VANGUARD-1", accuracy: 88, reflexes: 75, morale: 95, salary_daily: 220, is_deployed: true, status: "ACTIVE", recovery_days: 0, kills: 3, sorties: 5 },
-        { name: "Sgt. Sarah Cole", callsign: "DEATHBLOW", accuracy: 82, reflexes: 79, morale: 88, salary_daily: 190, is_deployed: false, status: "ACTIVE", recovery_days: 0, kills: 1, sorties: 2 }
+        { id: "pilot_terran_vance_starter", character_id: "pilot_terran_vance_starter", name: "Lt. Marcus Vance", callsign: "VANGUARD-1", combat_stat: 9, tactics_stat: 8, accuracy: 88, reflexes: 75, morale: 95, salary_daily: 220, is_deployed: true, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 3, sorties: 5 },
+        { id: "pilot_terran_cole", character_id: "pilot_terran_cole", name: "Sgt. Sarah Cole", callsign: "DEATHBLOW", combat_stat: 8, tactics_stat: 7, accuracy: 82, reflexes: 79, morale: 88, salary_daily: 190, is_deployed: false, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 1, sorties: 2 }
     ],
     pmc_memorial_wall: [],
     roster_engineers: [
@@ -217,14 +653,14 @@ facilities = {
         { name: "Master Chief Travis", role: "Hydraulics Specialist", metallurgy: 70, precision: 86, salary_daily: 160 }
     ],
     available_hire_pilots: [
-        { name: "Lt. Marcus 'Breaker' Cole", callsign: "BREAKER", faction: "faction_terran", portrait: spr_portrait_cole, accuracy: 78, reflexes: 42, morale: 70, salary_daily: 250, bonus_hire: 45000, traits: "Heavy Ordnance (+20% Kinetic DMG)", bio: "Trench warfare veteran who refused to shell civilian domes." },
-        { name: "Ensign Elena Rostova", callsign: "DEAD-EYE", faction: "faction_terran", portrait: spr_portrait_vance, accuracy: 92, reflexes: 55, morale: 80, salary_daily: 220, bonus_hire: 38000, traits: "Retinal Implants (+15% Critical Chance)", bio: "Elite sniper with cybernetic targeting implants." },
-        { name: "Sorren 'Ghost' Lin", callsign: "GHOST", faction: "faction_colony", portrait: spr_portrait_sorren, accuracy: 85, reflexes: 92, morale: 85, salary_daily: 280, bonus_hire: 52000, traits: "Vernier Ace (+25% Evasion)", bio: "Quiet Jovian interceptor ace obsessed with zero-G speed." },
-        { name: "Kira Dahl", callsign: "SPECTER", faction: "faction_colony", portrait: spr_portrait_sorren, accuracy: 70, reflexes: 80, morale: 90, salary_daily: 190, bonus_hire: 34000, traits: "ECM Pulse (-20% Enemy Hit)", bio: "Electronic warfare specialist and sensor jammer prodigy." },
-        { name: "Nadia 'Spark' Ortiz", callsign: "SPARK", faction: "faction_syndicate", portrait: spr_portrait_nadia, accuracy: 72, reflexes: 65, morale: 95, salary_daily: 170, bonus_hire: 31000, traits: "Field Rig (+25% Scrap Salvage)", bio: "Asteroid belt mechanic who can patch hulls under direct mortar fire." },
-        { name: "'Jackal' Jax Vance", callsign: "JACKAL", faction: "faction_syndicate", portrait: spr_portrait_cole, accuracy: 80, reflexes: 78, morale: 65, salary_daily: 230, bonus_hire: 41000, traits: "Harpoon Tether (Pins Mechs)", bio: "Mercenary skirmisher fighting purely for cold credits." },
-        { name: "Null-07 (Ren)", callsign: "NULL", faction: "faction_zaibatsu", portrait: spr_portrait_null07, accuracy: 96, reflexes: 88, morale: 50, salary_daily: 320, bonus_hire: 65000, traits: "Neural Link (+2 Action in 1st Turn)", bio: "Escaped Zaibatsu test subject with spinal neural-jack implants." },
-        { name: "Maya 'Kestrel' Zhao", callsign: "KESTREL", faction: "faction_zaibatsu", portrait: spr_portrait_nadia, accuracy: 84, reflexes: 75, morale: 85, salary_daily: 240, bonus_hire: 46000, traits: "Sub-Drone Swarm Support", bio: "Former corporate security ace who bought out her debt contract." }
+        { id: "plt_terran_cole", character_id: "pilot_terran_cole", name: "Lt. Marcus 'Breaker' Cole", callsign: "BREAKER", faction: "faction_terran", portrait: spr_portrait_cole, accuracy: 78, reflexes: 42, combat_stat: 8, tactics_stat: 4, morale: 70, salary_daily: 250, bonus_hire: 45000, signing_bonus: 45000, background: "Trench warfare veteran who refused to shell civilian domes.", traits: "Heavy Ordnance (+20% Kinetic DMG)", bio: "Trench warfare veteran who refused to shell civilian domes." },
+        { id: "plt_terran_02", character_id: "pilot_terran_rostova", name: "Ensign Elena Rostova", callsign: "DEAD-EYE", faction: "faction_terran", portrait: spr_portrait_vance, accuracy: 92, reflexes: 55, combat_stat: 9, tactics_stat: 6, morale: 80, salary_daily: 220, bonus_hire: 38000, signing_bonus: 38000, background: "Elite sniper with cybernetic targeting implants.", traits: "Retinal Implants (+15% Critical Chance)", bio: "Elite sniper with cybernetic targeting implants." },
+        { id: "plt_colony_01", character_id: "pilot_colony_sorren", name: "Sorren 'Ghost' Lin", callsign: "GHOST", faction: "faction_colony", portrait: spr_portrait_sorren, accuracy: 85, reflexes: 92, combat_stat: 9, tactics_stat: 9, morale: 85, salary_daily: 280, bonus_hire: 52000, signing_bonus: 52000, background: "Quiet Jovian interceptor ace obsessed with zero-G speed.", traits: "Vernier Ace (+25% Evasion)", bio: "Quiet Jovian interceptor ace obsessed with zero-G speed." },
+        { id: "plt_colony_02", character_id: "pilot_colony_kira", name: "Kira Dahl", callsign: "SPECTER", faction: "faction_colony", portrait: spr_portrait_sorren, accuracy: 70, reflexes: 80, combat_stat: 7, tactics_stat: 8, morale: 90, salary_daily: 190, bonus_hire: 34000, signing_bonus: 34000, background: "Electronic warfare specialist and sensor jammer prodigy.", traits: "ECM Pulse (-20% Enemy Hit)", bio: "Electronic warfare specialist and sensor jammer prodigy." },
+        { id: "plt_syndicate_01", character_id: "pilot_syndicate_nadia", name: "Nadia 'Spark' Ortiz", callsign: "SPARK", faction: "faction_syndicate", portrait: spr_portrait_nadia, accuracy: 72, reflexes: 65, combat_stat: 7, tactics_stat: 7, morale: 95, salary_daily: 170, bonus_hire: 31000, signing_bonus: 31000, background: "Asteroid belt mechanic who can patch hulls under direct mortar fire.", traits: "Field Rig (+25% Scrap Salvage)", bio: "Asteroid belt mechanic who can patch hulls under direct mortar fire." },
+        { id: "plt_syndicate_02", character_id: "pilot_syndicate_jackal", name: "'Jackal' Jax Vance", callsign: "JACKAL", faction: "faction_syndicate", portrait: spr_portrait_cruz, accuracy: 80, reflexes: 78, combat_stat: 8, tactics_stat: 8, morale: 65, salary_daily: 230, bonus_hire: 41000, signing_bonus: 41000, background: "Mercenary skirmisher fighting purely for cold credits.", traits: "Harpoon Tether (Pins Mechs)", bio: "Mercenary skirmisher fighting purely for cold credits." },
+        { id: "plt_zaibatsu_01", character_id: "pilot_zaibatsu_null07", name: "Null-07 (Ren)", callsign: "NULL", faction: "faction_zaibatsu", portrait: spr_portrait_null07, accuracy: 96, reflexes: 88, combat_stat: 10, tactics_stat: 9, morale: 50, salary_daily: 320, bonus_hire: 65000, signing_bonus: 65000, background: "Escaped Zaibatsu test subject with spinal neural-jack implants.", traits: "Neural Link (+2 Action in 1st Turn)", bio: "Escaped Zaibatsu test subject with spinal neural-jack implants." },
+        { id: "plt_zaibatsu_02", character_id: "pilot_zaibatsu_maya", name: "Maya 'Kestrel' Zhao", callsign: "KESTREL", faction: "faction_zaibatsu", portrait: spr_portrait_renzo, accuracy: 84, reflexes: 75, combat_stat: 8, tactics_stat: 8, morale: 85, salary_daily: 240, bonus_hire: 46000, signing_bonus: 46000, background: "Former corporate security ace who bought out her debt contract.", traits: "Sub-Drone Swarm Support", bio: "Former corporate security ace who bought out her debt contract." }
     ]
 };
 
@@ -309,6 +745,88 @@ load_narrative_events = function() {
     }
 };
 load_narrative_events();
+init_competitor_catalog();
+
+// =============================================================================
+// EXPANDED MOBILE SUIT UNIVERSE & CATALOG ENGINE (docs/29)
+// =============================================================================
+mobile_suit_catalog = {};
+
+init_master_mobile_suit_catalog = function() {
+    var _loaded = false;
+    var _paths = ["mobile_suits/mobile_suit_catalog.json", "mobile_suit_catalog.json"];
+    for (var p = 0; p < array_length(_paths); p++) {
+        var _fp = _paths[p];
+        if (file_exists(_fp)) {
+            try {
+                var _buf = buffer_load(_fp);
+                var _str = buffer_read(_buf, buffer_string);
+                buffer_delete(_buf);
+                var _parsed = json_parse(_str);
+                if (is_struct(_parsed)) {
+                    mobile_suit_catalog = _parsed;
+                    _loaded = true;
+                    show_debug_message("[obj_GameManager] Successfully loaded " + string(variable_struct_names_count(mobile_suit_catalog)) + " mobile suits from " + _fp);
+                    break;
+                }
+            } catch (_ex) {
+                show_debug_message("[obj_GameManager] Error loading " + _fp + ": " + string(_ex));
+            }
+        }
+    }
+
+    if (!_loaded || variable_struct_names_count(mobile_suit_catalog) == 0) {
+        show_debug_message("[obj_GameManager] Initializing catalog fallback memory.");
+    }
+};
+
+get_mobile_suit = function(_id) {
+    if (is_struct(mobile_suit_catalog) && variable_struct_exists(mobile_suit_catalog, _id)) {
+        return mobile_suit_catalog[$ _id];
+    }
+    return undefined;
+};
+
+get_suits_by_faction = function(_faction_id) {
+    var _res = [];
+    if (!is_struct(mobile_suit_catalog)) return _res;
+    var _names = variable_struct_get_names(mobile_suit_catalog);
+    for (var i = 0; i < array_length(_names); i++) {
+        var _suit = mobile_suit_catalog[$ _names[i]];
+        if (is_struct(_suit) && _suit[$ "faction_id"] == _faction_id) {
+            array_push(_res, _suit);
+        }
+    }
+    return _res;
+};
+
+get_mass_production_candidates = function(_faction_id) {
+    var _res = [];
+    if (!is_struct(mobile_suit_catalog)) return _res;
+    var _names = variable_struct_get_names(mobile_suit_catalog);
+    for (var i = 0; i < array_length(_names); i++) {
+        var _suit = mobile_suit_catalog[$ _names[i]];
+        if (is_struct(_suit) && _suit[$ "faction_id"] == _faction_id && (_suit[$ "mass_production_line"] ?? false)) {
+            array_push(_res, _suit);
+        }
+    }
+    return _res;
+};
+
+get_suits_by_era = function(_era) {
+    var _res = [];
+    if (!is_struct(mobile_suit_catalog)) return _res;
+    var _names = variable_struct_get_names(mobile_suit_catalog);
+    for (var i = 0; i < array_length(_names); i++) {
+        var _suit = mobile_suit_catalog[$ _names[i]];
+        if (is_struct(_suit) && _suit[$ "era"] == _era) {
+            array_push(_res, _suit);
+        }
+    }
+    return _res;
+};
+
+init_master_mobile_suit_catalog();
 
 trigger_event_by_id = function(_event_id) {
     for (var e = 0; e < array_length(narrative_events_list); e++) {
@@ -349,6 +867,33 @@ end_turn = function() {
     var _net_flow = _daily_retainer - _daily_salaries - _daily_maintenance;
     funds += _net_flow;
     array_push(last_turn_events, "* Fiscal Ledger: Net Cashflow " + (_net_flow >= 0 ? "+" : "") + string(_net_flow) + " Cr (Treasury: " + string(funds) + " Cr)");
+
+    // 1b. Corporate Stock Exchange Dividends & Royalties (docs/28)
+    var _total_dividends = 0;
+    var _total_royalties = 0;
+    var _corp_list = ["corp_vhi", "corp_aod", "corp_rust", "corp_hats"];
+    for (var ci = 0; ci < 4; ci++) {
+        var _c_id = _corp_list[ci];
+        if (variable_struct_exists(rival_corporations, _c_id)) {
+            var _rcp = rival_corporations[$ _c_id];
+            if (!_rcp.is_acquired) {
+                calculate_rival_share_price(_c_id);
+                if (_rcp.player_shares > 0) {
+                    var _div = floor(_rcp.player_shares * (_rcp.share_price_cr * 0.002));
+                    _total_dividends += _div;
+                    array_push(last_turn_events, "* Equity Dividend: " + _rcp.ticker + " (" + string(_rcp.player_equity_pct) + "%) paid +" + string(_div) + " Cr");
+                }
+                if (_rcp.player_equity_pct >= 51.0) {
+                    var _royalty = floor(_rcp.market_share_pct * 850);
+                    _total_royalties += _royalty;
+                    array_push(last_turn_events, "* Majority Stake Royalty: Extracted +" + string(_royalty) + " Cr from " + _rcp.ticker + " operations");
+                }
+            }
+        }
+    }
+    if (_total_dividends > 0 || _total_royalties > 0) {
+        funds += (_total_dividends + _total_royalties);
+    }
 
     // Bankruptcy warning
     if (funds < 0) {
@@ -406,13 +951,28 @@ end_turn = function() {
         var _fab = facilities.active_fabrications[i];
         _fab.days_remaining--;
         if (_fab.days_remaining <= 0) {
+            var _bp_data = undefined;
+            if (instance_exists(obj_BlueprintManager)) {
+                _bp_data = obj_BlueprintManager.get_blueprint(_fab.mech_blueprint);
+            }
+            var _mech_armor = (!is_undefined(_bp_data) && variable_struct_exists(_bp_data, "armor_rating")) ? _bp_data.armor_rating : 850;
+            var _mech_power = (!is_undefined(_bp_data) && variable_struct_exists(_bp_data, "power_output")) ? _bp_data.power_output : 12;
+            var _mech_speed = (!is_undefined(_bp_data) && variable_struct_exists(_bp_data, "speed")) ? _bp_data.speed : 45;
+            var _mech_class = (!is_undefined(_bp_data) && variable_struct_exists(_bp_data, "class")) ? _bp_data.class : "Heavy Assault";
+
             array_push(inventory.deployable_mechs, {
                 id: "unit_ironclad_" + string(array_length(inventory.deployable_mechs) + 1),
                 blueprint_id: _fab.mech_blueprint,
                 callsign: _fab.name,
+                name: _fab.name,
+                class: _mech_class,
                 assigned_pilot: "Unassigned",
                 status: "READY",
-                current_condition_pct: 1.0
+                current_condition_pct: 1.0,
+                armor_rating: _mech_armor,
+                power_output: _mech_power,
+                speed: _mech_speed,
+                combat_rating: floor(_mech_armor / 5 + _mech_speed / 2 + _mech_power * 3)
             });
             array_push(last_turn_events, "* FACTORY ROLLOUT: " + _fab.name + " finished assembly -> transferred to Hangar!");
             array_delete(facilities.active_fabrications, i, 1);
@@ -447,16 +1007,20 @@ end_turn = function() {
     for (var p = 0; p < array_length(facilities.roster_pilots); p++) {
         var _plt = facilities.roster_pilots[p];
         if ((_plt[$ "status"] ?? "ACTIVE") == "HOSPITALIZED") {
-            _plt.recovery_days--;
-            if (_plt.recovery_days <= 0) {
+            var _rec = _plt[$ "recovery_days"] ?? (_plt[$ "recovery_days_left"] ?? 3);
+            _rec--;
+            _plt.recovery_days = _rec;
+            _plt.recovery_days_left = _rec;
+            var _p_name = _plt[$ "name"] ?? "Pilot";
+            if (_rec <= 0) {
                 _plt.status = "ACTIVE";
                 _plt.is_deployed = false;
-                array_push(last_turn_events, "* MEDICAL CLEARANCE: " + _plt.name + " discharged from infirmary -> Ready for Sortie!");
+                array_push(last_turn_events, "* MEDICAL CLEARANCE: " + _p_name + " discharged from infirmary -> Ready for Sortie!");
                 if (instance_exists(obj_HQTerminal)) {
-                    obj_HQTerminal.show_toast("PILOT RECOVERED: " + _plt.name + " cleared for active sortie!", c_lime);
+                    obj_HQTerminal.show_toast("PILOT RECOVERED: " + _p_name + " cleared for active sortie!", c_lime);
                 }
             } else {
-                array_push(last_turn_events, "* Infirmary: " + _plt.name + " in critical recovery (" + string(_plt.recovery_days) + " turns left)");
+                array_push(last_turn_events, "* Infirmary: " + _p_name + " in critical recovery (" + string(_rec) + " turns left)");
             }
         }
     }
@@ -477,10 +1041,24 @@ end_turn = function() {
             if (variable_struct_exists(_fm.mass_production_contracts, _fid)) {
                 var _mp = _fm.mass_production_contracts[$ _fid];
                 if (_mp.replaced) {
-                    var _royalty = _mp.royalty_per_turn;
-                    funds += _royalty;
-                    _mp.cumulative_royalties_paid += _royalty;
-                    array_push(last_turn_events, "* Mass-Production Royalty (" + _mp.faction_name + "): +" + string(_royalty) + " Cr for licensed " + _mp.replacement_name + " lines.");
+                    var _stage = _mp[$ "adoption_stage"] ?? "MATURE";
+                    if (_stage == "TOOLING") {
+                        _mp.tooling_turns_remaining = max(0, (_mp[$ "tooling_turns_remaining"] ?? 2) - 1);
+                        if (_mp.tooling_turns_remaining == 0) {
+                            _mp.adoption_stage = "ROLLOUT";
+                            _mp.active_frontline_units = 50;
+                            array_push(last_turn_events, "! DOCTRINE ROLLOUT: " + _mp.faction_name + " finished shipyard tooling! 50 " + _mp.replacement_name + " units deployed to front lines!");
+                        } else {
+                            array_push(last_turn_events, "* Factory Tooling (" + _mp.faction_name + "): " + string(_mp.tooling_turns_remaining) + " turn(s) remaining for " + _mp.replacement_name + " lines.");
+                        }
+                    } else {
+                        _mp.active_frontline_units = min(250, (_mp[$ "active_frontline_units"] ?? 50) + irandom_range(12, 22));
+                        var _unit_multiplier = max(1.0, _mp.active_frontline_units / 50.0);
+                        var _royalty = round(_mp.royalty_per_turn * _unit_multiplier);
+                        funds += _royalty;
+                        _mp.cumulative_royalties_paid = (_mp[$ "cumulative_royalties_paid"] ?? 0) + _royalty;
+                        array_push(last_turn_events, "* Mass-Production Royalty (" + _mp.faction_name + "): +" + string(_royalty) + " Cr (" + string(_mp.active_frontline_units) + " active units in service).");
+                    }
                 }
             }
         }
@@ -498,13 +1076,11 @@ end_turn = function() {
     // 6b. Dreadnought Flagship & Rival Corporate Evaluation (Doc 23)
     evaluate_flagship_turn();
 
-    // 7. Random Narrative Event Roll (8% chance each turn if none active)
-    if (is_undefined(active_event_popup) && array_length(narrative_events_list) > 0) {
-        if (random(100) < 8.0) {
-            var _rand_idx = irandom(array_length(narrative_events_list) - 1);
-            trigger_event_by_id(narrative_events_list[_rand_idx].id);
-        }
-    }
+    // Evaluate Timeline Progression & Procedural Competitor Updates (docs/27)
+    evaluate_timeline_progression();
+
+    // 7. Random Corporate & Narrative Events Engine (docs/27)
+    evaluate_corporate_random_events();
 
     if (instance_exists(obj_HQTerminal)) {
         obj_HQTerminal.show_toast("ADVANCED TO TURN " + string(current_turn) + " (Y" + string(current_cycle_year) + " D" + string(current_cycle_day) + ")", c_aqua);
@@ -836,12 +1412,19 @@ assemble_custom_mech = function(_name, _head_idx, _torso_idx, _arms_idx, _legs_i
 
     var _suit_name = (_name != "") ? _name : "Custom Vanguard Unit-" + string(array_length(inventory.deployable_mechs) + 1);
 
+    var _weight_class = "MEDIUM MAINSTAY";
+    if (_total_mass < 55) _weight_class = "LIGHT SKIRMISHER";
+    else if (_total_mass >= 55 && _total_mass < 85) _weight_class = "MEDIUM MAINSTAY";
+    else if (_total_mass >= 85 && _total_mass < 110) _weight_class = "HEAVY ASSAULT";
+    else _weight_class = "SUPERHEAVY SIEGEBREAKER";
+
     var _new_mech = {
         id: "custom_mech_" + string(current_turn) + "_" + string(irandom(9999)),
         blueprint_id: "bp_player_custom",
         callsign: _suit_name,
         name: _suit_name,
-        class: "Custom Modular Unit",
+        class: _weight_class,
+        weight_class: _weight_class,
         assigned_pilot: "Unassigned",
         status: "READY",
         current_condition_pct: 1.0,
@@ -858,6 +1441,16 @@ assemble_custom_mech = function(_name, _head_idx, _torso_idx, _arms_idx, _legs_i
             legs: _lg,
             backpack: _bp,
             weapon: _wp
+        },
+        spec_type: "COMMANDER_CUSTOM",
+        combat_pedigree: {
+            sorties_deployed: 0,
+            sorties_survived: 0,
+            confirmed_kills: 0,
+            ace_kills: 0,
+            damage_mitigated: 0,
+            pedigree_rating: "UNTESTED",
+            telemetry_bonus: 0.0
         }
     };
 
@@ -875,6 +1468,57 @@ assemble_custom_mech = function(_name, _head_idx, _torso_idx, _arms_idx, _legs_i
 get_blueprint = function(_blueprint_id) {
     if (instance_exists(obj_BlueprintManager)) return obj_BlueprintManager.get_blueprint(_blueprint_id);
     return undefined;
+};
+
+// 10b. Combat-Proven Pedigree & Arms Dealer Paradox (docs/25)
+accumulate_combat_pedigree = function(_mech_id, _kills, _aces, _dmg_taken, _survived) {
+    for (var m = 0; m < array_length(inventory.deployable_mechs); m++) {
+        var _mech = inventory.deployable_mechs[m];
+        if (_mech.id == _mech_id) {
+            if (!variable_struct_exists(_mech, "combat_pedigree") || !is_struct(_mech.combat_pedigree)) {
+                _mech.combat_pedigree = {
+                    sorties_deployed: 0,
+                    sorties_survived: 0,
+                    confirmed_kills: 0,
+                    ace_kills: 0,
+                    damage_mitigated: 0,
+                    pedigree_rating: "UNTESTED",
+                    telemetry_bonus: 0.0
+                };
+            }
+            var _cp = _mech.combat_pedigree;
+            _cp.sorties_deployed += 1;
+            if (_survived) _cp.sorties_survived += 1;
+            _cp.confirmed_kills += _kills;
+            _cp.ace_kills += _aces;
+            _cp.damage_mitigated += _dmg_taken;
+
+            var _pts = (_cp.sorties_survived * 1.5) + (_cp.confirmed_kills * 0.5) + (_cp.ace_kills * 3.0) + floor(_cp.damage_mitigated / 1000.0);
+            _cp.telemetry_bonus = min(25.0, _pts);
+
+            if (_pts >= 23) _cp.pedigree_rating = "LEGENDARY_VETERAN";
+            else if (_pts >= 16) _cp.pedigree_rating = "BATTLE_HARDENED";
+            else if (_pts >= 8) _cp.pedigree_rating = "COMBAT_PROVEN";
+            else if (_pts >= 1) _cp.pedigree_rating = "FIELD_EVALUATED";
+            else _cp.pedigree_rating = "UNTESTED";
+
+            show_debug_message("[CombatPedigree] Updated " + _mech.name + " (" + _mech_id + ") -> " + _cp.pedigree_rating + " (+" + string(_cp.telemetry_bonus) + " pts)");
+            return _cp;
+        }
+    }
+    return undefined;
+};
+
+blueprint_weakness_bonuses = {};
+register_exported_blueprint_weakness = function(_bp_id, _mech_name) {
+    blueprint_weakness_bonuses[$ _bp_id] = {
+        blueprint_id: _bp_id,
+        name: _mech_name,
+        crit_bonus_pct: 15,
+        armor_pierce_pct: 20,
+        registered_turn: current_turn
+    };
+    show_debug_message("[BlueprintWeakness] Arms Dealer Paradox: PMC pilots gain +15% Crit / +20% AP vs " + _mech_name + " (" + _bp_id + ")!");
 };
 
 show_debug_message("[obj_GameManager] Initialized with calendar day " + string(current_cycle_day) + ", funds: " + string(funds) + " Cr.");
@@ -1270,7 +1914,9 @@ player_pilots = facilities.roster_pilots;
 
 populate_market_from_nemesis = function() {
     if (!instance_exists(obj_NemesisManager)) return;
-    var _nem = obj_NemesisManager;
+    var _nem = instance_find(obj_NemesisManager, 0);
+    if (_nem == noone) return;
+    if (!variable_instance_exists(_nem, "get_faction_pilots") || !variable_instance_exists(_nem, "characters_map")) return;
     var _hire_candidates = [];
 
     var _factions = ["faction_terran", "faction_colony", "faction_syndicate", "faction_zaibatsu", "independent"];
@@ -1307,7 +1953,10 @@ populate_market_from_nemesis = function() {
     }
 };
 
-// Attempt initial population if NemesisManager is already instantiated
+// Attempt initial population if NemesisManager is already instantiated and initialized
 if (instance_exists(obj_NemesisManager)) {
-    populate_market_from_nemesis();
+    var _nem_chk = instance_find(obj_NemesisManager, 0);
+    if (_nem_chk != noone && variable_instance_exists(_nem_chk, "get_faction_pilots")) {
+        populate_market_from_nemesis();
+    }
 }

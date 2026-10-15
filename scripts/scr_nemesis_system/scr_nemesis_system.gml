@@ -302,8 +302,10 @@ function scr_check_romance_trauma(_casualty_id, _killer_id) {
 function scr_get_friendship_referral_discount(_pilot_id) {
     if (!instance_exists(obj_NemesisManager) || !instance_exists(obj_GameManager)) return 0.0;
 
-    var _mgr = obj_NemesisManager;
-    var _gm = obj_GameManager;
+    var _mgr = instance_find(obj_NemesisManager, 0);
+    var _gm = instance_find(obj_GameManager, 0);
+    if (_mgr == noone || _gm == noone) return 0.0;
+    if (!variable_instance_exists(_mgr, "characters_map") || !is_struct(_mgr.characters_map)) return 0.0;
 
     if (!variable_struct_exists(_mgr.characters_map, _pilot_id)) return 0.0;
     var _pilot = _mgr.characters_map[$ _pilot_id];
@@ -315,7 +317,8 @@ function scr_get_friendship_referral_discount(_pilot_id) {
 
     for (var i = 0; i < array_length(_player_pilots); i++) {
         var _hired = _player_pilots[i];
-        var _hired_id = (is_struct(_hired) ? _hired.id : string(_hired));
+        var _hired_id = is_struct(_hired) ? (_hired[$ "character_id"] ?? (_hired[$ "id"] ?? "")) : string(_hired);
+        if (_hired_id == "") continue;
         for (var f = 0; f < array_length(_f_ids); f++) {
             if (_hired_id == _f_ids[f]) {
                 show_debug_message("[FRIENDSHIP REFERRAL] Pilot " + _pilot.name + " qualifies for -25% referral discount via friend " + _hired_id);
@@ -395,6 +398,12 @@ function scr_prisoner_triage(_prisoner_id, _action) {
         show_debug_message("[PRISONER HOLD] Retaining " + _p.name + " as diplomatic shield.");
         return true;
     }
+    else if (_action == "interrogate_corp") {
+        return _mgr.interrogate_corporate_secrets(_prisoner_id);
+    }
+    else if (_action == "ransom_corp") {
+        return _mgr.ransom_to_corporation(_prisoner_id);
+    }
 
     return false;
 }
@@ -410,12 +419,16 @@ function scr_prisoner_triage(_prisoner_id, _action) {
 /// @param {Real} _size Desired square dimension (e.g., 64, 96, 128, 160, 200)
 /// @param {Bool} _show_frame Draw 2-pixel metallic beveled retro frame
 /// @param {String} _expr_override Optional expression: "neutral", "enraged", "stoic", "defeated"
-function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _expr_override) {
+/// @param {Real} _subimg_override Optional frame override (-1 for auto animate)
+function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _expr_override, _subimg_override = -1) {
     var _c = undefined;
     if (is_struct(_char_ref)) {
         _c = _char_ref;
     } else if (is_string(_char_ref) && instance_exists(obj_NemesisManager)) {
-        _c = obj_NemesisManager.get_character(_char_ref);
+        var _mgr_inst = instance_find(obj_NemesisManager, 0);
+        if (_mgr_inst != noone && variable_instance_exists(_mgr_inst, "get_character")) {
+            _c = _mgr_inst.get_character(_char_ref);
+        }
     }
 
     if (is_undefined(_c)) {
@@ -433,12 +446,16 @@ function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _exp
         };
     }
 
+    var _cid = _c[$ "character_id"] ?? (_c[$ "id"] ?? "");
     var _fac = _c[$ "current_faction_id"] ?? (_c[$ "faction_id"] ?? "independent");
     var _canon_fac = _c[$ "faction_id"] ?? "independent";
     var _spec = _c[$ "snes_portrait_spec"] ?? {};
     var _is_nem = false;
-    if (instance_exists(obj_NemesisManager)) {
-        _is_nem = obj_NemesisManager.is_nemesis_active(_c.id);
+    if (instance_exists(obj_NemesisManager) && _cid != "") {
+        var _mgr_inst2 = instance_find(obj_NemesisManager, 0);
+        if (_mgr_inst2 != noone && variable_instance_exists(_mgr_inst2, "is_nemesis_active")) {
+            _is_nem = _mgr_inst2.is_nemesis_active(_cid);
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -477,14 +494,27 @@ function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _exp
     // LAYER 1: Base Character Canvas
     // -------------------------------------------------------------------------
     var _base_spr = spr_portrait_cole;
-    if (_fac == "faction_terran") {
-        _base_spr = (string_pos("vance", _c.id) > 0) ? spr_portrait_vance : spr_portrait_cole;
-    } else if (_fac == "faction_colony") {
-        _base_spr = (string_pos("cassian", _c.id) > 0 || string_pos("vane", _c.id) > 0) ? spr_portrait_cassian : spr_portrait_sorren;
-    } else if (_fac == "faction_syndicate") {
-        _base_spr = (string_pos("nadia", _c.id) > 0 || string_pos("ortiz", _c.id) > 0) ? spr_portrait_nadia : spr_portrait_cruz;
-    } else if (_fac == "faction_zaibatsu") {
-        _base_spr = (string_pos("renzo", _c.id) > 0 || string_pos("takahashi", _c.id) > 0) ? spr_portrait_renzo : spr_portrait_null07;
+    var _has_explicit_port = false;
+    if (variable_struct_exists(_c, "portrait") && sprite_exists(_c.portrait)) {
+        _base_spr = _c.portrait;
+        _has_explicit_port = true;
+    } else if (variable_struct_exists(_c, "portrait_asset")) {
+        var _cand_spr = asset_get_index(_c.portrait_asset);
+        if (sprite_exists(_cand_spr)) {
+            _base_spr = _cand_spr;
+            _has_explicit_port = true;
+        }
+    }
+    if (!_has_explicit_port) {
+        if (_fac == "faction_terran") {
+            _base_spr = (string_pos("vance", _cid) > 0) ? spr_portrait_vance : spr_portrait_cole;
+        } else if (_fac == "faction_colony") {
+            _base_spr = (string_pos("cassian", _cid) > 0 || string_pos("vane", _cid) > 0) ? spr_portrait_cassian : spr_portrait_sorren;
+        } else if (_fac == "faction_syndicate") {
+            _base_spr = (string_pos("nadia", _cid) > 0 || string_pos("ortiz", _cid) > 0) ? spr_portrait_nadia : spr_portrait_cruz;
+        } else if (_fac == "faction_zaibatsu") {
+            _base_spr = (string_pos("renzo", _cid) > 0 || string_pos("takahashi", _cid) > 0) ? spr_portrait_renzo : spr_portrait_null07;
+        }
     }
 
     // Faction palette tint (procedural defection reskinning)
@@ -502,7 +532,19 @@ function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _exp
     var _draw_h = _size - (_pad * 2);
 
     if (sprite_exists(_base_spr)) {
-        draw_sprite_stretched_ext(_base_spr, 0, _x + _pad, _y + _pad, _draw_w, _draw_h, _blend_col, 1.0);
+        var _num_frames = sprite_get_number(_base_spr);
+        var _sub_idx = 0;
+        if (_num_frames > 1) {
+            if (_subimg_override >= 0) {
+                _sub_idx = _subimg_override % _num_frames;
+            } else {
+                // Organic 8 FPS dialogue & blinking animation cycle
+                // Phase-shift based on character identifier and screen X to prevent synchronous blinking
+                var _char_seed = abs(string_byte_at(_cid, 1) * 31 + string_byte_at(_cid, max(1, string_length(_cid))) * 17 + floor(_x) * 7);
+                _sub_idx = floor((current_time + _char_seed) / 125) % _num_frames;
+            }
+        }
+        draw_sprite_stretched_ext(_base_spr, _sub_idx, _x + _pad, _y + _pad, _draw_w, _draw_h, _blend_col, 1.0);
     }
 
     // -------------------------------------------------------------------------
@@ -574,7 +616,7 @@ function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _exp
     // -------------------------------------------------------------------------
     var _eyes = string(_spec[$ "eyes"] ?? "");
     var _head = string(_spec[$ "headgear"] ?? "");
-    var _has_bionic = (string_pos("optic", _eyes) > 0 || string_pos("cyber", _eyes) > 0 || string_pos("synthetic", _eyes) > 0 || _fac == "faction_zaibatsu" || string_pos("null07", _c.id) > 0);
+    var _has_bionic = (string_pos("optic", _eyes) > 0 || string_pos("cyber", _eyes) > 0 || string_pos("synthetic", _eyes) > 0 || _fac == "faction_zaibatsu" || string_pos("null07", _cid) > 0);
 
     if (_has_bionic) {
         // Tachyon Glowing Cybernetic Optic Lens (Right Eye)
@@ -600,7 +642,7 @@ function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _exp
         // Neural interface lead wire back to temple
         draw_set_color(make_color_rgb(0, 180, 210));
         draw_line_width(_ox + _orad, _oy, _cx + _size * 0.28, _oy - 2, max(1.0, _size / 80.0));
-    } else if (string_pos("eyepatch", _head) > 0 || (string_pos("jackal", _c.id) > 0 && _fac == "faction_syndicate")) {
+    } else if (string_pos("eyepatch", _head) > 0 || (string_pos("jackal", _cid) > 0 && _fac == "faction_syndicate")) {
         // Syndicate Reaver Angled Eye-patch
         var _ex = _cx + _size * 0.11;
         var _ey = _cy - _size * 0.05;

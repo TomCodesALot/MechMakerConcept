@@ -1,0 +1,270 @@
+{
+  "events": [
+    {
+      "id": "event_tritium_embargo",
+      "category": "MARKET_SHOCK",
+      "title": "TRANSMISSION: THE JOVIAN TRITIUM EMBARGO",
+      "sender": "Interstellar Commerce Guild & Outer Colonies Fleet",
+      "body": "Colony skirmish fleets have blockaded Jovian gas siphons, cutting off deep-space Tritium exports. Galactic market spot prices for Plasma-Charged Tritium have surged by +300% (from 1,200 Cr to 3,600 Cr). Commercial refineries are desperate for unrefined reserves.",
+      "choices": [
+        {
+          "label": "1. Liquidate Tritium Stockpile",
+          "desc": "Sell 5x Tritium on the open exchange for massive immediate liquidity (+18,000 Cr).",
+          "effect_type": "SELL_TRITIUM",
+          "req_material": "mat_tritium",
+          "req_amount": 5,
+          "credits_delta": 18000
+        },
+        {
+          "label": "2. Hoard Reserves for PMC R&D",
+          "desc": "Keep all Tritium secured for proprietary Hyperion fusion core synthesis.",
+          "effect_type": "HOARD_TRITIUM"
+        },
+        {
+          "label": "3. Deploy Blockade Runner Escort",
+          "desc": "Deploy PMC aces to escort Colony tankers. Boosts Colony standing (+25) but risks Terran sanctions.",
+          "effect_type": "ESCORT_BLOCKADE",
+          "standing_colony": 25,
+          "standing_terran": -15
+        }
+      ]
+    },
+    {
+      "id": "event_hazard_pay_strike",
+      "category": "PERSONNEL_DILEMMA",
+      "title": "URGENT DISPATCH: MINING CORPS HAZARD STRIKE",
+      "sender": "Iron Ridge PMC Pilots & Rigger Union",
+      "body": "Following heavy pirate skirmishes across Asteroid Belt C-14, mining riggers and deployed escort pilots are refusing sorties without an immediate emergency combat stipend. Morale is deteriorating rapidly.",
+      "choices": [
+        {
+          "label": "1. Approve Combat Bonus (-45,000 Cr)",
+          "desc": "Pay the emergency hazard bonus. Restores pilot morale (+20%) and increases extraction yield.",
+          "effect_type": "PAY_BONUS",
+          "credits_delta": -45000,
+          "morale_delta": 20
+        },
+        {
+          "label": "2. Enforce Mercenary Guild Protocol",
+          "desc": "Refuse demands. Pilots stay on standard contracts. Morale drops (-15%), risk of desertion.",
+          "effect_type": "REFUSE_PAY",
+          "morale_delta": -15
+        }
+      ]
+    },
+    {
+      "id": "event_syndicate_leak",
+      "category": "GEOPOLITICAL_SHIFT",
+      "title": "CLASSIFIED INTERCEPT: SYNDICATE BLACK MARKET LEAK",
+      "sender": "Terran Coalition Military Intelligence (T-MINT)",
+      "body": "Terran security forces seized a Syndicate smuggler barge carrying stripped GHA-07 Ironclad ordnance. Forensic serial stamps trace back to an unlogged sale from your manufacturing bays. Terran inspectors demand answers.",
+      "choices": [
+        {
+          "label": "1. Bribe Chief Inspector (-60,000 Cr)",
+          "desc": "Quietly transfer funds to classify the dossier as pirate salvage. Avoids faction sanctions.",
+          "effect_type": "BRIBE_INSPECTOR",
+          "credits_delta": -60000
+        },
+        {
+          "label": "2. Claim Corporate Theft & Scapegoat",
+          "desc": "Blame rogue smugglers. Standing with Terran Coalition drops (-25), but retains funds.",
+          "effect_type": "ACCEPT_SANCTIONS",
+          "standing_terran": -25
+        }
+      ]
+    },
+    {
+      "id": "event_ace_recruitment",
+      "category": "OPPORTUNITY",
+      "title": "PERSONNEL DOSSIER: VETERAN ACE FOR HIRE",
+      "sender": "Mercenary Guild Free Agent Registry",
+      "body": "Former Coalition frontline ace Captain Victor 'Ronin' Drake is seeking a PMC contract after refusing questionable orbital bombardment orders. Highly proficient in 120mm solid-slug cannons and hydraulic melee breaching.",
+      "choices": [
+        {
+          "label": "1. Hire Captain Drake (-75,000 Cr Signing Bonus)",
+          "desc": "Recruit top-tier ace (92% Accuracy, 84% Reflexes). Daily salary: 340 Cr.",
+          "effect_type": "HIRE_ACE",
+          "credits_delta": -75000,
+          "pilot": {
+            "name": "Capt. Victor 'Ronin' Drake",
+            "callsign": "RONIN-1",
+            "accuracy": 92,
+            "reflexes": 84,
+            "morale": 90,
+            "salary_daily": 340
+          }
+        },
+        {
+          "label": "2. Pass on Candidate",
+          "desc": "Maintain current payroll obligations.",
+          "effect_type": "PASS_ACE"
+        }
+      ]
+    },
+    {
+      "id": "event_competitor_leak",
+      "title": "CLASSIFIED DISPATCH: CORPORATE PROTOTYPE LEAK",
+      "sender": "Black-Market Data Broker 'Cipher'",
+      "category": "Corporate Espionage",
+      "body": "Commander, our moles inside Astraea Orbital Dynamics have intercepted encrypted CAD schematics of their next-generation micro-gravity frame. They plan to submit this prototype in the upcoming Colony procurement tender. The broker is asking 60,000 Credits for the decrypted telemetry.",
+      "choices": [
+        {
+          "label": "1. Purchase CAD Schematics (-60,000 Cr)",
+          "credits_delta": -60000,
+          "standing_colony": 0,
+          "flyoff_bonus_pts": 10,
+          "consequence_desc": "Telemetry decrypted! Next procurement fly-off against Astraea gains a +10 PTS competitive insight bonus."
+        },
+        {
+          "label": "2. Leak Encrypted Data to Terran Military Intelligence",
+          "credits_delta": 45000,
+          "standing_terran": 15,
+          "standing_colony": -10,
+          "consequence_desc": "Terran Coalition awards a 45,000 Cr finder's fee (+15 Terran Standing, -10 Colony Standing)."
+        },
+        {
+          "label": "3. Disregard Intercept as Corporate Counter-Intel",
+          "credits_delta": 0,
+          "consequence_desc": "Transmission archived without action."
+        }
+      ]
+    },
+    {
+      "id": "event_emergency_flash_tender",
+      "title": "EMERGENCY TENDER: LUNAR DEFENSE CRISIS",
+      "sender": "General Hector Vance (Terran Munitions Board)",
+      "category": "Flash Procurement Order",
+      "body": "Urgent alert, mercenary. Syndicate pirate wolves have breached the perimeter at Archimedes Crater. The Terran Coalition has issued an emergency 3-turn flash tender for combat-ready heavy linebreakers. Any approved prototype will bypass standard shipyard tooling delays with a 50% licensing bounty bonus!",
+      "choices": [
+        {
+          "label": "1. Mobilize Foundry for Emergency Mass-Production",
+          "credits_delta": 250000,
+          "standing_terran": 20,
+          "consequence_desc": "Emergency defense contract ratified! +250,000 Cr mobilization grant awarded and Terran standing surged."
+        },
+        {
+          "label": "2. Deploy PMC Strike Squad to Hold the Crater Lines",
+          "credits_delta": 120000,
+          "standing_terran": 25,
+          "consequence_desc": "PMC aces deployed to Lunar lines. Frontline held (+120,000 Cr combat bonus, +25 Terran Standing, +PMC Combat Pedigree)."
+        },
+        {
+          "label": "3. Prioritize Existing Foundry Orders",
+          "credits_delta": 0,
+          "standing_terran": -5,
+          "consequence_desc": "Declined flash tender (-5 Terran Standing)."
+        }
+      ]
+    },
+    {
+      "id": "event_field_failure_scandal",
+      "title": "MARKET SHOCK: VALKYRIE HEAVY HYDRAULIC COLLAPSE",
+      "sender": "Sol Financial News Network (SFNN)",
+      "category": "Corporate Crisis",
+      "body": "Catastrophe in the Jovian trenches! Valkyrie Heavy Industries' newly deployed GHA-07 line units have suffered widespread joint seizing in deep-frost mud, stranding two mechanized divisions. Terran High Command is furious and corporate stock has plunged 22%. The Munitions Board is openly considering canceling their contract.",
+      "choices": [
+        {
+          "label": "1. Launch Aggressive Replacement Tender Blitz (-50,000 Cr)",
+          "credits_delta": -50000,
+          "standing_terran": 15,
+          "market_share_delta": 4,
+          "consequence_desc": "PR blitz launched! Siphoned 4% Sol market share from Valkyrie Heavy and boosted Terran favor."
+        },
+        {
+          "label": "2. Offer Foundry Nanite Repair Kits at Extortionate Rates",
+          "credits_delta": 140000,
+          "consequence_desc": "Terran emergency procurement purchases foundry alloy kits for +140,000 Cr profit."
+        },
+        {
+          "label": "3. Issue Neutral Engineering Advisory",
+          "credits_delta": 0,
+          "standing_terran": 5,
+          "consequence_desc": "Neutral technical assistance offered (+5 Terran Standing)."
+        }
+      ]
+    },
+    {
+      "id": "event_defector_ace_mech",
+      "title": "RADAR ANOMALY: DEFECTOR TEST PILOT INCOMING",
+      "sender": "Hangar Control Bridge",
+      "category": "Military Defection",
+      "body": "Commander! An experimental mobile suit with transhuman neural avionics has crossed our flight deck without transponder codes. The pilot identifies as Ren 'Null-09', lead test pilot from Hyperion Advanced Tactical Systems, requesting asylum with their tuned Muramasa-X prototype!",
+      "choices": [
+        {
+          "label": "1. Grant Asylum: Commission Pilot & Prototype into PMC Hangar",
+          "credits_delta": -35000,
+          "pilot": {
+            "name": "Ren 'Null-09' (Defector)",
+            "callsign": "NULL_09",
+            "salary_daily": 850,
+            "combat_stat": 9,
+            "morale": 95,
+            "status": "ACTIVE",
+            "specialty": "Neural Synapse Striker"
+          },
+          "consequence_desc": "Elite pilot and prototype accepted into PMC roster! Hyperion corporate hostility increases."
+        },
+        {
+          "label": "2. Strip Prototype for Exotic Tachyon Alloys & Foundry Data",
+          "credits_delta": 180000,
+          "consequence_desc": "Chassis dismantled in Crucible. +180,000 Cr and exotic metallurgy unlocked."
+        },
+        {
+          "label": "3. Extradite Pilot Back to Hyperion for Diplomatic Bounty",
+          "credits_delta": 95000,
+          "consequence_desc": "Extradited to Hyperion (+95,000 Cr bounty, Zaibatsu standing +20)."
+        }
+      ]
+    },
+    {
+      "id": "event_arms_dealer_backlash",
+      "title": "DIPLOMATIC CABLE: CLONED CHASSIS PIRATE INCIDENT",
+      "sender": "Outer Colony Security Liaison",
+      "category": "Geopolitical Scandal",
+      "body": "Disaster on the Ganymede shipping route! A pirate battle wing was detected piloting pirated hulls identical to your exported mobile suit blueprint, pillaging an unarmed medical freighter. Planetary press outlets are broadcasting footage with your corporate insignias, demanding an official response.",
+      "choices": [
+        {
+          "label": "1. Transmit Firmware Kill-Switch Code to Colony Defense",
+          "credits_delta": -20000,
+          "standing_colony": 25,
+          "consequence_desc": "Kill-switch transmitted! Pirate units disabled in space (+25 Colony Standing, PR crisis averted)."
+        },
+        {
+          "label": "2. Deploy PMC Strike Lance to Destroy the Pirates Pro Bono",
+          "credits_delta": 50000,
+          "standing_colony": 20,
+          "consequence_desc": "Pirates eliminated under PMC guns (+50,000 Cr salvage, +20 Colony Standing, +Combat Pedigree)."
+        },
+        {
+          "label": "3. 'Arms Dealers Don't Choose the Battle' (Sell Ammo)",
+          "credits_delta": 65000,
+          "standing_colony": -20,
+          "consequence_desc": "+65,000 Cr unlogged arms profits (-20 Colony Standing)."
+        }
+      ]
+    },
+    {
+      "id": "event_corporate_black_ops_raid",
+      "title": "RED ALERT: CORPORATE WET-WORK AMBUSH",
+      "sender": "Tactical Sensor Network",
+      "category": "Corporate Hostility",
+      "body": "Proximity sensors screaming! A heavily armed black-ops strike team displaying scrubbed corporate serial numbers has breached the outer perimeter of our resource extraction outpost. They have deployed electronic jamming and are attempting to scuttle our mining crucibles!",
+      "choices": [
+        {
+          "label": "1. Scramble Hangar Battlegroup to Repel the Raid",
+          "credits_delta": 75000,
+          "consequence_desc": "PMC aces scrambled! Corporate hit-squad annihilated (+75,000 Cr bounty salvage, +Combat Pedigree)."
+        },
+        {
+          "label": "2. Activate Overcharged Automated Defense Sentry Turrets",
+          "credits_delta": -40000,
+          "consequence_desc": "Sentries fired at maximum overload. Perimeter held with minor facility repair costs (-40,000 Cr)."
+        },
+        {
+          "label": "3. Tactical Withdrawal & Secure Nanite Crucible Cores",
+          "credits_delta": -25000,
+          "consequence_desc": "Crucibles secured; minor ore stock lost (-25,000 Cr)."
+        }
+      ]
+    }
+  ]
+}

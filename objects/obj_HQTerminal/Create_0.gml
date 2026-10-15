@@ -8,6 +8,11 @@ show_debug_message("[obj_HQTerminal] Initializing Command Deck Terminal Controll
 if (!instance_exists(obj_GameManager)) instance_create_depth(0, 0, 0, obj_GameManager);
 if (!instance_exists(obj_FactionManager)) instance_create_depth(0, 0, 0, obj_FactionManager);
 if (!instance_exists(obj_BlueprintManager)) instance_create_depth(0, 0, 0, obj_BlueprintManager);
+if (!instance_exists(obj_AudioManager)) instance_create_depth(0, 0, 0, obj_AudioManager);
+
+// Start Terminal Background Audio Atmosphere
+scr_audio_play_ui("boot");
+scr_audio_play_location_bgm((active_tab == 0) ? "prototyping" : "hq");
 
 // 1. Navigation State
 active_tab = 0;              // 0 = R&D Lab, 1 = Factory Floor, 2 = Contracts, 3 = War Map
@@ -39,11 +44,89 @@ assembly_legs_idx = 0;
 assembly_bp_idx = 0;
 assembly_wp_idx = 0;
 assembly_custom_name = "Vanguard Chimera Spec-X";
+assembly_selected_slot = 0;      // 0=Heads, 1=Torsos, 2=Arms, 3=Legs, 4=Backpacks, 5=Weapons
+
+save_custom_blueprint = function() {
+    if (!instance_exists(obj_GameManager) || !instance_exists(obj_BlueprintManager)) return false;
+    var _gm = obj_GameManager;
+    var _pts = _gm.inventory.parts;
+    if (assembly_head_idx < 0 || assembly_head_idx >= array_length(_pts.heads)) return false;
+    if (assembly_torso_idx < 0 || assembly_torso_idx >= array_length(_pts.torsos)) return false;
+    if (assembly_arms_idx < 0 || assembly_arms_idx >= array_length(_pts.arms)) return false;
+    if (assembly_legs_idx < 0 || assembly_legs_idx >= array_length(_pts.legs)) return false;
+    if (assembly_bp_idx < 0 || assembly_bp_idx >= array_length(_pts.backpacks)) return false;
+    if (assembly_wp_idx < 0 || assembly_wp_idx >= array_length(_pts.weapons)) return false;
+
+    var _hd = _pts.heads[assembly_head_idx];
+    var _tr = _pts.torsos[assembly_torso_idx];
+    var _am = _pts.arms[assembly_arms_idx];
+    var _lg = _pts.legs[assembly_legs_idx];
+    var _bp = _pts.backpacks[assembly_bp_idx];
+    var _wp = _pts.weapons[assembly_wp_idx];
+
+    var _draw = _hd.power_draw + _am.power_draw + _lg.power_draw + _bp.power_draw + _wp.power_draw;
+    var _net = _tr.power_output - _draw;
+    if (_net < 0) {
+        show_toast("CANNOT ARCHIVE: Reactor Overload! Fix power draw first.", c_red);
+        return false;
+    }
+
+    var _tot_armor = _hd.armor + _tr.armor + _am.armor + _lg.armor + _bp.armor + _wp.armor;
+    var _tot_mass = _hd.mass + _tr.mass + _am.mass + _lg.mass + _bp.mass + _wp.mass;
+    var _walk = max(20, floor(_lg.base_speed * (1.0 - (_tot_mass / 220.0))));
+    var _boost = _walk + _bp.boost_bonus;
+    var _code = "PMC-" + string_upper(string_copy(assembly_custom_name, 1, 6)) + "-" + string(irandom_range(10, 99));
+
+    var _weight_class = "MEDIUM MAINSTAY";
+    if (_tot_mass < 55) _weight_class = "LIGHT SKIRMISHER";
+    else if (_tot_mass >= 55 && _tot_mass < 85) _weight_class = "MEDIUM MAINSTAY";
+    else if (_tot_mass >= 85 && _tot_mass < 110) _weight_class = "HEAVY ASSAULT";
+    else _weight_class = "SUPERHEAVY SIEGEBREAKER";
+
+    var _bp_id = "bp_custom_" + string_lower(string_replace_all(assembly_custom_name, " ", "_")) + "_" + string(irandom(9999));
+    var _new_bp = {
+        id: _bp_id,
+        blueprint_id: _bp_id,
+        model_code: _code,
+        name: assembly_custom_name,
+        faction_id: "player",
+        class: _weight_class,
+        role: "Modular PMC Canonical Design (" + _wp.bonus + ")",
+        tier: (_tot_armor > 1400 || _wp.damage > 350) ? 3 : 2,
+        armor_rating: _tot_armor,
+        structure_hp: floor(_tot_armor * 2.2),
+        power_output_mw: _tr.power_output * 50,
+        heat_dispersion_rate: 35.0,
+        walk_speed_kph: _walk,
+        boost_speed_kph: _boost,
+        height_meters: 18.0,
+        empty_weight_tonnes: floor(_tot_mass * 0.7),
+        combat_weight_tonnes: _tot_mass,
+        reactor_type: _tr.name,
+        metal_type: _tr.req_alloy ?? "Custom Sintered Alloy Matrix",
+        alloy_cost: { tungsten: 25, silica: 15, flux: 10, tritium: 5 },
+        armament: [_wp.name, _hd.bonus, _bp.bonus],
+        variants: [assembly_custom_name + " Mk.I Standard", assembly_custom_name + " Commander Custom"],
+        associated_sprite: spr_ms_ironclad_idle,
+        schematic_sprite: spr_mech_schematic,
+        fabrication_cost_cr: floor((_tot_armor * 180) + (_wp.damage * 400)),
+        manufacturing_lore: "Custom modular chassis engineered in the PMC Assembly Bay combining " + _hd.name + ", " + _tr.name + ", and " + _wp.name + ".",
+        battlefield_reputation: "Bespoke PMC combat frame with high synergy tuning."
+    };
+
+    obj_BlueprintManager.register_custom_blueprint(_new_bp);
+    show_toast("ARCHIVED TO CANONICAL BLUEPRINTS: " + assembly_custom_name + " (" + _code + ")!", c_lime);
+    return true;
+};
 
 // 6. Fly-Off Procurement Trials & Interstellar Commodity Trade State (docs/15)
 trial_selected_faction = "faction_a";
 trial_selected_mech_idx = 0;
 trial_last_result = undefined;
+trial_phase = 0;              // 0 = Hangar Selection, 1 = Static Audit, 2 = Stress Gauntlet, 3 = Combat Fly-Off, 4 = Final Board Ratification
+trial_refinements = [];       // Array of emergency field refinements applied during active trial
+trial_phase_results = undefined; // Phase result struct
+trial_view_adoption_panel = false; // Toggle to view adopted fleet management vs new trial
 trade_selected_faction = "faction_a";
 trade_selected_cat = 0;
 trade_scroll_offset = 0;
@@ -89,6 +172,7 @@ crucible_batch = {
 // Discrete Thermal & Pressure Methods (Turn-Based / Step-Based)
 crucible_heat = function(_delta) {
     crucible_temp_c = clamp(crucible_temp_c + _delta, 25.0, 5000.0);
+    scr_audio_play_sfx(snd_plasma_weld, 0.6, 0.08);
     // Thermal expansion increases pressure
     crucible_pressure_psi = clamp(crucible_pressure_psi + (_delta * 1.8), 14.7, 10000.0);
     chamber_glow_alpha = clamp(crucible_temp_c / 4500.0, 0.0, 1.0);
@@ -99,12 +183,14 @@ crucible_heat = function(_delta) {
 
 crucible_cool = function(_delta) {
     crucible_temp_c = clamp(crucible_temp_c - _delta, 25.0, 5000.0);
+    scr_audio_play_sfx(snd_mech_boost, 0.5, 0.08);
     crucible_pressure_psi = clamp(crucible_pressure_psi - (_delta * 1.2), 14.7, 10000.0);
     chamber_glow_alpha = clamp(crucible_temp_c / 4500.0, 0.0, 1.0);
 };
 
 crucible_compress = function(_delta) {
     crucible_pressure_psi = clamp(crucible_pressure_psi + _delta, 14.7, 10000.0);
+    scr_audio_play_sfx(snd_hydraulic_press, 0.7, 0.05);
     if (crucible_batch.mat_tritium > 0 && crucible_batch.mat_syn_flux > 0) {
         volatility_meter = clamp(volatility_meter + (_delta * 0.02), 0, 100);
     }
@@ -114,6 +200,7 @@ crucible_vent = function() {
     crucible_pressure_psi = max(14.7, crucible_pressure_psi - 800.0);
     crucible_temp_c = max(25.0, crucible_temp_c - 150.0);
     volatility_meter = max(0.0, volatility_meter - 35.0);
+    scr_audio_play_sfx(snd_mech_boost, 0.75, 0.12);
     crucible_shake = 6.0;
     chamber_glow_alpha = clamp(crucible_temp_c / 4500.0, 0.0, 1.0);
     show_toast("VENT VALVES OPENED: -800 PSI / -35% VOLATILITY", c_aqua);
@@ -125,6 +212,7 @@ crucible_load_mat = function(_mat_id) {
     if (_available > 0) {
         obj_GameManager.inventory.raw_materials[$ _mat_id] = _available - 1;
         crucible_batch[$ _mat_id] = (crucible_batch[$ _mat_id] ?? 0) + 1;
+        scr_audio_play_ui("click");
         if (crucible_batch.mat_tritium > 0 && crucible_batch.mat_syn_flux > 0) {
             volatility_meter = min(100, volatility_meter + 25.0);
         }
@@ -162,6 +250,7 @@ crucible_execute_synthesis = function() {
         volatility_meter = 0.0;
         obj_GameManager.add_raw_material("item_slag", 2);
         show_toast("CATASTROPHIC BREACH! Volatility spiked -> Batch destroyed to Slag!", c_red);
+        scr_audio_play_sfx(snd_explosion_large, 1.0, 0.05);
         return;
     }
 
@@ -192,6 +281,8 @@ crucible_execute_synthesis = function() {
         obj_GameManager.add_alloy("alloy_vanguard_comp", 1);
         crucible_shake = 8.0;
         show_toast("SUCCESS: +1 Vanguard Composite Plating forged into inventory!", c_lime);
+        scr_audio_play_sfx(snd_crucible_pour, 0.9, 0.04);
+        scr_audio_play_sfx(snd_discovery_fanfare, 1.0, 0.0);
         return;
     }
 
@@ -257,6 +348,93 @@ crucible_execute_synthesis = function() {
         obj_GameManager.add_alloy("alloy_adamantine_carbide", 1);
         crucible_shake = 14.0;
         show_toast("SUCCESS: +1 Adamantine Heavy Carbide forged into inventory!", c_lime);
+        return;
+    }
+
+    // Recipe 5: Reactive Damascus Steel (Canonical Tier 5 Masterwork)
+    // 3 Tungsten, 2 Synthetic Flux, 1 Tritium | Temp 3400°C - 3800°C | Pressure 4500 - 7000 PSI
+    if (crucible_batch.mat_tungsten >= 3 && crucible_batch.mat_syn_flux >= 2 && crucible_batch.mat_tritium >= 1 &&
+        crucible_batch.mat_silica_carb == 0) {
+        if (crucible_temp_c < 3400.0 || crucible_temp_c > 3800.0) {
+            show_toast("THERMAL MISALIGNMENT: Damascus requires 3400°C - 3800°C sintering!", c_red);
+            return;
+        }
+        if (crucible_pressure_psi < 4500.0 || crucible_pressure_psi > 7000.0) {
+            show_toast("PRESSURE MISALIGNMENT: Damascus requires 4,500 - 7,000 PSI!", c_red);
+            return;
+        }
+        crucible_batch.mat_tungsten -= 3;
+        crucible_batch.mat_syn_flux -= 2;
+        crucible_batch.mat_tritium--;
+        volatility_meter = 0.0;
+        obj_GameManager.add_alloy("alloy_reactive_damascus", 1);
+        crucible_shake = 16.0;
+        show_toast("CANONICAL FORGE: +1 Reactive Damascus Composite synthesized! (+35% Kinetic Res)", c_lime);
+        return;
+    }
+
+    // Recipe 6: Tachyon Superalloy Superconductor (Canonical Tier 5 Apex)
+    // 1 Tungsten, 2 Tritium, 2 Synthetic Flux | Temp 4600°C - 4950°C | Pressure 8000 - 10000 PSI
+    if (crucible_batch.mat_tungsten >= 1 && crucible_batch.mat_tritium >= 2 && crucible_batch.mat_syn_flux >= 2 &&
+        crucible_batch.mat_silica_carb == 0) {
+        if (crucible_temp_c < 4600.0 || crucible_temp_c > 4950.0) {
+            show_toast("THERMAL MISALIGNMENT: Tachyon Superalloy requires extreme 4600°C - 4950°C!", c_red);
+            return;
+        }
+        if (crucible_pressure_psi < 8000.0) {
+            show_toast("INSUFFICIENT PRESSURE: Tachyon Superalloy requires at least 8,000 PSI!", c_red);
+            return;
+        }
+        crucible_batch.mat_tungsten--;
+        crucible_batch.mat_tritium -= 2;
+        crucible_batch.mat_syn_flux -= 2;
+        volatility_meter = 0.0;
+        obj_GameManager.add_alloy("alloy_tachyon_superalloy", 1);
+        crucible_shake = 22.0;
+        show_toast("APEX DISCOVERY: +1 Tachyon Superalloy Lattice synthesized! (+40% Energy Dmg)", c_aqua);
+        return;
+    }
+
+    // Recipe 7: Lunar Aerogel Ultralight Matrix (Canonical Tier 4 Advanced)
+    // 3 Silica-Carbon, 2 Synthetic Flux | Temp 1700°C - 2100°C | Pressure <= 800 PSI (Low Pressure)
+    if (crucible_batch.mat_silica_carb >= 3 && crucible_batch.mat_syn_flux >= 2 &&
+        crucible_batch.mat_tungsten == 0 && crucible_batch.mat_tritium == 0) {
+        if (crucible_temp_c < 1700.0 || crucible_temp_c > 2100.0) {
+            show_toast("THERMAL MISALIGNMENT: Lunar Aerogel requires 1700°C - 2100°C!", c_red);
+            return;
+        }
+        if (crucible_pressure_psi > 800.0) {
+            show_toast("PRESSURE OVERLOAD: Aerogel requires vacuum chamber (<800 PSI)! Vent valves!", c_red);
+            return;
+        }
+        crucible_batch.mat_silica_carb -= 3;
+        crucible_batch.mat_syn_flux -= 2;
+        volatility_meter = 0.0;
+        obj_GameManager.add_alloy("alloy_lunar_aerogel", 1);
+        crucible_shake = 8.0;
+        show_toast("FEATHERWEIGHT FORGE: +1 Lunar Aerogel Matrix synthesized! (-40% Mass)", c_white);
+        return;
+    }
+
+    // Recipe 8: Sol Ferrite Magnetic Matrix (Canonical Tier 5 Masterwork)
+    // 3 Tungsten, 1 Silica-Carbon, 2 Tritium | Temp 4100°C - 4400°C | Pressure 5500 - 8500 PSI
+    if (crucible_batch.mat_tungsten >= 3 && crucible_batch.mat_silica_carb >= 1 && crucible_batch.mat_tritium >= 2 &&
+        crucible_batch.mat_syn_flux == 0) {
+        if (crucible_temp_c < 4100.0 || crucible_temp_c > 4400.0) {
+            show_toast("THERMAL MISALIGNMENT: Sol Ferrite requires 4100°C - 4400°C!", c_red);
+            return;
+        }
+        if (crucible_pressure_psi < 5500.0 || crucible_pressure_psi > 8500.0) {
+            show_toast("PRESSURE MISALIGNMENT: Sol Ferrite requires 5500 - 8500 PSI!", c_red);
+            return;
+        }
+        crucible_batch.mat_tungsten -= 3;
+        crucible_batch.mat_silica_carb--;
+        crucible_batch.mat_tritium -= 2;
+        volatility_meter = 0.0;
+        obj_GameManager.add_alloy("alloy_sol_ferrite", 1);
+        crucible_shake = 18.0;
+        show_toast("MAGNETIC APEX: +1 Sol Ferrite High-Permeability Ingot forged! (+45% Velocity)", c_yellow);
         return;
     }
 
@@ -619,36 +797,61 @@ modular_crafting_catalog = [
     [
         { id: "hd_vanguard_01", name: "HD-01 Vanguard Target-Lock", slot: "heads", armor: 120, mass: 4, power_draw: 2, bonus: "+15% Accuracy", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 1, cost_cr: 15000 },
         { id: "hd_aether_02", name: "HD-02 Aether EW-Dome", slot: "heads", armor: 90, mass: 2, power_draw: 4, bonus: "+18% Evasion", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 1, cost_cr: 25000 },
-        { id: "hd_cyclops_03", name: "HD-03 Cyclops Siege Optic", slot: "heads", armor: 160, mass: 6, power_draw: 3, bonus: "+20% Critical Hit", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 1, cost_cr: 35000 }
+        { id: "hd_cyclops_03", name: "HD-03 Cyclops Siege Optic", slot: "heads", armor: 160, mass: 6, power_draw: 3, bonus: "+20% Critical Hit", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 1, cost_cr: 35000 },
+        { id: "hd_damascus_04", name: "HD-04 Damascus Reactive Visor", slot: "heads", armor: 195, mass: 5, power_draw: 3, bonus: "+25% Kinetic Res & Target Lock", req_alloy: "alloy_reactive_damascus", req_alloy_amount: 1, cost_cr: 48000 },
+        { id: "hd_tachyon_05", name: "HD-05 Tachyon Spectral Dome", slot: "heads", armor: 110, mass: 3, power_draw: 5, bonus: "+30% Beam Crit & Deep Radar", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 1, cost_cr: 62000 }
     ],
     // Torsos (Slot 1)
     [
         { id: "tr_colossus_01", name: "TR-01 Colossus Heavy Torso", slot: "torsos", armor: 480, mass: 26, power_output: 28, bonus: "Reinforced Reactor Core", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 3, cost_cr: 65000 },
         { id: "tr_hyperion_02", name: "TR-02 Hyperion Tokamak Torso", slot: "torsos", armor: 360, mass: 20, power_output: 42, bonus: "High-Spec Fusion Core", req_alloy: "alloy_hyperion_matrix", req_alloy_amount: 2, cost_cr: 95000 },
-        { id: "tr_phantom_03", name: "TR-03 Phantom Striker Torso", slot: "torsos", armor: 300, mass: 14, power_output: 32, bonus: "Lightweight Agility Core", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 75000 }
+        { id: "tr_phantom_03", name: "TR-03 Phantom Striker Torso", slot: "torsos", armor: 300, mass: 14, power_output: 32, bonus: "Lightweight Agility Core", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 75000 },
+        { id: "tr_damascus_04", name: "TR-04 Damascus Reactive Citadel", slot: "torsos", armor: 560, mass: 28, power_output: 36, bonus: "Ablative Blast Deflection Core", req_alloy: "alloy_reactive_damascus", req_alloy_amount: 2, cost_cr: 115000 },
+        { id: "tr_sol_05", name: "TR-05 Sol Ferrite Super-Tokamak", slot: "torsos", armor: 440, mass: 22, power_output: 54, bonus: "Apex Tokamak Core (+54 MW Output)", req_alloy: "alloy_sol_ferrite", req_alloy_amount: 2, cost_cr: 135000 }
     ],
     // Arms (Slot 2)
     [
         { id: "am_colossus_01", name: "AM-01 Colossus Dual Arms", slot: "arms", armor: 260, mass: 16, power_draw: 4, bonus: "+25% Recoil Control", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 2, cost_cr: 40000 },
         { id: "am_vernier_02", name: "AM-02 Vernier Fast-Actuators", slot: "arms", armor: 190, mass: 10, power_draw: 5, bonus: "+20% Weapon Handling", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 50000 },
-        { id: "am_adamant_03", name: "AM-03 Adamantine Heavy Brackets", slot: "arms", armor: 320, mass: 22, power_draw: 6, bonus: "+20% Ballistic Damage", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 2, cost_cr: 60000 }
+        { id: "am_adamant_03", name: "AM-03 Adamantine Heavy Brackets", slot: "arms", armor: 320, mass: 22, power_draw: 6, bonus: "+20% Ballistic Damage", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 2, cost_cr: 60000 },
+        { id: "am_aerogel_04", name: "AM-04 Lunar Aerogel Manipulators", slot: "arms", armor: 210, mass: 7, power_draw: 3, bonus: "-55% Arm Mass & +25% Melee Speed", req_alloy: "alloy_lunar_aerogel", req_alloy_amount: 2, cost_cr: 72000 },
+        { id: "am_tachyon_05", name: "AM-05 Tachyon Conduit Arms", slot: "arms", armor: 240, mass: 12, power_draw: 7, bonus: "+35% Energy Weapon Output", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 2, cost_cr: 88000 }
     ],
     // Legs (Slot 3)
     [
         { id: "lg_vanguard_01", name: "LG-01 Vanguard Heavy Walkers", slot: "legs", armor: 340, mass: 24, power_draw: 5, base_speed: 44, bonus: "+30% Stability", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 3, cost_cr: 55000 },
         { id: "lg_stratos_02", name: "LG-02 Stratos Vernier Skaters", slot: "legs", armor: 220, mass: 15, power_draw: 7, base_speed: 86, bonus: "+25% Agility", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 70000 },
-        { id: "lg_titan_03", name: "LG-03 Titan Quad-Leg Platform", slot: "legs", armor: 440, mass: 34, power_draw: 8, base_speed: 34, bonus: "+50% Recoil Absorb", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 3, cost_cr: 80000 }
+        { id: "lg_titan_03", name: "LG-03 Titan Quad-Leg Platform", slot: "legs", armor: 440, mass: 34, power_draw: 8, base_speed: 34, bonus: "+50% Recoil Absorb", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 3, cost_cr: 80000 },
+        { id: "lg_aerogel_04", name: "LG-04 Lunar Aerogel Hover Struts", slot: "legs", armor: 260, mass: 11, power_draw: 6, base_speed: 105, bonus: "High-G Hover Dash & Terrain Master", req_alloy: "alloy_lunar_aerogel", req_alloy_amount: 2, cost_cr: 92000 },
+        { id: "lg_damascus_05", name: "LG-05 Damascus Armored Treads", slot: "legs", armor: 520, mass: 32, power_draw: 7, base_speed: 48, bonus: "Impenetrable Trench Fortress", req_alloy: "alloy_reactive_damascus", req_alloy_amount: 3, cost_cr: 105000 }
     ],
     // Backpacks (Slot 4)
     [
         { id: "bp_heavy_01", name: "BP-01 Heavy Booster Pack", slot: "backpacks", armor: 140, mass: 12, power_draw: 3, boost_bonus: 35, bonus: "High Thrust", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 1, cost_cr: 25000 },
         { id: "bp_vernier_02", name: "BP-02 Dual-Vector Vernier Rig", slot: "backpacks", armor: 100, mass: 8, power_draw: 6, boost_bonus: 65, bonus: "+15% Evade", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 45000 },
-        { id: "bp_plasma_03", name: "BP-03 Plasma Overcharge Booster", slot: "backpacks", armor: 120, mass: 10, power_draw: 9, boost_bonus: 80, bonus: "+1 Dash AP", req_alloy: "alloy_hyperion_matrix", req_alloy_amount: 2, cost_cr: 65000 }
+        { id: "bp_plasma_03", name: "BP-03 Plasma Overcharge Booster", slot: "backpacks", armor: 120, mass: 10, power_draw: 9, boost_bonus: 80, bonus: "+1 Dash AP", req_alloy: "alloy_hyperion_matrix", req_alloy_amount: 2, cost_cr: 65000 },
+        { id: "bp_aerogel_04", name: "BP-04 Lunar Aerogel Siphon Rig", slot: "backpacks", armor: 95, mass: 4, power_draw: 4, boost_bonus: 55, bonus: "+60% Heat Venting & Featherweight", req_alloy: "alloy_lunar_aerogel", req_alloy_amount: 2, cost_cr: 78000 },
+        { id: "bp_tachyon_05", name: "BP-05 Tachyon Fold Warp Booster", slot: "backpacks", armor: 130, mass: 11, power_draw: 12, boost_bonus: 115, bonus: "+2 Sortie AP & Micro-Warp Dash", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 2, cost_cr: 110000 }
     ],
     // Weapons (Slot 5)
     [
         { id: "wp_vulcan_01", name: "WP-01 Rotary Vulcan (120mm)", slot: "weapons", armor: 100, mass: 12, power_draw: 3, damage: 180, bonus: "Sustained Fire", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 2, cost_cr: 45000 },
         { id: "wp_beam_02", name: "WP-02 Particle Beam Pulse Rifle", slot: "weapons", armor: 80, mass: 8, power_draw: 10, damage: 240, bonus: "Armor Piercing", req_alloy: "alloy_hyperion_matrix", req_alloy_amount: 2, cost_cr: 60000 },
-        { id: "wp_rail_03", name: "WP-03 Heavy Siege Rail Cannon", slot: "weapons", armor: 130, mass: 20, power_draw: 8, damage: 380, bonus: "Long Range Siege", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 2, cost_cr: 85000 }
+        { id: "wp_rail_03", name: "WP-03 Heavy Siege Rail Cannon", slot: "weapons", armor: 130, mass: 20, power_draw: 8, damage: 380, bonus: "Long Range Siege", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 2, cost_cr: 85000 },
+        { id: "wp_sol_04", name: "WP-04 Sol Ferrite Hyper-Railgun", slot: "weapons", armor: 150, mass: 22, power_draw: 11, damage: 460, bonus: "+45% Shield Pierce & Line Punch", req_alloy: "alloy_sol_ferrite", req_alloy_amount: 2, cost_cr: 125000 },
+        { id: "wp_tachyon_05", name: "WP-05 Tachyon Beam Lance", slot: "weapons", armor: 90, mass: 9, power_draw: 14, damage: 420, bonus: "+40% Energy Armor Melt & Overheat Arc", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 2, cost_cr: 140000 }
     ]
 ];
+
+// 27. Mobile Suit Universe Encyclopedia & Mass-Production Candidate Dossier (docs/29 & docs/30)
+catalog_view_mode = 0; // 0 = Standard Dossier, 1 = 100-Suit Encyclopedia Browser
+catalog_selected_suit_id = "ms_terran_ironclad_07";
+catalog_selected_idx = 0;
+catalog_filter_faction = "ALL"; // "ALL", "faction_a", "faction_b", "faction_c", "faction_d"
+catalog_filter_era = 0; // 0 = All, 1, 2, 3, 4
+catalog_anim_state = "idle"; // "idle", "walk", "fire", "hit"
+catalog_facing = 1; // 1 = Right, -1 = Left
+catalog_perspective = "front"; // "front", "back"
+catalog_scroll_offset = 0;
+trial_candidate_dossier_idx = 0; // 0..3 for inspecting the 4 mass production candidates
+trial_view_candidates_mode = false; // Toggle between flyoff arena and candidate pool comparison

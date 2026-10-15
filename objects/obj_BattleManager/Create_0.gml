@@ -9,6 +9,10 @@ if (!instance_exists(obj_GameManager)) instance_create_depth(0, 0, 0, obj_GameMa
 if (!instance_exists(obj_FactionManager)) instance_create_depth(0, 0, 0, obj_FactionManager);
 if (!instance_exists(obj_BlueprintManager)) instance_create_depth(0, 0, 0, obj_BlueprintManager);
 if (!instance_exists(obj_NemesisManager)) instance_create_depth(0, 0, 0, obj_NemesisManager);
+if (!instance_exists(obj_AudioManager)) instance_create_depth(0, 0, 0, obj_AudioManager);
+
+// Start Front Mission 90s Mecha Combat BGM
+scr_audio_play_location_bgm("combat");
 
 // 2. Combat State Machine Enums & Variables
 enum COMBAT_STATE {
@@ -20,7 +24,8 @@ enum COMBAT_STATE {
     AUTO_SIM,
     VICTORY_AAR,
     DEFEAT_AAR,
-    NEMESIS_INCURSION
+    NEMESIS_INCURSION,
+    DEPLOYMENT_DECK
 }
 
 state = COMBAT_STATE.PLAYER_PHASE;
@@ -115,7 +120,7 @@ evaluate_nemesis_incursion = function() {
     if (incursion_data.faction_id == "faction_terran") _port = spr_portrait_vance;
     else if (incursion_data.faction_id == "faction_colony") _port = spr_portrait_cassian;
     else if (incursion_data.faction_id == "faction_zaibatsu") _port = spr_portrait_null07;
-    else if (string_pos("jackal", incursion_data.nemesis_id) > 0) _port = spr_portrait_cole;
+    else if (string_pos("jackal", incursion_data.nemesis_id) > 0) _port = spr_portrait_cruz;
     incursion_data.portrait_asset = _port;
 
     // Contextual dialogue bark
@@ -133,39 +138,961 @@ evaluate_nemesis_incursion = function() {
     return true;
 };
 
-// 3. Isometric Battlefield Dimensions (20 Cols x 20 Rows)
+// 3. Multi-Map System: Earth & Space Theaters with Dynamic Elevation & Terrain (24 Maps)
+current_map_id = 0;
+
+map_definitions = [
+    {
+        id: 0,
+        name: "SECTOR 4 MINING OUTPOST",
+        theater: "EARTH",
+        category: "EARTH",
+        gravity: 1.0,
+        desc: "Terraced excavation quarry with haulage roads, rock shelves, and heavy machinery.",
+        bg_col: make_color_rgb(18, 14, 12),
+        grid_col_base: make_color_rgb(34, 28, 22),
+        grid_col_elev1: make_color_rgb(52, 44, 34),
+        grid_col_elev2: make_color_rgb(72, 62, 48),
+        cliff_col_se: make_color_rgb(26, 20, 16),
+        cliff_col_sw: make_color_rgb(16, 12, 10),
+        ambient_tag: "[ATMOSPHERE: 1.0 ATM // GRAVITY: 1.0G // EARTH QUARRY]"
+    },
+    {
+        id: 1,
+        name: "NEO-VERONA COASTAL RUINS",
+        theater: "EARTH",
+        category: "EARTH",
+        gravity: 1.0,
+        desc: "Sunken highway overpasses, deep seawater canals, and concrete seawall redoubts.",
+        bg_col: make_color_rgb(8, 18, 26),
+        grid_col_base: make_color_rgb(14, 38, 52),
+        grid_col_elev1: make_color_rgb(28, 54, 66),
+        grid_col_elev2: make_color_rgb(46, 76, 88),
+        cliff_col_se: make_color_rgb(10, 26, 36),
+        cliff_col_sw: make_color_rgb(6, 16, 22),
+        ambient_tag: "[ATMOSPHERE: 1.0 ATM // COASTAL SEAWALL // WATER CANALS]"
+    },
+    {
+        id: 2,
+        name: "VOLCANIC CALDERA RIDGE",
+        theater: "EARTH",
+        category: "EARTH",
+        gravity: 1.0,
+        desc: "Molten slag channels, obsidian basalt plateaus, and sulfur geothermal vents.",
+        bg_col: make_color_rgb(24, 10, 8),
+        grid_col_base: make_color_rgb(42, 22, 18),
+        grid_col_elev1: make_color_rgb(64, 32, 24),
+        grid_col_elev2: make_color_rgb(88, 45, 30),
+        cliff_col_se: make_color_rgb(32, 14, 10),
+        cliff_col_sw: make_color_rgb(18, 8, 6),
+        ambient_tag: "[ATMOSPHERE: 1.0 ATM // MOLTEN SLAG RUNOFF // BASALT RIDGE]"
+    },
+    {
+        id: 3,
+        name: "GLACIAL CREVASSE PASS",
+        theater: "EARTH",
+        category: "EARTH",
+        gravity: 1.0,
+        desc: "Frozen tundra ice, bottomless glacial chasms, and slippery pack-ice bridges.",
+        bg_col: make_color_rgb(12, 20, 28),
+        grid_col_base: make_color_rgb(28, 48, 65),
+        grid_col_elev1: make_color_rgb(45, 72, 95),
+        grid_col_elev2: make_color_rgb(70, 105, 135),
+        cliff_col_se: make_color_rgb(20, 35, 48),
+        cliff_col_sw: make_color_rgb(12, 22, 32),
+        ambient_tag: "[ATMOSPHERE: 1.0 ATM // SUB-ZERO BLIZZARD // GLACIAL CREVASSE]"
+    },
+    {
+        id: 4,
+        name: "VERDANT JUNGLE DELTA",
+        theater: "EARTH",
+        category: "EARTH",
+        gravity: 1.0,
+        desc: "Winding tropical river basins, submerged mangrove mud, and karst limestone bluffs.",
+        bg_col: make_color_rgb(10, 18, 12),
+        grid_col_base: make_color_rgb(22, 42, 24),
+        grid_col_elev1: make_color_rgb(36, 62, 38),
+        grid_col_elev2: make_color_rgb(52, 85, 54),
+        cliff_col_se: make_color_rgb(16, 30, 18),
+        cliff_col_sw: make_color_rgb(10, 18, 12),
+        ambient_tag: "[ATMOSPHERE: 1.0 ATM // TROPICAL CANOPY // RIVER DELTA]"
+    },
+    {
+        id: 5,
+        name: "SAHARA DUNE REFINERY",
+        theater: "EARTH",
+        category: "EARTH",
+        gravity: 1.0,
+        desc: "Crushed sandstone flats, heavy industrial oil pipelines, and elevated extraction derricks.",
+        bg_col: make_color_rgb(24, 18, 10),
+        grid_col_base: make_color_rgb(50, 38, 22),
+        grid_col_elev1: make_color_rgb(75, 58, 35),
+        grid_col_elev2: make_color_rgb(105, 82, 50),
+        cliff_col_se: make_color_rgb(38, 28, 16),
+        cliff_col_sw: make_color_rgb(22, 16, 10),
+        ambient_tag: "[ATMOSPHERE: 1.0 ATM // SANDSTORM HAZE // PIPELINE CORRIDOR]"
+    },
+    {
+        id: 6,
+        name: "MEGA-CITY SECTOR 9 GRID",
+        theater: "EARTH",
+        category: "EARTH",
+        gravity: 1.0,
+        desc: "Urban skyscraper foundations, wide concrete avenues, and collapsed overpass debris.",
+        bg_col: make_color_rgb(14, 16, 20),
+        grid_col_base: make_color_rgb(30, 35, 44),
+        grid_col_elev1: make_color_rgb(48, 55, 68),
+        grid_col_elev2: make_color_rgb(70, 80, 98),
+        cliff_col_se: make_color_rgb(22, 26, 34),
+        cliff_col_sw: make_color_rgb(14, 16, 22),
+        ambient_tag: "[ATMOSPHERE: 1.0 ATM // HIGH-RISE DOWNTOWN // METROPOLITAN GRID]"
+    },
+    {
+        id: 7,
+        name: "SUBTERRANEAN MAGMA VAULT",
+        theater: "EARTH",
+        category: "EARTH",
+        gravity: 1.0,
+        desc: "Underground crust geothermal facility with glowing slag rivers and titanium bridges.",
+        bg_col: make_color_rgb(20, 8, 6),
+        grid_col_base: make_color_rgb(38, 18, 14),
+        grid_col_elev1: make_color_rgb(58, 28, 22),
+        grid_col_elev2: make_color_rgb(82, 40, 30),
+        cliff_col_se: make_color_rgb(28, 12, 10),
+        cliff_col_sw: make_color_rgb(16, 8, 6),
+        ambient_tag: "[SUB-CRUST CHAMBER // GEOTHERMAL DRILL // MAGMA TRENCH]"
+    },
+    {
+        id: 8,
+        name: "ABANDONED SPACEPORT TERMINAL",
+        theater: "EARTH",
+        category: "EARTH",
+        gravity: 1.0,
+        desc: "Blast-scored aerospace tarmac runways, ferrocrete hangars, and gantry rail systems.",
+        bg_col: make_color_rgb(16, 18, 22),
+        grid_col_base: make_color_rgb(32, 38, 48),
+        grid_col_elev1: make_color_rgb(50, 58, 72),
+        grid_col_elev2: make_color_rgb(72, 84, 102),
+        cliff_col_se: make_color_rgb(24, 28, 36),
+        cliff_col_sw: make_color_rgb(14, 16, 22),
+        ambient_tag: "[ATMOSPHERE: 1.0 ATM // AEROSPACE TARMAC // BLAST DEFLECTORS]"
+    },
+    {
+        id: 9,
+        name: "IRRADIATED SALT FLATS",
+        theater: "EARTH",
+        category: "EARTH",
+        gravity: 1.0,
+        desc: "Corrosive white alkali salt crust, brine drainage pools, and sunken trench bunkers.",
+        bg_col: make_color_rgb(22, 20, 24),
+        grid_col_base: make_color_rgb(46, 44, 52),
+        grid_col_elev1: make_color_rgb(68, 66, 78),
+        grid_col_elev2: make_color_rgb(94, 92, 108),
+        cliff_col_se: make_color_rgb(34, 32, 40),
+        cliff_col_sw: make_color_rgb(20, 18, 24),
+        ambient_tag: "[ATMOSPHERE: 1.0 ATM // CORROSIVE ALKALI // BRINE CANAL]"
+    },
+    {
+        id: 10,
+        name: "HELIOS-7 ORBITAL ARRAY",
+        theater: "SPACE",
+        category: "SPACE",
+        gravity: 0.0,
+        desc: "Deep space truss catwalks, vacuum chasms, and glowing solar collector spires.",
+        bg_col: make_color_rgb(4, 6, 14),
+        grid_col_base: make_color_rgb(6, 10, 18),
+        grid_col_elev1: make_color_rgb(22, 38, 62),
+        grid_col_elev2: make_color_rgb(38, 66, 105),
+        cliff_col_se: make_color_rgb(14, 22, 36),
+        cliff_col_sw: make_color_rgb(8, 12, 20),
+        ambient_tag: "[VACUUM ZERO-G // SPACE VERNIES REQUIRED // SOLAR SPIRE]"
+    },
+    {
+        id: 11,
+        name: "ASTEROID SYNDICATE FORTRESS",
+        theater: "SPACE",
+        category: "SPACE",
+        gravity: 0.15,
+        desc: "Hollow lunar asteroid with molten slag drainage trenches and heavy mining drills.",
+        bg_col: make_color_rgb(14, 8, 8),
+        grid_col_base: make_color_rgb(32, 16, 14),
+        grid_col_elev1: make_color_rgb(46, 28, 24),
+        grid_col_elev2: make_color_rgb(68, 42, 32),
+        cliff_col_se: make_color_rgb(22, 12, 10),
+        cliff_col_sw: make_color_rgb(12, 8, 6),
+        ambient_tag: "[VACUUM LOW-G 0.15G // MOLTEN SLAG RUNOFF // REBAR BUNKER]"
+    },
+    {
+        id: 12,
+        name: "COLONY CYLINDER SHELL",
+        theater: "SPACE",
+        category: "SPACE",
+        gravity: 0.9,
+        desc: "Centrifugal curved interior hull grid, artificial waterways, and maglev rails.",
+        bg_col: make_color_rgb(10, 14, 20),
+        grid_col_base: make_color_rgb(24, 34, 46),
+        grid_col_elev1: make_color_rgb(40, 56, 75),
+        grid_col_elev2: make_color_rgb(60, 82, 108),
+        cliff_col_se: make_color_rgb(18, 26, 36),
+        cliff_col_sw: make_color_rgb(10, 16, 22),
+        ambient_tag: "[CENTRIFUGAL 0.90G // COLONY INTERIOR // ARTIFICIAL WATERWAY]"
+    },
+    {
+        id: 13,
+        name: "LUNAR REGOLITH CRATER",
+        theater: "SPACE",
+        category: "SPACE",
+        gravity: 0.16,
+        desc: "Low-G 0.16G fine basalt dust crater, boulder scree, and subterranean hab airlocks.",
+        bg_col: make_color_rgb(8, 8, 12),
+        grid_col_base: make_color_rgb(24, 24, 32),
+        grid_col_elev1: make_color_rgb(42, 42, 54),
+        grid_col_elev2: make_color_rgb(64, 64, 80),
+        cliff_col_se: make_color_rgb(18, 18, 24),
+        cliff_col_sw: make_color_rgb(10, 10, 14),
+        ambient_tag: "[VACUUM LOW-G 0.16G // LUNAR DUST // REGOLITH SCREE]"
+    },
+    {
+        id: 14,
+        name: "DERELICT FLEET GRAVEYARD",
+        theater: "SPACE",
+        category: "SPACE",
+        gravity: 0.0,
+        desc: "Scattered battleship hulks, sheared armor plate bridges, and cosmic void rifts.",
+        bg_col: make_color_rgb(6, 6, 12),
+        grid_col_base: make_color_rgb(16, 18, 28),
+        grid_col_elev1: make_color_rgb(32, 36, 52),
+        grid_col_elev2: make_color_rgb(52, 58, 82),
+        cliff_col_se: make_color_rgb(20, 22, 34),
+        cliff_col_sw: make_color_rgb(10, 12, 20),
+        ambient_tag: "[VACUUM ZERO-G // WARSHIP HULL GRAVEYARD // VOID RIFTS]"
+    },
+    {
+        id: 15,
+        name: "SPACE ELEVATOR RING TERMINAL",
+        theater: "SPACE",
+        category: "SPACE",
+        gravity: 0.0,
+        desc: "Geostationary circular platform, vertical tether vacuum shaft, and docking berths.",
+        bg_col: make_color_rgb(6, 10, 16),
+        grid_col_base: make_color_rgb(20, 30, 44),
+        grid_col_elev1: make_color_rgb(36, 52, 74),
+        grid_col_elev2: make_color_rgb(58, 80, 112),
+        cliff_col_se: make_color_rgb(22, 32, 48),
+        cliff_col_sw: make_color_rgb(12, 18, 28),
+        ambient_tag: "[GEO-ORBITAL 0.0G // ELEVATOR RING // DOCKING GANTRY]"
+    },
+    {
+        id: 16,
+        name: "COMET CORE ICE QUARRY",
+        theater: "SPACE",
+        category: "SPACE",
+        gravity: 0.05,
+        desc: "Micro-gravity 0.05G hydrocarbon ice spires and deep sublimation gas crevasses.",
+        bg_col: make_color_rgb(8, 14, 20),
+        grid_col_base: make_color_rgb(22, 38, 52),
+        grid_col_elev1: make_color_rgb(38, 62, 84),
+        grid_col_elev2: make_color_rgb(60, 92, 122),
+        cliff_col_se: make_color_rgb(20, 34, 48),
+        cliff_col_sw: make_color_rgb(10, 18, 28),
+        ambient_tag: "[MICRO-G 0.05G // HYDROCARBON ICE SPIRES // SUBLIMATION RIFT]"
+    },
+    {
+        id: 17,
+        name: "LAGRANGE-5 LOGISTICS HUB",
+        theater: "SPACE",
+        category: "SPACE",
+        gravity: 0.0,
+        desc: "Orbital container freight stacks, automated cargo tracks, and solar sail berths.",
+        bg_col: make_color_rgb(8, 10, 16),
+        grid_col_base: make_color_rgb(26, 32, 46),
+        grid_col_elev1: make_color_rgb(44, 54, 76),
+        grid_col_elev2: make_color_rgb(68, 82, 112),
+        cliff_col_se: make_color_rgb(24, 30, 44),
+        cliff_col_sw: make_color_rgb(12, 16, 26),
+        ambient_tag: "[LAGRANGE L5 0.0G // FREIGHT CONTAINER STACKS // CARGO BERTH]"
+    },
+    {
+        id: 18,
+        name: "DEEP VOID COMMS RELAY",
+        theater: "SPACE",
+        category: "SPACE",
+        gravity: 0.0,
+        desc: "High-gain antenna arrays, sensor dishes, cantilevered spars, and sheer void dropoffs.",
+        bg_col: make_color_rgb(4, 5, 10),
+        grid_col_base: make_color_rgb(14, 16, 26),
+        grid_col_elev1: make_color_rgb(28, 34, 52),
+        grid_col_elev2: make_color_rgb(48, 58, 86),
+        cliff_col_se: make_color_rgb(18, 22, 36),
+        cliff_col_sw: make_color_rgb(8, 10, 18),
+        ambient_tag: "[DEEP VOID 0.0G // SATELLITE COMMS RELAY // ANTENNA SPAR]"
+    },
+    {
+        id: 19,
+        name: "SOLAR MIRROR SWARM STATION",
+        theater: "SPACE",
+        category: "SPACE",
+        gravity: 0.0,
+        desc: "Gleaming gold collector baffles, thermal radiator fins, and vacuum chasms.",
+        bg_col: make_color_rgb(14, 12, 6),
+        grid_col_base: make_color_rgb(36, 32, 18),
+        grid_col_elev1: make_color_rgb(58, 52, 28),
+        grid_col_elev2: make_color_rgb(85, 76, 42),
+        cliff_col_se: make_color_rgb(30, 26, 14),
+        cliff_col_sw: make_color_rgb(16, 14, 8),
+        ambient_tag: "[SOLAR ORBIT 0.0G // THERMAL RADIATOR BAFFLE // GOLD MIRRORS]"
+    },
+    {
+        id: 20,
+        name: "TEST: ELEVATION BENCHMARK RANGE",
+        theater: "EARTH",
+        category: "TEST",
+        gravity: 1.0,
+        desc: "Tiered ziggurat staircases (Tiers 0, 1, 2, 3) to test climbing AP costs & height advantage.",
+        bg_col: make_color_rgb(16, 20, 28),
+        grid_col_base: make_color_rgb(30, 42, 58),
+        grid_col_elev1: make_color_rgb(48, 66, 90),
+        grid_col_elev2: make_color_rgb(72, 96, 128),
+        cliff_col_se: make_color_rgb(22, 32, 46),
+        cliff_col_sw: make_color_rgb(12, 18, 28),
+        ambient_tag: "[CALIBRATION // ELEVATION TIERS 0-3 // CARDINAL RAMPS]"
+    },
+    {
+        id: 21,
+        name: "TEST: TERRAIN STRESS RANGE",
+        theater: "EARTH",
+        category: "TEST",
+        gravity: 1.0,
+        desc: "6 Parallel testing lanes (Dirt, Road, Rubble, Water, Vacuum, Slag) to verify mobility formulas.",
+        bg_col: make_color_rgb(18, 18, 22),
+        grid_col_base: make_color_rgb(36, 36, 44),
+        grid_col_elev1: make_color_rgb(56, 56, 68),
+        grid_col_elev2: make_color_rgb(80, 80, 96),
+        cliff_col_se: make_color_rgb(26, 26, 34),
+        cliff_col_sw: make_color_rgb(14, 14, 20),
+        ambient_tag: "[CALIBRATION // 6 TERRAIN LANES // PROPULSION TEST]"
+    },
+    {
+        id: 22,
+        name: "TEST: OBSTACLE & COVER GAUNTLET",
+        theater: "EARTH",
+        category: "TEST",
+        gravity: 1.0,
+        desc: "Symmetrical geometric maze of light (25%) and heavy (40%) cover barriers and chokepoints.",
+        bg_col: make_color_rgb(20, 16, 24),
+        grid_col_base: make_color_rgb(40, 32, 48),
+        grid_col_elev1: make_color_rgb(62, 50, 74),
+        grid_col_elev2: make_color_rgb(88, 72, 104),
+        cliff_col_se: make_color_rgb(28, 22, 36),
+        cliff_col_sw: make_color_rgb(16, 12, 22),
+        ambient_tag: "[CALIBRATION // LIGHT & HEAVY COVER // CHOKEPOINT CORRIDOR]"
+    },
+    {
+        id: 23,
+        name: "TEST: DUEL ARENA PROVING GROUND",
+        theater: "EARTH",
+        category: "TEST",
+        gravity: 1.0,
+        desc: "Pristine level tournament platform with 4 corner pillars for clean 1v1 Super Ace duels.",
+        bg_col: make_color_rgb(12, 22, 20),
+        grid_col_base: make_color_rgb(24, 46, 42),
+        grid_col_elev1: make_color_rgb(38, 70, 64),
+        grid_col_elev2: make_color_rgb(56, 98, 90),
+        cliff_col_se: make_color_rgb(18, 34, 30),
+        cliff_col_sw: make_color_rgb(10, 20, 18),
+        ambient_tag: "[CALIBRATION // LEVEL 1 TOURNAMENT ARENA // 4 PILLARS]"
+    }
+];
+
 grid_cols = 20;
 grid_rows = 20;
 tile_w = 64.0;
 tile_h = 32.0;
 elev_h = 16.0;
 
-// Elevation Grid (0 = Ground, 1 = Elevated Ridge, 2 = Command Bunker Plateau)
 grid_elev = array_create(grid_cols);
-for (var c = 0; c < grid_cols; c++) {
-    grid_elev[c] = array_create(grid_rows, 0);
-    for (var r = 0; r < grid_rows; r++) {
-        // Natural ridge plateau in central region
-        if (c >= 6 && c <= 13 && r >= 6 && r <= 13) {
-            grid_elev[c][r] = 1;
-        }
-        // Fortress observation mound in center
-        if (c >= 9 && c <= 10 && r >= 9 && r <= 10) {
-            grid_elev[c][r] = 2;
-        }
-    }
-}
-
-// Cover Obstacles (0 = Open, 1 = Titanium Barricade [+25% Cover], 2 = Hardened Bunker Blast Wall [+40% Cover])
+grid_terrain = array_create(grid_cols);
 grid_cover = array_create(grid_cols);
 for (var c = 0; c < grid_cols; c++) {
+    grid_elev[c] = array_create(grid_rows, 0);
+    grid_terrain[c] = array_create(grid_rows, 0);
     grid_cover[c] = array_create(grid_rows, 0);
 }
-// Barricades along trenches and approach choke points
-grid_cover[5][5] = 1; grid_cover[5][6] = 1; grid_cover[6][5] = 1;
-grid_cover[14][14] = 1; grid_cover[14][15] = 1; grid_cover[15][14] = 1;
-grid_cover[6][13] = 1; grid_cover[13][6] = 1;
-grid_cover[9][8] = 2; grid_cover[10][8] = 2; grid_cover[8][9] = 2; grid_cover[8][10] = 2;
+
+load_map = function(_map_idx) {
+    current_map_id = clamp(_map_idx, 0, array_length(map_definitions) - 1);
+    for (var c = 0; c < grid_cols; c++) {
+        for (var r = 0; r < grid_rows; r++) {
+            grid_elev[c][r] = 0;
+            grid_terrain[c][r] = 0;
+            grid_cover[c][r] = 0;
+        }
+    }
+
+    if (current_map_id == 0) {
+        // MAP 0: SECTOR 4 MINING OUTPOST (EARTH)
+        for (var c = 5; c <= 14; c++) {
+            for (var r = 5; r <= 14; r++) {
+                grid_elev[c][r] = 1;
+                grid_terrain[c][r] = 2;
+            }
+        }
+        for (var c = 8; c <= 11; c++) {
+            for (var r = 8; r <= 11; r++) {
+                grid_elev[c][r] = 2;
+                grid_terrain[c][r] = 1;
+            }
+        }
+        for (var r = 0; r < grid_rows; r++) {
+            grid_terrain[9][r] = 1; grid_terrain[10][r] = 1;
+        }
+        grid_cover[8][8] = 2; grid_cover[11][11] = 2; grid_cover[5][5] = 1; grid_cover[14][14] = 1;
+    } else if (current_map_id == 1) {
+        // MAP 1: NEO-VERONA COASTAL RUINS (EARTH)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                var _diag = c + r;
+                if (_diag >= 17 && _diag <= 21) {
+                    grid_terrain[c][r] = 3; // Water canal
+                    grid_elev[c][r] = 0;
+                } else {
+                    grid_elev[c][r] = 1;
+                    grid_terrain[c][r] = (_diag < 17) ? 1 : 2;
+                }
+                if (c >= 8 && c <= 11 && r >= 8 && r <= 11) {
+                    grid_elev[c][r] = 2;
+                    grid_terrain[c][r] = 1;
+                    grid_cover[c][r] = 1;
+                }
+            }
+        }
+        grid_cover[7][7] = 2; grid_cover[12][12] = 2;
+    } else if (current_map_id == 2) {
+        // MAP 2: VOLCANIC CALDERA RIDGE (EARTH)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 1;
+                grid_terrain[c][r] = 0;
+                if (c <= 2 || c >= 17 || r <= 2 || r >= 17) {
+                    grid_elev[c][r] = 2;
+                    grid_terrain[c][r] = 2;
+                }
+                if (abs(c - r) <= 1) {
+                    grid_terrain[c][r] = 5; // Slag fissure
+                    grid_elev[c][r] = 0;
+                }
+            }
+        }
+        grid_elev[9][9] = 1; grid_terrain[9][9] = 1;
+        grid_elev[10][10] = 1; grid_terrain[10][10] = 1;
+        grid_cover[6][6] = 2; grid_cover[13][13] = 2;
+    } else if (current_map_id == 3) {
+        // MAP 3: GLACIAL CREVASSE PASS (EARTH)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 1;
+                grid_terrain[c][r] = 0;
+                if (r <= 2 || r >= 17) grid_elev[c][r] = 2;
+                if (c >= 8 && c <= 11) {
+                    grid_terrain[c][r] = 4; // Glacial chasm
+                    grid_elev[c][r] = 0;
+                }
+            }
+        }
+        for (var c = 8; c <= 11; c++) {
+            grid_elev[c][5] = 1; grid_terrain[c][5] = 1;
+            grid_elev[c][6] = 1; grid_terrain[c][6] = 1;
+            grid_elev[c][13] = 1; grid_terrain[c][13] = 1;
+            grid_elev[c][14] = 1; grid_terrain[c][14] = 1;
+        }
+        grid_cover[5][5] = 2; grid_cover[14][14] = 2;
+    } else if (current_map_id == 4) {
+        // MAP 4: VERDANT JUNGLE DELTA (EARTH)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 1;
+                grid_terrain[c][r] = 0;
+                var _riv_r = 8 + floor(sin(c * 0.4) * 3);
+                if (abs(r - _riv_r) <= 1) {
+                    grid_terrain[c][r] = 3; // River
+                    grid_elev[c][r] = 0;
+                }
+                if ((c >= 2 && c <= 5 && r >= 2 && r <= 5) || (c >= 14 && c <= 17 && r >= 14 && r <= 17)) {
+                    grid_elev[c][r] = 2;
+                    grid_cover[c][r] = 2;
+                }
+            }
+        }
+        grid_elev[9][8] = 1; grid_terrain[9][8] = 1;
+        grid_elev[10][8] = 1; grid_terrain[10][8] = 1;
+    } else if (current_map_id == 5) {
+        // MAP 5: SAHARA DUNE REFINERY (EARTH)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 0;
+                grid_terrain[c][r] = 0;
+                if (c == 9 || c == 10 || r == 9 || r == 10) grid_terrain[c][r] = 1; // Pipeline road
+                if ((c >= 4 && c <= 6 && r >= 4 && r <= 6) || (c >= 13 && c <= 15 && r >= 13 && r <= 15)) {
+                    grid_elev[c][r] = 1;
+                    grid_cover[c][r] = 2;
+                }
+            }
+        }
+    } else if (current_map_id == 6) {
+        // MAP 6: MEGA-CITY SECTOR 9 GRID (EARTH)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 0;
+                grid_terrain[c][r] = 2; // Rubble
+                if (c == 8 || c == 9 || c == 10 || r == 8 || r == 9 || r == 10) grid_terrain[c][r] = 1; // Avenues
+                if ((c >= 2 && c <= 5 && r >= 2 && r <= 5) ||
+                    (c >= 14 && c <= 17 && r >= 2 && r <= 5) ||
+                    (c >= 2 && c <= 5 && r >= 14 && r <= 17) ||
+                    (c >= 14 && c <= 17 && r >= 14 && r <= 17)) {
+                    grid_elev[c][r] = 2;
+                    grid_cover[c][r] = 2;
+                }
+            }
+        }
+    } else if (current_map_id == 7) {
+        // MAP 7: SUBTERRANEAN MAGMA VAULT (EARTH)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 1;
+                grid_terrain[c][r] = 0;
+                if (r == 5 || r == 6 || r == 13 || r == 14) {
+                    grid_terrain[c][r] = 5; // Slag river
+                    grid_elev[c][r] = 0;
+                }
+                if (c >= 8 && c <= 11) {
+                    grid_elev[c][r] = 1;
+                    grid_terrain[c][r] = 1; // Catwalk bridge
+                }
+            }
+        }
+        grid_cover[5][9] = 2; grid_cover[14][9] = 2;
+    } else if (current_map_id == 8) {
+        // MAP 8: ABANDONED SPACEPORT TERMINAL (EARTH)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 0;
+                grid_terrain[c][r] = 0;
+                if ((r >= 4 && r <= 6) || (r >= 13 && r <= 15) || (c == 9 || c == 10)) {
+                    grid_terrain[c][r] = 1; // Tarmac runways
+                }
+                if ((c >= 2 && c <= 4 && r >= 9 && r <= 11) || (c >= 15 && c <= 17 && r >= 9 && r <= 11)) {
+                    grid_terrain[c][r] = 2; // Blast craters
+                }
+                if (c <= 2 && (r <= 3 || r >= 16)) {
+                    grid_elev[c][r] = 2;
+                    grid_cover[c][r] = 2;
+                }
+            }
+        }
+    } else if (current_map_id == 9) {
+        // MAP 9: IRRADIATED SALT FLATS (EARTH)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 1;
+                grid_terrain[c][r] = 0;
+                if ((c >= 4 && c <= 7 && r >= 6 && r <= 13) || (c >= 12 && c <= 15 && r >= 6 && r <= 13)) {
+                    grid_terrain[c][r] = 3; // Brine pool
+                    grid_elev[c][r] = 0;
+                }
+                if (r == 9 || r == 10) {
+                    grid_elev[c][r] = 0;
+                    grid_terrain[c][r] = 1; // Sunken trench
+                }
+            }
+        }
+        grid_cover[9][8] = 2; grid_cover[10][8] = 2; grid_cover[9][11] = 2; grid_cover[10][11] = 2;
+    } else if (current_map_id == 10) {
+        // MAP 10: HELIOS-7 ORBITAL ARRAY (SPACE)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_terrain[c][r] = 4; // Vacuum void
+                grid_elev[c][r] = 0;
+                if (c >= 8 && c <= 11 || r >= 8 && r <= 11) {
+                    grid_terrain[c][r] = 1; // Catwalk
+                    grid_elev[c][r] = 1;
+                }
+                if (c >= 8 && c <= 11 && r >= 8 && r <= 11) {
+                    grid_elev[c][r] = 2;
+                    grid_cover[c][r] = 2; // Spire platform
+                }
+                if ((c >= 2 && c <= 4 && r >= 2 && r <= 4) ||
+                    (c >= 15 && c <= 17 && r >= 2 && r <= 4) ||
+                    (c >= 2 && c <= 4 && r >= 15 && r <= 17) ||
+                    (c >= 15 && c <= 17 && r >= 15 && r <= 17)) {
+                    grid_elev[c][r] = 1;
+                    grid_terrain[c][r] = 1;
+                    grid_cover[c][r] = 1;
+                }
+            }
+        }
+    } else if (current_map_id == 11) {
+        // MAP 11: ASTEROID SYNDICATE FORTRESS (SPACE)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 1;
+                grid_terrain[c][r] = 0;
+                if (c >= 8 && c <= 11) {
+                    grid_elev[c][r] = 0;
+                    grid_terrain[c][r] = 5; // Slag trench
+                }
+                if ((c >= 3 && c <= 6 && r >= 3 && r <= 6) || (c >= 13 && c <= 16 && r >= 13 && r <= 16)) {
+                    grid_elev[c][r] = 2;
+                    grid_terrain[c][r] = 2;
+                    grid_cover[c][r] = 2;
+                }
+            }
+        }
+        grid_terrain[9][5] = 1; grid_terrain[10][5] = 1; grid_elev[9][5] = 1; grid_elev[10][5] = 1;
+        grid_terrain[9][14] = 1; grid_terrain[10][14] = 1; grid_elev[9][14] = 1; grid_elev[10][14] = 1;
+    } else if (current_map_id == 12) {
+        // MAP 12: COLONY CYLINDER SHELL (SPACE)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 1;
+                grid_terrain[c][r] = 0;
+                if (r == 9 || r == 10) {
+                    grid_terrain[c][r] = 3; // Climate canal
+                    grid_elev[c][r] = 0;
+                }
+                if (r == 7 || r == 12) grid_terrain[c][r] = 1; // Maglev rail
+                if ((c >= 3 && c <= 6 && r <= 4) || (c >= 13 && c <= 16 && r >= 15)) {
+                    grid_elev[c][r] = 2;
+                    grid_cover[c][r] = 2;
+                }
+            }
+        }
+        grid_elev[5][9] = 1; grid_elev[5][10] = 1; grid_terrain[5][9] = 1; grid_terrain[5][10] = 1;
+        grid_elev[14][9] = 1; grid_elev[14][10] = 1; grid_terrain[14][9] = 1; grid_terrain[14][10] = 1;
+    } else if (current_map_id == 13) {
+        // MAP 13: LUNAR REGOLITH CRATER (SPACE)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                var _dist_sq = sqr(c - 9.5) + sqr(r - 9.5);
+                if (_dist_sq <= 16) {
+                    grid_elev[c][r] = 0;
+                    grid_terrain[c][r] = 0; // Crater bottom
+                } else if (_dist_sq >= 36 && _dist_sq <= 64) {
+                    grid_elev[c][r] = 2;
+                    grid_terrain[c][r] = 2; // Crater rim
+                } else {
+                    grid_elev[c][r] = 1;
+                    grid_terrain[c][r] = 0;
+                }
+            }
+        }
+        grid_cover[9][9] = 2; grid_cover[10][10] = 2;
+    } else if (current_map_id == 14) {
+        // MAP 14: DERELICT FLEET GRAVEYARD (SPACE)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_terrain[c][r] = 4; // Void
+                grid_elev[c][r] = 0;
+                if ((c >= 2 && c <= 8 && r >= 2 && r <= 8) || (c >= 11 && c <= 17 && r >= 11 && r <= 17)) {
+                    grid_elev[c][r] = 1;
+                    grid_terrain[c][r] = 2; // Ship hull debris
+                    grid_cover[c][r] = 1;
+                }
+                if (c >= 8 && c <= 11 && r >= 8 && r <= 11) {
+                    grid_elev[c][r] = 1;
+                    grid_terrain[c][r] = 1; // Armor bridge
+                }
+            }
+        }
+        grid_cover[5][5] = 2; grid_cover[14][14] = 2;
+    } else if (current_map_id == 15) {
+        // MAP 15: SPACE ELEVATOR RING TERMINAL (SPACE)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                var _dist_sq = sqr(c - 9.5) + sqr(r - 9.5);
+                if (_dist_sq <= 8 || _dist_sq >= 80) {
+                    grid_terrain[c][r] = 4; // Void
+                    grid_elev[c][r] = 0;
+                } else {
+                    grid_elev[c][r] = 1;
+                    grid_terrain[c][r] = 1; // Ring platform
+                }
+            }
+        }
+        grid_cover[9][4] = 2; grid_cover[9][15] = 2; grid_cover[4][9] = 2; grid_cover[15][9] = 2;
+    } else if (current_map_id == 16) {
+        // MAP 16: COMET CORE ICE QUARRY (SPACE)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 1;
+                grid_terrain[c][r] = 0;
+                if ((c >= 4 && c <= 6) || (c >= 13 && c <= 15)) {
+                    grid_terrain[c][r] = 4; // Gas fissure
+                    grid_elev[c][r] = 0;
+                }
+                if (r == 9 || r == 10) {
+                    grid_elev[c][r] = 1;
+                    grid_terrain[c][r] = 1; // Conveyer bridge
+                }
+                if ((c <= 2 || c >= 17) && (r <= 2 || r >= 17)) {
+                    grid_elev[c][r] = 2;
+                    grid_cover[c][r] = 2;
+                }
+            }
+        }
+    } else if (current_map_id == 17) {
+        // MAP 17: LAGRANGE-5 LOGISTICS HUB (SPACE)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 1;
+                grid_terrain[c][r] = 1;
+                if (c <= 1 || c >= 18 || r <= 1 || r >= 18) {
+                    grid_terrain[c][r] = 4; // Berthing void
+                    grid_elev[c][r] = 0;
+                }
+                if ((c % 4 == 0) && (r >= 4 && r <= 15)) {
+                    grid_cover[c][r] = 2; // Container stacks
+                }
+            }
+        }
+    } else if (current_map_id == 18) {
+        // MAP 18: DEEP VOID COMMS RELAY (SPACE)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_terrain[c][r] = 4; // Void
+                grid_elev[c][r] = 0;
+                if (c >= 7 && c <= 12 && r >= 7 && r <= 12) {
+                    grid_elev[c][r] = 2;
+                    grid_terrain[c][r] = 1; // Dish platform
+                    grid_cover[c][r] = 1;
+                }
+                if (c == 9 || c == 10 || r == 9 || r == 10) {
+                    grid_elev[c][r] = 1;
+                    grid_terrain[c][r] = 1; // Antenna spar
+                }
+            }
+        }
+        grid_cover[9][9] = 2; grid_cover[10][10] = 2;
+    } else if (current_map_id == 19) {
+        // MAP 19: SOLAR MIRROR SWARM STATION (SPACE)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_terrain[c][r] = 4; // Void
+                grid_elev[c][r] = 0;
+                if ((c >= 2 && c <= 7 && r >= 2 && r <= 7) ||
+                    (c >= 12 && c <= 17 && r >= 2 && r <= 7) ||
+                    (c >= 2 && c <= 7 && r >= 12 && r <= 17) ||
+                    (c >= 12 && c <= 17 && r >= 12 && r <= 17)) {
+                    grid_elev[c][r] = 1;
+                    grid_terrain[c][r] = 1; // Mirror array
+                }
+                if (c >= 8 && c <= 11 && r >= 8 && r <= 11) {
+                    grid_elev[c][r] = 1;
+                    grid_terrain[c][r] = 1; // Central hub
+                }
+                if (c == 9 || c == 10) {
+                    if (r == 0 || r == 1 || r == 18 || r == 19) grid_terrain[c][r] = 5; // Radiator
+                }
+            }
+        }
+    } else if (current_map_id == 20) {
+        // MAP 20: TEST: ELEVATION BENCHMARK RANGE (TEST)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 0;
+                grid_terrain[c][r] = 0;
+                if (c >= 3 && c <= 16 && r >= 3 && r <= 16) grid_elev[c][r] = 1;
+                if (c >= 6 && c <= 13 && r >= 6 && r <= 13) grid_elev[c][r] = 2;
+                if (c >= 8 && c <= 11 && r >= 8 && r <= 11) grid_elev[c][r] = 3;
+                if (c == 9 || c == 10 || r == 9 || r == 10) grid_terrain[c][r] = 1; // Cardinal ramp
+            }
+        }
+        grid_cover[8][8] = 2; grid_cover[11][11] = 2;
+    } else if (current_map_id == 21) {
+        // MAP 21: TEST: TERRAIN STRESS RANGE (TEST)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 0;
+                if (r >= 0 && r <= 2) grid_terrain[c][r] = 0; // DIRT
+                else if (r >= 3 && r <= 5) grid_terrain[c][r] = 1; // ROAD
+                else if (r >= 6 && r <= 8) grid_terrain[c][r] = 2; // RUBBLE
+                else if (r >= 9 && r <= 11) grid_terrain[c][r] = 3; // WATER
+                else if (r >= 12 && r <= 14) grid_terrain[c][r] = 4; // VACUUM
+                else grid_terrain[c][r] = 5; // SLAG
+                if (c == 4 || c == 5 || c == 14 || c == 15) {
+                    grid_terrain[c][r] = 1; // Test bridge
+                    grid_elev[c][r] = 1;
+                }
+            }
+        }
+    } else if (current_map_id == 22) {
+        // MAP 22: TEST: OBSTACLE & COVER GAUNTLET (TEST)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 0;
+                grid_terrain[c][r] = 1; // Clear floor
+                if ((c % 3 == 0) && (r % 3 == 0)) {
+                    grid_cover[c][r] = 2; // Heavy pillar
+                } else if ((c % 2 == 1) && (r % 2 == 1)) {
+                    grid_cover[c][r] = 1; // Light barricade
+                }
+            }
+        }
+    } else if (current_map_id == 23) {
+        // MAP 23: TEST: DUEL ARENA PROVING GROUND (TEST)
+        for (var c = 0; c < grid_cols; c++) {
+            for (var r = 0; r < grid_rows; r++) {
+                grid_elev[c][r] = 1;
+                grid_terrain[c][r] = 0;
+                if (c >= 6 && c <= 13 && r >= 6 && r <= 13) grid_terrain[c][r] = 1; // Center ring
+            }
+        }
+        grid_cover[5][5] = 2; grid_cover[14][5] = 2; grid_cover[5][14] = 2; grid_cover[14][14] = 2;
+    }
+};
+
+load_map(0);
+
+// 3b. Pre-Battle Deployment Deck & Chassis Swapping Test Chamber
+deployment_deck_active = false;
+deployment_selected_slot = 0;
+deployment_selected_team = "ALLIED";
+deployment_chassis_idx = 0;
+deployment_facing = 0;
+deployment_perspective = "front";
+deployment_anim_state = "idle";
+deployment_map_page = 0;
+deployment_map_filter = "ALL"; // "ALL", "EARTH", "SPACE", "TEST"
+
+chassis_swap_pool = [
+    { id: "custom_biped", name: "Custom Vanguard Brawler", type: "custom_biped", move_type: "biped", default_squad: "SUPER_ACE", armor: 2600, power: 1850, speed: 450, sprite_asset: spr_ms_custom_biped_heavy_idle, desc: "Modular heavy biped with 120mm cannon and solid ablative tower shield." },
+    { id: "custom_hover", name: "Custom Ghost Sniper", type: "custom_hover", move_type: "hover", default_squad: "SUPER_ACE", armor: 1750, power: 1950, speed: 680, sprite_asset: spr_ms_custom_hover_sniper_idle, desc: "Hover skirt chassis armed with high-velocity magnetic linear railgun." },
+    { id: "custom_tread", name: "Custom Scrapper Fortress", type: "custom_tread", move_type: "treads", default_squad: "PLATOON_3", armor: 3200, power: 2100, speed: 380, sprite_asset: spr_ms_custom_tread_artillery_idle, desc: "Caterpillar tank tread fortress carrying twin 200mm heavy howitzers." },
+    { id: "custom_aero", name: "Custom Stratos Striker", type: "custom_aero", move_type: "aero", default_squad: "SUPER_ACE", armor: 1900, power: 2200, speed: 820, sprite_asset: spr_ms_custom_aero_striker_idle, desc: "Aerodynamic swept-wing space vernier chassis with high-yield beam carbines." },
+    { id: "ms_terran_ironclad_07", name: "GHA-07 Ironclad", type: "ms_terran_ironclad_07", move_type: "biped", default_squad: "PLATOON_3", armor: 2480, power: 12, speed: 45, sprite_asset: spr_ms_ironclad_idle, desc: "The legendary backbone of Earth defense, capable of surviving orbital bombardment." },
+    { id: "ms_terran_ballista_04", name: "TH-M04 Ballista", type: "ms_terran_ballista_04", move_type: "treads", default_squad: "PLATOON_3", armor: 2350, power: 11, speed: 38, sprite_asset: spr_ms_ballista_idle, desc: "Quadruped heavy fire platform designed to saturate hostile trenches from over the horizon." },
+    { id: "ms_terran_centurion_02", name: "TH-C02 Centurion", type: "ms_terran_centurion_02", move_type: "biped", default_squad: "PLATOON_3", armor: 2200, power: 14, speed: 62, sprite_asset: spr_ms_centurion_idle, desc: "Aggressive shock assault unit built to smash through perimeter gates and fortified bunkers." },
+    { id: "ms_terran_trenchcoat_09", name: "TH-T09 Trenchcoat", type: "ms_terran_trenchcoat_09", move_type: "biped", default_squad: "PLATOON_3", armor: 2150, power: 10, speed: 50, sprite_asset: spr_ms_trenchcoat_idle, desc: "Specialized close-quarters brawler renowned for lethal room-clearing inside domed cities." },
+    { id: "ms_terran_bulwark_03", name: "TCM-03 Bulwark", type: "ms_terran_bulwark_03", move_type: "biped", default_squad: "SUPER_ACE", armor: 1620, power: 8, speed: 38, sprite_asset: spr_ms_ironclad_idle, desc: "Early pre-war line guard with thick cast armor." },
+    { id: "ms_terran_vanguard_01", name: "TCM-01 Vanguard Scout", type: "ms_terran_vanguard_01", move_type: "hover", default_squad: "SUPER_ACE", armor: 1450, power: 9, speed: 58, sprite_asset: spr_ms_ironclad_idle, desc: "Forward artillery spotter and fast border patrol." },
+    { id: "ms_terran_vance_custom", name: "GHA-07C Ironclad Commander", type: "ms_terran_vance_custom", move_type: "biped", default_squad: "SUPER_ACE", armor: 2750, power: 15, speed: 48, sprite_asset: spr_ms_ironclad_idle, desc: "Personal flagship of Cmdr. Marcus Vance with enhanced comms." },
+    { id: "ms_terran_firefly_05", name: "TH-F05 Firefly Flanker", type: "ms_terran_firefly_05", move_type: "biped", default_squad: "SUPER_ACE", armor: 1850, power: 13, speed: 68, sprite_asset: spr_ms_ironclad_idle, desc: "Fast skirmisher operating in flanking pincers." },
+    { id: "ms_terran_ironclad_bastion_08", name: "GHA-08 Ironclad Bastion", type: "ms_terran_ironclad_bastion_08", move_type: "treads", default_squad: "SUPER_ACE", armor: 3200, power: 15, speed: 40, sprite_asset: spr_ms_ironclad_idle, desc: "Heavier evolution of the Ironclad designed to withstand naval railguns." },
+    { id: "ms_terran_centurion_assault_02", name: "VHI-02 Centurion Assault", type: "ms_terran_centurion_assault_02", move_type: "biped", default_squad: "SUPER_ACE", armor: 2950, power: 18, speed: 58, sprite_asset: spr_ms_ironclad_idle, desc: "Up-armored strike chassis optimized for orbital drop breaches." },
+    { id: "ms_terran_siegebreaker_01", name: "TH-S01 Siegebreaker", type: "ms_terran_siegebreaker_01", move_type: "treads", default_squad: "SUPER_ACE", armor: 3400, power: 16, speed: 32, sprite_asset: spr_ms_siegebreaker_anchor, desc: "Massive stationary bombardment mech used to reduce Jovian fortresses." },
+    { id: "ms_terran_demolisher_08", name: "TH-D08 Demolisher", type: "ms_terran_demolisher_08", move_type: "biped", default_squad: "SUPER_ACE", armor: 3100, power: 14, speed: 42, sprite_asset: spr_ms_ironclad_idle, desc: "Frontline combat engineering mech equipped to clear minefields." },
+    { id: "ms_terran_warhammer_03", name: "VHI-03 Warhammer Breaker", type: "ms_terran_warhammer_03", move_type: "biped", default_squad: "SUPER_ACE", armor: 3350, power: 19, speed: 54, sprite_asset: spr_ms_ironclad_idle, desc: "Fierce anti-armor stormer with quad-linked gatling cannons." },
+    { id: "ms_terran_behemoth_11", name: "TCX-11 Behemoth Mk.IV", type: "ms_terran_behemoth_11", move_type: "biped", default_squad: "SUPER_ACE", armor: 4800, power: 22, speed: 35, sprite_asset: spr_ms_ironclad_idle, desc: "Colossal planetary dreadnought deploying walking battleship armor." },
+    { id: "ms_terran_titan_04", name: "VHI-04 Titan Dreadnought", type: "ms_terran_titan_04", move_type: "biped", default_squad: "SUPER_ACE", armor: 4300, power: 26, speed: 52, sprite_asset: spr_ms_ironclad_idle, desc: "Mobile assault fortress leading planetary invasion armies." },
+    { id: "ms_terran_paladin_03", name: "TH-P03 Paladin Heavy Escort", type: "ms_terran_paladin_03", move_type: "biped", default_squad: "SUPER_ACE", armor: 4100, power: 24, speed: 46, sprite_asset: spr_ms_ironclad_idle, desc: "Escort guardian armed with anti-missile thermal lasers." },
+    { id: "ms_terran_promethean_02", name: "TH-X02 Promethean", type: "ms_terran_promethean_02", move_type: "biped", default_squad: "SUPER_ACE", armor: 4600, power: 25, speed: 42, sprite_asset: spr_ms_ironclad_idle, desc: "Experimental reactor testbed firing supercritical thermal shells." },
+    { id: "ms_terran_goliath_prime_x01", name: "VHI-X01 Goliath Prime", type: "ms_terran_goliath_prime_x01", move_type: "treads", default_squad: "SUPER_ACE", armor: 5400, power: 24, speed: 32, sprite_asset: spr_ms_ironclad_idle, desc: "Terran apex X-chassis prototype capable of trampling enemy lines." },
+    { id: "ms_colony_aether_01", name: "AET-01 Aether", type: "ms_colony_aether_01", move_type: "aero", default_squad: "PLATOON_3", armor: 1820, power: 16, speed: 85, sprite_asset: spr_ms_aether_idle, desc: "The graceful pride of the Jovian fleet, out-turning any kinetic war machine in vacuum." },
+    { id: "ms_colony_zephyr_05", name: "JCC-Z05 Zephyr", type: "ms_colony_zephyr_05", move_type: "aero", default_squad: "PLATOON_3", armor: 1680, power: 15, speed: 92, sprite_asset: spr_ms_zephyr_idle, desc: "Electronic warfare interceptor that blankets battlefield radars in blinding static." },
+    { id: "ms_colony_kepler_02", name: "JCC-K02 Kepler", type: "ms_colony_kepler_02", move_type: "hover", default_squad: "PLATOON_3", armor: 1720, power: 14, speed: 78, sprite_asset: spr_ms_kepler_idle, desc: "Precision sniper unit that destroys hostile reactors from outside visual sensor range." },
+    { id: "ms_colony_oberon_08", name: "JCC-O08 Oberon", type: "ms_colony_oberon_08", move_type: "biped", default_squad: "PLATOON_3", armor: 1950, power: 17, speed: 80, sprite_asset: spr_ms_oberon_idle, desc: "Heavy fleet escort unit guarding Jovian gas tankers against pirate boarding torpedoes." },
+    { id: "ms_colony_sylph_01", name: "AOD-01 Sylph Interceptor", type: "ms_colony_sylph_01", move_type: "aero", default_squad: "SUPER_ACE", armor: 1280, power: 11, speed: 88, sprite_asset: spr_ms_aether_idle, desc: "Light early patrol chassis guarding outer Jovian listening posts." },
+    { id: "ms_colony_pegasus_09", name: "JCC-P09 Pegasus Courier", type: "ms_colony_pegasus_09", move_type: "aero", default_squad: "SUPER_ACE", armor: 1320, power: 12, speed: 95, sprite_asset: spr_ms_zephyr_idle, desc: "Extremely fast courier ship used to bypass planetary embargo lines." },
+    { id: "ms_colony_cassian_custom", name: "AET-01C Aether Officer", type: "ms_colony_cassian_custom", move_type: "aero", default_squad: "SUPER_ACE", armor: 2100, power: 18, speed: 88, sprite_asset: spr_ms_aether_idle, desc: "Gold-trimmed flagship of Capt. Cassian Vane with advanced tactical battle-mapping." },
+    { id: "ms_colony_vector_04", name: "JCC-V04 Vector", type: "ms_colony_vector_04", move_type: "aero", default_squad: "SUPER_ACE", armor: 1880, power: 15, speed: 86, sprite_asset: spr_ms_aether_idle, desc: "Standard carrier-based vacuum superiority fighter of the Jovian navy." },
+    { id: "ms_colony_aether_striker_02", name: "AOD-02 Aether Striker", type: "ms_colony_aether_striker_02", move_type: "aero", default_squad: "SUPER_ACE", armor: 2250, power: 19, speed: 90, sprite_asset: spr_ms_aether_idle, desc: "Enhanced strike model with high-power capacitor discharges." },
+    { id: "ms_colony_helios_06", name: "JCC-H06 Helios Beam", type: "ms_colony_helios_06", move_type: "aero", default_squad: "SUPER_ACE", armor: 2150, power: 18, speed: 86, sprite_asset: spr_ms_aether_idle, desc: "Specialized in sustained energy fire with enormous cooling radiator arrays." },
+    { id: "ms_colony_eclipse_07", name: "JCC-E07 Eclipse Stealth", type: "ms_colony_eclipse_07", move_type: "hover", default_squad: "SUPER_ACE", armor: 1980, power: 17, speed: 92, sprite_asset: spr_ms_zephyr_idle, desc: "Deep space stealth unit running completely silent on thermal heat sinks." },
+    { id: "ms_colony_nebula_03", name: "JCC-N03 Nebula Minelayer", type: "ms_colony_nebula_03", move_type: "biped", default_squad: "SUPER_ACE", armor: 2300, power: 18, speed: 76, sprite_asset: spr_ms_aether_idle, desc: "Deploys vast minefields of homing smart-mines across orbital choke-points." },
+    { id: "ms_colony_seraphim_03", name: "AOD-03 Seraphim Apex", type: "ms_colony_seraphim_03", move_type: "aero", default_squad: "SUPER_ACE", armor: 2700, power: 22, speed: 94, sprite_asset: spr_ms_aether_idle, desc: "Elite ace unit equipped with shimmering hexagonal beam shield wings." },
+    { id: "ms_colony_archangel_04", name: "AOD-04 Archangel Dreadnought", type: "ms_colony_archangel_04", move_type: "biped", default_squad: "SUPER_ACE", armor: 3800, power: 26, speed: 84, sprite_asset: spr_ms_aether_idle, desc: "Massive orbital dreadnought commanding colonial fleet defense." },
+    { id: "ms_colony_typhon_01", name: "JCC-T01 Typhon Missile Frigate", type: "ms_colony_typhon_01", move_type: "biped", default_squad: "SUPER_ACE", armor: 3950, power: 25, speed: 78, sprite_asset: spr_ms_aether_idle, desc: "Walking missile frigate capable of launching 96 smart warheads per salvo." },
+    { id: "ms_colony_chronos_03", name: "JCC-X03 Chronos Drive", type: "ms_colony_chronos_03", move_type: "biped", default_squad: "SUPER_ACE", armor: 3600, power: 27, speed: 98, sprite_asset: spr_ms_zephyr_idle, desc: "Prototype equipped with experimental tachyon verniers enabling instant micro-hops." },
+    { id: "ms_colony_ghost_mirage_x08", name: "JCC-X08 Ghost Mirage", type: "ms_colony_ghost_mirage_x08", move_type: "biped", default_squad: "SUPER_ACE", armor: 3500, power: 28, speed: 100, sprite_asset: spr_ms_zephyr_idle, desc: "Masterwork custom unit piloted by Sorren Lin, producing radar holograms." },
+    { id: "ms_colony_astraea_dominus_x01", name: "AOD-X01 Astraea Dominus", type: "ms_colony_astraea_dominus_x01", move_type: "aero", default_squad: "SUPER_ACE", armor: 4100, power: 28, speed: 96, sprite_asset: spr_ms_aether_idle, desc: "Colonial pinnacle unit wielding miniature fusion particle blades." },
+    { id: "ms_syndicate_hyena_12", name: "SCR-12 Hyena", type: "ms_syndicate_hyena_12", move_type: "biped", default_squad: "PLATOON_3", armor: 1980, power: 10, speed: 60, sprite_asset: spr_ms_hyena_idle, desc: "Built from cannibalized military wrecks, the Hyena drags enemy suits into brutal melee." },
+    { id: "ms_syndicate_gorgon_04", name: "ARC-G04 Gorgon", type: "ms_syndicate_gorgon_04", move_type: "biped", default_squad: "PLATOON_3", armor: 2300, power: 12, speed: 52, sprite_asset: spr_ms_gorgon_idle, desc: "Feared asteroid boarding mech designed to breach titanium bulkheads and crush reactors." },
+    { id: "ms_syndicate_bloodhound_06", name: "ARC-B06 Bloodhound", type: "ms_syndicate_bloodhound_06", move_type: "biped", default_squad: "PLATOON_3", armor: 1850, power: 9, speed: 72, sprite_asset: spr_ms_bloodhound_idle, desc: "Fast wheeled marauder that hunts in packs to ambush isolated military convoys." },
+    { id: "ms_syndicate_vandal_03", name: "ARC-V03 Vandal", type: "ms_syndicate_vandal_03", move_type: "biped", default_squad: "PLATOON_3", armor: 1750, power: 10, speed: 66, sprite_asset: spr_ms_vandal_idle, desc: "Guerilla ambush unit that blankets the area in blinding magnesium flares." },
+    { id: "ms_syndicate_scrapper_01", name: "RST-01 Scrapper Grunt", type: "ms_syndicate_scrapper_01", move_type: "biped", default_squad: "SUPER_ACE", armor: 1350, power: 7, speed: 54, sprite_asset: spr_ms_hyena_idle, desc: "Rudimentary combat walker patched together from industrial loaders." },
+    { id: "ms_syndicate_hellhound_02", name: "ARC-H02 Hellhound Flamer", type: "ms_syndicate_hellhound_02", move_type: "biped", default_squad: "SUPER_ACE", armor: 1650, power: 9, speed: 58, sprite_asset: spr_ms_hyena_idle, desc: "Terror weapon spraying superheated napalm over infantry bunkers." },
+    { id: "ms_syndicate_cruz_custom", name: "SCR-12C Hyena Warlord", type: "ms_syndicate_cruz_custom", move_type: "biped", default_squad: "SUPER_ACE", armor: 2550, power: 14, speed: 64, sprite_asset: spr_ms_hyena_idle, desc: "Battle-scarred command rig of Sonya Cruz, clad in the armor of defeated Terran aces." },
+    { id: "ms_syndicate_jackal_08", name: "ARC-J08 Jackal Skirmisher", type: "ms_syndicate_jackal_08", move_type: "aero", default_squad: "SUPER_ACE", armor: 1920, power: 11, speed: 70, sprite_asset: spr_ms_hyena_idle, desc: "Aggressive skirmisher operated by seasoned mercenary contractors." },
+    { id: "ms_syndicate_marauder_02", name: "RST-02 Marauder Brawler", type: "ms_syndicate_marauder_02", move_type: "biped", default_squad: "SUPER_ACE", armor: 2650, power: 13, speed: 56, sprite_asset: spr_ms_hyena_idle, desc: "Brutal brawler capable of withstanding direct missile hits." },
+    { id: "ms_syndicate_warthog_05", name: "ARC-W05 Warthog Siege", type: "ms_syndicate_warthog_05", move_type: "treads", default_squad: "SUPER_ACE", armor: 2950, power: 12, speed: 42, sprite_asset: spr_ms_gorgon_idle, desc: "Fires dense balls of molten industrial slag over fortress battlements." },
+    { id: "ms_syndicate_ripper_07", name: "ARC-R07 Ripper Melee", type: "ms_syndicate_ripper_07", move_type: "biped", default_squad: "SUPER_ACE", armor: 2450, power: 15, speed: 68, sprite_asset: spr_ms_bloodhound_idle, desc: "Close-combat terror machine with twin industrial circular saws." },
+    { id: "ms_syndicate_scythe_09", name: "ARC-S09 Scythe Infiltrator", type: "ms_syndicate_scythe_09", move_type: "biped", default_squad: "SUPER_ACE", armor: 2150, power: 14, speed: 76, sprite_asset: spr_ms_hyena_idle, desc: "Silent assassin utilizing monofilament wire to sever limbs in ambushes." },
+    { id: "ms_syndicate_slag_lobber_03", name: "RST-03 Slag Lobber", type: "ms_syndicate_slag_lobber_03", move_type: "biped", default_squad: "SUPER_ACE", armor: 2800, power: 14, speed: 48, sprite_asset: spr_ms_gorgon_idle, desc: "Covers the battlefield in sticky, blinding slag that overheats enemy vents." },
+    { id: "ms_syndicate_junker_dread_04", name: "RST-04 Junker Dreadnought", type: "ms_syndicate_junker_dread_04", move_type: "treads", default_squad: "SUPER_ACE", armor: 4200, power: 20, speed: 44, sprite_asset: spr_ms_gorgon_idle, desc: "Walking scrapyard monstrosity equipped with guns salvaged from downed warships." },
+    { id: "ms_syndicate_chimera_01", name: "ARC-C01 Chimera Vanguard", type: "ms_syndicate_chimera_01", move_type: "biped", default_squad: "SUPER_ACE", armor: 3800, power: 22, speed: 65, sprite_asset: spr_ms_hyena_idle, desc: "High-end mercenary flagship combining the finest military components on the black market." },
+    { id: "ms_syndicate_cerberus_04", name: "ARC-X04 Cerberus Triple-Head", type: "ms_syndicate_cerberus_04", move_type: "biped", default_squad: "SUPER_ACE", armor: 4100, power: 21, speed: 54, sprite_asset: spr_ms_gorgon_idle, desc: "Terrifying three-turret assault mech capable of engaging multiple targets." },
+    { id: "ms_syndicate_iron_reaver_09", name: "ARC-X09 Iron Reaver", type: "ms_syndicate_iron_reaver_09", move_type: "biped", default_squad: "SUPER_ACE", armor: 4350, power: 23, speed: 60, sprite_asset: spr_ms_gorgon_idle, desc: "The supreme flagship of pirate armadas, devastating any suit it tackles." },
+    { id: "ms_syndicate_rust_devil_x01", name: "RST-X01 Rust Devil Prime", type: "ms_syndicate_rust_devil_x01", move_type: "biped", default_squad: "SUPER_ACE", armor: 4700, power: 24, speed: 52, sprite_asset: spr_ms_gorgon_idle, desc: "Legendary prototype chassis welded together by insane pirate foundry masters." },
+    { id: "ms_zaibatsu_muramasa_03", name: "ZAI-03 Muramasa", type: "ms_zaibatsu_muramasa_03", move_type: "biped", default_squad: "PLATOON_3", armor: 1950, power: 14, speed: 82, sprite_asset: spr_ms_muramasa_idle, desc: "Surgical dueling mech interfaced directly into the pilot's spinal cord via cyber-implants." },
+    { id: "ms_zaibatsu_kage_07", name: "ZBT-K07 Kage", type: "ms_zaibatsu_kage_07", move_type: "biped", default_squad: "PLATOON_3", armor: 1650, power: 13, speed: 88, sprite_asset: spr_ms_kage_idle, desc: "Stealth assassin chassis that bends light around its hull to vanish in open daylight." },
+    { id: "ms_zaibatsu_ronin_04", name: "ZBT-R04 Ronin", type: "ms_zaibatsu_ronin_04", move_type: "biped", default_squad: "PLATOON_3", armor: 2100, power: 16, speed: 75, sprite_asset: spr_ms_ronin_idle, desc: "Coordinates autonomous AI sub-drones that harass enemy flanks with synchronized laser fire." },
+    { id: "ms_zaibatsu_tessen_09", name: "ZBT-T09 Tessen", type: "ms_zaibatsu_tessen_09", move_type: "biped", default_squad: "PLATOON_3", armor: 1820, power: 15, speed: 78, sprite_asset: spr_ms_tessen_idle, desc: "Fires concentrated EMP pulses that fry enemy targeting computers and freeze joint hydraulics." },
+    { id: "ms_zaibatsu_shinobi_01", name: "HATS-01 Shinobi Recon", type: "ms_zaibatsu_shinobi_01", move_type: "hover", default_squad: "SUPER_ACE", armor: 1380, power: 10, speed: 84, sprite_asset: spr_ms_kage_idle, desc: "Corporate security scout deployed for industrial espionage raids." },
+    { id: "ms_zaibatsu_shuriken_02", name: "ZBT-S02 Shuriken Skirmisher", type: "ms_zaibatsu_shuriken_02", move_type: "biped", default_squad: "SUPER_ACE", armor: 1520, power: 12, speed: 86, sprite_asset: spr_ms_muramasa_idle, desc: "Agile harasser equipped with high-speed micro-beam emitters." },
+    { id: "ms_zaibatsu_takahashi_custom", name: "ZAI-03C Muramasa Executive", type: "ms_zaibatsu_takahashi_custom", move_type: "biped", default_squad: "SUPER_ACE", armor: 2350, power: 17, speed: 85, sprite_asset: spr_ms_muramasa_idle, desc: "Personal masterwork of Director Renzo Takahashi with gold-etched bio-neural circuitry." },
+    { id: "ms_zaibatsu_kamaitachi_03", name: "ZBT-K03 Kamaitachi Slicer", type: "ms_zaibatsu_kamaitachi_03", move_type: "aero", default_squad: "SUPER_ACE", armor: 1950, power: 15, speed: 90, sprite_asset: spr_ms_muramasa_idle, desc: "Rapid strike mech capable of eviscerating unshielded mechs in a single pass." },
+    { id: "ms_zaibatsu_ronin_guardian_02", name: "HATS-02 Ronin Guardian", type: "ms_zaibatsu_ronin_guardian_02", move_type: "biped", default_squad: "SUPER_ACE", armor: 2550, power: 18, speed: 76, sprite_asset: spr_ms_muramasa_idle, desc: "Defends Zaibatsu research laboratories with heavy energy shields and autonomous drones." },
+    { id: "ms_zaibatsu_oni_05", name: "ZBT-O05 Oni Heavy Assault", type: "ms_zaibatsu_oni_05", move_type: "biped", default_squad: "SUPER_ACE", armor: 3100, power: 16, speed: 62, sprite_asset: spr_ms_muramasa_idle, desc: "Terrifying heavy assault suit wielding a plasma-charged kanabo club." },
+    { id: "ms_zaibatsu_bushido_01", name: "ZBT-B01 Bushido Vanguard", type: "ms_zaibatsu_bushido_01", move_type: "biped", default_squad: "SUPER_ACE", armor: 2700, power: 19, speed: 82, sprite_asset: spr_ms_muramasa_idle, desc: "Frontline vanguard unit driven by hyper-experienced cybernetically linked pilots." },
+    { id: "ms_zaibatsu_fudo_08", name: "ZBT-F08 Fudo Defensive Wall", type: "ms_zaibatsu_fudo_08", move_type: "treads", default_squad: "SUPER_ACE", armor: 3300, power: 20, speed: 52, sprite_asset: spr_ms_muramasa_idle, desc: "Anchors defense lines by projecting widespread energy barriers that deflect railgun rounds." },
+    { id: "ms_zaibatsu_raiden_03", name: "HATS-03 Raiden Storm", type: "ms_zaibatsu_raiden_03", move_type: "treads", default_squad: "SUPER_ACE", armor: 2850, power: 21, speed: 78, sprite_asset: spr_ms_muramasa_idle, desc: "Discharges cascading arcs of artificial lightning across multiple enemy mechs." },
+    { id: "ms_zaibatsu_susanoo_04", name: "HATS-04 Susanoo Emperor", type: "ms_zaibatsu_susanoo_04", move_type: "biped", default_squad: "SUPER_ACE", armor: 4200, power: 26, speed: 80, sprite_asset: spr_ms_muramasa_idle, desc: "Supreme cybernetic war machine firing reality-tearing tachyon energy waves." },
+    { id: "ms_zaibatsu_yamato_06", name: "ZBT-Y06 Yamato Beam Siege", type: "ms_zaibatsu_yamato_06", move_type: "biped", default_squad: "SUPER_ACE", armor: 4400, power: 25, speed: 60, sprite_asset: spr_ms_muramasa_idle, desc: "Walking battleship armed with long-range spinal particle beam turrets." },
+    { id: "ms_zaibatsu_kusanagi_05", name: "ZBT-X05 Kusanagi Blade", type: "ms_zaibatsu_kusanagi_05", move_type: "biped", default_squad: "SUPER_ACE", armor: 3800, power: 27, speed: 92, sprite_asset: spr_ms_muramasa_idle, desc: "Piloted through complete cerebral symbiosis, mirroring human thought instantaneously." },
+    { id: "ms_zaibatsu_null07_phantom_x07", name: "ZBT-X07 Null-07 Phantom", type: "ms_zaibatsu_null07_phantom_x07", move_type: "biped", default_squad: "SUPER_ACE", armor: 3650, power: 28, speed: 96, sprite_asset: spr_ms_kage_idle, desc: "Personal black-ops chassis of Null-07, capable of hacking enemy mechs mid-combat." },
+    { id: "ms_zaibatsu_amaterasu_x01", name: "HATS-X01 Amaterasu Zero", type: "ms_zaibatsu_amaterasu_x01", move_type: "biped", default_squad: "SUPER_ACE", armor: 4600, power: 28, speed: 88, sprite_asset: spr_ms_muramasa_idle, desc: "Apex cybernetic prototype wielding forbidden transhumanist quantum processors." },
+    { id: "bp_player_vanguard_heavy", name: "Vanguard Linebreaker [PMC Custom]", type: "bp_player_vanguard_heavy", move_type: "biped", default_squad: "SUPER_ACE", armor: 2600, power: 15, speed: 55, sprite_asset: spr_ms_ironclad_idle, desc: "Player proprietary heavy frontline chassis with modular component hardpoints." },
+    { id: "bp_player_stratos_interceptor", name: "Stratos Interceptor [PMC Custom]", type: "bp_player_stratos_interceptor", move_type: "aero", default_squad: "SUPER_ACE", armor: 1950, power: 17, speed: 88, sprite_asset: spr_ms_aether_idle, desc: "Player proprietary interceptor with lightning-fast lateral evasive thrusters." },
+    { id: "bp_player_scrapper_brawler", name: "Scrapper Brawler [PMC Custom]", type: "bp_player_scrapper_brawler", move_type: "biped", default_squad: "SUPER_ACE", armor: 2200, power: 12, speed: 65, sprite_asset: spr_ms_hyena_idle, desc: "Player proprietary CQB brawler designed to grapple and crush hostile armor." },
+    { id: "bp_player_ghost_sniper", name: "Ghost Recon Sniper [PMC Custom]", type: "bp_player_ghost_sniper", move_type: "hover", default_squad: "SUPER_ACE", armor: 1800, power: 16, speed: 75, sprite_asset: spr_ms_kage_idle, desc: "Player proprietary sniper platform tuned for single-shot lethal cockpit assassinations." },
+    { id: "ms_terran_ironclad_custom_cole", name: "GHA-07X Iron Bastion [Cole Custom]", type: "ms_terran_ironclad_custom_cole", move_type: "biped", default_squad: "SUPER_ACE", armor: 3100, power: 16, speed: 48, sprite_asset: spr_ms_ironclad_idle, desc: "Lt. Marcus Cole custom Ironclad, reinforced with doubled tungsten plates to endure close-quarters trench combat." },
+    { id: "ms_terran_centurion_praetorian", name: "TH-C02P Centurion Praetorian", type: "ms_terran_centurion_praetorian", move_type: "biped", default_squad: "SUPER_ACE", armor: 2800, power: 17, speed: 66, sprite_asset: spr_ms_centurion_idle, desc: "Elite Terran Coalition guard suit deployed to escort planetary governors and spearhead armor breaches." },
+    { id: "ms_terran_goliath_siege", name: "TH-G09 Goliath Heavy Howitzer", type: "ms_terran_goliath_siege", move_type: "treads", default_squad: "SUPER_ACE", armor: 4200, power: 22, speed: 32, sprite_asset: spr_ms_ballista_idle, desc: "Colossal quadruped artillery walking fortress capable of flattening entire planetary fortifications." },
+    { id: "ms_terran_valkyrie_odin", name: "VHD-X02 Odin Dread-Chassis", type: "ms_terran_valkyrie_odin", move_type: "treads", default_squad: "SUPER_ACE", armor: 4600, power: 26, speed: 40, sprite_asset: spr_ms_titan_proto, desc: "Valkyrie flagship prototype walking fortress designed to withstand capital ship orbital bombardment." },
+    { id: "ms_colony_aether_custom_nadia", name: "AET-01S Starlight Valkyrie [Nadia Custom]", type: "ms_colony_aether_custom_nadia", move_type: "aero", default_squad: "SUPER_ACE", armor: 2450, power: 20, speed: 98, sprite_asset: spr_ms_aether_idle, desc: "Commander Nadia Cruz tuned Aether, fitted with high-efficiency Cherenkov beam carbines and auxiliary verniers." },
+    { id: "ms_colony_zephyr_custom_dahl", name: "JCC-Z05X Ghost Zephyr [Dahl Custom]", type: "ms_colony_zephyr_custom_dahl", move_type: "hover", default_squad: "SUPER_ACE", armor: 2150, power: 18, speed: 102, sprite_asset: spr_ms_zephyr_idle, desc: "Kira Dahl personal reconnaissance machine, capable of vanishing completely from military radar grids." },
+    { id: "ms_colony_helios_archon", name: "HOF-X01 Helios Archon", type: "ms_colony_helios_archon", move_type: "aero", default_squad: "SUPER_ACE", armor: 3400, power: 25, speed: 92, sprite_asset: spr_ms_oberon_idle, desc: "High-orbital skirmisher drawing power directly from concentrated solar collection arrays." },
+    { id: "ms_colony_selene_interceptor", name: "HOF-X02 Selene Interceptor", type: "ms_colony_selene_interceptor", move_type: "aero", default_squad: "SUPER_ACE", armor: 3100, power: 27, speed: 110, sprite_asset: spr_ms_kepler_idle, desc: "Ultra-fast interceptor built for deep-space fleet interception at interplanetary velocity." },
+    { id: "ms_syndicate_hyena_custom_vance", name: "SCR-12R Jackal King [Vance Custom]", type: "ms_syndicate_hyena_custom_vance", move_type: "biped", default_squad: "SUPER_ACE", armor: 2750, power: 15, speed: 74, sprite_asset: spr_ms_hyena_idle, desc: "Jax Vance flagship war machine, adorned with skulls and reinforced with armor ripped from federal cruisers." },
+    { id: "ms_syndicate_gorgon_custom_scrapper", name: "ARC-G04X Titan Crusher [Guild Master Custom]", type: "ms_syndicate_gorgon_custom_scrapper", move_type: "biped", default_squad: "SUPER_ACE", armor: 3300, power: 16, speed: 56, sprite_asset: spr_ms_gorgon_idle, desc: "Custom masterwork of the Syndicate Scrap-Masters, capable of punching through starship airlocks in seconds." },
+    { id: "ms_syndicate_scrap_chimera", name: "AJS-X01 Scrap Chimera", type: "ms_syndicate_scrap_chimera", move_type: "biped", default_squad: "SUPER_ACE", armor: 4400, power: 20, speed: 48, sprite_asset: spr_ms_bloodhound_idle, desc: "Monstrous 4-armed war machine assembled from parts of four different destroyed faction chassis." },
+    { id: "ms_syndicate_rust_behemoth", name: "AJS-X02 Rust Behemoth", type: "ms_syndicate_rust_behemoth", move_type: "biped", default_squad: "SUPER_ACE", armor: 5000, power: 22, speed: 35, sprite_asset: spr_ms_vandal_idle, desc: "Massive walking scrap fortress with firepower equivalent to an armored cruiser broadside." },
+    { id: "ms_zaibatsu_muramasa_custom_renzo", name: "ZAI-03X Oni-Blade [Renzo Custom]", type: "ms_zaibatsu_muramasa_custom_renzo", move_type: "biped", default_squad: "SUPER_ACE", armor: 2900, power: 22, speed: 90, sprite_asset: spr_ms_muramasa_idle, desc: "Renzo Takahashi supreme dueling mobile suit with neural nanite repair weave and dual high-frequency blades." },
+    { id: "ms_zaibatsu_kage_custom_null07", name: "ZBT-K07X Void Shinobi [Null-07 Custom]", type: "ms_zaibatsu_kage_custom_null07", move_type: "biped", default_squad: "SUPER_ACE", armor: 2600, power: 24, speed: 105, sprite_asset: spr_ms_kage_idle, desc: "Master assassin chassis piloted by Null-07, capable of turning completely invisible before striking." },
+    { id: "ms_zaibatsu_ronin_master", name: "ZBT-R04M Ronin Shogun", type: "ms_zaibatsu_ronin_master", move_type: "biped", default_squad: "SUPER_ACE", armor: 3600, power: 26, speed: 80, sprite_asset: spr_ms_ronin_idle, desc: "Command carrier coordinating six autonomous combat sub-drones while wielding dual plasma naginatas." },
+    { id: "ms_zaibatsu_tessen_empress", name: "ZBT-T09E Tessen Empress", type: "ms_zaibatsu_tessen_empress", move_type: "biped", default_squad: "SUPER_ACE", armor: 3200, power: 27, speed: 88, sprite_asset: spr_ms_tessen_idle, desc: "Apex electronic warfare mecha capable of shutting down entire battlegroups with directed EMP pulse waves." },
+    { id: "ms_prewar_hephaestus_avatar", name: "Pre-War Hephaestus Sentinel", type: "ms_prewar_hephaestus_avatar", move_type: "biped", default_squad: "SUPER_ACE", armor: 4800, power: 28, speed: 70, sprite_asset: spr_ms_hephaestus_avatar, desc: "Autonomous defense mecha discovered slumbering in the reactor depths of the dreadnought Hephaestus." },
+    { id: "ms_prewar_chronos_proto", name: "Pre-War Chronos Vector", type: "ms_prewar_chronos_proto", move_type: "aero", default_squad: "SUPER_ACE", armor: 4100, power: 27, speed: 95, sprite_asset: spr_ms_hephaestus_avatar, desc: "Pre-war prototype harnessing compressed tachyon fields for near-instantaneous evasive maneuvers." },
+    { id: "ms_valkyrie_titan_juggernaut", name: "VHD-X01 Juggernaut Prime", type: "ms_valkyrie_titan_juggernaut", move_type: "treads", default_squad: "SUPER_ACE", armor: 5200, power: 26, speed: 36, sprite_asset: spr_ms_titan_proto, desc: "Terrifying 100-ton superheavy walking fortress armed with quad synchronized 140mm autocannons." },
+    { id: "ms_rebel_partisan_guerilla", name: "Frontier Militia Partisan", type: "ms_rebel_partisan_guerilla", move_type: "biped", default_squad: "SUPER_ACE", armor: 1650, power: 10, speed: 64, sprite_asset: spr_ms_vandal_idle, desc: "Industrial mining mobile suit modified with heavy rock-cutters to fight corporate security forces." },
+    { id: "ms_rebel_partisan_striker", name: "Frontier Vanguard Striker", type: "ms_rebel_partisan_striker", move_type: "aero", default_squad: "SUPER_ACE", armor: 1720, power: 11, speed: 70, sprite_asset: spr_ms_bloodhound_idle, desc: "Frontier insurgent machine built from converted ore haulers, armed with jury-rigged mining rockets." },
+    { id: "ms_pirate_corsair_marauder", name: "Outer Ring Corsair Marauder", type: "ms_pirate_corsair_marauder", move_type: "biped", default_squad: "SUPER_ACE", armor: 2300, power: 14, speed: 78, sprite_asset: spr_ms_hyena_idle, desc: "Notorious pirate boarding machine designed to pierce freighter hulls and harvest element cargo." },
+    { id: "ms_ancient_derelict_sentry", name: "Precursor Derelict Sentry-00", type: "ms_ancient_derelict_sentry", move_type: "biped", default_squad: "SUPER_ACE", armor: 3200, power: 19, speed: 72, sprite_asset: spr_ms_oberon_idle, desc: "Mysterious autonomous sentry recovered from an uncharted deep-space derelict station." },
+    { id: "ms_apex_apocalypse_harvester", name: "Apex Apocalypse Harvester", type: "ms_apex_apocalypse_harvester", move_type: "treads", default_squad: "SUPER_ACE", armor: 5500, power: 30, speed: 42, sprite_asset: spr_ms_titan_proto, desc: "Apocalyptic super-weapon mecha created by unshackled bio-neural research, capable of harvesting planetary crusts." }
+];
+
+swap_unit_chassis = function(_unit_idx, _chassis_data) {
+    if (_unit_idx < 0 || _unit_idx >= array_length(units)) return;
+    var _u = units[_unit_idx];
+    _u.mech_type = _chassis_data.type;
+    _u.move_type = _chassis_data.move_type;
+    _u.space_adapted = (_chassis_data.move_type == "aero" || _chassis_data.move_type == "hover");
+    _u.squad_type = _chassis_data.default_squad;
+    _u.squad_members_count = (_chassis_data.default_squad == "PLATOON_3") ? 3 : 1;
+    _u.squad_max_count = _u.squad_members_count;
+    _u.accuracy = clamp(floor(_chassis_data.speed * 0.12), 65, 92);
+    _u.evasion = clamp(floor(_chassis_data.speed * 0.08), 25, 75);
+    _u.components.torso.max = floor(_chassis_data.armor * 0.40);
+    _u.components.torso.cur = _u.components.torso.max;
+    _u.components.arm_left.max = floor(_chassis_data.armor * 0.22);
+    _u.components.arm_left.cur = _u.components.arm_left.max;
+    _u.components.arm_right.max = floor(_chassis_data.armor * 0.22);
+    _u.components.arm_right.cur = _u.components.arm_right.max;
+    _u.components.legs.max = floor(_chassis_data.armor * 0.30);
+    _u.components.legs.cur = _u.components.legs.max;
+    if (variable_struct_exists(_chassis_data, "sprite_asset") && sprite_exists(_chassis_data.sprite_asset)) {
+        _u.sprite_asset = _chassis_data.sprite_asset;
+    }
+};
 
 // 4. Isometric Camera & Viewport Controls
 cam_x = 683.0;
@@ -194,7 +1121,7 @@ selected_unit_idx = 0;
 target_unit_idx = -1;
 
 // Helper: Create Front Mission Component Set
-var _create_components = function(_torso_hp, _arm_hp, _leg_hp, _head_hp, _pack_hp, _armor) {
+create_components = function(_torso_hp, _arm_hp, _leg_hp, _head_hp, _pack_hp, _armor) {
     return {
         torso:    { name: "Torso Core",       cur: _torso_hp, max: _torso_hp, armor: _armor, intact: true },
         head:     { name: "Sensor Array",     cur: _head_hp,  max: _head_hp,  armor: floor(_armor * 0.7), intact: true },
@@ -204,6 +1131,7 @@ var _create_components = function(_torso_hp, _arm_hp, _leg_hp, _head_hp, _pack_h
         backpack: { name: "Vernier Pack",     cur: _pack_hp,  max: _pack_hp,  armor: floor(_armor * 0.6), intact: true }
     };
 };
+var _create_components = create_components;
 
 // --- ALLIED / PLAYER PMC BATTLEGROUP (8 Units) ---
 // 1. Alpha-01: Commander Unit (Player Heavy Ironclad)
@@ -726,6 +1654,34 @@ for (var i = 0; i < array_length(units); i++) {
     _u.visual_y = iso_to_screen_y(_u.grid_c, _u.grid_r, _u.elev, cam_x, cam_y, zoom);
 }
 
+// 5a. Dynamic Mass-Production Line Chassis Assignment (docs/29 & docs/30)
+if (instance_exists(obj_FactionManager) && variable_instance_exists(obj_FactionManager, "mass_production_contracts")) {
+    var _mp_terran = obj_FactionManager.mass_production_contracts[$ "faction_a"];
+    var _mp_syndicate = obj_FactionManager.mass_production_contracts[$ "faction_c"];
+    
+    for (var u = 0; u < array_length(units); u++) {
+        var _un = units[u];
+        // Allied line units field the active Terran Mass-Production Suit
+        if (_un.id == "ALLIED_4" || _un.id == "ALLIED_5") {
+            if (!is_undefined(_mp_terran)) {
+                _un.callsign = ((_un.id == "ALLIED_4") ? "Bravo-01 " : "Bravo-02 ") + "(" + _mp_terran.baseline_suit_name + ")";
+                if (variable_struct_exists(_mp_terran, "sprite_asset") && sprite_exists(_mp_terran.sprite_asset)) {
+                    _un.sprite_asset = _mp_terran.sprite_asset;
+                }
+            }
+        }
+        // Hostile Outlaw grunts field the active Syndicate Mass-Production Suit
+        if (string_pos("OUTLAW_", _un.id) > 0 || _un.id == "ENEMY_5" || _un.id == "ENEMY_7") {
+            if (!is_undefined(_mp_syndicate)) {
+                _un.callsign = "Raider (" + _mp_syndicate.baseline_suit_name + ")";
+                if (variable_struct_exists(_mp_syndicate, "sprite_asset") && sprite_exists(_mp_syndicate.sprite_asset)) {
+                    _un.sprite_asset = _mp_syndicate.sprite_asset;
+                }
+            }
+        }
+    }
+}
+
 // 5b. Flagship Strategic Division Buffs (Doc 24)
 if (instance_exists(obj_GameManager)) {
     var _gm_fs = obj_GameManager.flagship;
@@ -760,6 +1716,218 @@ if (instance_exists(obj_GameManager)) {
     }
 }
 
+// 5c. Ongoing Campaign Reflection: Tech Era Escalation & Competitor R&D Lineage (Doc 27)
+if (instance_exists(obj_GameManager)) {
+    var _gm = obj_GameManager;
+    var _era = _gm[$ "timeline_era"] ?? 1;
+    var _era_name = _gm[$ "timeline_era_name"] ?? "Early Solar Skirmishes";
+    
+    // Scale hostiles with Solar Tech Era
+    if (_era >= 2) {
+        var _armor_mult = (_era == 2) ? 1.15 : ((_era == 3) ? 1.30 : 1.50);
+        var _dmg_add = (_era == 2) ? 10 : ((_era == 3) ? 25 : 40);
+        var _acc_add = (_era == 2) ? 6 : ((_era == 3) ? 12 : 20);
+        
+        for (var i = 0; i < array_length(units); i++) {
+            if (units[i].team == "HOSTILE") {
+                units[i].accuracy = min(95, units[i].accuracy + _acc_add);
+                if (variable_struct_exists(units[i], "components")) {
+                    if (variable_struct_exists(units[i].components, "torso")) units[i].components.torso.armor = floor(units[i].components.torso.armor * _armor_mult);
+                    if (variable_struct_exists(units[i].components, "arm_left")) units[i].components.arm_left.armor = floor(units[i].components.arm_left.armor * _armor_mult);
+                    if (variable_struct_exists(units[i].components, "arm_right")) units[i].components.arm_right.armor = floor(units[i].components.arm_right.armor * _armor_mult);
+                    if (variable_struct_exists(units[i].components, "legs")) units[i].components.legs.armor = floor(units[i].components.legs.armor * _armor_mult);
+                }
+                if (variable_struct_exists(units[i], "weapons")) {
+                    for (var w = 0; w < array_length(units[i].weapons); w++) {
+                        units[i].weapons[w].damage += _dmg_add;
+                    }
+                }
+            }
+        }
+    }
+    
+    // Check Faction Mass Production & Blueprint Vulnerability Exploitation
+    if (instance_exists(obj_FactionManager)) {
+        var _fm = obj_FactionManager;
+        var _factions = ["faction_terran", "faction_colony", "faction_syndicate", "faction_zaibatsu"];
+        for (var f = 0; f < array_length(_factions); f++) {
+            var _fid = _factions[f];
+            if (variable_struct_exists(_fm.mass_production_contracts, _fid)) {
+                var _mp = _fm.mass_production_contracts[$ _fid];
+                if (_mp.replaced) {
+                    // Outlaw / Syndicate forces have salvaged or pirated the player's adopted chassis!
+                    for (var u = 0; u < array_length(units); u++) {
+                        if (units[u].team == "HOSTILE" && (u == 5 || u == 6)) {
+                            units[u].callsign = "Pirated " + _mp.replacement_name + " #" + string(u);
+                            units[u].blueprint_exploited = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Check Competitor Rare Prototype X-Chassis Incursion
+    if (variable_struct_exists(_gm, "competitor_catalog") && is_struct(_gm.competitor_catalog)) {
+        var _rival_keys = variable_struct_get_names(_gm.competitor_catalog);
+        for (var r = 0; r < array_length(_rival_keys); r++) {
+            var _rc = _gm.competitor_catalog[$ _rival_keys[r]];
+            if (is_struct(_rc) && _rc.has_rare_x_spec && variable_struct_exists(_rc, "rare_x_chassis") && !is_undefined(_rc.rare_x_chassis) && _era >= 3) {
+                // Elite hostile leader upgrades to competitor prototype
+                for (var u = 0; u < array_length(units); u++) {
+                    if (units[u].id == "HOSTILE_0") {
+                        units[u].callsign = units[u].pilot_name + " [" + _rc.rare_x_chassis.name + "]";
+                        units[u].max_ap += 1;
+                        units[u].current_ap += 1;
+                        if (variable_struct_exists(units[u], "components") && variable_struct_exists(units[u].components, "torso")) {
+                            units[u].components.torso.armor += 10;
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    
+    // Sync Allied Units with Player Commissioned Deployable Mechs & Pedigree
+    if (variable_struct_exists(_gm, "inventory") && variable_struct_exists(_gm.inventory, "deployable_mechs")) {
+        var _dmechs = _gm.inventory.deployable_mechs;
+        for (var m = 0; m < min(array_length(_dmechs), 4); m++) {
+            var _dm = _dmechs[m];
+            var _au = units[m];
+            if (is_struct(_dm) && variable_struct_exists(_dm, "name") && _dm.name != "") {
+                _au.callsign = _dm.callsign;
+                if (variable_struct_exists(_dm, "combat_pedigree") && is_struct(_dm.combat_pedigree)) {
+                    var _tele = _dm.combat_pedigree.telemetry_bonus;
+                    _au.accuracy = min(99, _au.accuracy + floor(_tele));
+                }
+            }
+        }
+    }
+
+    // 5d. Faction Diplomatic Battlefield Intervention Execution (docs/28)
+    if (instance_exists(obj_FactionManager)) {
+        var _interventions = obj_FactionManager.evaluate_battlefield_faction_intervention("");
+        for (var it = 0; it < array_length(_interventions); it++) {
+            var _action = _interventions[it];
+            if (_action.type == "ALLIED_ASSIST") {
+                // Orbital MAC Strike
+                if (_action.dmg_to_boss > 0) {
+                    for (var u = 0; u < array_length(units); u++) {
+                        if (units[u].id == "HOSTILE_0" && !units[u].is_destroyed) {
+                            if (variable_struct_exists(units[u].components, "torso")) {
+                                units[u].components.torso.cur = max(50, units[u].components.torso.cur - _action.dmg_to_boss);
+                            }
+                            add_log("[ALLIED INTERVENTION] " + _action.title + " strikes " + units[u].callsign + " for -" + string(_action.dmg_to_boss) + " DMG!");
+                            break;
+                        }
+                    }
+                }
+                // ECM Blinding Chaff
+                if (_action.hit_penalty > 0) {
+                    for (var u = 0; u < array_length(units); u++) {
+                        if (units[u].team == "HOSTILE") {
+                            units[u].accuracy = max(20, units[u].accuracy - _action.hit_penalty);
+                            units[u].max_ap = max(3, units[u].max_ap + _action.ap_mod);
+                            units[u].current_ap = units[u].max_ap;
+                        }
+                    }
+                    add_log("[ALLIED INTERVENTION] " + _action.title + ": Hostile sensors blinded (-20% Hit, -1 AP)!");
+                }
+                // Field Rig Repair
+                if (_action.armor_repair > 0) {
+                    for (var u = 0; u < array_length(units); u++) {
+                        if (units[u].team == "ALLIED") {
+                            if (variable_struct_exists(units[u].components, "torso")) {
+                                units[u].components.torso.cur = min(units[u].components.torso.max, units[u].components.torso.cur + _action.armor_repair);
+                            }
+                        }
+                    }
+                    add_log("[ALLIED INTERVENTION] " + _action.title + ": Emergency nanites repair +" + string(_action.armor_repair) + " Armor!");
+                }
+                // Cyber-Neural Overload
+                if (_action.heat_spike > 0) {
+                    for (var u = 0; u < array_length(units); u++) {
+                        if (units[u].id == "HOSTILE_0") {
+                            units[u].current_heat = min(units[u].max_heat, units[u].current_heat + _action.heat_spike);
+                            add_log("[ALLIED INTERVENTION] " + _action.title + ": Hostile reactor spiked +" + string(_action.heat_spike) + " Heat!");
+                            break;
+                        }
+                    }
+                }
+            } else if (_action.type == "HOSTILE_HINDRANCE") {
+                // Airspace Lockout
+                if (variable_struct_exists(_action, "allied_ap_penalty") && _action.allied_ap_penalty > 0) {
+                    for (var u = 0; u < array_length(units); u++) {
+                        if (units[u].team == "ALLIED") {
+                            units[u].current_ap = max(2, units[u].current_ap - _action.allied_ap_penalty);
+                        }
+                    }
+                    add_log("[HOSTILE HINDRANCE] " + _action.title + ": Airspace interdiction active (-2 AP on Sortie)!");
+                }
+                // Thermal Flare Storm
+                if (variable_struct_exists(_action, "allied_heat_penalty") && _action.allied_heat_penalty > 0) {
+                    for (var u = 0; u < array_length(units); u++) {
+                        if (units[u].team == "ALLIED") {
+                            units[u].heat_dissipation = max(10, units[u].heat_dissipation - _action.allied_heat_penalty);
+                        }
+                    }
+                    add_log("[HOSTILE HINDRANCE] " + _action.title + ": Solar flare storm (-15 Heat Dissipation)!");
+                }
+                // Targeting Scrambler Worm
+                if (variable_struct_exists(_action, "allied_acc_penalty") && _action.allied_acc_penalty > 0) {
+                    for (var u = 0; u < array_length(units); u++) {
+                        if (units[u].team == "ALLIED") {
+                            units[u].accuracy = max(30, units[u].accuracy - _action.allied_acc_penalty);
+                        }
+                    }
+                    add_log("[HOSTILE HINDRANCE] " + _action.title + ": Targeting scrambler worm active (-15% Accuracy)!");
+                }
+                // Mercenary Flankers
+                if (variable_struct_exists(_action, "spawn_flankers") && _action.spawn_flankers) {
+                    for (var u = 0; u < array_length(units); u++) {
+                        if (units[u].team == "HOSTILE" && units[u].mech_type == "hyena") {
+                            units[u].evasion = min(90, units[u].evasion + 15);
+                        }
+                    }
+                    add_log("[HOSTILE HINDRANCE] " + _action.title + ": Pirate raiders flanking battlefield (+15% Evasion)!");
+                }
+            }
+        }
+    }
+}
+
+
+// Ensure all units possess platoon vs super-ace, movement profile & targeting properties
+for (var u = 0; u < array_length(units); u++) {
+    var _un = units[u];
+    if (!variable_struct_exists(_un, "squad_type")) {
+        if (_un.id == "ALLIED_0" || _un.id == "ALLIED_2" || _un.id == "HOSTILE_0" || _un.id == "HOSTILE_4") {
+            _un.squad_type = "SUPER_ACE";
+        } else {
+            _un.squad_type = "PLATOON_3";
+        }
+    }
+    if (!variable_struct_exists(_un, "squad_members_count")) {
+        _un.squad_members_count = (_un.squad_type == "PLATOON_3") ? 3 : 1;
+    }
+    if (!variable_struct_exists(_un, "squad_max_count")) {
+        _un.squad_max_count = _un.squad_members_count;
+    }
+    if (!variable_struct_exists(_un, "move_type")) {
+        if (_un.mech_type == "aether" || _un.mech_type == "zephyr" || _un.mech_type == "custom_aero") _un.move_type = "aero";
+        else if (_un.mech_type == "kepler" || _un.mech_type == "oberon" || _un.mech_type == "custom_hover") _un.move_type = "hover";
+        else if (_un.mech_type == "ballista" || _un.mech_type == "titan" || _un.mech_type == "custom_tread") _un.move_type = "treads";
+        else _un.move_type = "biped";
+    }
+    if (!variable_struct_exists(_un, "space_adapted")) {
+        _un.space_adapted = (_un.move_type == "aero" || _un.move_type == "hover");
+    }
+    if (!variable_struct_exists(_un, "targeted_limb")) _un.targeted_limb = "body";
+    if (!variable_struct_exists(_un, "is_aimed_shot")) _un.is_aimed_shot = false;
+}
+
 // 6. In-Flight Physical Projectiles & Combat FX Queues
 projectiles = [];
 combat_fx = [];
@@ -770,6 +1938,7 @@ combat_log = [
     "GRAND-SCALE ISOMETRIC COMBAT INITIALIZED // SECTOR 4 MINING CLAIM",
     "Allied Battlegroup deployed: 8 Mobile Suits (Alpha & Bravo Squadrons)",
     "Hostile Syndicate Battlegroup detected: 13 Mobile Suits (Reaver Vanguard)",
+    ">> THEATER ESCALATION: " + (instance_exists(obj_GameManager) ? obj_GameManager.timeline_era_name : "Early War") + " (Era " + (instance_exists(obj_GameManager) ? string(obj_GameManager.timeline_era) : "1") + ")",
     ">> TACTICAL COMMAND: WASD/Drag to Pan, Wheel to Zoom, TAB to cycle units, [F] to rotate perspective!"
 ];
 
@@ -802,11 +1971,84 @@ get_unit_sprite = function(_u) {
         return spr_ms_ironclad_destroyed;
     }
 
+    // 1. Direct sprite asset override if defined on unit (docs/29)
+    if (variable_struct_exists(_u, "sprite_asset") && sprite_exists(_u.sprite_asset)) {
+        if (_is_back) {
+            var _spr_name = sprite_get_name(_u.sprite_asset);
+            var _back_spr_name = string_replace(_spr_name, "_idle", "_back_idle");
+            var _back_asset = asset_get_index(_back_spr_name);
+            if (_back_asset != -1 && sprite_exists(_back_asset)) {
+                return _back_asset;
+            }
+        } else {
+            return _u.sprite_asset;
+        }
+    }
+
+    // 2. Dynamic catalog lookup from obj_GameManager (Universal 100-Suit Catalog)
+    if (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "get_mobile_suit")) {
+        var _cat_entry = obj_GameManager.get_mobile_suit(_type);
+        if (!is_undefined(_cat_entry) && is_struct(_cat_entry) && variable_struct_exists(_cat_entry, "sprite_asset")) {
+            var _c_asset = _cat_entry.sprite_asset;
+            var _c_idx = is_string(_c_asset) ? asset_get_index(_c_asset) : _c_asset;
+            if (_c_idx != -1 && sprite_exists(_c_idx)) {
+                if (_is_back) {
+                    var _s_name = sprite_get_name(_c_idx);
+                    var _b_name = string_replace(_s_name, "_idle", "_back_idle");
+                    var _b_idx = asset_get_index(_b_name);
+                    if (_b_idx != -1 && sprite_exists(_b_idx)) return _b_idx;
+                }
+                return _c_idx;
+            }
+        }
+    }
+
+    // 3. Dynamic naming convention lookup (spr_ms_<type>_idle / _back_idle)
+    var _cand_idle = asset_get_index("spr_ms_" + _type + "_idle");
+    if (_cand_idle != -1 && sprite_exists(_cand_idle)) {
+        if (_is_back) {
+            var _cand_back = asset_get_index("spr_ms_" + _type + "_back_idle");
+            if (_cand_back != -1 && sprite_exists(_cand_back)) return _cand_back;
+        }
+        return _cand_idle;
+    }
+
     if (_is_back) {
-        // BACK PERSPECTIVE SPRITES (160x160, origin 80, 145)
+        // DEDICATED BACK-FACING ISOMETRIC SPRITES (160x160, origin 80, 145)
+        // Terran Mass-Production Candidates & Lineage
+        // Player Custom Combinations Back
+        if (_type == "custom_biped" || _type == "vanguard_heavy" || _type == "bp_player_vanguard_heavy") return spr_ms_custom_biped_heavy_back_idle;
+        if (_type == "custom_hover" || _type == "ghost_sniper" || _type == "bp_player_ghost_sniper") return spr_ms_custom_hover_sniper_back_idle;
+        if (_type == "custom_tread" || _type == "scrapper_brawler" || _type == "bp_player_scrapper_brawler") return spr_ms_custom_tread_artillery_back_idle;
+        if (_type == "custom_aero" || _type == "stratos_interceptor" || _type == "bp_player_stratos_interceptor") return spr_ms_custom_aero_striker_back_idle;
+
+        if (_type == "ballista") return spr_ms_ballista_back_idle;
+        if (_type == "centurion") return spr_ms_centurion_back_idle;
+        if (_type == "trenchcoat") return spr_ms_trenchcoat_back_idle;
+
+        // Colony Mass-Production Candidates & Lineage
+        if (_type == "zephyr") return spr_ms_zephyr_back_idle;
+        if (_type == "kepler") return spr_ms_kepler_back_idle;
+        if (_type == "oberon") return spr_ms_oberon_back_idle;
+
+        // Syndicate Mass-Production Candidates & Lineage
+        if (_type == "gorgon") return spr_ms_gorgon_back_idle;
+        if (_type == "bloodhound") return spr_ms_bloodhound_back_idle;
+        if (_type == "vandal") return spr_ms_vandal_back_idle;
+
+        // Zaibatsu Mass-Production Candidates & Lineage
+        if (_type == "kage" || _type == "shinobi") return spr_ms_kage_back_idle;
+        if (_type == "ronin") return spr_ms_ronin_back_idle;
+        if (_type == "tessen") return spr_ms_tessen_back_idle;
+
+        // Apex Prototypes & Juggernauts
+        if (_type == "hephaestus") return spr_ms_hephaestus_avatar_back_idle;
+        if (_type == "titan" || _type == "juggernaut") return spr_ms_titan_proto_back_idle;
+
+        // Core Faction Archetypes
         if (_type == "aether" || _type == "sylph" || _type == "helios" || _type == "seraphim" || _type == "stratos" || _type == "pmc_02") return spr_ms_aether_back_idle;
         if (_type == "hyena" || _type == "marauder" || _type == "slag_lobber" || _type == "chimera" || _type == "scrapper" || _type == "pmc_03") return spr_ms_hyena_back_idle;
-        if (_type == "muramasa" || _type == "ronin" || _type == "raiden" || _type == "susanoo" || _type == "ghost" || _type == "pmc_04") return spr_ms_muramasa_back_idle;
+        if (_type == "muramasa" || _type == "raiden" || _type == "susanoo" || _type == "ghost" || _type == "pmc_04") return spr_ms_muramasa_back_idle;
         return spr_ms_ironclad_back_idle;
     } else {
         // FRONT PERSPECTIVE SPRITES (160x160, origin 80, 145)
@@ -836,6 +2078,26 @@ get_unit_sprite = function(_u) {
         if (_type == "hyena" || _type == "marauder" || _type == "slag_lobber" || _type == "chimera" || _type == "scrapper" || _type == "pmc_03") return spr_ms_hyena_idle;
         if (_type == "muramasa" || _type == "ronin" || _type == "raiden" || _type == "susanoo" || _type == "ghost" || _type == "pmc_04") return spr_ms_muramasa_idle;
         if (_type == "siegebreaker" || _type == "behemoth") return spr_ms_siegebreaker_anchor;
+        // Player Custom Combinations Front
+        if (_type == "custom_biped" || _type == "vanguard_heavy" || _type == "bp_player_vanguard_heavy") return spr_ms_custom_biped_heavy_idle;
+        if (_type == "custom_hover" || _type == "ghost_sniper" || _type == "bp_player_ghost_sniper") return spr_ms_custom_hover_sniper_idle;
+        if (_type == "custom_tread" || _type == "scrapper_brawler" || _type == "bp_player_scrapper_brawler") return spr_ms_custom_tread_artillery_idle;
+        if (_type == "custom_aero" || _type == "stratos_interceptor" || _type == "bp_player_stratos_interceptor") return spr_ms_custom_aero_striker_idle;
+
+        if (_type == "ballista") return spr_ms_ballista_idle;
+        if (_type == "centurion") return spr_ms_centurion_idle;
+        if (_type == "trenchcoat") return spr_ms_trenchcoat_idle;
+        if (_type == "zephyr") return spr_ms_zephyr_idle;
+        if (_type == "kepler") return spr_ms_kepler_idle;
+        if (_type == "oberon") return spr_ms_oberon_idle;
+        if (_type == "gorgon") return spr_ms_gorgon_idle;
+        if (_type == "bloodhound") return spr_ms_bloodhound_idle;
+        if (_type == "vandal") return spr_ms_vandal_idle;
+        if (_type == "kage" || _type == "shinobi") return spr_ms_kage_idle;
+        if (_type == "ronin") return spr_ms_ronin_idle;
+        if (_type == "tessen") return spr_ms_tessen_idle;
+        if (_type == "hephaestus") return spr_ms_hephaestus_avatar;
+        if (_type == "titan" || _type == "juggernaut") return spr_ms_titan_proto;
         return spr_ms_ironclad_idle;
     }
 };
@@ -848,6 +2110,11 @@ calculate_distance = function(_c1, _r1, _c2, _r2) {
 calculate_hit_chance = function(_atk, _def, _dist) {
     var _base = _atk.accuracy;
     var _eva = _def.evasion;
+
+    // Blueprint Vulnerability Exploitation (Arms Dealer Paradox / Known Specs)
+    if (_def[$ "blueprint_exploited"] == true) {
+        _base += 15;
+    }
 
     // Gihren's Greed Pilot Limit % (Genkai) Cap Calculus (Doc 20)
     var _atk_lim = _atk[$ "pilot_limit_pct"] ?? 115;
@@ -878,33 +2145,80 @@ calculate_hit_chance = function(_atk, _def, _dist) {
     return clamp(_base - (_eva * 0.40) - _cov - (_dist * 2) + _elev_bonus, 15, 95);
 };
 
-// 10. Recompute Movement Tiles for Selected Unit
+// 10. Recompute Movement Tiles for Selected Unit with Dynamic Terrain Costs
+get_terrain_move_cost = function(_u, _from_c, _from_r, _to_c, _to_r) {
+    if (_to_c < 0 || _to_c >= grid_cols || _to_r < 0 || _to_r >= grid_rows) return 999;
+    var _terr = grid_terrain[_to_c][_to_r];
+    var _from_elev = grid_elev[_from_c][_from_r];
+    var _to_elev = grid_elev[_to_c][_to_r];
+    var _elev_diff = _to_elev - _from_elev;
+
+    var _m_type = _u[$ "move_type"] ?? "biped";
+    var _sp_adapt = _u[$ "space_adapted"] ?? false;
+
+    if (abs(_elev_diff) > 1 && _m_type != "aero") return 999;
+
+    var _base_cost = 1;
+
+    if (_m_type == "aero") {
+        _base_cost = 1;
+    } else if (_m_type == "hover") {
+        if (_terr == 3) _base_cost = 1;
+        else if (_terr == 2) _base_cost = 1;
+        else if (_terr == 4) return 999;
+        else if (_terr == 5) _base_cost = 2;
+        else _base_cost = 1;
+        if (_elev_diff > 0) _base_cost += 1;
+    } else if (_m_type == "treads") {
+        if (_terr == 2) _base_cost = 1;
+        else if (_terr == 3) return 999;
+        else if (_terr == 4) return 999;
+        else if (_terr == 5) _base_cost = 1;
+        else _base_cost = 1;
+        if (_elev_diff > 0) _base_cost += 1;
+    } else {
+        if (_terr == 1) _base_cost = 1;
+        else if (_terr == 2) _base_cost = 2;
+        else if (_terr == 3) _base_cost = 3;
+        else if (_terr == 4) return 999;
+        else if (_terr == 5) _base_cost = 2;
+        else _base_cost = 1;
+        if (_elev_diff > 0) _base_cost += 1;
+    }
+
+    if (map_definitions[current_map_id].theater == "SPACE" && _m_type != "aero" && !_sp_adapt) {
+        _base_cost += 1;
+    }
+
+    return _base_cost;
+};
+
 recalculate_moves = function() {
     valid_move_tiles = [];
     if (selected_unit_idx < 0 || selected_unit_idx >= array_length(units)) return;
     var _sel = units[selected_unit_idx];
     if (_sel.current_ap <= 0 || _sel.is_destroyed) return;
-    var _max_steps = _sel.components.legs.intact ? _sel.current_ap : 1;
+    var _ap_pool = _sel.components.legs.intact ? _sel.current_ap : 1;
 
     for (var c = 0; c < grid_cols; c++) {
         for (var r = 0; r < grid_rows; r++) {
             var _occupied = false;
             for (var u = 0; u < array_length(units); u++) {
                 var _chk = units[u];
-                if (!_chk.is_destroyed && _chk.grid_c == c && _chk.grid_r == r) {
+                if (!_chk.is_destroyed && _chk != _sel && _chk.grid_c == c && _chk.grid_r == r) {
                     _occupied = true;
                     break;
                 }
             }
             if (_occupied) continue;
 
-            var _cur_elev = grid_elev[_sel.grid_c][_sel.grid_r];
-            var _tgt_elev = grid_elev[c][r];
-            if (abs(_tgt_elev - _cur_elev) > 1) continue;
+            var _cost = get_terrain_move_cost(_sel, _sel.grid_c, _sel.grid_r, c, r);
+            if (_cost >= 999) continue;
 
             var _d = calculate_distance(_sel.grid_c, _sel.grid_r, c, r);
-            if (_d <= _max_steps) {
-                array_push(valid_move_tiles, { col: c, row: r, cost: _d });
+            var _tot = _d * _cost;
+            if (_tot <= _ap_pool && _d > 0) {
+                array_push(valid_move_tiles, { col: c, row: r, cost: _tot });
             }
         }
     }
@@ -948,7 +2262,7 @@ cycle_unit_facing = function(_u) {
     add_log("[PERSPECTIVE ROTATE] " + _u.callsign + " facing -> " + _dir_names[_u.facing]);
 };
 
-// 12. Spawn Physical Projectile Across Screen
+// 12. Spawn Physical Projectile Across Screen & Platoon Synchronized Volleys
 spawn_combat_projectile = function(_atk, _def, _wpn) {
     var _sx = iso_to_screen_x(_atk.grid_c, _atk.grid_r, _atk.elev, cam_x, cam_y, zoom);
     var _sy = iso_to_screen_y(_atk.grid_c, _atk.grid_r, _atk.elev, cam_x, cam_y, zoom) - (40 * zoom);
@@ -957,16 +2271,31 @@ spawn_combat_projectile = function(_atk, _def, _wpn) {
 
     var _dist = calculate_distance(_atk.grid_c, _atk.grid_r, _def.grid_c, _def.grid_r);
     var _hit_chance = calculate_hit_chance(_atk, _def, _dist);
+    if (_atk.is_aimed_shot) _hit_chance = max(10, _hit_chance - 15);
 
     var _cb = method({ atk: _atk, def: _def, wpn: _wpn, hit_pct: _hit_chance, mgr: id }, function() {
         mgr.resolve_combat_impact(atk, def, wpn, hit_pct);
     });
 
+    // Lead mech main projectile (with impact callback)
     var _proj = create_projectile(_wpn.proj_type, _sx, _sy, 0, _tx, _ty, 0, _cb);
     array_push(projectiles, _proj);
+    scr_audio_play_weapon(_wpn.short_name);
+
+    // Gihren's Greed 3-Mech Platoon Synchronized Volley
+    if (_atk.squad_type == "PLATOON_3") {
+        if (_atk.squad_members_count >= 2) {
+            var _p2 = create_projectile(_wpn.proj_type, _sx - 18 * zoom, _sy - 10 * zoom, 0, _tx - 8 * zoom, _ty - 6 * zoom, 0, undefined);
+            array_push(projectiles, _p2);
+        }
+        if (_atk.squad_members_count >= 3) {
+            var _p3 = create_projectile(_wpn.proj_type, _sx - 18 * zoom, _sy + 10 * zoom, 0, _tx + 8 * zoom, _ty + 6 * zoom, 0, undefined);
+            array_push(projectiles, _p3);
+        }
+    }
 };
 
-// 13. Resolve Impact, Front Mission Limb Damage & Reactions
+// 13. Resolve Impact, Front Mission Modular Limb Damage & Platoon Attrition
 resolve_combat_impact = function(_atk, _def, _wpn, _hit_chance) {
     var _roll = irandom_range(1, 100);
     var _hit = (_roll <= _hit_chance);
@@ -978,18 +2307,30 @@ resolve_combat_impact = function(_atk, _def, _wpn, _hit_chance) {
         screen_shake = max(screen_shake, 7.0);
         _def.recoil_shake = 8.0;
         _def.anim_state = "hit";
+        scr_audio_play_impact("kinetic", (_dmg > 50));
         _def.anim_timer = 25;
 
-        var _part_roll = irandom_range(1, 100);
+        // Front Mission Aimed Shot Precision or Random Limb Dispersion
         var _hit_part = "torso";
-        if (_part_roll <= 40) _hit_part = "torso";
-        else if (_part_roll <= 55) _hit_part = "arm_left";
-        else if (_part_roll <= 70) _hit_part = "arm_right";
-        else if (_part_roll <= 90) _hit_part = "legs";
-        else _hit_part = "head";
+        if (_atk.is_aimed_shot && _atk.targeted_limb != "") {
+            _hit_part = _atk.targeted_limb;
+        } else {
+            var _part_roll = irandom_range(1, 100);
+            if (_part_roll <= 40) _hit_part = "torso";
+            else if (_part_roll <= 55) _hit_part = "arm_left";
+            else if (_part_roll <= 70) _hit_part = "arm_right";
+            else if (_part_roll <= 90) _hit_part = "legs";
+            else _hit_part = "head";
+        }
 
         var _limb = _def.components[$ _hit_part];
-        var _raw_dmg = _wpn.damage + irandom_range(-15, 20);
+
+        // Platoon Volley Scaling: 100% at 3/3 grunts, 75% at 2/3, 50% at 1/3
+        var _squad_mult = 1.0;
+        if (_atk.squad_type == "PLATOON_3") {
+            _squad_mult = (_atk.squad_members_count == 3) ? 1.0 : ((_atk.squad_members_count == 2) ? 0.75 : 0.50);
+        }
+        var _raw_dmg = floor((_wpn.damage + irandom_range(-15, 20)) * _squad_mult);
         var _mitigated_dmg = max(15, _raw_dmg - _limb.armor);
 
         _limb.cur = max(0, _limb.cur - _mitigated_dmg);
@@ -1006,6 +2347,23 @@ resolve_combat_impact = function(_atk, _def, _wpn, _hit_chance) {
         add_floating_text(_def_sx, _def_sy - 30, "-" + string(_mitigated_dmg) + " " + string_upper(_limb.name) + "!", c_yellow);
         add_log("[HIT] " + _atk.callsign + " struck " + _def.callsign + " " + _limb.name + " for " + string(_mitigated_dmg) + " damage!");
 
+        // Platoon Squad Member Casualty Attrition
+        if (_def.squad_type == "PLATOON_3") {
+            var _hp_ratio = _def.components.torso.cur / _def.components.torso.max;
+            if (_hp_ratio < 0.33 && _def.squad_members_count > 1) {
+                _def.squad_members_count = 1;
+                add_floating_text(_def_sx, _def_sy - 65, "WINGMAN DESTROYED! [1/3 REMAINING]", make_color_rgb(255, 120, 60));
+                add_log("[SQUAD CASUALTY] " + _def.callsign + " Wingman 2 destroyed! Only squad leader operational.");
+                array_push(combat_fx, { sprite: spr_fx_explosion, x: _def_sx - 22 * zoom, y: _def_sy, frame: 0.0, speed: 0.3, scale: 1.0 * zoom });
+            } else if (_hp_ratio < 0.66 && _def.squad_members_count > 2) {
+                _def.squad_members_count = 2;
+                add_floating_text(_def_sx, _def_sy - 65, "WINGMAN CASUALTY! [2/3 REMAINING]", make_color_rgb(255, 160, 60));
+                add_log("[SQUAD CASUALTY] " + _def.callsign + " Wingman 1 destroyed! 2/3 operational.");
+                array_push(combat_fx, { sprite: spr_fx_explosion, x: _def_sx + 22 * zoom, y: _def_sy, frame: 0.0, speed: 0.3, scale: 1.0 * zoom });
+            }
+        }
+
+        // Front Mission Component Destruction Debuffs
         if (_limb.cur <= 0 && _limb.intact) {
             _limb.intact = false;
             add_floating_text(_def_sx, _def_sy - 55, "COMPONENT DESTROYED: " + string_upper(_limb.name), c_red);
@@ -1013,6 +2371,7 @@ resolve_combat_impact = function(_atk, _def, _wpn, _hit_chance) {
 
             if (_hit_part == "torso") {
                 _def.is_destroyed = true;
+                scr_audio_play_sfx(snd_explosion_large, 1.0, 0.05);
                 _def.anim_state = "destroyed";
                 screen_shake = 14.0;
                 add_floating_text(_def_sx, _def_sy - 80, "REACTOR DETONATION // CHASSIS DESTROYED", c_red);
@@ -1026,7 +2385,14 @@ resolve_combat_impact = function(_atk, _def, _wpn, _hit_chance) {
                 }
             } else if (_hit_part == "legs") {
                 _def.current_ap = min(_def.current_ap, 1);
-                add_log("[MOBILITY KILL] " + _def.callsign + " hydraulic bipedal limbs crippled!");
+                _def.evasion = 0;
+                add_log("[MOBILITY KILL] " + _def.callsign + " hydraulic bipedal limbs crippled! Evasion 0%, AP capped at 1.");
+            } else if (_hit_part == "arm_left" || _hit_part == "arm_right") {
+                _def.accuracy = max(20, _def.accuracy - 25);
+                add_log("[DISARMED] " + _def.callsign + " " + _limb.name + " severed! Accuracy penalized -25%.");
+            } else if (_hit_part == "head") {
+                _def.accuracy = max(10, _def.accuracy - 40);
+                add_log("[SENSORS BLINDED] " + _def.callsign + " head sensor array destroyed! Accuracy -40%.");
             }
         }
     } else {

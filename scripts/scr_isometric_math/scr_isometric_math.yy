@@ -1,5 +1,5 @@
 {
-  "": "v1",
+  "$GMScript": "v1",
   "%Name": "scr_isometric_math",
   "isCompatibility": false,
   "isDnD": false,

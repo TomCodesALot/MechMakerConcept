@@ -150,4 +150,77 @@ recruit_prisoner = function(_pilot_id) {
     return scr_prisoner_triage(_pilot_id, "recruit");
 };
 
+// Corporate Hit Contracts & Interrogation Methods (docs/28)
+corporate_contracts = {};
+
+assign_corporate_contract = function(_pilot_id, _corp_id, _bounty_desc) {
+    var _c = get_character(_pilot_id);
+    if (!is_undefined(_c)) {
+        _c.contractor_corp_id = _corp_id;
+        _c.corporate_bounty_desc = _bounty_desc;
+        corporate_contracts[$ _pilot_id] = {
+            pilot_id: _pilot_id,
+            corp_id: _corp_id,
+            bounty_desc: _bounty_desc,
+            assigned_turn: (instance_exists(obj_GameManager)) ? obj_GameManager.current_turn : 1
+        };
+        show_debug_message("[obj_NemesisManager] Assigned Corporate Hit Contract: " + _c.name + " hired by " + _corp_id);
+        return true;
+    }
+    return false;
+};
+
+interrogate_corporate_secrets = function(_pilot_id) {
+    var _c = get_character(_pilot_id);
+    if (is_undefined(_c) || !variable_struct_exists(_c, "is_imprisoned") || !_c.is_imprisoned) return false;
+    var _corp = _c[$ "contractor_corp_id"] ?? "corp_vhi";
+    if (instance_exists(obj_GameManager)) {
+        var _gm = obj_GameManager;
+        if (variable_struct_exists(_gm.rival_corporations, _corp)) {
+            var _rc = _gm.rival_corporations[$ _corp];
+            // Grant 2,000 insider equity shares
+            if (!_rc.is_acquired) {
+                _rc.player_shares = min(100000, _rc.player_shares + 2000);
+                _rc.player_equity_pct = (_rc.player_shares / 100000.0) * 100.0;
+                if (_rc.player_equity_pct >= 51.0) _rc.controlling_interest = true;
+            }
+        }
+        _gm.funds += 125000; // Industrial secret black market sale
+    }
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("INTERROGATION SUCCESS: Extracted " + _c.name + " industrial telemetry (+2,000 " + _corp + " shares, +125,000 Cr)!", c_lime);
+    }
+    return true;
+};
+
+ransom_to_corporation = function(_pilot_id) {
+    var _c = get_character(_pilot_id);
+    if (is_undefined(_c) || !variable_struct_exists(_c, "is_imprisoned") || !_c.is_imprisoned) return false;
+    var _corp = _c[$ "contractor_corp_id"] ?? "corp_vhi";
+    var _payout = 250000;
+    if (instance_exists(obj_GameManager)) {
+        obj_GameManager.funds += _payout;
+    }
+    // Remove prisoner
+    for (var i = 0; i < array_length(prisoner_list); i++) {
+        if (prisoner_list[i].id == _pilot_id) {
+            array_delete(prisoner_list, i, 1);
+            break;
+        }
+    }
+    _c.is_imprisoned = false;
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("CORPORATE RANSOM EXCHANGED: " + _c.name + " released to " + _corp + " (+" + string(_payout) + " Cr)!", c_yellow);
+    }
+    return true;
+};
+
 show_debug_message("[obj_NemesisManager] Manager online with " + string(array_length(character_id_list)) + " characters indexed.");
+
+// Populate pilot hiring market in obj_GameManager if already instantiated
+if (instance_exists(obj_GameManager)) {
+    var _gm = instance_find(obj_GameManager, 0);
+    if (_gm != noone && variable_instance_exists(_gm, "populate_market_from_nemesis")) {
+        _gm.populate_market_from_nemesis();
+    }
+}

@@ -5,6 +5,10 @@
 var _sx = random_range(-screen_shake, screen_shake);
 var _sy = random_range(-screen_shake, screen_shake);
 
+// 0. Active Map Theater Backdrop Fill
+var _cur_map = map_definitions[current_map_id];
+draw_clear(_cur_map.bg_col);
+
 // =========================================================================
 // 1. RENDER ISOMETRIC 2:1 GROUND TILES & ELEVATION CLIFFS
 // =========================================================================
@@ -25,10 +29,32 @@ for (var c = 0; c < grid_cols; c++) {
         var _p3_x = iso_to_screen_x(c, r + 1, _elev, cam_x + _sx, cam_y + _sy, zoom);
         var _p3_y = iso_to_screen_y(c, r + 1, _elev, cam_x + _sx, cam_y + _sy, zoom);
 
-        // Ground terrain color based on elevation tier
-        var _tile_col = make_color_rgb(18, 25, 36);
-        if (_elev == 1) _tile_col = make_color_rgb(30, 44, 62);
-        else if (_elev == 2) _tile_col = make_color_rgb(46, 64, 88);
+        // Ground terrain color based on theater palette, terrain type and elevation tier
+        var _map_def = map_definitions[current_map_id];
+        var _terr = grid_terrain[c][r];
+        var _tile_col = _map_def.grid_col_base;
+        if (_elev == 1) _tile_col = _map_def.grid_col_elev1;
+        else if (_elev == 2) _tile_col = _map_def.grid_col_elev2;
+        else if (_elev >= 3) _tile_col = merge_color(_map_def.grid_col_elev2, c_white, 0.28);
+
+        if (_terr == 1) {
+            // Road / Runway (Smooth concrete asphalt)
+            _tile_col = make_color_rgb(46, 54, 64);
+        } else if (_terr == 2) {
+            // Rubble / Masonry Debris
+            _tile_col = make_color_rgb(58, 48, 42);
+        } else if (_terr == 3) {
+            // Seawater / Coolant Canal
+            var _wave = 0.5 + 0.5 * sin((current_time * 0.003) + (c * 0.5) + (r * 0.7));
+            _tile_col = merge_color(make_color_rgb(14, 52, 88), make_color_rgb(28, 88, 135), _wave);
+        } else if (_terr == 4) {
+            // Vacuum Deep Space Chasm
+            _tile_col = make_color_rgb(4, 6, 12);
+        } else if (_terr == 5) {
+            // Molten Slag Drainage Runoff
+            var _heat = 0.5 + 0.5 * sin((current_time * 0.005) + (c * 0.8) + (r * 0.4));
+            _tile_col = merge_color(make_color_rgb(180, 52, 16), make_color_rgb(240, 110, 24), _heat);
+        }
 
         // Draw Filled Isometric Diamond Face
         draw_primitive_begin(pr_trianglefan);
@@ -55,10 +81,10 @@ for (var c = 0; c < grid_cols; c++) {
             if (_drop_se) {
                 var _wall_h = _drop_se_diff * elev_h * zoom;
                 draw_primitive_begin(pr_trianglefan);
-                draw_vertex_color(_p3_x, _p3_y, make_color_rgb(12, 17, 24), 1.0);
-                draw_vertex_color(_p2_x, _p2_y, make_color_rgb(12, 17, 24), 1.0);
-                draw_vertex_color(_p2_x, _p2_y + _wall_h, make_color_rgb(8, 12, 18), 1.0);
-                draw_vertex_color(_p3_x, _p3_y + _wall_h, make_color_rgb(8, 12, 18), 1.0);
+                draw_vertex_color(_p3_x, _p3_y, _map_def.cliff_col_se, 1.0);
+                draw_vertex_color(_p2_x, _p2_y, _map_def.cliff_col_se, 1.0);
+                draw_vertex_color(_p2_x, _p2_y + _wall_h, _map_def.cliff_col_sw, 1.0);
+                draw_vertex_color(_p3_x, _p3_y + _wall_h, _map_def.cliff_col_sw, 1.0);
                 draw_primitive_end();
             }
 
@@ -77,10 +103,10 @@ for (var c = 0; c < grid_cols; c++) {
             if (_drop_sw) {
                 var _wall_h = _drop_sw_diff * elev_h * zoom;
                 draw_primitive_begin(pr_trianglefan);
-                draw_vertex_color(_p1_x, _p1_y, make_color_rgb(15, 22, 30), 1.0);
-                draw_vertex_color(_p2_x, _p2_y, make_color_rgb(15, 22, 30), 1.0);
-                draw_vertex_color(_p2_x, _p2_y + _wall_h, make_color_rgb(10, 15, 22), 1.0);
-                draw_vertex_color(_p1_x, _p1_y + _wall_h, make_color_rgb(10, 15, 22), 1.0);
+                draw_vertex_color(_p1_x, _p1_y, _map_def.cliff_col_se, 1.0);
+                draw_vertex_color(_p2_x, _p2_y, _map_def.cliff_col_se, 1.0);
+                draw_vertex_color(_p2_x, _p2_y + _wall_h, _map_def.cliff_col_sw, 1.0);
+                draw_vertex_color(_p1_x, _p1_y + _wall_h, _map_def.cliff_col_sw, 1.0);
                 draw_primitive_end();
             }
         }
@@ -229,21 +255,15 @@ for (var i = 0; i < _len; i++) {
     }
 
     // --- Render Mobile Suits ---
-    else if (_item.type == "UNIT") {
+    else if (_item.type == UNIT) {
         var _u = _item.unit;
         var _vx = _u.visual_x + (_u.recoil_x * zoom) + _sx;
         var _vy = _u.visual_y + (_u.recoil_y * zoom) + _sy;
 
-        // Drop Shadow
-        draw_set_color(c_black);
-        draw_set_alpha(0.40);
-        draw_ellipse(_vx - 24 * zoom, _vy - 10 * zoom, _vx + 24 * zoom, _vy + 10 * zoom, false);
-        draw_set_alpha(1.0);
-
         // Active Selection Ring
         if (selected_unit_idx >= 0 && selected_unit_idx < array_length(units) && units[selected_unit_idx] == _u) {
             draw_set_color(make_color_rgb(80, 220, 255));
-            draw_ellipse(_vx - 28 * zoom, _vy - 12 * zoom, _vx + 28 * zoom, _vy + 12 * zoom, true);
+            draw_ellipse(_vx - 30 * zoom, _vy - 13 * zoom, _vx + 30 * zoom, _vy + 13 * zoom, true);
         }
 
         // Mobile Suit Sprite Rendering with 4-Way Directional Mirroring
@@ -253,15 +273,68 @@ for (var i = 0; i < _len; i++) {
         var _yscale = zoom;
         var _alpha = _u.is_destroyed ? 0.35 : 1.0;
 
-        if (sprite_exists(_spr)) {
-            draw_sprite_ext(_spr, floor(_u.anim_frame), _vx, _vy, _xscale, _yscale, 0, _u.image_blend, _alpha);
+        // Dual Platoon Structure: 3-Mech Platoon vs 1-Mech Super Ace
+        if (_u.squad_type == "PLATOON_3") {
+            // Render Staggered Wingman 1 (Left Wing)
+            if (_u.squad_members_count >= 2 && !_u.is_destroyed && sprite_exists(_spr)) {
+                var _w1_x = _vx - (18.0 * zoom * _facing_sign);
+                var _w1_y = _vy - (12.0 * zoom);
+                draw_set_color(c_black);
+                draw_set_alpha(0.30);
+                draw_ellipse(_w1_x - 18 * zoom, _w1_y - 7 * zoom, _w1_x + 18 * zoom, _w1_y + 7 * zoom, false);
+                draw_set_alpha(1.0);
+                draw_sprite_ext(_spr, floor(_u.anim_frame), _w1_x, _w1_y, _xscale * 0.90, _yscale * 0.90, 0, _u.image_blend, 0.90);
+            }
+
+            // Render Staggered Wingman 2 (Right Wing)
+            if (_u.squad_members_count >= 3 && !_u.is_destroyed && sprite_exists(_spr)) {
+                var _w2_x = _vx - (18.0 * zoom * _facing_sign);
+                var _w2_y = _vy + (12.0 * zoom);
+                draw_set_color(c_black);
+                draw_set_alpha(0.30);
+                draw_ellipse(_w2_x - 18 * zoom, _w2_y - 7 * zoom, _w2_x + 18 * zoom, _w2_y + 7 * zoom, false);
+                draw_set_alpha(1.0);
+                draw_sprite_ext(_spr, floor(_u.anim_frame), _w2_x, _w2_y, _xscale * 0.90, _yscale * 0.90, 0, _u.image_blend, 0.90);
+            }
+
+            // Lead Mech Drop Shadow
+            draw_set_color(c_black);
+            draw_set_alpha(0.40);
+            draw_ellipse(_vx - 24 * zoom, _vy - 10 * zoom, _vx + 24 * zoom, _vy + 10 * zoom, false);
+            draw_set_alpha(1.0);
+
+            // Lead Mech Sprite
+            if (sprite_exists(_spr)) {
+                draw_sprite_ext(_spr, floor(_u.anim_frame), _vx, _vy, _xscale, _yscale, 0, _u.image_blend, _alpha);
+            }
+        } else {
+            // Super Ace (1 Unit Prototype) with 1.15 Scale & Evasion Afterimages
+            var _ace_scale = 1.15;
+
+            // Motion Blur Evasion Afterimages
+            if (!_u.is_destroyed && sprite_exists(_spr)) {
+                var _after_x = _vx - (4.0 * zoom * _facing_sign);
+                var _after_y = _vy - (2.0 * zoom);
+                draw_sprite_ext(_spr, floor(_u.anim_frame), _after_x, _after_y, _xscale * _ace_scale, _yscale * _ace_scale, 0, make_color_rgb(100, 220, 255), 0.25);
+            }
+
+            // Drop Shadow
+            draw_set_color(c_black);
+            draw_set_alpha(0.45);
+            draw_ellipse(_vx - 26 * zoom, _vy - 11 * zoom, _vx + 26 * zoom, _vy + 11 * zoom, false);
+            draw_set_alpha(1.0);
+
+            // Lead Ace Sprite
+            if (sprite_exists(_spr)) {
+                draw_sprite_ext(_spr, floor(_u.anim_frame), _vx, _vy, _xscale * _ace_scale, _yscale * _ace_scale, 0, _u.image_blend, _alpha);
+            }
         }
 
-        // Floating Unit Overhead Status (Callsign & HP Bar)
+        // Floating Unit Overhead Status (Callsign, Formation Tag & HP Bar)
         if (!_u.is_destroyed) {
-            var _bar_w = 42.0 * zoom;
+            var _bar_w = 46.0 * zoom;
             var _bar_h = 5.0 * zoom;
-            var _by = _vy - (82.0 * zoom);
+            var _by = _vy - (84.0 * zoom);
             var _hp_norm = clamp(_u.components.torso.cur / _u.components.torso.max, 0, 1);
 
             draw_set_color(make_color_rgb(12, 18, 24));
@@ -273,8 +346,11 @@ for (var i = 0; i < _len; i++) {
 
             draw_set_color(c_white);
             var _tag_col = (_u.team == "ALLIED") ? make_color_rgb(120, 220, 255) : make_color_rgb(255, 140, 140);
+            if (_u.squad_type == "SUPER_ACE") _tag_col = make_color_rgb(255, 215, 80);
             draw_set_color(_tag_col);
-            draw_text_transformed(_vx - 18 * zoom, _by - 12 * zoom, string_copy(_u.callsign, 1, 8), 0.65 * zoom, 0.65 * zoom, 0);
+
+            var _header_tag = (_u.squad_type == "SUPER_ACE") ? ("★ [ACE] " + string_copy(_u.callsign, 1, 8)) : ("[" + string(_u.squad_members_count) + "x] " + string_copy(_u.callsign, 1, 8));
+            draw_text_transformed(_vx - 22 * zoom, _by - 12 * zoom, _header_tag, 0.65 * zoom, 0.65 * zoom, 0);
         }
     }
 

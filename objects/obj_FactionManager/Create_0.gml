@@ -87,6 +87,10 @@ mass_production_contracts = {
         royalty_per_turn: 45000,
         combat_bonus: 18,
         cumulative_royalties_paid: 0,
+        adoption_stage: "UNADOPTED",
+        tooling_turns_remaining: 2,
+        active_frontline_units: 0,
+        block_level: 1,
         req_armor: 180,
         req_power: 8
     },
@@ -103,7 +107,11 @@ mass_production_contracts = {
         combat_bonus: 20,
         cumulative_royalties_paid: 0,
         req_armor: 120,
-        req_power: 16
+        req_power: 16,
+        adoption_stage: "UNADOPTED",
+        tooling_turns_remaining: 2,
+        active_frontline_units: 0,
+        block_level: 1
     },
     faction_c: {
         faction_id: "faction_c",
@@ -118,7 +126,11 @@ mass_production_contracts = {
         combat_bonus: 16,
         cumulative_royalties_paid: 0,
         req_armor: 130,
-        req_power: 10
+        req_power: 10,
+        adoption_stage: "UNADOPTED",
+        tooling_turns_remaining: 2,
+        active_frontline_units: 0,
+        block_level: 1
     },
     faction_d: {
         faction_id: "faction_d",
@@ -133,9 +145,74 @@ mass_production_contracts = {
         combat_bonus: 22,
         cumulative_royalties_paid: 0,
         req_armor: 135,
-        req_power: 14
+        req_power: 14,
+        adoption_stage: "UNADOPTED",
+        tooling_turns_remaining: 2,
+        active_frontline_units: 0,
+        block_level: 1
     }
 };
+
+// 4b. Revamped Mass Production Candidate Pools (docs/29)
+mass_production_candidates = {
+    faction_a: [
+        { id: "ms_terran_ironclad_07", name: "GHA-07 Ironclad", doctrine: "Kinetic Trench Fortress", weapon: "Type-77 120mm Autocannon", armor: 2480, power: 12, speed: 45, combat: 480, sprite: spr_ms_ironclad_idle, req_armor: 180, req_power: 8, bounty: 1800000, royalty: 45000 },
+        { id: "ms_terran_ballista_04", name: "TH-M04 Ballista", doctrine: "Quadruped Heavy Artillery", weapon: "Twin 200mm Heavy Howitzers", armor: 2350, power: 11, speed: 38, combat: 460, sprite: spr_ms_ballista_idle, req_armor: 170, req_power: 9, bounty: 1750000, royalty: 42000 },
+        { id: "ms_terran_centurion_02", name: "TH-C02 Centurion", doctrine: "Hydraulic Linebreaker", weapon: "GAU-88 Rotary Heavy Vulcan", armor: 2200, power: 14, speed: 62, combat: 510, sprite: spr_ms_centurion_idle, req_armor: 160, req_power: 10, bounty: 1900000, royalty: 48000 },
+        { id: "ms_terran_trenchcoat_09", name: "TH-T09 Trenchcoat", doctrine: "CQB Slugs & Smokescreen", weapon: "12-Gauge Heavy Slug Autoshotgun", armor: 2150, power: 10, speed: 50, combat: 430, sprite: spr_ms_trenchcoat_idle, req_armor: 155, req_power: 8, bounty: 1600000, royalty: 40000 }
+    ],
+    faction_b: [
+        { id: "ms_colony_aether_01", name: "AET-01 Aether", doctrine: "Zero-G Agile Superiority", weapon: "Twin High-Yield Beam Carbines", armor: 1820, power: 16, speed: 85, combat: 490, sprite: spr_ms_aether_idle, req_armor: 120, req_power: 16, bounty: 2100000, royalty: 52000 },
+        { id: "ms_colony_zephyr_05", name: "JCC-Z05 Zephyr", doctrine: "EW Sensor Jammer", weapon: "Pulse Laser Array & Jammer", armor: 1680, power: 15, speed: 92, combat: 470, sprite: spr_ms_zephyr_idle, req_armor: 110, req_power: 15, bounty: 2000000, royalty: 50000 },
+        { id: "ms_colony_kepler_02", name: "JCC-K02 Kepler", doctrine: "Orbital Rail-Sniper", weapon: "Magnetic Linear Rail-Rifle", armor: 1720, power: 14, speed: 78, combat: 480, sprite: spr_ms_kepler_idle, req_armor: 115, req_power: 14, bounty: 2050000, royalty: 51000 },
+        { id: "ms_colony_oberon_08", name: "JCC-O08 Oberon", doctrine: "Point-Defense Fleet Escort", weapon: "Thermal Beam Lance & PDS", armor: 1950, power: 17, speed: 80, combat: 510, sprite: spr_ms_oberon_idle, req_armor: 130, req_power: 17, bounty: 2200000, royalty: 54000 }
+    ],
+    faction_c: [
+        { id: "ms_syndicate_hyena_12", name: "SCR-12 Hyena", doctrine: "Scrap Harpoon Scavenger", weapon: "Magnetic Harpoon & 80mm Flak", armor: 1980, power: 10, speed: 60, combat: 460, sprite: spr_ms_hyena_idle, req_armor: 130, req_power: 10, bounty: 1400000, royalty: 38000 },
+        { id: "ms_syndicate_gorgon_04", name: "ARC-G04 Gorgon", doctrine: "Boarding Cutter & Ram", weapon: "Heavy Thermal Cutter Claw", armor: 2300, power: 12, speed: 52, combat: 490, sprite: spr_ms_gorgon_idle, req_armor: 145, req_power: 11, bounty: 1600000, royalty: 42000 },
+        { id: "ms_syndicate_bloodhound_06", name: "ARC-B06 Bloodhound", doctrine: "Wheeled Pack Hunter", weapon: "Quad 70mm Rocket Pods", armor: 1850, power: 9, speed: 72, combat: 440, sprite: spr_ms_bloodhound_idle, req_armor: 120, req_power: 9, bounty: 1350000, royalty: 36000 },
+        { id: "ms_syndicate_vandal_03", name: "ARC-V03 Vandal", doctrine: "Ambush Shrapnel & Decoys", weapon: "Flechette Autogun & Flares", armor: 1750, power: 10, speed: 66, combat: 430, sprite: spr_ms_vandal_idle, req_armor: 115, req_power: 9, bounty: 1300000, royalty: 35000 }
+    ],
+    faction_d: [
+        { id: "ms_zaibatsu_muramasa_03", name: "ZAI-03 Muramasa", doctrine: "High-Frequency Tachyon Duelist", weapon: "High-Frequency Tachyon Katana", armor: 1950, power: 14, speed: 82, combat: 500, sprite: spr_ms_muramasa_idle, req_armor: 135, req_power: 14, bounty: 2400000, royalty: 58000 },
+        { id: "ms_zaibatsu_kage_07", name: "ZBT-K07 Kage", doctrine: "Optical Camo Assassin", weapon: "Hyper-Velocity Needle Railgun", armor: 1650, power: 13, speed: 88, combat: 480, sprite: spr_ms_kage_idle, req_armor: 120, req_power: 13, bounty: 2300000, royalty: 55000 },
+        { id: "ms_zaibatsu_ronin_04", name: "ZBT-R04 Ronin", doctrine: "Autonomous Sub-Drone Carrier", weapon: "Sub-Drone Swarm Pod & Naginata", armor: 2100, power: 16, speed: 75, combat: 520, sprite: spr_ms_ronin_idle, req_armor: 140, req_power: 15, bounty: 2500000, royalty: 60000 },
+        { id: "ms_zaibatsu_tessen_09", name: "ZBT-T09 Tessen", doctrine: "EMP Neural Jammer & Deflector", weapon: "Broadband EMP Disruptor", armor: 1820, power: 15, speed: 78, combat: 470, sprite: spr_ms_tessen_idle, req_armor: 125, req_power: 14, bounty: 2250000, royalty: 54000 }
+    ]
+};
+
+roll_playthrough_mass_production_selection = function(_forced_seed = undefined) {
+    var _f_keys = ["faction_a", "faction_b", "faction_c", "faction_d"];
+    for (var f = 0; f < array_length(_f_keys); f++) {
+        var _fk = _f_keys[f];
+        var _pool = mass_production_candidates[$ _fk];
+        var _idx = 0;
+        if (!is_undefined(_forced_seed)) {
+            _idx = (_forced_seed + f * 7) % array_length(_pool);
+        } else {
+            _idx = irandom(array_length(_pool) - 1);
+        }
+        var _chosen = _pool[_idx];
+
+        var _contract = mass_production_contracts[$ _fk];
+        if (!is_undefined(_contract)) {
+            _contract.baseline_suit_id = _chosen.id;
+            _contract.baseline_suit_name = _chosen.name;
+            _contract.doctrine = _chosen.doctrine;
+            _contract.signature_weapon = _chosen.weapon;
+            _contract.sprite_asset = _chosen.sprite;
+            _contract.req_armor = _chosen.req_armor;
+            _contract.req_power = _chosen.req_power;
+            _contract.licensing_bounty = _chosen.bounty;
+            _contract.royalty_per_turn = _chosen.royalty;
+            _contract.combat_bonus = round(_chosen.combat / 25);
+            _contract.candidate_index = _idx;
+            show_debug_message("[MASS PRODUCTION VARIANCE] " + _fk + " ratified candidate " + string(_idx + 1) + "/4: " + _chosen.name + " (" + _chosen.doctrine + ")");
+        }
+    }
+};
+
+roll_playthrough_mass_production_selection();
 
 factions_overthrown = [];
 pmc_expeditions_launched = 0;
@@ -886,7 +963,8 @@ launch_pmc_offensive = function(_target_faction_id, _mech_idx, _pilot_idx) {
 
     pmc_expeditions_launched += 1;
 
-    var _pmc_pwr = _mech.armor_rating + _mech.power_output + (_pilot.combat_stat * 12) + irandom_range(15, 40);
+    var _pilot_cstat = _pilot[$ "combat_stat"] ?? floor((_pilot[$ "accuracy"] ?? 80) / 10);
+    var _pmc_pwr = _mech.armor_rating + _mech.power_output + (_pilot_cstat * 12) + irandom_range(15, 40);
     var _def_pwr = _tf.military_strength_score * 1.8 + irandom_range(10, 30);
 
     if (_pmc_pwr >= _def_pwr) {
@@ -929,6 +1007,7 @@ launch_pmc_offensive = function(_target_faction_id, _mech_idx, _pilot_idx) {
         _mech.status = "DAMAGED";
         _pilot.status = "HOSPITALIZED";
         _pilot.recovery_days_left = 3;
+        _pilot.recovery_days = 3;
         modify_standing(_target_faction_id, -15);
         territory_control.last_shift_report = "PMC OFFENSIVE REPELLED: " + _tf.name + " defensive garrison held line.";
         if (instance_exists(obj_HQTerminal)) {
@@ -1139,10 +1218,45 @@ incumbent_doctrines = {
 };
 
 get_incumbent_specs = function(_faction_id) {
-    if (variable_struct_exists(incumbent_doctrines, _faction_id)) {
-        return incumbent_doctrines[$ _faction_id];
+    var _base = variable_struct_exists(incumbent_doctrines, _faction_id) ? incumbent_doctrines[$ _faction_id] : incumbent_doctrines.faction_a;
+
+    // Dynamically query mass_production_contracts for active playthrough line chassis (docs/29)
+    if (variable_struct_exists(mass_production_contracts, _faction_id)) {
+        var _mpc = mass_production_contracts[$ _faction_id];
+        if (is_struct(_mpc) && variable_struct_exists(_mpc, "baseline_suit_name")) {
+            _base.name = _mpc.baseline_suit_name;
+            _base.id = _mpc.baseline_suit_id;
+            _base.armor = _mpc.req_armor * 10;
+            _base.power = _mpc.req_power;
+            _base.doctrine_focus = _mpc[$ "doctrine"] ?? _base.doctrine_focus;
+        }
     }
-    return incumbent_doctrines.faction_a;
+
+    // Dynamically query competitor catalog for active era chassis (docs/27)
+    if (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "competitor_catalog")) {
+        var _corp_map = { faction_a: "corp_vhi", faction_b: "corp_aod", faction_c: "corp_rust", faction_d: "corp_hats" };
+        var _cid = _corp_map[$ _faction_id] ?? "corp_vhi";
+        if (variable_struct_exists(obj_GameManager.competitor_catalog, _cid)) {
+            var _cp = obj_GameManager.competitor_catalog[$ _cid];
+            if (!is_undefined(_cp.active_line_chassis)) {
+                return {
+                    id: _cp.active_line_chassis.id,
+                    name: _cp.active_line_chassis.name,
+                    faction_name: _base.faction_name,
+                    role: _cp.active_line_chassis.class + " (" + _cp.branch_name + ")",
+                    armor: _cp.active_line_chassis.armor,
+                    power: _cp.active_line_chassis.power,
+                    speed: _cp.active_line_chassis.speed,
+                    mass: _base.mass,
+                    combat_rating: _cp.active_line_chassis.combat,
+                    weights: _base.weights,
+                    doctrine_focus: _cp.doctrine,
+                    evaluator: _base.evaluator
+                };
+            }
+        }
+    }
+    return _base;
 };
 
 run_procurement_trial = function(_faction_id, _mech) {
@@ -1165,16 +1279,28 @@ run_procurement_trial = function(_faction_id, _mech) {
 
     // Faction Standing Bonus (-20 to +20)
     var _st_bonus = get_standing(_faction_id) / 5.0;
-    var _composite_score = round((_base_weighted + _st_bonus) * 10.0) / 10.0;
+
+    // Combat-Proven Pedigree Telemetry Bonus (0 to 25 pts) from active PMC squad deployments (docs/25)
+    var _pedigree_bonus = 0.0;
+    var _pedigree_rating = "UNTESTED";
+    if (variable_struct_exists(_mech, "combat_pedigree") && is_struct(_mech.combat_pedigree)) {
+        _pedigree_bonus = _mech.combat_pedigree[$ "telemetry_bonus"] ?? 0.0;
+        _pedigree_rating = _mech.combat_pedigree[$ "pedigree_rating"] ?? "UNTESTED";
+    }
+
+    var _composite_score = round((_base_weighted + _st_bonus + _pedigree_bonus) * 10.0) / 10.0;
 
     var _passed = (_composite_score >= 100.0);
 
     var _report = "";
     if (_passed) {
         _report = "TENDER APPROVED: " + _mech.name + " outperformed incumbent " + _inc.name + " (" + string(_composite_score) + "/100). Faction board recommends immediate mass-production contract!";
+        if (_pedigree_bonus > 0) {
+            _report += " [Combat Telemetry: " + _pedigree_rating + " (+" + string(_pedigree_bonus) + " pts)]";
+        }
     } else {
         var _deficit = 100.0 - _composite_score;
-        _report = "TENDER REJECTED: Candidate fell short of doctrine standard by " + string(_deficit) + " pts. Improve components or boost faction standing!";
+        _report = "TENDER REJECTED: Candidate fell short of doctrine standard by " + string(_deficit) + " pts. Improve components, boost faction standing, or deploy in PMC combat for field telemetry!";
     }
 
     return {
@@ -1195,6 +1321,8 @@ run_procurement_trial = function(_faction_id, _mech) {
         score_speed: round(_score_speed),
         score_combat: round(_score_combat),
         standing_bonus: round(_st_bonus),
+        pedigree_bonus: _pedigree_bonus,
+        pedigree_rating: _pedigree_rating,
         composite_score: _composite_score,
         passed: _passed,
         report: _report
@@ -1211,6 +1339,15 @@ award_procurement_contract = function(_faction_id, _mech, _trial_result) {
     _mp.replacement_name = _mech.name;
     _mp.replacement_blueprint_id = _mech[$ "blueprint_id"] ?? "bp_custom";
     _mp.combat_bonus = max(_is_upgrade ? _mp.combat_bonus + 4 : 18, floor(_trial_result.composite_score / 5));
+    _mp.adoption_stage = "TOOLING";
+    _mp.tooling_turns_remaining = 2;
+    _mp.active_frontline_units = 0;
+    _mp.block_level = _is_upgrade ? min(3, _mp.block_level + 1) : 1;
+
+    // Register Blueprint Weakness in obj_GameManager (Arms Dealer Paradox - docs/25)
+    if (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "register_exported_blueprint_weakness")) {
+        obj_GameManager.register_exported_blueprint_weakness(_mp.replacement_blueprint_id, _mech.name);
+    }
 
     // Award Licensing Bounty (Full on first win, 60% upgrade incentive on subsequent wins)
     var _bounty = _is_upgrade ? floor(_mp.licensing_bounty * 0.6) : _mp.licensing_bounty;
@@ -1250,6 +1387,221 @@ award_procurement_contract = function(_faction_id, _mech, _trial_result) {
             ("DOCTRINE UPGRADED! " + _f.name + " ADOPTS NEXT-GEN " + _mech.name + "! +" + string(_bounty) + " Cr!") :
             ("TENDER WON! " + _f.name + " OFFICIALLY ADOPTS " + _mech.name + "! +" + string(_bounty) + " Cr!");
         obj_HQTerminal.show_toast(_toast_text, c_lime);
+    }
+    return true;
+};
+
+
+// 10b. 4-Phase Fly-Off Tournament Engine & Modernization Lifecycle (docs/26)
+run_procurement_trial_phase = function(_faction_id, _mech, _phase_idx = 4, _refinements = []) {
+    var _inc = get_incumbent_specs(_faction_id);
+    if (is_undefined(_mech)) return undefined;
+
+    var _cand_armor = _mech[$ "armor_rating"] ?? 600;
+    var _cand_power = _mech[$ "power_output"] ?? 10;
+    var _cand_speed = _mech[$ "speed"] ?? 60;
+    var _cand_combat = _mech[$ "combat_rating"] ?? 400;
+
+    // Apply Emergency Field Refinements
+    var _ref_power_mod = 1.0;
+    var _ref_armor_mod = 1.0;
+    var _ref_speed_mod = 1.0;
+    var _ref_combat_mod = 1.0;
+    for (var rf = 0; rf < array_length(_refinements); rf++) {
+        var _r = _refinements[rf];
+        if (_r == "OVERCLOCK_REACTOR") { _ref_power_mod += 0.15; }
+        else if (_r == "WELD_ARMOR") { _ref_armor_mod += 0.12; _ref_speed_mod -= 0.05; }
+        else if (_r == "TUNE_VERNIERS") { _ref_speed_mod += 0.15; _ref_armor_mod -= 0.05; }
+        else if (_r == "RECALIBRATE_SENSORS") { _ref_combat_mod += 0.10; }
+    }
+    _cand_armor = round(_cand_armor * _ref_armor_mod);
+    _cand_power = round(_cand_power * _ref_power_mod);
+    _cand_speed = round(_cand_speed * _ref_speed_mod);
+    _cand_combat = round(_cand_combat * _ref_combat_mod);
+
+    // 4 Diagnostic Phase Scores (Base 100 is exact parity with incumbent)
+    var _score_armor = clamp((_cand_armor / max(1, _inc.armor)) * 100.0, 20.0, 160.0);
+    var _score_power = clamp((_cand_power / max(1, _inc.power)) * 100.0, 20.0, 160.0);
+    var _score_speed = clamp((_cand_speed / max(1, _inc.speed)) * 100.0, 20.0, 160.0);
+    var _score_combat = clamp((_cand_combat / max(1, _inc.combat_rating)) * 100.0, 20.0, 160.0);
+
+    var _w = _inc.weights;
+    var _base_weighted = (_score_armor * _w[0]) + (_score_power * _w[1]) + (_score_speed * _w[2]) + (_score_combat * _w[3]);
+    var _st_bonus = get_standing(_faction_id) / 5.0;
+
+    // Combat-Proven Pedigree Telemetry Bonus (0 to 25 pts) from active PMC squad deployments (docs/25)
+    var _pedigree_bonus = 0.0;
+    var _pedigree_rating = "UNTESTED";
+    if (variable_struct_exists(_mech, "combat_pedigree") && is_struct(_mech.combat_pedigree)) {
+        _pedigree_bonus = _mech.combat_pedigree[$ "telemetry_bonus"] ?? 0.0;
+        _pedigree_rating = _mech.combat_pedigree[$ "pedigree_rating"] ?? "UNTESTED";
+    }
+
+    var _composite_score = round((_base_weighted + _st_bonus + _pedigree_bonus) * 10.0) / 10.0;
+
+    var _grade = "GRADE F";
+    var _passed = false;
+    if (_composite_score >= 125.0) { _grade = "GRADE S"; _passed = true; }
+    else if (_composite_score >= 100.0) { _grade = "GRADE A"; _passed = true; }
+    else if (_composite_score >= 85.0) { _grade = "GRADE B"; _passed = false; }
+    else { _grade = "GRADE F"; _passed = false; }
+
+    // Phase 1 specific: Static Viability Audit
+    var _p1_critique = (_score_power >= 100) ? 
+        "Viability Confirmed: Power grid surplus easily handles military avionics." :
+        "Warning: Reactor output is marginal; sustained energy weapons may face throttling.";
+
+    // Phase 2 specific: Proving Grounds Benchmarks
+    var _p2_kinetic = round(_score_armor * 0.95);
+    var _p2_thermal = round(_score_power * 0.92);
+    var _p2_vernier = round(_score_speed * 1.05);
+    var _p2_ecm = round(_score_combat * 0.94);
+
+    // Phase 3 specific: Operational Duel vs Rival Corporate Entry
+    var _rival_corp = "Valkyrie Heavy";
+    var _rival_score = 98.0;
+    if (_faction_id == "faction_b") { _rival_corp = "Astraea Dynamics"; _rival_score = 104.0; }
+    else if (_faction_id == "faction_c") { _rival_corp = "Rustworks Cartel"; _rival_score = 94.0; }
+    else if (_faction_id == "faction_d") { _rival_corp = "Hyperion Tactical"; _rival_score = 108.0; }
+
+    var _report = "";
+    if (_passed) {
+        _report = "TENDER APPROVED (" + _grade + "): " + _mech.name + " outperformed " + _inc.name + " & " + _rival_corp + " (" + string(_composite_score) + "/100). Faction board recommends immediate mass-production contract!";
+        if (_pedigree_bonus > 0) {
+            _report += " [Combat Telemetry: " + _pedigree_rating + " (+" + string(_pedigree_bonus) + " pts)]";
+        }
+    } else {
+        var _deficit = 100.0 - _composite_score;
+        _report = "TENDER CONDITIONAL/REJECTED (" + _grade + "): Candidate fell short by " + string(_deficit) + " pts. Apply emergency field tuning, boost standing, or field in PMC combat!";
+    }
+
+    return {
+        phase: _phase_idx,
+        faction_id: _faction_id,
+        incumbent_id: _inc.id,
+        incumbent_name: _inc.name,
+        candidate_name: _mech.name,
+        candidate_armor: _cand_armor,
+        candidate_power: _cand_power,
+        candidate_speed: _cand_speed,
+        candidate_combat: _cand_combat,
+        incumbent_armor: _inc.armor,
+        incumbent_power: _inc.power,
+        incumbent_speed: _inc.speed,
+        incumbent_combat: _inc.combat_rating,
+        score_armor: round(_score_armor),
+        score_power: round(_score_power),
+        score_speed: round(_score_speed),
+        score_combat: round(_score_combat),
+        standing_bonus: round(_st_bonus),
+        pedigree_bonus: _pedigree_bonus,
+        pedigree_rating: _pedigree_rating,
+        composite_score: _composite_score,
+        grade: _grade,
+        passed: _passed,
+        report: _report,
+        p1_critique: _p1_critique,
+        p2_benchmarks: { kinetic: _p2_kinetic, thermal: _p2_thermal, vernier: _p2_vernier, ecm: _p2_ecm },
+        p3_rival_corp: _rival_corp,
+        p3_rival_score: _rival_score,
+        p3_duel_win: (_composite_score >= _rival_score),
+        refinements_applied: _refinements
+    };
+};
+
+expedite_adoption_tooling = function(_faction_id) {
+    if (!variable_struct_exists(mass_production_contracts, _faction_id)) return false;
+    var _mp = mass_production_contracts[$ _faction_id];
+    if (_mp.adoption_stage != "TOOLING") return false;
+
+    var _cost = 40000;
+    if (instance_exists(obj_GameManager)) {
+        if (obj_GameManager.funds < _cost) {
+            if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT FUNDS: 40,000 Cr required to expedite shipyard tooling!", c_red);
+            return false;
+        }
+        obj_GameManager.funds -= _cost;
+    }
+
+    _mp.tooling_turns_remaining = max(0, _mp.tooling_turns_remaining - 1);
+    if (_mp.tooling_turns_remaining <= 0) {
+        _mp.adoption_stage = "ROLLOUT";
+        _mp.active_frontline_units = 50;
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("TOOLING COMPLETE! " + _mp.faction_name + " begins frontline rollout with 50 units!", c_lime);
+    } else {
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("TOOLING EXPEDITED: " + string(_mp.tooling_turns_remaining) + " turn(s) remaining for " + _mp.faction_name + "!", c_aqua);
+    }
+    return true;
+};
+
+upgrade_adoption_block_ii = function(_faction_id) {
+    if (!variable_struct_exists(mass_production_contracts, _faction_id)) return false;
+    var _mp = mass_production_contracts[$ _faction_id];
+    if (!_mp.replaced || _mp.block_level >= 2) return false;
+
+    _mp.block_level = 2;
+    _mp.royalty_per_turn = round(_mp.royalty_per_turn * 1.25);
+    _mp.combat_bonus += 4;
+    var _bounty = 450000;
+
+    if (instance_exists(obj_GameManager)) {
+        obj_GameManager.funds += _bounty;
+        array_push(obj_GameManager.last_turn_events, "! BLOCK II MODERNIZATION: " + _mp.faction_name + " accepted Block II spec for " + _mp.replacement_name + "! Modernization Bounty: +" + string(_bounty) + " Cr!");
+    }
+    var _f = factions[$ _faction_id];
+    _f.military_strength_score = min(100, _f.military_strength_score + 10);
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("BLOCK II MODERNIZED! +" + string(_bounty) + " Cr Bounty & +25% Royalties!", c_lime);
+    }
+    return true;
+};
+
+upgrade_adoption_block_iii = function(_faction_id) {
+    if (!variable_struct_exists(mass_production_contracts, _faction_id)) return false;
+    var _mp = mass_production_contracts[$ _faction_id];
+    if (!_mp.replaced || _mp.block_level != 2) return false;
+
+    _mp.block_level = 3;
+    _mp.royalty_per_turn = round(_mp.royalty_per_turn * 1.20);
+    _mp.combat_bonus = min(30, _mp.combat_bonus + 6);
+    var _bounty = 750000;
+
+    if (instance_exists(obj_GameManager)) {
+        obj_GameManager.funds += _bounty;
+        var _new_ace_unit = {
+            id: "ace_custom_" + string(_mp.replacement_blueprint_id) + "_" + string(irandom(9999)),
+            blueprint_id: _mp.replacement_blueprint_id,
+            callsign: _mp.replacement_name + " [BLOCK III ACE]",
+            name: _mp.replacement_name + " (Block III Ace)",
+            class: "Ace Commander",
+            weight_class: "HEAVY ASSAULT",
+            assigned_pilot: "Unassigned",
+            status: "READY",
+            current_condition_pct: 1.0,
+            armor_rating: 980,
+            power_output: 22,
+            speed: 85,
+            combat_rating: 680,
+            spec_type: "COMMANDER_CUSTOM",
+            combat_pedigree: {
+                sorties_deployed: 0,
+                sorties_survived: 0,
+                confirmed_kills: 0,
+                ace_kills: 0,
+                damage_mitigated: 0,
+                pedigree_rating: "UNTESTED",
+                telemetry_bonus: 0.0
+            }
+        };
+        array_push(obj_GameManager.inventory.deployable_mechs, _new_ace_unit);
+        array_push(obj_GameManager.last_turn_events, "! BLOCK III APEX SPEC: " + _mp.faction_name + " ratified Block III Vanguard! Prestige Bounty: +" + string(_bounty) + " Cr & Free Ace Custom added to Hangar!");
+    }
+    var _f = factions[$ _faction_id];
+    _f.military_strength_score = min(100, _f.military_strength_score + 15);
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("BLOCK III APEX RATIFIED! +" + string(_bounty) + " Cr & Ace Unit Commissioned!", c_lime);
     }
     return true;
 };
@@ -1476,4 +1828,134 @@ execute_trade_sell = function(_faction_id, _item, _qty) {
         obj_HQTerminal.show_toast("TRADE SALE: Sold " + string(_qty) + "x " + _item.name + " (+" + string(_payout) + " Cr)", c_yellow);
     }
     return true;
+};
+
+// 12. Dynamic Frontline World Reflection Methods (docs/27)
+get_faction_active_line_chassis = function(_faction_id) {
+    if (!variable_struct_exists(mass_production_contracts, _faction_id)) return undefined;
+    var _mp = mass_production_contracts[$ _faction_id];
+    if (_mp.replaced) {
+        return {
+            name: _mp.replacement_name,
+            blueprint_id: _mp.replacement_blueprint_id,
+            is_player_designed: true,
+            block_level: _mp.block_level,
+            adoption_stage: _mp.adoption_stage,
+            combat_bonus: _mp.combat_bonus,
+            active_units: _mp.active_frontline_units
+        };
+    } else {
+        var _inc = get_incumbent_specs(_faction_id);
+        return {
+            name: _inc.name,
+            blueprint_id: _inc.id,
+            is_player_designed: false,
+            block_level: 1,
+            adoption_stage: "INCUMBENT_LINE",
+            combat_bonus: 0,
+            active_units: 150
+        };
+    }
+};
+
+get_faction_patrol_squad = function(_faction_id) {
+    var _chassis = get_faction_active_line_chassis(_faction_id);
+    if (is_undefined(_chassis)) return [];
+    var _spr = spr_ms_ironclad_idle;
+    if (variable_struct_exists(mass_production_contracts, _faction_id)) {
+        _spr = mass_production_contracts[$ _faction_id][$ "sprite_asset"] ?? _spr;
+    }
+    var _squad = [];
+    for (var u = 0; u < 4; u++) {
+        array_push(_squad, {
+            unit_id: "patrol_" + _faction_id + "_" + string(u + 1),
+            callsign: _chassis.name + " Unit-" + string(u + 1),
+            chassis_name: _chassis.name,
+            blueprint_id: _chassis.blueprint_id,
+            sprite_asset: _spr,
+            is_player_designed: _chassis.is_player_designed,
+            armor: (_chassis.is_player_designed ? 2200 : 1800) + (_chassis.block_level * 150),
+            combat_rating: 450 + (_chassis.combat_bonus * 5)
+        });
+    }
+    return _squad;
+};
+
+
+// 13. Diplomatic Battlefield Intervention Matrix (docs/28)
+evaluate_battlefield_faction_intervention = function(_sector_sphere) {
+    var _interventions = [];
+    var _f_keys = ["faction_a", "faction_b", "faction_c", "faction_d"];
+    for (var f = 0; f < array_length(_f_keys); f++) {
+        var _fid = _f_keys[f];
+        var _std = get_standing(_fid);
+        var _f_info = factions[$ _fid];
+        var _fname = _f_info.name;
+
+        // ALLIED INTERVENTION (Standing >= +25)
+        if (_std >= 25) {
+            if (_fid == "faction_a") {
+                array_push(_interventions, {
+                    faction_id: _fid, faction_name: _fname, type: "ALLIED_ASSIST",
+                    action_id: "orbital_mac_strike", title: "Terran Orbital MAC Strike",
+                    desc: "Terran cruisers in orbit fire a 380mm kinetic slug at the enemy lead combatant!",
+                    dmg_to_boss: irandom_range(350, 450), hit_penalty: 0, ap_mod: 0, heat_spike: 0, armor_repair: 0
+                });
+            } else if (_fid == "faction_b") {
+                array_push(_interventions, {
+                    faction_id: _fid, faction_name: _fname, type: "ALLIED_ASSIST",
+                    action_id: "ecm_sensor_blind", title: "Colony ECM Blinding Chaff",
+                    desc: "Colony drones saturate the battlespace with radar chaff, stripping -20% accuracy and -1 AP from hostiles!",
+                    dmg_to_boss: 0, hit_penalty: 20, ap_mod: -1, heat_spike: 0, armor_repair: 0
+                });
+            } else if (_fid == "faction_c") {
+                array_push(_interventions, {
+                    faction_id: _fid, faction_name: _fname, type: "ALLIED_ASSIST",
+                    action_id: "field_repair_drop", title: "Syndicate Field Rig Repair",
+                    desc: "Syndicate salvage riggers drop emergency nanite canisters, restoring +250 armor across Allied units!",
+                    dmg_to_boss: 0, hit_penalty: 0, ap_mod: 0, heat_spike: 0, armor_repair: 250
+                });
+            } else if (_fid == "faction_d") {
+                array_push(_interventions, {
+                    faction_id: _fid, faction_name: _fname, type: "ALLIED_ASSIST",
+                    action_id: "cyber_neural_overload", title: "Zaibatsu Cyber-Neural Overload",
+                    desc: "Zaibatsu electronic warfare infiltrates the enemy reactor, spiking heat by +40 and disabling special weapons!",
+                    dmg_to_boss: 0, hit_penalty: 0, ap_mod: 0, heat_spike: 40, armor_repair: 0
+                });
+            }
+        }
+        // HOSTILE HINDRANCE (Standing <= -20)
+        else if (_std <= -20) {
+            if (_fid == "faction_a") {
+                array_push(_interventions, {
+                    faction_id: _fid, faction_name: _fname, type: "HOSTILE_HINDRANCE",
+                    action_id: "airspace_lockout", title: "Terran Airspace Lockout",
+                    desc: "Terran orbital defense declares an interdiction corridor; Allied units suffer -2 AP on turn 1!",
+                    allied_ap_penalty: 2, allied_heat_penalty: 0, spawn_flankers: false, allied_acc_penalty: 0
+                });
+            } else if (_fid == "faction_b") {
+                array_push(_interventions, {
+                    faction_id: _fid, faction_name: _fname, type: "HOSTILE_HINDRANCE",
+                    action_id: "thermal_flare_storm", title: "Colony Thermal Flare Storm",
+                    desc: "Colony satellites reflect concentrated solar radiation, reducing Allied heat dissipation by -15!",
+                    allied_ap_penalty: 0, allied_heat_penalty: 15, spawn_flankers: false, allied_acc_penalty: 0
+                });
+            } else if (_fid == "faction_c") {
+                array_push(_interventions, {
+                    faction_id: _fid, faction_name: _fname, type: "HOSTILE_HINDRANCE",
+                    action_id: "mercenary_flankers", title: "Syndicate Pirate Flankers",
+                    desc: "Hostile syndicate raiders deploy auxiliary skirmishers to pinch Allied supply lines!",
+                    allied_ap_penalty: 0, allied_heat_penalty: 0, spawn_flankers: true, allied_acc_penalty: 0
+                });
+            } else if (_fid == "faction_d") {
+                array_push(_interventions, {
+                    faction_id: _fid, faction_name: _fname, type: "HOSTILE_HINDRANCE",
+                    action_id: "targeting_scrambler_worm", title: "Zaibatsu Scrambler Worm",
+                    desc: "Zaibatsu cyber-command infiltrates Allied optics, inflicting -15% accuracy!",
+                    allied_ap_penalty: 0, allied_heat_penalty: 0, spawn_flankers: false, allied_acc_penalty: 15
+                });
+            }
+        }
+    }
+    return _interventions;
 };

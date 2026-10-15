@@ -105,6 +105,28 @@ get_blueprint_count = function() {
     return array_length(all_blueprint_list);
 };
 
+register_custom_blueprint = function(_blueprint_struct) {
+    if (!is_struct(_blueprint_struct)) return false;
+    var _id = _blueprint_struct.id;
+    unlocked_blueprints[$ _id] = _blueprint_struct;
+    if (variable_struct_exists(_blueprint_struct, "model_code")) {
+        unlocked_blueprints[$ _blueprint_struct.model_code] = _blueprint_struct;
+    }
+    var _found = false;
+    for (var i = 0; i < array_length(all_blueprint_list); i++) {
+        if (all_blueprint_list[i].id == _id) {
+            all_blueprint_list[i] = _blueprint_struct;
+            _found = true;
+            break;
+        }
+    }
+    if (!_found) {
+        array_push(all_blueprint_list, _blueprint_struct);
+    }
+    show_debug_message("[obj_BlueprintManager] Registered custom blueprint: " + _id);
+    return true;
+};
+
 register_component = function(_comp_id, _comp_struct) {
     if (is_string(_comp_id) && _comp_id != "" && is_struct(_comp_struct)) {
         unlocked_components[$ _comp_id] = _comp_struct;
@@ -126,7 +148,7 @@ if (!is_undefined(_ironclad)) {
     _ironclad.id = "bp_ms_ironclad_07";
     _ironclad.model_code = "GHA-07";
     _ironclad.faction_id = "faction_terran";
-    _ironclad.associated_sprite = spr_ms_ironclad_mp;
+    _ironclad.associated_sprite = spr_ms_ironclad_idle;
     _ironclad.schematic_sprite = spr_mech_schematic;
     _ironclad.tier = 2;
     _ironclad.armor_rating = 850;
@@ -176,7 +198,7 @@ var _bp_player_1 = {
     alloy_cost: { tungsten: 35, silica: 15, flux: 10, slag: 5 },
     armament: ["Twin 120mm Rotary Vulcans", "Aegis Reactive Shield", "Kevlar-Reinforced Pincer"],
     variants: ["Aegis Standard", "Aegis Trench Shield", "Aegis Commander Pack"],
-    associated_sprite: spr_ms_ironclad_mp,
+    associated_sprite: spr_ms_ironclad_idle,
     schematic_sprite: spr_mech_schematic,
     fabrication_cost_cr: 395000,
     manufacturing_lore: "Proprietary player heavy assault chassis designed with reinforced composite plating and dual rotary vulcan cannons.",
@@ -298,7 +320,7 @@ if (file_exists("mobile_suits_timeline.json")) {
                 var _suit = _ms_arr[i];
                 var _bid = _suit.id;
 
-                var _spr_asset = spr_ms_ironclad_mp;
+                var _spr_asset = spr_ms_ironclad_idle;
                 if (_suit.faction_id == "faction_colony") _spr_asset = spr_ms_aether_idle;
                 else if (_suit.faction_id == "faction_syndicate") _spr_asset = spr_ms_hyena_idle;
                 else if (_suit.faction_id == "faction_zaibatsu") _spr_asset = spr_ms_muramasa_idle;

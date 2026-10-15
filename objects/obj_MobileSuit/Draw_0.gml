@@ -148,12 +148,7 @@ draw_text(x - 75, y - 262, "[" + _state_text + "]");
 var _hud_x = 40;
 var _hud_y = 35;
 
-draw_set_color(c_dkgray);
-draw_rectangle(_hud_x - 10, _hud_y - 10, _hud_x + 380, _hud_y + 245, false);
-draw_set_color(c_white);
-draw_rectangle(_hud_x - 10, _hud_y - 10, _hud_x + 380, _hud_y + 245, true);
-
-draw_text(_hud_x, _hud_y, "=== MOBILE SUIT INTEGRITY ===");
+scr_draw_snes_panel(_hud_x - 10, _hud_y - 10, 390, 255, "MOBILE SUIT INTEGRITY", make_color_rgb(100, 220, 255), true, 0.04);
 
 var _draw_part_hp = function(_name, _cur, _max, _intact, _px, _py) {
     var _pct = clamp(_cur / max(1, _max), 0, 1);
@@ -165,11 +160,13 @@ var _draw_part_hp = function(_name, _cur, _max, _intact, _px, _py) {
     draw_set_color(_col);
     draw_text(_px + 120, _py, _status);
 
-    draw_set_color(c_black);
-    draw_rectangle(_px + 230, _py + 2, _px + 350, _py + 12, false);
     if (_intact) {
-        draw_set_color(_col);
-        draw_rectangle(_px + 230, _py + 2, _px + 230 + (120 * _pct), _py + 12, false);
+        scr_draw_snes_gauge(_px + 230, _py + 2, 120, 10, _cur, max(1, _max), _col);
+    } else {
+        draw_set_color(make_color_rgb(25, 10, 12));
+        draw_rectangle(_px + 230, _py + 2, _px + 350, _py + 12, false);
+        draw_set_color(c_red);
+        draw_text(_px + 240, _py, "[SEVERED]");
     }
 };
 
@@ -207,13 +204,7 @@ draw_text(_hud_x, _hud_y + 215, "Recoil Impulse: " + _recoil_str + " | Orientati
 // Controls Helper Legend
 var _leg_x = 40;
 var _leg_y = 510;
-draw_set_color(c_black);
-draw_rectangle(_leg_x - 10, _leg_y - 10, _leg_x + 720, _leg_y + 160, false);
-draw_set_color(c_lime);
-draw_rectangle(_leg_x - 10, _leg_y - 10, _leg_x + 720, _leg_y + 160, true);
-
-draw_set_color(c_white);
-draw_text(_leg_x, _leg_y, "DEBUG RECOIL, MELEE & LIMB CONTROLS:");
+scr_draw_snes_panel(_leg_x - 10, _leg_y - 10, 730, 170, "DEBUG RECOIL, MELEE & LIMB CONTROLS", make_color_rgb(60, 240, 120), false, 0.04);
 draw_set_color(make_color_rgb(180, 255, 255));
 draw_text(_leg_x, _leg_y + 20, "[F / TAB] Flip Facing (L/R)  |  [V] Duel Arena  |  [H] Cycle Health Tiers (100% -> 55% -> 25%)");
 draw_set_color(make_color_rgb(255, 200, 100));

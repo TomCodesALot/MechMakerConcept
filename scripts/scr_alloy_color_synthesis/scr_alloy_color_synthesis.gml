@@ -4,8 +4,31 @@
 
 /// @function scr_get_alloy_procedural_color(_alloy_data_or_key, _opt_temp, _opt_pressure)
 function scr_get_alloy_procedural_color(_alloy_data_or_key, _opt_temp = 2500, _opt_pressure = 1000) {
-    // 1. Direct Known Alloy Shortcuts
+    // 1. Direct Known Alloy & Hex Shortcuts
     if (is_string(_alloy_data_or_key)) {
+        // Direct Hex Color Support (e.g. "#7387A0" or "7387A0")
+        var _hex = _alloy_data_or_key;
+        if (string_starts_with(_hex, "#")) _hex = string_delete(_hex, 1, 1);
+        if (string_length(_hex) == 6) {
+            var _hex_chars = "0123456789ABCDEFabcdef";
+            var _is_hex = true;
+            for (var c = 1; c <= 6; c++) {
+                if (string_pos(string_char_at(_hex, c), _hex_chars) == 0) {
+                    _is_hex = false;
+                    break;
+                }
+            }
+            if (_is_hex) {
+                var _h1 = string_pos(string_upper(string_char_at(_hex, 1)), "0123456789ABCDEF") - 1;
+                var _h2 = string_pos(string_upper(string_char_at(_hex, 2)), "0123456789ABCDEF") - 1;
+                var _h3 = string_pos(string_upper(string_char_at(_hex, 3)), "0123456789ABCDEF") - 1;
+                var _h4 = string_pos(string_upper(string_char_at(_hex, 4)), "0123456789ABCDEF") - 1;
+                var _h5 = string_pos(string_upper(string_char_at(_hex, 5)), "0123456789ABCDEF") - 1;
+                var _h6 = string_pos(string_upper(string_char_at(_hex, 6)), "0123456789ABCDEF") - 1;
+                return make_color_rgb(_h1 * 16 + _h2, _h3 * 16 + _h4, _h5 * 16 + _h6);
+            }
+        }
+
         switch (_alloy_data_or_key) {
             case "alloy_vanguard_comp":      return make_color_rgb(115, 135, 160); // Gunmetal Slate with cool steel luster
             case "alloy_hyperion_matrix":    return make_color_rgb(60, 230, 255);  // Cherenkov Neon Plasma Cyan
@@ -13,7 +36,19 @@ function scr_get_alloy_procedural_color(_alloy_data_or_key, _opt_temp = 2500, _o
             case "alloy_adamantine_carbide": return make_color_rgb(255, 155, 60);  // High-Density Heavy Bronze/Amber
             case "alloy_titan_composite":    return make_color_rgb(180, 195, 210); // Silvery Titanium Champagne
             case "alloy_void_glass":         return make_color_rgb(140, 220, 240); // Opaline Crystalline Translucent
+            case "alloy_reactive_damascus":  return make_color_rgb(180, 70, 90);   // Damascus Crimson Bronze (#B4465A)
+            case "alloy_tachyon_superalloy": return make_color_rgb(100, 240, 255); // Supercharged Tachyon Cyan (#64F0FF)
+            case "alloy_lunar_aerogel":      return make_color_rgb(220, 240, 255); // Lunar Aerogel Pale Frost (#DCF0FF)
+            case "alloy_sol_ferrite":        return make_color_rgb(230, 180, 40);  // Sol Ferrite Radiant Gold (#E6B428)
             case "item_slag":                return make_color_rgb(65, 55, 50);    // Dull Carbonaceous Slag
+            case "mat_tungsten":
+            case "tungsten":                 return make_color_rgb(115, 135, 165);
+            case "mat_silica_carb":
+            case "silica":                   return make_color_rgb(35, 45, 60);
+            case "mat_tritium":
+            case "tritium":                  return make_color_rgb(0, 245, 255);
+            case "mat_syn_flux":
+            case "flux":                     return make_color_rgb(255, 175, 40);
         }
     }
 
@@ -155,18 +190,24 @@ function scr_get_alloy_procedural_color(_alloy_data_or_key, _opt_temp = 2500, _o
             var _er = 128;
             var _eg = 128;
             var _eb = 128;
+            var _matched_periodic = false;
 
             // Check if key is a 118-element periodic ID (e.g. "mat_074_w")
             if (string_starts_with(_kname, "mat_") && string_length(_kname) >= 7) {
                 var _num_str = string_copy(_kname, 5, 3);
-                var _atomic_num = real(_num_str);
-                if (_atomic_num >= 1 && _atomic_num <= 118) {
-                    var _rgb_entry = _periodic_table_rgb[_atomic_num - 1];
-                    _er = _rgb_entry[0];
-                    _eg = _rgb_entry[1];
-                    _eb = _rgb_entry[2];
+                if (string_length(string_digits(_num_str)) == 3) {
+                    var _atomic_num = real(_num_str);
+                    if (_atomic_num >= 1 && _atomic_num <= 118) {
+                        var _rgb_entry = _periodic_table_rgb[_atomic_num - 1];
+                        _er = _rgb_entry[0];
+                        _eg = _rgb_entry[1];
+                        _eb = _rgb_entry[2];
+                        _matched_periodic = true;
+                    }
                 }
-            } else {
+            }
+
+            if (!_matched_periodic) {
                 // Legacy & Semantic Element Fallbacks
                 switch (_kname) {
                     case "mat_tungsten":
@@ -251,6 +292,9 @@ function scr_get_alloy_procedural_color(_alloy_data_or_key, _opt_temp = 2500, _o
 
 /// @function scr_alloy_get_hex(_alloy_data_or_key)
 function scr_alloy_get_hex(_alloy_data_or_key) {
+    if (is_string(_alloy_data_or_key) && string_starts_with(_alloy_data_or_key, "#") && string_length(_alloy_data_or_key) == 7) {
+        return _alloy_data_or_key;
+    }
     var _c = scr_get_alloy_procedural_color(_alloy_data_or_key);
     var _r = color_get_red(_c);
     var _g = color_get_green(_c);
