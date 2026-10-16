@@ -3020,20 +3020,43 @@ else if (active_tab == 2) {
                 var _std = _fm.get_standing(_fid);
                 var _fx = _cb_x + f * (_f_box_w + 14);
 
-                draw_set_color(make_color_rgb(14, 20, 28));
-                draw_rectangle(_fx, _std_y, _fx + _f_box_w, _std_y + 44, false);
-                draw_set_color(make_color_rgb(40, 65, 95));
-                draw_rectangle(_fx, _std_y, _fx + _f_box_w, _std_y + 44, true);
+                var _f_ai = _finfo[$ "ai_state"] ?? "PEACE";
+                var _is_desp = (_f_ai == "DESPERATE");
+                var _is_win = (_f_ai == "WINNING");
+                var _is_war = (_f_ai == "STANDARD_WAR");
+
+                var _box_bg = _is_desp ? make_color_rgb(38, 14, 18) : (_is_win ? make_color_rgb(34, 30, 12) : make_color_rgb(14, 20, 28));
+                var _box_brd = _is_desp ? make_color_rgb(255, 60, 60) : (_is_win ? make_color_rgb(255, 215, 80) : (_is_war ? make_color_rgb(220, 80, 80) : make_color_rgb(40, 65, 95)));
+
+                draw_set_color(_box_bg);
+                draw_rectangle(_fx, _std_y, _fx + _f_box_w, _std_y + 56, false);
+                draw_set_color(_box_brd);
+                draw_rectangle(_fx, _std_y, _fx + _f_box_w, _std_y + 56, true);
 
                 draw_set_color(make_color_rgb(240, 210, 100));
                 draw_text(_fx + 10, _std_y + 6, _finfo.name);
+
+                // AI Brain Status Tag
+                var _ai_tag = "[PEACE]";
+                var _ai_col = make_color_rgb(100, 220, 255);
+                if (_is_desp) { _ai_tag = "[CRITICAL +100%]"; _ai_col = make_color_rgb(255, 60, 60); }
+                else if (_is_win) { _ai_tag = "[DOMINANT]"; _ai_col = make_color_rgb(255, 215, 80); }
+                else if (_is_war) { _ai_tag = "[WAR]"; _ai_col = make_color_rgb(255, 100, 100); }
+
+                draw_set_color(_ai_col);
+                draw_text(_fx + _f_box_w - string_width(_ai_tag) - 8, _std_y + 6, _ai_tag);
+
                 var _std_col = (_std > 20) ? c_lime : ((_std < -10) ? c_red : make_color_rgb(240, 200, 80));
                 draw_set_color(_std_col);
-                draw_text(_fx + 10, _std_y + 24, "Standing: " + string(_std) + " (" + _finfo.standing_title + ")");
+                draw_text(_fx + 10, _std_y + 23, "Standing: " + string(_std) + " (" + _finfo.standing_title + ")");
+
+                draw_set_color(_is_desp ? make_color_rgb(255, 180, 180) : make_color_rgb(160, 190, 220));
+                var _posture_txt = _is_desp ? "EMERGENCY: Double Payout Bailout Active!" : (_is_win ? "HEGEMONY: Market Tariffs Enforced" : ("Posture: " + string(_finfo[$ "ai_behavior_title"] ?? "Consolidation")));
+                draw_text(_fx + 10, _std_y + 38, _posture_txt);
             }
 
             // Active vs Available Contracts
-            var _c_disp_y = _std_y + 54;
+            var _c_disp_y = _std_y + 68;
 
             // 1. Available Contracts
             draw_set_color(make_color_rgb(100, 220, 255));
@@ -4925,7 +4948,7 @@ else if (active_tab == 3) {
             var _col2_x = _col1_x + _col1_w + 14;
             var _col2_y = _col1_y;
             var _col2_w = _dw - _col1_w - 14;
-            var _doss_h = 226;
+            var _doss_h = 286;
 
             draw_set_color(make_color_rgb(10, 16, 24));
             draw_rectangle(_col2_x, _col2_y, _col2_x + _col2_w, _col2_y + _doss_h, false);
@@ -4943,21 +4966,39 @@ else if (active_tab == 3) {
                                    ((_cur_rel.state == "TRUCE") ? make_color_rgb(255, 200, 50) : make_color_rgb(200, 100, 255)));
 
                 draw_set_color(_r_badge_col);
-                draw_text(_col2_x + 14, _col2_y + 28, "Current Status: [" + _cur_rel.state + "]");
+                draw_text(_col2_x + 14, _col2_y + 26, "Current Status: [" + _cur_rel.state + "]");
 
                 draw_set_color(c_white);
                 var _treaty_txt = (_cur_rel.treaty_turns_left > 0) ? (string(_cur_rel.treaty_turns_left) + " turns remaining") : "None";
-                draw_text(_col2_x + 220, _col2_y + 28, "Treaty Countdown: " + _treaty_txt);
-                draw_text(_col2_x + 460, _col2_y + 28, "Total Wars Fought: " + string(_cur_rel.total_wars_fought));
+                draw_text(_col2_x + 220, _col2_y + 26, "Treaty Countdown: " + _treaty_txt);
+                draw_text(_col2_x + 460, _col2_y + 26, "Total Wars Fought: " + string(_cur_rel.total_wars_fought));
 
                 // Casus Belli & Grievance
                 draw_set_color(make_color_rgb(255, 220, 120));
-                draw_text(_col2_x + 14, _col2_y + 50, "Casus Belli: " + _cur_rel.casus_belli);
+                draw_text(_col2_x + 14, _col2_y + 44, "Casus Belli: " + _cur_rel.casus_belli);
                 draw_set_color(make_color_rgb(180, 200, 220));
-                draw_text_ext(_col2_x + 14, _col2_y + 70, "Historical Grievance: " + _cur_rel.historical_grievance, 18, _col2_w - 28);
+                draw_text_ext(_col2_x + 14, _col2_y + 60, "Historical Grievance: " + _cur_rel.historical_grievance, 16, _col2_w - 28);
+
+                // Faction AI Behavioral Intelligence Box (docs/36)
+                var _f1 = _fm.factions[$ _cur_rel.faction_1];
+                var _f2 = _fm.factions[$ _cur_rel.faction_2];
+                if (!is_undefined(_f1) && !is_undefined(_f2)) {
+                    draw_set_color(make_color_rgb(100, 220, 255));
+                    draw_text(_col2_x + 14, _col2_y + 94, "FACTION AI BRAIN & BEHAVIORAL INTELLIGENCE (docs/36):");
+
+                    draw_set_color(make_color_rgb(255, 215, 80));
+                    draw_text(_col2_x + 14, _col2_y + 112, "* " + _f1.short_name + " [" + _f1.ai_state + "]: " + _f1.ai_behavior_title);
+                    draw_set_color(make_color_rgb(190, 215, 240));
+                    draw_text(_col2_x + 24, _col2_y + 128, "  Arch-Rival: " + string_upper(_f1.primary_enemy_id) + "  |  Preferred Ally: " + string_upper(_f1.preferred_ally_id) + "  |  Bounty Mult: " + string(_f1.contract_bounty_multiplier) + "x");
+
+                    draw_set_color(make_color_rgb(255, 215, 80));
+                    draw_text(_col2_x + 14, _col2_y + 146, "* " + _f2.short_name + " [" + _f2.ai_state + "]: " + _f2.ai_behavior_title);
+                    draw_set_color(make_color_rgb(190, 215, 240));
+                    draw_text(_col2_x + 24, _col2_y + 162, "  Arch-Rival: " + string_upper(_f2.primary_enemy_id) + "  |  Preferred Ally: " + string_upper(_f2.preferred_ally_id) + "  |  Bounty Mult: " + string(_f2.contract_bounty_multiplier) + "x");
+                }
 
                 // Alliance Paranoia Advisory Box
-                var _adv_y = _col2_y + 110;
+                var _adv_y = _col2_y + 184;
                 if (_cur_rel.state == "ALLIANCE") {
                     draw_set_color(make_color_rgb(18, 38, 50));
                     draw_rectangle(_col2_x + 14, _adv_y, _col2_x + _col2_w - 14, _adv_y + 40, false);
@@ -4993,7 +5034,7 @@ else if (active_tab == 3) {
                 }
 
                 // Interactive PMC Mercenary Diplomacy Actions
-                var _act_y = _col2_y + 162;
+                var _act_y = _col2_y + 232;
                 var _act_btn_w = (_col2_w - 44) / 3;
 
                 // Action 1: Broker Ceasefire

@@ -31,7 +31,17 @@ factions = {
         alignment: "Earth-Central Command",
         military_strength_score: 55,
         standing: 45,
-        standing_title: "Valued Contractor"
+        standing_title: "Valued Contractor",
+        ai_state: "PEACE",
+        ai_behavior_title: "Imperial Hegemony & Kinetic Fortification",
+        contract_bounty_multiplier: 1.0,
+        superweapon_unsealed: false,
+        superweapon_name: "VHD-X01 Juggernaut Prime",
+        primary_enemy_id: "faction_b",
+        preferred_ally_id: "faction_d",
+        peace_focus: "Stockpiling tungsten ingots & expanding GHA-07 Ironclad assembly lines.",
+        winning_agenda: "Imposes 40% planetary tariffs; enforces Helium-3 tribute quotas.",
+        desperate_protocol: "Declares martial law; unseals VHD-X01 Juggernaut Prime; offers 2.0x emergency bounties."
     },
     faction_b: {
         id: "faction_b",
@@ -40,7 +50,17 @@ factions = {
         alignment: "Orbital Independence Alliance",
         military_strength_score: 50,
         standing: -20,
-        standing_title: "Hostile / Sanctioned"
+        standing_title: "Hostile / Sanctioned",
+        ai_state: "PEACE",
+        ai_behavior_title: "Spacenoid Liberation & Vernier Agility",
+        contract_bounty_multiplier: 1.0,
+        superweapon_unsealed: false,
+        superweapon_name: "Astraea Dominus X-01",
+        primary_enemy_id: "faction_a",
+        preferred_ally_id: "faction_c",
+        peace_focus: "Expanding Helium-3 gas refining & bio-dome defense shielding.",
+        winning_agenda: "Launches interplanetary crusade; enforces low-Earth orbital blockade.",
+        desperate_protocol: "Unseals lost-tech Astraea Dominus X-01; issues frantic 2.0x humanitarian tenders."
     },
     faction_c: {
         id: "faction_c",
@@ -49,7 +69,17 @@ factions = {
         alignment: "Black Market Smuggling Network",
         military_strength_score: 30,
         standing: 10,
-        standing_title: "Neutral Broker"
+        standing_title: "Neutral Broker",
+        ai_state: "PEACE",
+        ai_behavior_title: "Outlaw Scavenging & Harpoon Piracy",
+        contract_bounty_multiplier: 1.0,
+        superweapon_unsealed: false,
+        superweapon_name: "AJS-X02 Rust Behemoth",
+        primary_enemy_id: "faction_a",
+        preferred_ally_id: "faction_b",
+        peace_focus: "Stripping derelict hulks & assembling jury-rigged SCR-12 Hyena frames.",
+        winning_agenda: "Consolidates pirate armada under Cruz; enforces protection rackets on all trade corridors.",
+        desperate_protocol: "Unseals AJS-X02 Rust Behemoth; launches suicide overclocked swarms; offers 2.0x bounties."
     },
     faction_d: {
         id: "faction_d",
@@ -58,7 +88,17 @@ factions = {
         alignment: "Transhumanist Hyper-Corp Conglomerate",
         military_strength_score: 45,
         standing: 0,
-        standing_title: "Neutral Client"
+        standing_title: "Neutral Client",
+        ai_state: "PEACE",
+        ai_behavior_title: "Bio-Neural Hegemony & Covert Espionage",
+        contract_bounty_multiplier: 1.0,
+        superweapon_unsealed: false,
+        superweapon_name: "HATS-X01 Amaterasu Zero",
+        primary_enemy_id: "faction_c",
+        preferred_ally_id: "faction_a",
+        peace_focus: "R&D into spinal neural links, hostile takeovers, and producing ZAI-03 Muramasa dueling frames.",
+        winning_agenda: "Forecloses on sovereign planetary debt; replaces human garrisons with autonomous combat drones.",
+        desperate_protocol: "Unseals rogue HATS-X01 Amaterasu Zero; deploys pain-inhibited cybernetic suicide aces; offers 2.0x bounties."
     }
 };
 
@@ -725,6 +765,59 @@ evaluate_faction_ai_turn = function() {
             add_diplomatic_cable("Solar Council", "All Factions", "COALITION DISSOLVED: Sol Balance Restored", "Anti-hegemonic emergency measures deactivated as territory balances re-stabilize.", "NORMAL", "COLD_WAR");
         }
     }
+
+    // 4. Individual Faction AI Brains & Dynamic Behavioral State Evaluation (docs/36)
+    var _f_ids = ["faction_a", "faction_b", "faction_c", "faction_d"];
+    for (var fi = 0; fi < array_length(_f_ids); fi++) {
+        var _fid = _f_ids[fi];
+        var _f = factions[$ _fid];
+        var _fpct = 25;
+        if (_fid == "faction_a") _fpct = _tc.terran_pct;
+        else if (_fid == "faction_b") _fpct = _tc.colony_pct;
+        else if (_fid == "faction_c") _fpct = _tc.syndicate_pct;
+        else if (_fid == "faction_d") _fpct = _tc.zaibatsu_pct;
+
+        // Check if currently engaged in active WAR with any faction
+        var _in_war = false;
+        for (var wk = 0; wk < array_length(_keys); wk++) {
+            var _wrel = diplomatic_relations[$ _keys[wk]];
+            if ((_wrel.faction_1 == _fid || _wrel.faction_2 == _fid) && _wrel.state == "WAR") {
+                _in_war = true;
+                break;
+            }
+        }
+
+        var _old_ai_state = _f[$ "ai_state"] ?? "PEACE";
+
+        // DESPERATE STATE: Territory <= 18% OR Military Strength <= 25
+        if (_fpct <= 18 || _f.military_strength_score <= 25) {
+            _f.ai_state = "DESPERATE";
+            _f.contract_bounty_multiplier = 2.0; // Emergency bailout tenders pay +100% bounties!
+            if (!_f.superweapon_unsealed) {
+                _f.superweapon_unsealed = true;
+                var _sw_name = _f[$ "superweapon_name"] ?? "Apex Prototype";
+                add_diplomatic_cable(_fid, "EMERGENCY MEASURE: " + _f.name + " unseals forbidden warframe [" + _sw_name + "] and issues emergency PMC bailout tenders (+100% Bounty)!");
+            }
+        }
+        // WINNING STATE: Territory >= 38% OR Military Strength >= 70
+        else if (_fpct >= 38 || _f.military_strength_score >= 70) {
+            _f.ai_state = "WINNING";
+            _f.contract_bounty_multiplier = 0.85; // Imperial hubris squeezes mercenary profit margins
+            if (_old_ai_state != "WINNING") {
+                add_diplomatic_cable(_fid, "HEGEMONIC ASCENDANCY: " + _f.name + " claims strategic superiority across Sol. Planetary tariffs and mineral quotas enforced.");
+            }
+        }
+        // STANDARD WAR
+        else if (_in_war) {
+            _f.ai_state = "STANDARD_WAR";
+            _f.contract_bounty_multiplier = 1.25;
+        }
+        // PEACE
+        else {
+            _f.ai_state = "PEACE";
+            _f.contract_bounty_multiplier = 1.0;
+        }
+    }
 };
 
 // 7i. Player Mercenary Diplomatic Actions (docs/21)
@@ -1040,6 +1133,13 @@ fulfill_contract = function(_contract_id) {
     for (var c = 0; c < array_length(active_contracts); c++) {
         var _cnt = active_contracts[c];
         if (_cnt.id == _contract_id) {
+            // Calculate dynamic AI bounty multiplier (docs/36)
+            var _b_mult = 1.0;
+            if (variable_struct_exists(factions, _cnt.faction)) {
+                _b_mult = factions[$ _cnt.faction][$ "contract_bounty_multiplier"] ?? 1.0;
+            }
+            var _final_payout = round(_cnt.payout_credits * _b_mult);
+
             // A. Mass Production Order Fulfillment
             if (_cnt.type == "MASS_PRODUCTION") {
                 // Check if player has ready mech in hangar
@@ -1058,12 +1158,13 @@ fulfill_contract = function(_contract_id) {
                 }
                 // Deliver mech
                 array_delete(obj_GameManager.inventory.deployable_mechs, _found_idx, 1);
-                obj_GameManager.add_funds(_cnt.payout_credits);
+                obj_GameManager.add_funds(_final_payout);
                 modify_standing(_cnt.faction, _cnt.reputation_gain);
                 factions.faction_a.military_strength_score = min(100, factions.faction_a.military_strength_score + 8);
                 array_delete(active_contracts, c, 1);
                 if (instance_exists(obj_HQTerminal)) {
-                    obj_HQTerminal.show_toast("ORDER DELIVERED: +" + string(_cnt.payout_credits) + " Cr! Terran Military Strength +8", c_lime);
+                    var _note = (_b_mult > 1.0) ? " (EMERGENCY +100% BOUNTY)!" : "!";
+                    obj_HQTerminal.show_toast("ORDER DELIVERED: +" + string(_final_payout) + " Cr" + _note + " Terran Military Strength +8", c_lime);
                 }
                 return true;
             }
@@ -1083,20 +1184,21 @@ fulfill_contract = function(_contract_id) {
                 }
                 // Deliver masterwork
                 array_delete(obj_BlueprintManager.masterwork_inventory, 0, 1);
-                obj_GameManager.add_funds(_cnt.payout_credits);
+                obj_GameManager.add_funds(_final_payout);
                 obj_GameManager.add_raw_material(_cnt.reward_material_id, _cnt.reward_material_amount);
                 modify_standing(_cnt.faction, _cnt.reputation_gain);
                 factions.faction_b.military_strength_score = min(100, factions.faction_b.military_strength_score + 10);
                 array_delete(active_contracts, c, 1);
                 if (instance_exists(obj_HQTerminal)) {
-                    obj_HQTerminal.show_toast("BOUNTY DELIVERED: +" + string(_cnt.payout_credits) + " Cr & +" + string(_cnt.reward_material_amount) + " Tritium! Colony Strength +10", c_lime);
+                    var _note = (_b_mult > 1.0) ? " (EMERGENCY BAILOUT BONUS)!" : "!";
+                    obj_HQTerminal.show_toast("BOUNTY DELIVERED: +" + string(_final_payout) + " Cr" + _note + " & +" + string(_cnt.reward_material_amount) + " Tritium! Colony Strength +10", c_lime);
                 }
                 return true;
             }
 
             // C. Black Ops Sale (High risk / instant cash)
             else if (_cnt.type == "BLACK_OPS_SALE") {
-                obj_GameManager.add_funds(_cnt.payout_credits);
+                obj_GameManager.add_funds(_final_payout);
                 obj_GameManager.add_raw_material(_cnt.reward_material_id, _cnt.reward_material_amount);
                 modify_standing(_cnt.faction, _cnt.reputation_gain);
                 factions.faction_c.military_strength_score = min(100, factions.faction_c.military_strength_score + 12);
