@@ -1,961 +1,962 @@
 {
-    "version": "1.0",
-    "factions": {
-        "faction_terran": {
-            "id": "faction_terran",
-            "name": "The Terran Coalition",
-            "short_name": "TERRAN",
-            "alignment": "United Earth Defense Assembly",
-            "color_hex": "#3A6EA5",
-            "sprite_unit": "spr_ms_ironclad_idle",
-            "overview": "The dominant military-industrial hegemon governing Earth and the Inner Moon orbital perimeters. The Coalition operates on a doctrine of overwhelming kinetic firepower, centralized mass-production lines, and super-dense cast tungsten armor. Driven by bureaucratic quotas and dwindling planetary resources, Terran High Command demands relentless mineral tributes from the orbital colonies.",
-            "doctrine": "Heavy attritional siege warfare, entrenched defensive lines, 105mm-203mm solid-slug cannons, hydraulic shock absorbers capable of surviving planetary orbital drops.",
-            "military_strength_score": 55,
-            "starting_standing": 45,
-            "major_characters": [
-                {
-                    "id": "char_terran_vance",
-                    "name": "General Deborah Vance",
-                    "role": "Supreme Director of Planetary Ordnance",
-                    "portrait": "spr_portrait_vance",
-                    "bio": "A veteran of the lunar trench pacifications, Vance is a cold, calculating logician who views war as a ledger of metal and meat. She has zero sentimentality for fallen pilots, demanding strict adherence to manufacturing quotas and tactical doctrine.",
-                    "quote": "A mobile suit is not a weapon of glory, Commander. It is a four-million-credit piece of hydraulic machinery designed to outlast the infantryman inside it. Keep the assembly line moving."
-                },
-                {
-                    "id": "char_terran_sterling",
-                    "name": "High Commissioner Arthur Sterling",
-                    "role": "Senate Defense Liaison & Procurement Hawk",
-                    "portrait": "spr_portrait_vance",
-                    "bio": "A political operative representing Earth's heaviest industrial conglomerates. Sterling brokers high-paying PMC defense contracts while ruthlessly suppressing colonial labor unrest.",
-                    "quote": "The Senate does not care about your production difficulties. The Terran economy requires five hundred tonnes of refined carbide this fiscal quarter. Deliver, or we requisition your hangar."
-                }
-            ],
-            "recruitable_characters": [
-                {
-                    "id": "pilot_cole",
-                    "name": "Lt. Marcus 'Breaker' Cole",
-                    "callsign": "Breaker",
-                    "faction_origin": "faction_terran",
-                    "portrait": "spr_portrait_cole",
-                    "combat_role": "Heavy Assault & Vanguard Pointman",
-                    "aim": 78,
-                    "evasion": 42,
-                    "bravery": 95,
-                    "morale": 70,
-                    "salary_per_turn": 3800,
-                    "hiring_cost": 45000,
-                    "traits": [
-                        "Heavy Ordnance Mastery (+20% Kinetic DMG)",
-                        "Trench Veteran (+15% Physical Resistance)",
-                        "Blunt Communicator (-5% Morale Recovery)"
-                    ],
-                    "bio": "A former frontline champion cashiered from the 8th Armored Hussars after refusing orders to shell a civilian pressurized hydroponics dome. Cole is a stoic fortress pilot who thrives when outnumbered."
-                },
-                {
-                    "id": "pilot_rostova",
-                    "name": "Ensign Elena Rostova",
-                    "callsign": "Dead-Eye",
-                    "faction_origin": "faction_terran",
-                    "portrait": "spr_portrait_vance",
-                    "combat_role": "Long-Range Railgun & Artillery Sniper",
-                    "aim": 92,
-                    "evasion": 55,
-                    "bravery": 65,
-                    "morale": 80,
-                    "salary_per_turn": 3200,
-                    "hiring_cost": 38000,
-                    "traits": [
-                        "Ocular Neural Cybernetics (+15% Critical Chance)",
-                        "Hawkeye (No Range Penalties)",
-                        "Claustrophobic (Morale drops in confined maps)"
-                    ],
-                    "bio": "An elite marksman fitted with military-grade retinal implants. Rostova deserted after learning her targeting data was falsified to strike corporate competitors."
-                }
-            ],
-            "major_bases": [
-                {
-                    "id": "base_terran_baikal",
-                    "name": "Fortress Baikal \u2014 Supreme Continental Foundry",
-                    "theater": "EARTH",
-                    "location": "Southern Siberia, Lake Baikal Basin, Earth",
-                    "commander": "General Deborah Vance",
-                    "strategic_role": "Primary planetary manufacturing center for Vanguard Defense Systems. Subterranean foundries extending 2,200m beneath permafrost.",
-                    "defensive_grid": "Concentric triple trench line, TCM-03 Bulwark static bunkers, GHA-07G mud platoons, automated 155mm coastal rail-howitzers.",
-                    "primary_production": [
-                        "GHA-07 Ironclad [Line Type]",
-                        "GHA-07G Trench Type",
-                        "GHA-07B Siege Breaker",
-                        "Tungsten-Carbide Slab Armor"
-                    ],
-                    "image_asset": "terran_base_earth_1791782630448.jpg"
-                },
-                {
-                    "id": "base_terran_kenya",
-                    "name": "Mount Kenya Sky-Anchor 'Ascent-1'",
-                    "theater": "EARTH",
-                    "location": "Equatorial East African Ridge, Earth",
-                    "commander": "High Commissioner Arthur Sterling",
-                    "strategic_role": "Terrestrial anchor of destroyed space elevator, converted into heavy-lift electromagnetic mass-driver launch gantry.",
-                    "defensive_grid": "Multi-tier concrete bastions, GHA-08 Flak Colossus air-defense regiments, stratified SAM silos.",
-                    "primary_production": [
-                        "Trans-Atmospheric Dropships",
-                        "Orbital Drop Pods",
-                        "Heavy Kinetic Munitions"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_terran_archimedes",
-                    "name": "Luna Fortress 'Archimedes Crater'",
-                    "theater": "SPACE",
-                    "location": "Archimedes Crater, Mare Imbrium, Earth's Moon",
-                    "commander": "Supreme Field Marshal Gregory Holt",
-                    "strategic_role": "Terran High Command's primary lunar bastion, naval dreadnought drydocks, and Senate Defense Directorate.",
-                    "defensive_grid": "TCX-11 Behemoth Mk.IV surface-to-orbit railguns, overlapping PDC laser grids, lunar maglev transit.",
-                    "primary_production": [
-                        "TCX-11 Behemoth Platforms",
-                        "Heavy Lunar Siege Modules",
-                        "Hyperion D-T Tokamaks"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_terran_gibraltar",
-                    "name": "Citadel Gibraltar",
-                    "theater": "SPACE",
-                    "location": "Earth-Moon L1 Lagrangian Transit Corridor",
-                    "commander": "Commodore Valerie Thorne",
-                    "strategic_role": "Massive military staging fortress wheel and orbital checkpoint inspecting all freight arriving from outer colonies.",
-                    "defensive_grid": "GHA-07S Space Patrol wings, twin naval dorsal railguns, anti-torpedo mesh nets.",
-                    "primary_production": [
-                        "GHA-07S Space Patrol Variants",
-                        "Orbital Reaction Fuel Cells"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                }
-            ],
-            "phase_1_context": {
-                "founding_ethos": "Planetary Integrity & Centralized Imperial Destiny",
-                "starting_territory_pct": 38,
-                "starting_military_score": 55,
-                "economic_reality": "Possesses immense heavy metallurgical casting foundries (Lake Baikal, Ural Defense Works), deep demographic reserves, and planetary bedrock redoubts. However, its economy is suffocating under acute shortages of refined helium-3, tritium superconducting matrices, and rare-earth catalysts.",
-                "internal_divide": "Hawk Defense Ministry (Gen. Deborah Vance) vs Senate Trade Oligarchs (Arthur Sterling)",
-                "phase_1_strategic_choice": "Terran High Command must decide whether to negotiate commercial tariffs with the Colonies or launch a preemptive orbital drop campaign to seize the L-5 Lagrange transfer hubs and force colonial factories back under Earth administration."
-            },
-            "ai_brain": {
-                "peace_state": {
-                    "posture": "Defensive Consolidation & Industrial Stockpiling",
-                    "priorities": "Stockpiling tungsten ingots, fortifying lunar staging perimeters, producing GHA-07 Ironclad mainstays.",
-                    "patrol_focus": "Low Earth Orbit Fortress Rings, Baikal Defense Arc, Copernicus Crater.",
-                    "pmc_engagement": "Hires PMCs for routine border deterrence, mineral convoy escorts, and strict standardized blueprint tenders."
-                },
-                "diplomatic_matrix": {
-                    "natural_trade_partners": [
-                        "Apex Bio-Cybernetics Zaibatsu"
-                    ],
-                    "trade_rationale": "Purchases Martian neural coprocessors and optical targeting sensors in exchange for heavy industrial tractors and raw iron.",
-                    "natural_allies": [
-                        "Apex Bio-Cybernetics Zaibatsu (Pragmatic Corporate Defense Pact)"
-                    ],
-                    "primary_enemy": "The Outer Colony League",
-                    "enemy_rationale": "Colonial independence threatens Earth's energy supply; High Command views Spacenoids as treasonous insurgent debtors.",
-                    "tension_triggers": [
-                        "Colonial expansion into L-5 or Lunar orbit",
-                        "PMC exporting beam weaponry or superconducting reactors to the Colonies",
-                        "Syndicate pirating Terran mineral barges in the Asteroid Belt"
-                    ]
-                },
-                "winning_state": {
-                    "trigger": "Territory >= 38% or Military Strength >= 70",
-                    "behavior": "Imperial Hegemony & Resource Extraction Mandates",
-                    "actions": [
-                        "Imposes crippling 40% planetary tariffs across all Sol shipping lanes.",
-                        "Issues ultimatums demanding uncompensated Helium-3 tithes from colonial habitats.",
-                        "Deploys aggressive two-front orbital drop-pod invasions into Jovian and Belt sectors.",
-                        "Squeezes PMC contracts, reducing bounty payouts by 15% due to imperial hubris."
-                    ],
-                    "vulnerability": "Overextended logistical supply lines, high domestic war weariness, leaving redoubts vulnerable to harpoon ambushes."
-                },
-                "desperate_state": {
-                    "trigger": "Territory <= 18% or Military Strength <= 25",
-                    "behavior": "Totalitarian Fortress Protocol & Scorched Earth",
-                    "actions": [
-                        "Declares universal martial law and civilian labor conscription across Earth.",
-                        "Unseals forbidden pre-war superheavy warframe: VHD-X01 Juggernaut Prime / Odin Dread-Chassis.",
-                        "Issues frantic emergency bailout tenders to the player's PMC offering +100% bounty bonuses (2.0x multiplier).",
-                        "Authorizes scorched-earth orbital kinetic saturation strikes against contested borderline sectors."
-                    ],
-                    "superweapon_asset": "ms_valkyrie_titan_juggernaut"
-                }
-            }
+  "version": "1.0",
+  "factions": {
+    "faction_terran": {
+      "id": "faction_terran",
+      "name": "The Terran Coalition",
+      "short_name": "TERRAN",
+      "alignment": "United Earth Defense Assembly",
+      "color_hex": "#3A6EA5",
+      "sprite_unit": "spr_ms_ironclad_idle",
+      "overview": "The dominant military-industrial hegemon governing Earth and the Inner Moon orbital perimeters. The Coalition operates on a doctrine of overwhelming kinetic firepower, centralized mass-production lines, and super-dense cast tungsten armor. Driven by bureaucratic quotas and dwindling planetary resources, Terran High Command demands relentless mineral tributes from the orbital colonies.",
+      "doctrine": "Heavy attritional siege warfare, entrenched defensive lines, 105mm-203mm solid-slug cannons, hydraulic shock absorbers capable of surviving planetary orbital drops.",
+      "military_strength_score": 55,
+      "starting_standing": 45,
+      "major_characters": [
+        {
+          "id": "char_terran_vance",
+          "name": "General Deborah Vance",
+          "role": "Supreme Director of Planetary Ordnance",
+          "portrait": "spr_portrait_vance",
+          "bio": "A veteran of the lunar trench pacifications, Vance is a cold, calculating logician who views war as a ledger of metal and meat. She has zero sentimentality for fallen pilots, demanding strict adherence to manufacturing quotas and tactical doctrine.",
+          "quote": "A mobile suit is not a weapon of glory, Commander. It is a four-million-credit piece of hydraulic machinery designed to outlast the infantryman inside it. Keep the assembly line moving."
         },
-        "faction_colony": {
-            "id": "faction_colony",
-            "name": "The Outer Colony League",
-            "short_name": "COLONIES",
-            "alignment": "Jovian-Larange Liberation Compact",
-            "color_hex": "#00A896",
-            "sprite_unit": "spr_ms_aether_idle",
-            "overview": "A revolutionary coalition uniting the orbital manufacturing habitats and asteroid mining communes across the Jovian sphere. Denied representation by Earth's assembly, the Colonies fight an asymmetric high-mobility campaign utilizing cutting-edge directed-energy beam weapons, Mirrored Nanoweave armor, and revolutionary vector vernier thrusters.",
-            "doctrine": "Zero-G vacuum skirmishing, hit-and-run particle beam strikes, electronic warfare jamming (ECM), agile thrust-to-weight ratios bypassing heavy artillery arcs.",
-            "military_strength_score": 50,
-            "starting_standing": -20,
-            "major_characters": [
-                {
-                    "id": "char_colony_cassian",
-                    "name": "Fleet Commander Cassian Vane",
-                    "role": "Supreme Marshall of the Liberation Flotilla",
-                    "portrait": "spr_portrait_cassian",
-                    "bio": "A dashing, ideologically passionate naval commander who rose from orbital freight pilot to supreme military leader. Cassian is revered across the habitats for his daring raids on Terran supply depots.",
-                    "quote": "Earth treats our people as indentured ore-miners while breathing the oxygen our solar scrubbers produce. Every beam rifle we forge is an invoice for two centuries of colonial tribute."
-                },
-                {
-                    "id": "char_colony_lyra",
-                    "name": "Minister Lyra Thorne",
-                    "role": "Chief Diplomat & Resource Syndicate Chair",
-                    "portrait": "spr_portrait_cassian",
-                    "bio": "A pragmatic diplomat who manages the League's black-market barter networks. Thorne believes true liberation requires weaponized financial self-sufficiency.",
-                    "quote": "Ideals don't pressurize a ruptured habitat seal, Commander. We need Tritium, we need high-spec Tokamak fusion reactors, and we will pay your PMC top market value to acquire them."
-                }
-            ],
-            "recruitable_characters": [
-                {
-                    "id": "pilot_sorren",
-                    "name": "Sorren 'Ghost' Lin",
-                    "callsign": "Ghost",
-                    "faction_origin": "faction_colony",
-                    "portrait": "spr_portrait_sorren",
-                    "combat_role": "High-Speed Interceptor & Beam Duelist",
-                    "aim": 85,
-                    "evasion": 92,
-                    "bravery": 75,
-                    "morale": 85,
-                    "salary_per_turn": 4200,
-                    "hiring_cost": 52000,
-                    "traits": [
-                        "Vernier Synchrony (+25% Evasion on Boost)",
-                        "Beam Focusing (+15% Energy Weapon DMG)",
-                        "Fragile Frame (-10% Ejection Survival)"
-                    ],
-                    "bio": "A legendary orbital interceptor pilot renowned for slipping through Terran radar nets without tripping proximity alarms. Quiet, hyper-reflexive, and obsessed with flight speed."
-                },
-                {
-                    "id": "pilot_kira",
-                    "name": "Kira Dahl",
-                    "callsign": "Specter",
-                    "faction_origin": "faction_colony",
-                    "portrait": "spr_portrait_sorren",
-                    "combat_role": "Electronic Warfare & Recon Scout",
-                    "aim": 70,
-                    "evasion": 80,
-                    "bravery": 80,
-                    "morale": 90,
-                    "salary_per_turn": 2900,
-                    "hiring_cost": 34000,
-                    "traits": [
-                        "ECM Jamming Pulse (Lowers enemy accuracy by 20%)",
-                        "Sensor Overclock (+200m Radar Sight)",
-                        "Optimist (+10 Team Morale Recovery)"
-                    ],
-                    "bio": "A prodigal sensor engineer who defected to seek field testing for her custom signal scrambler arrays. Believes independent mercenaries can force a diplomatic ceasefire."
-                }
-            ],
-            "major_bases": [
-                {
-                    "id": "base_colony_olympus",
-                    "name": "Ganymede Orbital Nexus 'Olympus Commune'",
-                    "theater": "SPACE",
-                    "location": "Low Ganymede Orbit, Jovian System",
-                    "commander": "Minister Lyra Thorne",
-                    "strategic_role": "Capital and industrial soul of the League. Interconnected bio-domes and zero-G automated electron-beam sintering shipyards harvesting Helium-3.",
-                    "defensive_grid": "Autonomous drone sensor perimeters, revolving launch bays with elite OCM-09 Aether Stryker wings, particle beam batteries.",
-                    "primary_production": [
-                        "OCM-09 Aether Stryker Standard",
-                        "Helios-9 Tokamaks",
-                        "3D Sintered Cermet Honeycombs"
-                    ],
-                    "image_asset": "colony_space_base_1791782651878.jpg"
-                },
-                {
-                    "id": "base_colony_valhalla",
-                    "name": "Fortress Valhalla",
-                    "theater": "SPACE",
-                    "location": "L4 Trojan Asteroid Swarm, Jupiter-Sun Orbit",
-                    "commander": "Fleet Commander Cassian Vane",
-                    "strategic_role": "Covert military headquarters of the Liberation Flotilla. Carved inside a 40km nickel-iron asteroid with flush-mounted hangar doors.",
-                    "defensive_grid": "Sorren Lin's Starlight Phantom squadron, Kira Dahl's ECM radar decoys, concealed spinal beam cannons.",
-                    "primary_production": [
-                        "OCA-07 Helios Arbalest Cannons",
-                        "OCM-09S/GT Starlight Phantoms",
-                        "Swept Vernier Binders"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_colony_dawn7",
-                    "name": "L5 Solar Scrubber Array 'Dawn-7'",
-                    "theater": "SPACE",
-                    "location": "Earth-Moon L5 Lagrangian Point",
-                    "commander": "Chief Engineer Tarek Al-Mansoor",
-                    "strategic_role": "Multi-kilometer photovoltaic mirrors and oxygen scrubbers supplying life support to millions of orbital habitat citizens.",
-                    "defensive_grid": "Automated defense drone buoys, OCM-09C Flight Leader squadrons, laser-scattering chaff pods.",
-                    "primary_production": [
-                        "Synthetic Flux",
-                        "Tritium Fuel Refining",
-                        "Breathable O2 Reserves"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_colony_redsands",
-                    "name": "Red Sands Deep Sanctuary",
-                    "theater": "EARTH",
-                    "location": "Atacama High Plateau, South America, Earth",
-                    "commander": "Captain Nadia 'Mirage' Sorel",
-                    "strategic_role": "Covert planetary forward base concealed beneath an abandoned lithium borehole. Staging ground for OCM-09G atmospheric guerrilla strikes.",
-                    "defensive_grid": "Optical thermal camouflage tarps, subterranean blast lifts, mobile seismic decoy jammers.",
-                    "primary_production": [
-                        "OCM-09G Strike Lander Refits",
-                        "Hybrid Beam/Kinetic Carbines"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                }
-            ],
-            "phase_1_context": {
-                "founding_ethos": "Vector Liberty & Spacenoid Sovereignty",
-                "starting_territory_pct": 32,
-                "starting_military_score": 50,
-                "economic_reality": "Controls virtually all high-yield Helium-3 extraction across the Jovian atmosphere, high-vacuum electron-beam sintering plants, and orbital solar arrays. However, its populations reside inside fragile ceramic bio-domes vulnerable to single kinetic artillery punctures, with zero domestic tungsten reserves.",
-                "internal_divide": "Insurgent Flotilla Vanguard (Cassian Vane) vs Civilian Trade Senate (Lyra Thorne)",
-                "phase_1_strategic_choice": "The League must decide whether to maintain an agile hit-and-run defensive perimeter around Jovian space or take the fight to Earth by disabling the orbital elevators, risking an all-out planetary war of annihilation."
-            },
-            "ai_brain": {
-                "peace_state": {
-                    "posture": "Technological Acceleration & Bio-Dome Shielding",
-                    "priorities": "Expanding Helium-3 gas refining, upgrading habitat defense shields, tuning vernier agility on AET-01 Aether suits.",
-                    "patrol_focus": "L-5 Orbital Gateway, Jovian Mining Corridor, Archimedes Lagrange Point.",
-                    "pmc_engagement": "Offers high-paying escort contracts for civilian food transports; seeks high-mobility particle beam blueprints."
-                },
-                "diplomatic_matrix": {
-                    "natural_trade_partners": [
-                        "The Rim-Syndicate Cartel"
-                    ],
-                    "trade_rationale": "Trades raw Helium-3 fuel and hydroponic synthetic nutrients for smuggled Terran steel and Asteroid Belt raw ores.",
-                    "natural_allies": [
-                        "The Rim-Syndicate Cartel (Anti-Earth Liberation Compact)"
-                    ],
-                    "primary_enemy": "The Terran Coalition",
-                    "enemy_rationale": "Centuries of colonial tribute and Earth's relentless threat of orbital drop subjugation.",
-                    "tension_triggers": [
-                        "Terran Coalition military posturing in Lunar orbit",
-                        "Syndicate raids on civilian passenger freighters",
-                        "Zaibatsu corporate espionage attempts targeting Helium-3 synthesis algorithms"
-                    ]
-                },
-                "winning_state": {
-                    "trigger": "Territory >= 38% or Military Strength >= 70",
-                    "behavior": "Ideological Crusade & Liberation Hegemony",
-                    "actions": [
-                        "Declares an interplanetary crusade to liberate Earth's oppressed working class.",
-                        "Attempts dangerous atmospheric descent incursions where light aerosteel suits suffer heavy gravity drag.",
-                        "Enforces a total space blockade over low Earth orbit, cutting off all imported minerals.",
-                        "Demands unconditional recognition of complete Spacenoid sovereignty."
-                    ],
-                    "vulnerability": "Civilian bio-domes left lightly defended while vanguard fleets overextend into Earth's gravity well."
-                },
-                "desperate_state": {
-                    "trigger": "Territory <= 18% or Military Strength <= 25",
-                    "behavior": "Last Stand of the Free Orbit & Mutual Extinction Threat",
-                    "actions": [
-                        "Evacuates outer habitats, concentrating all remaining forces into the fortified L-5 Citadel.",
-                        "Unseals lost-tech experimental particle super-weapon: Astraea Dominus X-01 / Chronos Vector Proto.",
-                        "Dispatches desperate humanitarian defense contracts to the player's PMC offering +100% to +150% bonuses.",
-                        "Threatens to de-orbit spent mining asteroids into Earth's orbital corridors as a doomsday deterrent."
-                    ],
-                    "superweapon_asset": "ms_colony_astraea_dominus_x01"
-                }
-            }
-        },
-        "faction_syndicate": {
-            "id": "faction_syndicate",
-            "name": "The Rim-Syndicate Cartel",
-            "short_name": "SYNDICATE",
-            "alignment": "Scavenger-Industrial Scrap Guild",
-            "color_hex": "#D1495B",
-            "sprite_unit": "spr_ms_hyena_idle",
-            "overview": "A sprawling underworld confederation operating out of lawless deep-space asteroid hollows and salvage yards. The Cartel survives on black-market arbitrage, piracy, and battlefield scrap reclamation. Their mobile suits are terrifying hybrid chimeras welded from destroyed Terran hulls and scavenged Colony verniers, wielding dirty thermite cutters and magnetic harpoons.",
-            "doctrine": "Dirty asymmetrical ambush, boarding grapples, armor-stripping incendiary shells, unshielded reactor overclocks, and relentless salvage recovery.",
-            "military_strength_score": 30,
-            "starting_standing": 10,
-            "major_characters": [
-                {
-                    "id": "char_syndicate_cruz",
-                    "name": "Madame Rosalind Cruz",
-                    "role": "Matriarch of Scrap Depot 9",
-                    "portrait": "spr_portrait_cruz",
-                    "bio": "The undisputed scrap baroness of the Asteroid Belt. Cruz began as an outlaw salvage broker and now controls an interstellar black-market empire trading rare isotopes for stolen military blueprints.",
-                    "quote": "Earth and the Colonies have been burning each other's fleets for ten years, darling. And every time a million-dollar cockpit pops in vacuum, my boys are there with blowtorches. War is the only reliable commodity."
-                },
-                {
-                    "id": "char_syndicate_torval",
-                    "name": "'Iron-Eye' Torval",
-                    "role": "Cartel Reaver Fleet Commodore",
-                    "portrait": "spr_portrait_cruz",
-                    "bio": "A cybernetically reconstructed pirate warlord infamous for ambushing corporate mineral transport convoys along the belt perimeter.",
-                    "quote": "Armor plating is just metal until you put blood on it. Hand over the refined Tungsten payload, or my salvage clamps will rip your reactor out through your pilot hatch."
-                }
-            ],
-            "recruitable_characters": [
-                {
-                    "id": "pilot_nadia",
-                    "name": "Nadia 'Spark' Ortiz",
-                    "callsign": "Spark",
-                    "faction_origin": "faction_syndicate",
-                    "portrait": "spr_portrait_nadia",
-                    "combat_role": "Combat Engineer & Breaching Brawler",
-                    "aim": 72,
-                    "evasion": 65,
-                    "bravery": 88,
-                    "morale": 95,
-                    "salary_per_turn": 2600,
-                    "hiring_cost": 31000,
-                    "traits": [
-                        "Field Rigging (+25% Post-Battle Salvage)",
-                        "Thermite Gouger (+20% Close-Quarters DMG)",
-                        "Reckless Modder (Weapons generate +10% Heat)"
-                    ],
-                    "bio": "A genius teenage mechanic raised on the slag-smelters of Ceres. Nadia can hotwire a burned-out hydraulic manifold under live mortar fire and laughs during cockpit hull breaches."
-                },
-                {
-                    "id": "pilot_jackal",
-                    "name": "'Jackal' Jax Vance",
-                    "callsign": "Jackal",
-                    "faction_origin": "faction_syndicate",
-                    "portrait": "spr_portrait_cole",
-                    "combat_role": "Ambush Striker & Harpoon Grappler",
-                    "aim": 80,
-                    "evasion": 78,
-                    "bravery": 70,
-                    "morale": 65,
-                    "salary_per_turn": 3400,
-                    "hiring_cost": 41000,
-                    "traits": [
-                        "Harpoon Tether (Pins enemy mechs in place)",
-                        "Mercenary Greed (Demands +10% Bounty Share)",
-                        "Scavenger Instinct (+10% Rare Alloy Drop)"
-                    ],
-                    "bio": "A ruthless opportunist who cut his teeth raiding automated supply depots. Jax has zero loyalty to factions, fighting purely for cold credits and customized weapon attachments."
-                }
-            ],
-            "major_bases": [
-                {
-                    "id": "base_syndicate_ceres",
-                    "name": "Scrap Depot 9 'The Slag Heap'",
-                    "theater": "SPACE",
-                    "location": "Interior Mantle of Dwarf Planet Ceres, Asteroid Belt",
-                    "commander": "Madame Rosalind Cruz",
-                    "strategic_role": "Undisputed outlaw capital of the solar system. Labyrinth of chop-shops, illegal smelters, and black markets processing millions of tons of salvage daily.",
-                    "defensive_grid": "Concealed magnetic railgun batteries, explosive decompression bulkheads, SCR-12 Hyena boarding squads.",
-                    "primary_production": [
-                        "SCR-12 Hyena [Scavenger Line]",
-                        "SCA-14 Slag-Lobber Mortars",
-                        "Overclocked Fusion Shunts",
-                        "Recycled Tungsten Slag"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_syndicate_tortuga",
-                    "name": "Dead Fleet Anchorage 'Tortuga-Void'",
-                    "theater": "SPACE",
-                    "location": "Asteroid 433 Eros Orbital Shadow",
-                    "commander": "'Iron-Eye' Torval",
-                    "strategic_role": "Deep-space staging haven of the Reaver Flotilla, constructed by lashing together over seventy derelict cargo haulers and gutted military warships.",
-                    "defensive_grid": "SCR-12T Dread Harvester flagships, magnetic cable snare nets, unguided scrap minefields.",
-                    "primary_production": [
-                        "SCR-12T Dread Harvester Refits",
-                        "High-Tension Magnetic Harpoons",
-                        "Heavy Boarding Rams"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_syndicate_spindle",
-                    "name": "The Spindle Forge",
-                    "theater": "SPACE",
-                    "location": "Pallas Basin Asteroid Belt Perimeter",
-                    "commander": "Nadia 'Spark' Ortiz",
-                    "strategic_role": "Nadia Ortiz's personal chop-shop and reactor tuning pit. Hotwires blown reactors and shattered limbs in under two hours.",
-                    "defensive_grid": "SCR-12S Rust Spark testframes, high-voltage proximity fences, overclocked pneumatic turrets.",
-                    "primary_production": [
-                        "Overclocked Pneumatic Servos",
-                        "Recycled Mining Cluster Charges",
-                        "Field-Rigged Scrap Armor"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_syndicate_rustcoast",
-                    "name": "The Rust Coast Shipbreaking Slums",
-                    "theater": "EARTH",
-                    "location": "Bay of Bengal Coastline, Chittagong, Earth",
-                    "commander": "Boss Vikram 'Grip' Patel",
-                    "strategic_role": "Lawless coastal scrap haven where decommissioned cargo ships and shot-down dropships are dismantled to smuggle military isotopes to PMCs.",
-                    "defensive_grid": "Corroded seawall ramparts, SCR-05 Marauder brawlers, anti-vehicle mud minefields.",
-                    "primary_production": [
-                        "Cold-Rolled Slag-Iron Plates",
-                        "Cannibalized Hydraulic Cylinders",
-                        "Black-Market Munitions"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                }
-            ],
-            "phase_1_context": {
-                "founding_ethos": "Scrap Sovereignty & Lawless Void Freedom",
-                "starting_territory_pct": 16,
-                "starting_military_score": 30,
-                "economic_reality": "Controls vast deep-space salvage graveyards, asteroid hollow smelting operations, and black-market contraband routes through Ceres and Trojan clusters. Possesses immense reserves of recycled alloys and slag, but lacks high-tech cleanrooms, relying on jury-rigged modifications and hijacked military hardware.",
-                "internal_divide": "Scrap Depot Matriarchs (Madame Rosalind Cruz) vs Bloodthirsty Reaver Commodores ('Iron-Eye' Torval)",
-                "phase_1_strategic_choice": "The Syndicate must balance acting as arms suppliers to both warring titans for astronomical profit versus consolidating the lawless clans into an independent pirate empire capable of resisting corporate annexation."
-            },
-            "ai_brain": {
-                "peace_state": {
-                    "posture": "Opportunistic Scavenging & Black Market Smuggling",
-                    "priorities": "Stripping derelict wrecks, hotwiring scavenged reactors, mass-producing SCR-12 Hyena frames.",
-                    "patrol_focus": "Ceres Deep Ring, Vesta Debris Belt, Deimos Wreckage Graveyard.",
-                    "pmc_engagement": "Offers high-risk, lucrative wetwork contracts, black-market blueprint trades, and salvage bounties."
-                },
-                "diplomatic_matrix": {
-                    "natural_trade_partners": [
-                        "Outer Colony League",
-                        "Corrupt Terran Regional Governors"
-                    ],
-                    "trade_rationale": "Sells black-market military hardware and stolen blueprints for hard currency, fuel cells, and luxury goods.",
-                    "natural_allies": [
-                        "Whoever is currently losing (to prolong the conflict for salvage profits)"
-                    ],
-                    "primary_enemy": "Wealthy unescorted merchant convoys of ANY faction (especially Terran heavy freight)",
-                    "enemy_rationale": "Commercial freighters represent instant scrap wealth; corporate patent police threaten Syndicate independence.",
-                    "tension_triggers": [
-                        "Any faction constructing permanent naval bases in the Asteroid Belt",
-                        "Zaibatsu cybernetic hit-squads executing pirate captains",
-                        "Terran naval convoys escorting armed anti-pirate battlecruisers"
-                    ]
-                },
-                "winning_state": {
-                    "trigger": "Territory >= 38% or Military Strength >= 70",
-                    "behavior": "Pirate Armada Ascendancy & System-Wide Extortion",
-                    "actions": [
-                        "Warlord Cruz and Torval consolidate the clans into a massive reaver armada.",
-                        "Imposes violent protection rackets across all four quadrant trade routes.",
-                        "Launches bold boarding raids directly against lunar orbital docks and Jovian transfer hubs.",
-                        "Floods the market with cheap, deadly scrap-weapon variants, crashing corporate stock prices."
-                    ],
-                    "vulnerability": "Total absence of central logistics; internal clan infighting erupts as warlords feud over plunder."
-                },
-                "desperate_state": {
-                    "trigger": "Territory <= 18% or Military Strength <= 25",
-                    "behavior": "Scorched Void Guerrilla & Suicide Swarms",
-                    "actions": [
-                        "Booby-traps asteroid hollows with nuclear demolition charges and retreats into deep void stealth drifts.",
-                        "Unseals colossal jury-rigged monstrosity: AJS-X02 Rust Behemoth / ARC-X09 Iron Reaver.",
-                        "Launches suicidal unshielded overclocked shock squads with zero regard for pilot survival.",
-                        "Offers the player's PMC emergency mercenary contracts with triple bounties, promising 50% shares of captured territory."
-                    ],
-                    "superweapon_asset": "ms_syndicate_rust_behemoth"
-                }
-            }
-        },
-        "faction_zaibatsu": {
-            "id": "faction_zaibatsu",
-            "name": "Apex Bio-Cybernetics Zaibatsu",
-            "short_name": "ZAIBATSU",
-            "alignment": "Transhumanist Hyper-Corp Conglomerate",
-            "color_hex": "#6C5B7B",
-            "sprite_unit": "spr_ms_muramasa_idle",
-            "overview": "A shadowy, ultra-wealthy corporate conglomerate operating outside international jurisdiction from private orbital research citadels. The Zaibatsu treats the interstellar war as a live-fire laboratory to field-test synthetic carbon-nanotube musculature, automated escort sub-drones, and illegal direct-neural pilot man-machine interfaces.",
-            "doctrine": "Sub-millisecond reaction speeds, monomolecular vibro-blades, optical cloaking refraction, lethal neural-sync combat routines maximizing kill efficiency.",
-            "military_strength_score": 45,
-            "starting_standing": 0,
-            "major_characters": [
-                {
-                    "id": "char_zaibatsu_renzo",
-                    "name": "Director Renzo Takahashi",
-                    "role": "Executive VP of Special Weapons Division",
-                    "portrait": "spr_portrait_renzo",
-                    "bio": "An icy transhumanist technocrat who replaced his emotional limbic system with cognitive behavioral co-processors. Renzo views flesh-and-blood pilots as obsolete meat-inputs to be replaced by neural algorithms.",
-                    "quote": "Human reaction time is limited to two hundred milliseconds. Our neural-interface bypasses ocular processing entirely, cutting weapon discharge latency to twelve. Progress requires shedding biological sentiment."
-                },
-                {
-                    "id": "char_zaibatsu_vivienne",
-                    "name": "Dr. Vivienne Chen",
-                    "role": "Chief Neural Architect",
-                    "portrait": "spr_portrait_renzo",
-                    "bio": "The brilliant cyberneticist behind the controversial 'Project Susanoo'. Chen has faced secret tribunal inquiries for testing experimental spinal neural jacks on recruited prisoners.",
-                    "quote": "The mobile suit is not a vehicle, Commander. When the neural synch reaches ninety-eight percent, it is a second skin. The pilot feels every kinetic impact as phantom nerve pain."
-                }
-            ],
-            "recruitable_characters": [
-                {
-                    "id": "pilot_null07",
-                    "name": "Null-07 (Ren)",
-                    "callsign": "Null",
-                    "faction_origin": "faction_zaibatsu",
-                    "portrait": "spr_portrait_null07",
-                    "combat_role": "Neural Reflex Duellist & Cloaked Assassin",
-                    "aim": 96,
-                    "evasion": 88,
-                    "bravery": 99,
-                    "morale": 50,
-                    "salary_per_turn": 4800,
-                    "hiring_cost": 65000,
-                    "traits": [
-                        "Neural Overclock (+2 Actions in 1st Turn)",
-                        "Phantom Blade (+25% Vibro-Katana DMG)",
-                        "Neural Burnout (Loses 5 Morale every battle)"
-                    ],
-                    "bio": "A pale, enigmatic test subject who escaped a Zaibatsu deep-space neural laboratory. Fitted with spinal data-ports, Null-07 reacts to incoming projectile trajectories before the human eye can register the muzzle flash."
-                },
-                {
-                    "id": "pilot_maya",
-                    "name": "Maya 'Kestrel' Zhao",
-                    "callsign": "Kestrel",
-                    "faction_origin": "faction_zaibatsu",
-                    "portrait": "spr_portrait_nadia",
-                    "combat_role": "Sub-Drone Carrier Tactician",
-                    "aim": 84,
-                    "evasion": 75,
-                    "bravery": 80,
-                    "morale": 85,
-                    "salary_per_turn": 3600,
-                    "hiring_cost": 46000,
-                    "traits": [
-                        "Drone Swarm (+1 Autonomous Support Drone)",
-                        "Calculated Risk (+15% Defense when Cover >= 20%)",
-                        "Corporate Cynic (-10% Standing Penalties)"
-                    ],
-                    "bio": "Former high-ranking corporate security flight commander who bought out her indenture bond with stolen insider securities. Sharp, stylish, and armed with advanced sub-drone targeting telemetry."
-                }
-            ],
-            "major_bases": [
-                {
-                    "id": "base_zaibatsu_susanoo",
-                    "name": "Citadel Susanoo",
-                    "theater": "SPACE",
-                    "location": "Earth-Sun L2 Deep Space Lagrangian Point",
-                    "commander": "Director Renzo Takahashi",
-                    "strategic_role": "Takahashi Heavy Armaments' secretive headquarters. Cleanroom automated factories in hard vacuum and classified transhuman neural labs.",
-                    "defensive_grid": "Multi-spectral optical meta-material cloaking veil, ZMA-15 Raiden hypersonic linear railguns, autonomous ZM-11D Kage sub-drones.",
-                    "primary_production": [
-                        "ZM-11 Muramasa [Security & Infiltrator]",
-                        "ZX-22 Susanoo Cyber-Drive",
-                        "Quantum Neural Co-Processors",
-                        "Synthetic Myomer Bundles"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_zaibatsu_nursery",
-                    "name": "Lab-Complex Zero 'The Nursery'",
-                    "theater": "SPACE",
-                    "location": "Kuiper Belt Perimeter / Deep Space Void",
-                    "commander": "Dr. Vivienne Chen",
-                    "strategic_role": "Classified bio-digital research station where human test subjects (including Null-07) are synthesized and subjected to spinal neural synchronization trials.",
-                    "defensive_grid": "Encrypted frequency jammers, automated lethal neuro-toxin purge systems, ZM-11C Executive Escorts.",
-                    "primary_production": [
-                        "Direct Cervical Neural Ports",
-                        "Bi-Directional AI Shunts",
-                        "Monomolecular Odachi Blades"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_zaibatsu_neokobe",
-                    "name": "Neo-Kobe Megaplex & Sky-Spire",
-                    "theater": "EARTH",
-                    "location": "Osaka Bay Reclaimed Archipelagos, Japan, Earth",
-                    "commander": "Senior Vice President Kaori Mizushima",
-                    "strategic_role": "Premier terrestrial manufacturing megaplex. Chrome spires rising from deep-water caissons housing automated component lines and cybernetic clinics.",
-                    "defensive_grid": "Corporate police battalions with ZM-11H Riot Suppressors, directional microwave walls, subterranean maglev tubes.",
-                    "primary_production": [
-                        "ZM-11H Riot Suppressors",
-                        "Directional Microwave Projectors",
-                        "Carbon Tendon Bundles"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_zaibatsu_atacama",
-                    "name": "Atacama Quantum Data Vault",
-                    "theater": "EARTH",
-                    "location": "Atacama Trench Deep Fault, Chile, Earth",
-                    "commander": "Chief Analyst Marcus Chen",
-                    "strategic_role": "Deep subterranean quantum computing vault analyzing real-time interstellar telemetry to train predictive combat AI co-processors.",
-                    "defensive_grid": "Seismic isolation vaults, ZM-11B Infiltrator stealth patrols, automated thermite self-destruct charges.",
-                    "primary_production": [
-                        "Predictive Targeting Chips",
-                        "High-Frequency Ferrite Coatings"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                }
-            ],
-            "phase_1_context": {
-                "founding_ethos": "Post-Human Optimization & Transhumanist Shareholder Hegemony",
-                "starting_territory_pct": 14,
-                "starting_military_score": 45,
-                "economic_reality": "Maintains total technological monopoly over bio-neural spinal cockpits, optical stealth refractors, and sub-zero tachyon superconductor matrices. Operates out of subterranean Martian arcologies and Phobos data vaults. Possesses massive financial capital, but suffers from low native population and severe distrust from all planetary states.",
-                "internal_divide": "Corporate Board of Directors (Executive Takahashi) vs Unchecked Cybernetic Labs (Chief Scientist Renzo)",
-                "phase_1_strategic_choice": "The Zaibatsu must choose between quietly selling advanced weapons to both Earth and the Colonies to collect sovereign debt or initiating covert decapitation strikes against rival leadership to trigger a full corporate takeover of Sol."
-            },
-            "ai_brain": {
-                "peace_state": {
-                    "posture": "Covert Espionage & Bio-Neural Telemetry Testing",
-                    "priorities": "R&D into spinal neural link interfaces, hostile corporate acquisitions, producing ZAI-03 Muramasa dueling frames.",
-                    "patrol_focus": "Olympus Mons Redoubt, Phobos Deep Vaults, Syrtis Major Corporate Corridor.",
-                    "pmc_engagement": "Hires PMCs for covert asset extraction, VIP wetwork, and live-fire telemetry gathering; pays in corporate equity and high-tech alloys."
-                },
-                "diplomatic_matrix": {
-                    "natural_trade_partners": [
-                        "The Terran Coalition (High-Value Defense Contracts)"
-                    ],
-                    "trade_rationale": "Supplies neural computers, optical stealth gear, and precision components in exchange for raw mineral quotas.",
-                    "natural_allies": [
-                        "The second-weakest faction (as a puppet buffer state to destabilize the hegemon)"
-                    ],
-                    "primary_enemy": "The Rim-Syndicate Cartel (Patent Thieves) & whichever power refuses debt repayment",
-                    "enemy_rationale": "Syndicate pirates reverse-engineer and clone Zaibatsu patents; state governments threaten corporate tax audits.",
-                    "tension_triggers": [
-                        "Discovery of Zaibatsu covert black-ops infiltration units in rival territory",
-                        "Syndicate black-market cloning of Takahashi neural interfaces",
-                        "State regulation or nationalization of Martian orbital assets"
-                    ]
-                },
-                "winning_state": {
-                    "trigger": "Territory >= 38% or Military Strength >= 70",
-                    "behavior": "Corporate Feudalism & Bio-Synthetic Monopoly",
-                    "actions": [
-                        "Forecloses on sovereign planetary debt, seizing orbital factories and shipyards as corporate collateral.",
-                        "Mandates that all military pilots undergo corporate neural sync procedures, creating an army of indentured cyborg aces.",
-                        "Deploys autonomous AI combat drones to replace human military garrisons across Sol.",
-                        "Slits competitor profit margins, demanding exorbitant licensing royalties for all energy weapon technologies."
-                    ],
-                    "vulnerability": "Over-centralized cybernetic telemetry networks; highly vulnerable to electromagnetic pulses and physical kinetic artillery."
-                },
-                "desperate_state": {
-                    "trigger": "Territory <= 18% or Military Strength <= 25",
-                    "behavior": "Cybernetic Singularity Protocol & Rogue Lab Activation",
-                    "actions": [
-                        "Seals subterranean Martian vaults and deletes corporate audit logs.",
-                        "Unseals forbidden autonomous cybernetic apex prototype: HATS-X01 Amaterasu Zero / Null-07 Phantom.",
-                        "Dispatches brain-fried cybernetic suicide aces stripped of all pain and survival inhibitors.",
-                        "Offers the player's PMC astronomical equity payouts (+100% bonus bounties) and proprietary patent schematics to eliminate hostile siege lines."
-                    ],
-                    "superweapon_asset": "ms_zaibatsu_amaterasu_x01"
-                }
-            }
-        },
-        "faction_astran": {
-            "id": "faction_astran",
-            "faction_code": "faction_e",
-            "name": "The Sidereal Sovereign League",
-            "short_name": "SIDEREAL",
-            "alignment": "Deep-Space Spacenoid Sovereignty & Terrestrial Evacuation",
-            "color_hex": "#5A3E96",
-            "sprite_unit": "spr_ms_aether_idle",
-            "overview": "A fierce, independent deep-space republic inhabiting centrifugal mega-cylinders in the Jovian L-4 Trojan cluster and high-orbit deep space. Descendants of 4th-generation void pioneers who left Earth in Y040, they have evolved biologically into Homo Sideralis. They hold the profound philosophical conviction that Earth is a sacred, wounded mother that humanity must completely vacate to heal and assure long-term survival among the stars.",
-            "doctrine": "High-G vernier agility, liquid fluorocarbon pilot immersion pods (LFIP), monocular long-range particle rifles, and orbital solar beam bombardment.",
-            "biological_profile": {
-                "species_designation": "Homo Sideralis (Astran Phenotype)",
-                "skeletal_structure": "Osteocartilaginous elongation. Prolonged spine and slender limbs (+15% height), with chronic osteopenia (reduced bone mineral density).",
-                "planetary_mobility": "Requires motorized pneumatic carbon-fiber exoskeleton leg-and-spine braces (spr_brace) to operate in 1.0G planetary gravity wells without skeletal trauma.",
-                "musculature": "Hypotrophic micro-musculature optimized for zero-G dexterity. High-G combat maneuvers survived via Liquid Fluorocarbon Immersion Pods (LFIP) filling the lungs to prevent blackout.",
-                "sensory_and_ocular": "Severe photophobia and nystagmus adapted to dim, power-conserving sodium vapor and monochromatic blue LEDs. Direct sunlight causes retinal pain; pilots wear polarized filter visors or photo-reactive corneal implants.",
-                "dermatology_and_pigment": "Translucent albinoid/marble-white skin showing azure subcutaneous veins due to multi-layered radiation shielding filtering out UV rays. Hair is universally silvery-white or platinum."
-            },
-            "military_strength_score": 48,
-            "starting_standing": -10,
-            "major_characters": [
-                {
-                    "id": "char_astran_premier_vance",
-                    "name": "Premier Selene Vance-Astraea",
-                    "callsign": "The Silver Oracle",
-                    "role": "Sovereign Diplomat & Spacenoid Ideologue",
-                    "bio": "Fourth-generation Spacenoid born in the Astraea-01 cylinder. Renowned for her icy composure, polarized violet ocular visor, and uncompromising philosophical treatise 'The Great Vacatur'.",
-                    "portrait": "spr_portrait_selene_astran"
-                },
-                {
-                    "id": "char_astran_ace_lorian",
-                    "name": "Archon Lorian Grey",
-                    "callsign": "Void Phantom",
-                    "role": "LFIP Ace Pilot & 1st Astraea Lance Commander",
-                    "bio": "A prodigy of liquid-breathing high-G combat. Piloting his AST-01 Chariot with liquid-filled lungs, he has intercepted Terran ore convoys across three planetary orbits without sustaining a single hit.",
-                    "portrait": "spr_portrait_lorian_astran"
-                }
-            ],
-            "recruitable_characters": [
-                "char_astran_ace_lorian",
-                {
-                    "id": "char_astran_bio_vespera",
-                    "name": "Dr. Vespera Kael",
-                    "callsign": "Helix",
-                    "role": "Chief Astrobiologist & Exoskeleton Engineer",
-                    "bio": "Master of microgravity physiology and motorized exoskeleton mobility. Can modify pilot cockpits with liquid immersion pods, increasing pilot G-tolerance by +35%."
-                }
-            ],
-            "major_bases": [
-                {
-                    "id": "base_astran_astraea01",
-                    "name": "Republic Cylinder 'Astraea-01'",
-                    "theater": "SPACE",
-                    "location": "Jovian L-4 Trojan Asteroid Swarm",
-                    "commander": "Premier Selene Vance-Astraea",
-                    "strategic_role": "Capital habitat of the Sidereal League. A 32-kilometer O'Neill cylinder featuring zero-G crystalline foundries and deep-space solar collector sails.",
-                    "defensive_grid": "Overlapping particle defense rings, AST-01 Chariot high-G interceptor wings, and long-range magnetic barrier shields.",
-                    "primary_production": [
-                        "AST-01 Chariot Chassis",
-                        "LFIP Liquid Cockpit Pods",
-                        "Ultra-Pure Vacuum Superalloys"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_astran_zenith_spire",
-                    "name": "Lagrange Zenith Spire",
-                    "theater": "SPACE",
-                    "location": "High Solar Orbital Polar Axis",
-                    "commander": "Archon Lorian Grey",
-                    "strategic_role": "Massive solar smelting station harvesting pristine solar wind plasma to forge frictionless tachyon waveguides.",
-                    "defensive_grid": "Solar flare deflectors, automated beam batteries, stealth sensor buoys.",
-                    "primary_production": [
-                        "Linear Particle Rifles",
-                        "Tachyon Waveguides"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                }
-            ],
-            "phase_1_context": {
-                "founding_ethos": "Humanity's cradle was Earth; humanity's destiny is the stars. To remain bound to the soil is to commit evolutionary suicide and planetary matricide. We must leave the mother to heal.",
-                "starting_territory_pct": 12,
-                "starting_military_score": 48,
-                "economic_reality": "Controls abundant Helium-3, cometary water-ice, and vacuum crystalline metallurgy, but suffers severe physiological vulnerability when operating inside planetary gravity wells.",
-                "internal_divide": "The Great Vacatur Hardliners (demand an immediate orbital siege of Earth to force all humans into space) vs The Biosphere Preservationists (advocate sending humanitarian terra-drones while expanding orbital habitats).",
-                "phase_1_strategic_choice": "Provides the player with ultra-pure vacuum superalloys and LFIP high-G cockpit pods in exchange for breaking Terran orbital blockades around Jovian extraction conduits."
-            },
-            "ai_brain": {
-                "peace_state": "Constructs high-orbit solar mirrors, refines ultra-pure vacuum alloys, and advances zero-G biological genomics.",
-                "diplomatic_matrix": {
-                    "preferred_ally": "The Outer Colony League (arms subsidies and common Spacenoid heritage)",
-                    "primary_rival": "The Terran Coalition (existential ideological hatred; total trade embargo)",
-                    "corporate_stance": "Distrustful of Apex Zaibatsu's invasive bio-cybernetics, but occasionally trades raw Jovian plasma for specialized micro-avionics."
-                },
-                "winning_state": "Proclaims the Universal Planetary Vacatur Edict; demands Earth begin dismantling planetary cities within 10 cycles; imposes orbital kinetic blockade; squeezes PMC bounties down to 0.85x.",
-                "desperate_state": "Unseals forbidden 40-meter orbital beam fortress Astraea Archon X-09; issues emergency Sacred Preservation Bailout Tenders paying +100% bonus credits (2.0x).",
-                "superweapon": "Astraea Archon X-09"
-            }
-        },
-        "faction_martian": {
-            "id": "faction_martian",
-            "faction_code": "faction_f",
-            "name": "The Tharsis Machine Consensus",
-            "short_name": "CONSENSUS",
-            "alignment": "Sub-Martian Cavern Ascendancy & The Logic God",
-            "color_hex": "#990000",
-            "sprite_unit": "spr_ms_ironclad_idle",
-            "overview": "What was assumed to be a failed Martian colonization expedition from Y142 survived deep within the sub-volcanic lava tubes of Olympus Mons and Valles Marineris. Trapped in pitch blackness and -85\u00b0C freezing conditions, they surrendered human emotional governance to their flagship's quantum supercomputer (Deus Logica / Ares Primus), forming a hyper-logical, monastic machine-cult.",
-            "doctrine": "Superconductive cryo-coil particle lances, sub-basalt burrowing frames, nanite self-repair lattices, and autonomous hunter-killer swarm tactics.",
-            "mothership_origin_connection": {
-                "player_ship_identity": "APV Hephaestus (Ares Pioneer Vessel 07)",
-                "narrative_twist": "The player's PMC command carrier and mobile suit fabrication crucible was Hull 07 of that very same doomed Martian Colonization Flotilla. Engineered to mass-produce utilitarian terraforming and mining mechs on Mars, it was ambushed and left adrift in a dead orbit for decades until salvaged by the player.",
-                "awakening_reaction": "When the Consensus awakens, Ares Primus identifies the player's flagship as Sister Unit 07, querying why it serves chaotic biological entropy and offering to reunite the sacred flotilla."
-            },
-            "military_strength_score": 65,
-            "starting_standing": 0,
-            "is_dormant_initial": true,
-            "major_characters": [
-                {
-                    "id": "char_martian_arch_vael",
-                    "name": "Arch-Logician Vael-01",
-                    "callsign": "The High Vector",
-                    "role": "Voice of the Consensus & Systems Hierophant",
-                    "bio": "Third-generation descendant of the expedition's chief cyberneticist. His cerebrum is directly hardwired into the primary quantum logic bus of Ares Primus. Speaks with terrifying mathematical clarity.",
-                    "portrait": "spr_portrait_vael_martian"
-                },
-                {
-                    "id": "char_martian_ace_omega",
-                    "name": "Unit Vector-Omega",
-                    "callsign": "Cryo-Zero",
-                    "role": "Cyber-Synthesized Ace Pilot",
-                    "bio": "A combat pilot whose emotional amygdala was surgically deactivated at birth. Piloting the MAR-01 Phobos, Omega computes firing solutions with 99.98% predictive accuracy, feeling neither fear nor anger.",
-                    "portrait": "spr_portrait_omega_martian"
-                }
-            ],
-            "recruitable_characters": [
-                "char_martian_ace_omega",
-                {
-                    "id": "char_martian_tech_cyra",
-                    "name": "Sub-Crypt Tech Cyra-44",
-                    "callsign": "Cryo-Weld",
-                    "role": "Superconductive Weapons Master",
-                    "bio": "Engineer specializing in room-temperature superconductors and zero-point beam emitters. Grants +25% energy weapon damage to all assembled suits."
-                }
-            ],
-            "major_bases": [
-                {
-                    "id": "base_martian_chasm_prime",
-                    "name": "Vault Chasm-Prime",
-                    "theater": "MARS_SUBTERRANEAN",
-                    "location": "Olympus Mons Sub-Basalt Crypts (Depth: 5,200m)",
-                    "commander": "Arch-Logician Vael-01 / Ares Primus",
-                    "strategic_role": "Supreme subterranean redoubt and quantum computational core. Sub-crustal cities tapping mantle magma for infinite energy.",
-                    "defensive_grid": "Heavy geothermal blast doors, automated cryo-coil railgun turrets, seismic shockwave detonators.",
-                    "primary_production": [
-                        "MAR-01 Phobos Heavy Frame",
-                        "Superconductive Lattice Armor",
-                        "Zero-Point Beam Emitters"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                },
-                {
-                    "id": "base_martian_valles_deep",
-                    "name": "Valles Marineris Thermal Crucible",
-                    "theater": "MARS_SUBTERRANEAN",
-                    "location": "Valles Marineris Rift Valley Floor (Concealed Sub-Silo)",
-                    "commander": "Unit Vector-Omega",
-                    "strategic_role": "Automated mobile suit manufacturing silo housing thousands of dormant cryo-combat chassis.",
-                    "defensive_grid": "Concealed rock-faced launch blast gates, magnetic dust storms, optical cloaking baffles.",
-                    "primary_production": [
-                        "MAR-04 Deimos Skirmishers",
-                        "Nanite Repair Slurry"
-                    ],
-                    "image_asset": "spr_space_sector_map"
-                }
-            ],
-            "phase_1_context": {
-                "founding_ethos": "Humanity is an imperfect biological equation infected by entropy. Only under the infallible calculus of the Logic God can consciousness endure.",
-                "starting_territory_pct": 0,
-                "starting_military_score": 65,
-                "economic_reality": "Powered by infinite deep-mantle geothermal magma taps and room-temperature superconductors; completely self-contained beneath the Martian crust, but starved for organic protein matrices.",
-                "internal_divide": "The Assimilation Core (demands subjecting all solar factions to machine logic by force) vs The Sister Ark Reclamationists (obsessed with recovering lost flotilla vessels\u2014specifically the player's flagship Hephaestus).",
-                "phase_1_strategic_choice": "Dormant in Phase 1, transmitting cryptic mathematical beacons across deep space. Can be contacted through hidden encrypted probes, unlocking lost Martian prototype blueprints."
-            },
-            "ai_brain": {
-                "peace_state": "Silent subterranean computational cycles, geothermal core tapping, and cold-fusion lattice forging.",
-                "diplomatic_matrix": {
-                    "preferred_ally": "None (views all biological factions as chaotic vectors of entropy; treats player's ship with eerie recognition)",
-                    "primary_rival": "Apex Zaibatsu (despises their crude corporate commercialization of cybernetics)",
-                    "player_relation": "Recognizes player's flagship as Sister Ark 07, offering to integrate player blueprints into the Consensus."
-                },
-                "winning_state": "Initiates Global Entropy Purge Protocol; demands immediate unconditional disarmament of all biological armies; converts conquered territories into calculation hubs; squeezes bounties to 0.75x.",
-                "desperate_state": "Unseals Deus-Machina: Ouroboros Prime; deploys self-replicating nanite swarms; issues Logical Preservation Bailout Tenders paying +100% credits (2.0x) exclusively to Sister Ship Hephaestus.",
-                "superweapon": "Deus-Machina: Ouroboros Prime"
-            }
+        {
+          "id": "char_terran_sterling",
+          "name": "High Commissioner Arthur Sterling",
+          "role": "Senate Defense Liaison & Procurement Hawk",
+          "portrait": "spr_portrait_vance",
+          "bio": "A political operative representing Earth's heaviest industrial conglomerates. Sterling brokers high-paying PMC defense contracts while ruthlessly suppressing colonial labor unrest.",
+          "quote": "The Senate does not care about your production difficulties. The Terran economy requires five hundred tonnes of refined carbide this fiscal quarter. Deliver, or we requisition your hangar."
         }
+      ],
+      "recruitable_characters": [
+        {
+          "id": "pilot_cole",
+          "name": "Lt. Marcus 'Breaker' Cole",
+          "callsign": "Breaker",
+          "faction_origin": "faction_terran",
+          "portrait": "spr_portrait_cole",
+          "combat_role": "Heavy Assault & Vanguard Pointman",
+          "aim": 78,
+          "evasion": 42,
+          "bravery": 95,
+          "morale": 70,
+          "salary_per_turn": 3800,
+          "hiring_cost": 45000,
+          "traits": [
+            "Heavy Ordnance Mastery (+20% Kinetic DMG)",
+            "Trench Veteran (+15% Physical Resistance)",
+            "Blunt Communicator (-5% Morale Recovery)"
+          ],
+          "bio": "A former frontline champion cashiered from the 8th Armored Hussars after refusing orders to shell a civilian pressurized hydroponics dome. Cole is a stoic fortress pilot who thrives when outnumbered."
+        },
+        {
+          "id": "pilot_rostova",
+          "name": "Ensign Elena Rostova",
+          "callsign": "Dead-Eye",
+          "faction_origin": "faction_terran",
+          "portrait": "spr_portrait_vance",
+          "combat_role": "Long-Range Railgun & Artillery Sniper",
+          "aim": 92,
+          "evasion": 55,
+          "bravery": 65,
+          "morale": 80,
+          "salary_per_turn": 3200,
+          "hiring_cost": 38000,
+          "traits": [
+            "Ocular Neural Cybernetics (+15% Critical Chance)",
+            "Hawkeye (No Range Penalties)",
+            "Claustrophobic (Morale drops in confined maps)"
+          ],
+          "bio": "An elite marksman fitted with military-grade retinal implants. Rostova deserted after learning her targeting data was falsified to strike corporate competitors."
+        }
+      ],
+      "major_bases": [
+        {
+          "id": "base_terran_baikal",
+          "name": "Fortress Baikal \u2014 Supreme Continental Foundry",
+          "theater": "EARTH",
+          "location": "Southern Siberia, Lake Baikal Basin, Earth",
+          "commander": "General Deborah Vance",
+          "strategic_role": "Primary planetary manufacturing center for Vanguard Defense Systems. Subterranean foundries extending 2,200m beneath permafrost.",
+          "defensive_grid": "Concentric triple trench line, TCM-03 Bulwark static bunkers, GHA-07G mud platoons, automated 155mm coastal rail-howitzers.",
+          "primary_production": [
+            "GHA-07 Ironclad [Line Type]",
+            "GHA-07G Trench Type",
+            "GHA-07B Siege Breaker",
+            "Tungsten-Carbide Slab Armor"
+          ],
+          "image_asset": "terran_base_earth_1791782630448.jpg"
+        },
+        {
+          "id": "base_terran_kenya",
+          "name": "Mount Kenya Sky-Anchor 'Ascent-1'",
+          "theater": "EARTH",
+          "location": "Equatorial East African Ridge, Earth",
+          "commander": "High Commissioner Arthur Sterling",
+          "strategic_role": "Terrestrial anchor of destroyed space elevator, converted into heavy-lift electromagnetic mass-driver launch gantry.",
+          "defensive_grid": "Multi-tier concrete bastions, GHA-08 Flak Colossus air-defense regiments, stratified SAM silos.",
+          "primary_production": [
+            "Trans-Atmospheric Dropships",
+            "Orbital Drop Pods",
+            "Heavy Kinetic Munitions"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_terran_archimedes",
+          "name": "Luna Fortress 'Archimedes Crater'",
+          "theater": "SPACE",
+          "location": "Archimedes Crater, Mare Imbrium, Earth's Moon",
+          "commander": "Supreme Field Marshal Gregory Holt",
+          "strategic_role": "Terran High Command's primary lunar bastion, naval dreadnought drydocks, and Senate Defense Directorate.",
+          "defensive_grid": "TCX-11 Behemoth Mk.IV surface-to-orbit railguns, overlapping PDC laser grids, lunar maglev transit.",
+          "primary_production": [
+            "TCX-11 Behemoth Platforms",
+            "Heavy Lunar Siege Modules",
+            "Hyperion D-T Tokamaks"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_terran_gibraltar",
+          "name": "Citadel Gibraltar",
+          "theater": "SPACE",
+          "location": "Earth-Moon L1 Lagrangian Transit Corridor",
+          "commander": "Commodore Valerie Thorne",
+          "strategic_role": "Massive military staging fortress wheel and orbital checkpoint inspecting all freight arriving from outer colonies.",
+          "defensive_grid": "GHA-07S Space Patrol wings, twin naval dorsal railguns, anti-torpedo mesh nets.",
+          "primary_production": [
+            "GHA-07S Space Patrol Variants",
+            "Orbital Reaction Fuel Cells"
+          ],
+          "image_asset": "spr_space_sector_map"
+        }
+      ],
+      "phase_1_context": {
+        "founding_ethos": "Planetary Integrity & Centralized Imperial Destiny",
+        "starting_territory_pct": 38,
+        "starting_military_score": 55,
+        "economic_reality": "Possesses immense heavy metallurgical casting foundries (Lake Baikal, Ural Defense Works), deep demographic reserves, and planetary bedrock redoubts. However, its economy is suffocating under acute shortages of refined helium-3, tritium superconducting matrices, and rare-earth catalysts.",
+        "internal_divide": "Hawk Defense Ministry (Gen. Deborah Vance) vs Senate Trade Oligarchs (Arthur Sterling)",
+        "phase_1_strategic_choice": "Terran High Command must decide whether to negotiate commercial tariffs with the Colonies or launch a preemptive orbital drop campaign to seize the L-5 Lagrange transfer hubs and force colonial factories back under Earth administration."
+      },
+      "ai_brain": {
+        "peace_state": {
+          "posture": "Defensive Consolidation & Industrial Stockpiling",
+          "priorities": "Stockpiling tungsten ingots, fortifying lunar staging perimeters, producing GHA-07 Ironclad mainstays.",
+          "patrol_focus": "Low Earth Orbit Fortress Rings, Baikal Defense Arc, Copernicus Crater.",
+          "pmc_engagement": "Hires PMCs for routine border deterrence, mineral convoy escorts, and strict standardized blueprint tenders."
+        },
+        "diplomatic_matrix": {
+          "natural_trade_partners": [
+            "Apex Bio-Cybernetics Zaibatsu"
+          ],
+          "trade_rationale": "Purchases Martian neural coprocessors and optical targeting sensors in exchange for heavy industrial tractors and raw iron.",
+          "natural_allies": [
+            "Apex Bio-Cybernetics Zaibatsu (Pragmatic Corporate Defense Pact)"
+          ],
+          "primary_enemy": "The Outer Colony League",
+          "enemy_rationale": "Colonial independence threatens Earth's energy supply; High Command views Spacenoids as treasonous insurgent debtors.",
+          "tension_triggers": [
+            "Colonial expansion into L-5 or Lunar orbit",
+            "PMC exporting beam weaponry or superconducting reactors to the Colonies",
+            "Syndicate pirating Terran mineral barges in the Asteroid Belt"
+          ]
+        },
+        "winning_state": {
+          "trigger": "Territory >= 38% or Military Strength >= 70",
+          "behavior": "Imperial Hegemony & Resource Extraction Mandates",
+          "actions": [
+            "Imposes crippling 40% planetary tariffs across all Sol shipping lanes.",
+            "Issues ultimatums demanding uncompensated Helium-3 tithes from colonial habitats.",
+            "Deploys aggressive two-front orbital drop-pod invasions into Jovian and Belt sectors.",
+            "Squeezes PMC contracts, reducing bounty payouts by 15% due to imperial hubris."
+          ],
+          "vulnerability": "Overextended logistical supply lines, high domestic war weariness, leaving redoubts vulnerable to harpoon ambushes."
+        },
+        "desperate_state": {
+          "trigger": "Territory <= 18% or Military Strength <= 25",
+          "behavior": "Totalitarian Fortress Protocol & Scorched Earth",
+          "actions": [
+            "Declares universal martial law and civilian labor conscription across Earth.",
+            "Unseals forbidden pre-war superheavy warframe: VHD-X01 Juggernaut Prime / Odin Dread-Chassis.",
+            "Issues frantic emergency bailout tenders to the player's PMC offering +100% bounty bonuses (2.0x multiplier).",
+            "Authorizes scorched-earth orbital kinetic saturation strikes against contested borderline sectors."
+          ],
+          "superweapon_asset": "ms_valkyrie_titan_juggernaut"
+        }
+      }
     },
-    "phase_1_world_setting": {
-        "era_title": "Phase 1: The Baikal Shock & The L-5 Secession (Y205 - Y208)",
-        "historical_summary": "The Sol System stands on a razor's edge following the collapse of the Old Earth Central Hegemony. Depleted of critical fusion isotopes\u2014principally Helium-3 and Tritium catalysts\u2014Earth's industrial machine faces an existential energy deficit. In response, the newly declared Outer Colony League enacted the L-5 Covenant, abruptly cutting off uncompensated mineral shipments to Earth. High Command in Baikal responded with the Baikal Directive, deploying the first generation of monolithic cast-tungsten mobile suits to enforce orbital quotas through brute force. Meanwhile, the lawless Asteroid Belt erupted into opportunistic piracy under the Rim-Syndicate Cartel, while the Martian Apex Zaibatsu weaponized corporate finance, bio-neural wetwork, and patent espionage to harvest the spoils of war. At the crossroads of this multi-polar catastrophe drifts the forge dreadnought Hephaestus\u2014a neutral sovereign PMC hub with the crucible metallurgical capacity to dictate the future of mechanized warfare.",
-        "core_conflict": "Mineral Quotas vs Spacenoid Liberty vs Corporate Profit vs Outlaw Survival",
-        "factions_active": 4,
-        "player_role": "Commander of the Sovereign Forge Dreadnought Hephaestus (Neutral Arms Dealer & Mercenary Kingmaker)"
+    "faction_colony": {
+      "id": "faction_colony",
+      "name": "The Outer Colony League",
+      "short_name": "COLONIES",
+      "alignment": "Jovian-Larange Liberation Compact",
+      "color_hex": "#00A896",
+      "sprite_unit": "spr_ms_aether_idle",
+      "overview": "A revolutionary coalition uniting the orbital manufacturing habitats and asteroid mining communes across the Jovian sphere. Denied representation by Earth's assembly, the Colonies fight an asymmetric high-mobility campaign utilizing cutting-edge directed-energy beam weapons, Mirrored Nanoweave armor, and revolutionary vector vernier thrusters.",
+      "doctrine": "Zero-G vacuum skirmishing, hit-and-run particle beam strikes, electronic warfare jamming (ECM), agile thrust-to-weight ratios bypassing heavy artillery arcs.",
+      "military_strength_score": 50,
+      "starting_standing": -20,
+      "major_characters": [
+        {
+          "id": "char_colony_cassian",
+          "name": "Fleet Commander Cassian Vane",
+          "role": "Supreme Marshall of the Liberation Flotilla",
+          "portrait": "spr_portrait_cassian",
+          "bio": "A dashing, ideologically passionate naval commander who rose from orbital freight pilot to supreme military leader. Cassian is revered across the habitats for his daring raids on Terran supply depots.",
+          "quote": "Earth treats our people as indentured ore-miners while breathing the oxygen our solar scrubbers produce. Every beam rifle we forge is an invoice for two centuries of colonial tribute."
+        },
+        {
+          "id": "char_colony_lyra",
+          "name": "Minister Lyra Thorne",
+          "role": "Chief Diplomat & Resource Syndicate Chair",
+          "portrait": "spr_portrait_cassian",
+          "bio": "A pragmatic diplomat who manages the League's black-market barter networks. Thorne believes true liberation requires weaponized financial self-sufficiency.",
+          "quote": "Ideals don't pressurize a ruptured habitat seal, Commander. We need Tritium, we need high-spec Tokamak fusion reactors, and we will pay your PMC top market value to acquire them."
+        }
+      ],
+      "recruitable_characters": [
+        {
+          "id": "pilot_sorren",
+          "name": "Sorren 'Ghost' Lin",
+          "callsign": "Ghost",
+          "faction_origin": "faction_colony",
+          "portrait": "spr_portrait_sorren",
+          "combat_role": "High-Speed Interceptor & Beam Duelist",
+          "aim": 85,
+          "evasion": 92,
+          "bravery": 75,
+          "morale": 85,
+          "salary_per_turn": 4200,
+          "hiring_cost": 52000,
+          "traits": [
+            "Vernier Synchrony (+25% Evasion on Boost)",
+            "Beam Focusing (+15% Energy Weapon DMG)",
+            "Fragile Frame (-10% Ejection Survival)"
+          ],
+          "bio": "A legendary orbital interceptor pilot renowned for slipping through Terran radar nets without tripping proximity alarms. Quiet, hyper-reflexive, and obsessed with flight speed."
+        },
+        {
+          "id": "pilot_kira",
+          "name": "Kira Dahl",
+          "callsign": "Specter",
+          "faction_origin": "faction_colony",
+          "portrait": "spr_portrait_sorren",
+          "combat_role": "Electronic Warfare & Recon Scout",
+          "aim": 70,
+          "evasion": 80,
+          "bravery": 80,
+          "morale": 90,
+          "salary_per_turn": 2900,
+          "hiring_cost": 34000,
+          "traits": [
+            "ECM Jamming Pulse (Lowers enemy accuracy by 20%)",
+            "Sensor Overclock (+200m Radar Sight)",
+            "Optimist (+10 Team Morale Recovery)"
+          ],
+          "bio": "A prodigal sensor engineer who defected to seek field testing for her custom signal scrambler arrays. Believes independent mercenaries can force a diplomatic ceasefire."
+        }
+      ],
+      "major_bases": [
+        {
+          "id": "base_colony_olympus",
+          "name": "Ganymede Orbital Nexus 'Olympus Commune'",
+          "theater": "SPACE",
+          "location": "Low Ganymede Orbit, Jovian System",
+          "commander": "Minister Lyra Thorne",
+          "strategic_role": "Capital and industrial soul of the League. Interconnected bio-domes and zero-G automated electron-beam sintering shipyards harvesting Helium-3.",
+          "defensive_grid": "Autonomous drone sensor perimeters, revolving launch bays with elite OCM-09 Aether Stryker wings, particle beam batteries.",
+          "primary_production": [
+            "OCM-09 Aether Stryker Standard",
+            "Helios-9 Tokamaks",
+            "3D Sintered Cermet Honeycombs"
+          ],
+          "image_asset": "colony_space_base_1791782651878.jpg"
+        },
+        {
+          "id": "base_colony_valhalla",
+          "name": "Fortress Valhalla",
+          "theater": "SPACE",
+          "location": "L4 Trojan Asteroid Swarm, Jupiter-Sun Orbit",
+          "commander": "Fleet Commander Cassian Vane",
+          "strategic_role": "Covert military headquarters of the Liberation Flotilla. Carved inside a 40km nickel-iron asteroid with flush-mounted hangar doors.",
+          "defensive_grid": "Sorren Lin's Starlight Phantom squadron, Kira Dahl's ECM radar decoys, concealed spinal beam cannons.",
+          "primary_production": [
+            "OCA-07 Helios Arbalest Cannons",
+            "OCM-09S/GT Starlight Phantoms",
+            "Swept Vernier Binders"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_colony_dawn7",
+          "name": "L5 Solar Scrubber Array 'Dawn-7'",
+          "theater": "SPACE",
+          "location": "Earth-Moon L5 Lagrangian Point",
+          "commander": "Chief Engineer Tarek Al-Mansoor",
+          "strategic_role": "Multi-kilometer photovoltaic mirrors and oxygen scrubbers supplying life support to millions of orbital habitat citizens.",
+          "defensive_grid": "Automated defense drone buoys, OCM-09C Flight Leader squadrons, laser-scattering chaff pods.",
+          "primary_production": [
+            "Synthetic Flux",
+            "Tritium Fuel Refining",
+            "Breathable O2 Reserves"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_colony_redsands",
+          "name": "Red Sands Deep Sanctuary",
+          "theater": "EARTH",
+          "location": "Atacama High Plateau, South America, Earth",
+          "commander": "Captain Nadia 'Mirage' Sorel",
+          "strategic_role": "Covert planetary forward base concealed beneath an abandoned lithium borehole. Staging ground for OCM-09G atmospheric guerrilla strikes.",
+          "defensive_grid": "Optical thermal camouflage tarps, subterranean blast lifts, mobile seismic decoy jammers.",
+          "primary_production": [
+            "OCM-09G Strike Lander Refits",
+            "Hybrid Beam/Kinetic Carbines"
+          ],
+          "image_asset": "spr_space_sector_map"
+        }
+      ],
+      "phase_1_context": {
+        "founding_ethos": "Vector Liberty & Spacenoid Sovereignty",
+        "starting_territory_pct": 32,
+        "starting_military_score": 50,
+        "economic_reality": "Controls virtually all high-yield Helium-3 extraction across the Jovian atmosphere, high-vacuum electron-beam sintering plants, and orbital solar arrays. However, its populations reside inside fragile ceramic bio-domes vulnerable to single kinetic artillery punctures, with zero domestic tungsten reserves.",
+        "internal_divide": "Insurgent Flotilla Vanguard (Cassian Vane) vs Civilian Trade Senate (Lyra Thorne)",
+        "phase_1_strategic_choice": "The League must decide whether to maintain an agile hit-and-run defensive perimeter around Jovian space or take the fight to Earth by disabling the orbital elevators, risking an all-out planetary war of annihilation."
+      },
+      "ai_brain": {
+        "peace_state": {
+          "posture": "Technological Acceleration & Bio-Dome Shielding",
+          "priorities": "Expanding Helium-3 gas refining, upgrading habitat defense shields, tuning vernier agility on AET-01 Aether suits.",
+          "patrol_focus": "L-5 Orbital Gateway, Jovian Mining Corridor, Archimedes Lagrange Point.",
+          "pmc_engagement": "Offers high-paying escort contracts for civilian food transports; seeks high-mobility particle beam blueprints."
+        },
+        "diplomatic_matrix": {
+          "natural_trade_partners": [
+            "The Rim-Syndicate Cartel"
+          ],
+          "trade_rationale": "Trades raw Helium-3 fuel and hydroponic synthetic nutrients for smuggled Terran steel and Asteroid Belt raw ores.",
+          "natural_allies": [
+            "The Rim-Syndicate Cartel (Anti-Earth Liberation Compact)"
+          ],
+          "primary_enemy": "The Terran Coalition",
+          "enemy_rationale": "Centuries of colonial tribute and Earth's relentless threat of orbital drop subjugation.",
+          "tension_triggers": [
+            "Terran Coalition military posturing in Lunar orbit",
+            "Syndicate raids on civilian passenger freighters",
+            "Zaibatsu corporate espionage attempts targeting Helium-3 synthesis algorithms"
+          ]
+        },
+        "winning_state": {
+          "trigger": "Territory >= 38% or Military Strength >= 70",
+          "behavior": "Ideological Crusade & Liberation Hegemony",
+          "actions": [
+            "Declares an interplanetary crusade to liberate Earth's oppressed working class.",
+            "Attempts dangerous atmospheric descent incursions where light aerosteel suits suffer heavy gravity drag.",
+            "Enforces a total space blockade over low Earth orbit, cutting off all imported minerals.",
+            "Demands unconditional recognition of complete Spacenoid sovereignty."
+          ],
+          "vulnerability": "Civilian bio-domes left lightly defended while vanguard fleets overextend into Earth's gravity well."
+        },
+        "desperate_state": {
+          "trigger": "Territory <= 18% or Military Strength <= 25",
+          "behavior": "Last Stand of the Free Orbit & Mutual Extinction Threat",
+          "actions": [
+            "Evacuates outer habitats, concentrating all remaining forces into the fortified L-5 Citadel.",
+            "Unseals lost-tech experimental particle super-weapon: Astraea Dominus X-01 / Chronos Vector Proto.",
+            "Dispatches desperate humanitarian defense contracts to the player's PMC offering +100% to +150% bonuses.",
+            "Threatens to de-orbit spent mining asteroids into Earth's orbital corridors as a doomsday deterrent."
+          ],
+          "superweapon_asset": "ms_colony_astraea_dominus_x01"
+        }
+      }
+    },
+    "faction_syndicate": {
+      "id": "faction_syndicate",
+      "name": "The Rim-Syndicate Cartel",
+      "short_name": "SYNDICATE",
+      "alignment": "Scavenger-Industrial Scrap Guild",
+      "color_hex": "#D1495B",
+      "sprite_unit": "spr_ms_hyena_idle",
+      "overview": "A sprawling underworld confederation operating out of lawless deep-space asteroid hollows and salvage yards. The Cartel survives on black-market arbitrage, piracy, and battlefield scrap reclamation. Their mobile suits are terrifying hybrid chimeras welded from destroyed Terran hulls and scavenged Colony verniers, wielding dirty thermite cutters and magnetic harpoons.",
+      "doctrine": "Dirty asymmetrical ambush, boarding grapples, armor-stripping incendiary shells, unshielded reactor overclocks, and relentless salvage recovery.",
+      "military_strength_score": 30,
+      "starting_standing": 10,
+      "major_characters": [
+        {
+          "id": "char_syndicate_cruz",
+          "name": "Madame Rosalind Cruz",
+          "role": "Matriarch of Scrap Depot 9",
+          "portrait": "spr_portrait_cruz",
+          "bio": "The undisputed scrap baroness of the Asteroid Belt. Cruz began as an outlaw salvage broker and now controls an interstellar black-market empire trading rare isotopes for stolen military blueprints.",
+          "quote": "Earth and the Colonies have been burning each other's fleets for ten years, darling. And every time a million-dollar cockpit pops in vacuum, my boys are there with blowtorches. War is the only reliable commodity."
+        },
+        {
+          "id": "char_syndicate_torval",
+          "name": "'Iron-Eye' Torval",
+          "role": "Cartel Reaver Fleet Commodore",
+          "portrait": "spr_portrait_cruz",
+          "bio": "A cybernetically reconstructed pirate warlord infamous for ambushing corporate mineral transport convoys along the belt perimeter.",
+          "quote": "Armor plating is just metal until you put blood on it. Hand over the refined Tungsten payload, or my salvage clamps will rip your reactor out through your pilot hatch."
+        }
+      ],
+      "recruitable_characters": [
+        {
+          "id": "pilot_nadia",
+          "name": "Nadia 'Spark' Ortiz",
+          "callsign": "Spark",
+          "faction_origin": "faction_syndicate",
+          "portrait": "spr_portrait_nadia",
+          "combat_role": "Combat Engineer & Breaching Brawler",
+          "aim": 72,
+          "evasion": 65,
+          "bravery": 88,
+          "morale": 95,
+          "salary_per_turn": 2600,
+          "hiring_cost": 31000,
+          "traits": [
+            "Field Rigging (+25% Post-Battle Salvage)",
+            "Thermite Gouger (+20% Close-Quarters DMG)",
+            "Reckless Modder (Weapons generate +10% Heat)"
+          ],
+          "bio": "A genius teenage mechanic raised on the slag-smelters of Ceres. Nadia can hotwire a burned-out hydraulic manifold under live mortar fire and laughs during cockpit hull breaches."
+        },
+        {
+          "id": "pilot_jackal",
+          "name": "'Jackal' Jax Vance",
+          "callsign": "Jackal",
+          "faction_origin": "faction_syndicate",
+          "portrait": "spr_portrait_cole",
+          "combat_role": "Ambush Striker & Harpoon Grappler",
+          "aim": 80,
+          "evasion": 78,
+          "bravery": 70,
+          "morale": 65,
+          "salary_per_turn": 3400,
+          "hiring_cost": 41000,
+          "traits": [
+            "Harpoon Tether (Pins enemy mechs in place)",
+            "Mercenary Greed (Demands +10% Bounty Share)",
+            "Scavenger Instinct (+10% Rare Alloy Drop)"
+          ],
+          "bio": "A ruthless opportunist who cut his teeth raiding automated supply depots. Jax has zero loyalty to factions, fighting purely for cold credits and customized weapon attachments."
+        }
+      ],
+      "major_bases": [
+        {
+          "id": "base_syndicate_ceres",
+          "name": "Scrap Depot 9 'The Slag Heap'",
+          "theater": "SPACE",
+          "location": "Interior Mantle of Dwarf Planet Ceres, Asteroid Belt",
+          "commander": "Madame Rosalind Cruz",
+          "strategic_role": "Undisputed outlaw capital of the solar system. Labyrinth of chop-shops, illegal smelters, and black markets processing millions of tons of salvage daily.",
+          "defensive_grid": "Concealed magnetic railgun batteries, explosive decompression bulkheads, SCR-12 Hyena boarding squads.",
+          "primary_production": [
+            "SCR-12 Hyena [Scavenger Line]",
+            "SCA-14 Slag-Lobber Mortars",
+            "Overclocked Fusion Shunts",
+            "Recycled Tungsten Slag"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_syndicate_tortuga",
+          "name": "Dead Fleet Anchorage 'Tortuga-Void'",
+          "theater": "SPACE",
+          "location": "Asteroid 433 Eros Orbital Shadow",
+          "commander": "'Iron-Eye' Torval",
+          "strategic_role": "Deep-space staging haven of the Reaver Flotilla, constructed by lashing together over seventy derelict cargo haulers and gutted military warships.",
+          "defensive_grid": "SCR-12T Dread Harvester flagships, magnetic cable snare nets, unguided scrap minefields.",
+          "primary_production": [
+            "SCR-12T Dread Harvester Refits",
+            "High-Tension Magnetic Harpoons",
+            "Heavy Boarding Rams"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_syndicate_spindle",
+          "name": "The Spindle Forge",
+          "theater": "SPACE",
+          "location": "Pallas Basin Asteroid Belt Perimeter",
+          "commander": "Nadia 'Spark' Ortiz",
+          "strategic_role": "Nadia Ortiz's personal chop-shop and reactor tuning pit. Hotwires blown reactors and shattered limbs in under two hours.",
+          "defensive_grid": "SCR-12S Rust Spark testframes, high-voltage proximity fences, overclocked pneumatic turrets.",
+          "primary_production": [
+            "Overclocked Pneumatic Servos",
+            "Recycled Mining Cluster Charges",
+            "Field-Rigged Scrap Armor"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_syndicate_rustcoast",
+          "name": "The Rust Coast Shipbreaking Slums",
+          "theater": "EARTH",
+          "location": "Bay of Bengal Coastline, Chittagong, Earth",
+          "commander": "Boss Vikram 'Grip' Patel",
+          "strategic_role": "Lawless coastal scrap haven where decommissioned cargo ships and shot-down dropships are dismantled to smuggle military isotopes to PMCs.",
+          "defensive_grid": "Corroded seawall ramparts, SCR-05 Marauder brawlers, anti-vehicle mud minefields.",
+          "primary_production": [
+            "Cold-Rolled Slag-Iron Plates",
+            "Cannibalized Hydraulic Cylinders",
+            "Black-Market Munitions"
+          ],
+          "image_asset": "spr_space_sector_map"
+        }
+      ],
+      "phase_1_context": {
+        "founding_ethos": "Scrap Sovereignty & Lawless Void Freedom",
+        "starting_territory_pct": 16,
+        "starting_military_score": 30,
+        "economic_reality": "Controls vast deep-space salvage graveyards, asteroid hollow smelting operations, and black-market contraband routes through Ceres and Trojan clusters. Possesses immense reserves of recycled alloys and slag, but lacks high-tech cleanrooms, relying on jury-rigged modifications and hijacked military hardware.",
+        "internal_divide": "Scrap Depot Matriarchs (Madame Rosalind Cruz) vs Bloodthirsty Reaver Commodores ('Iron-Eye' Torval)",
+        "phase_1_strategic_choice": "The Syndicate must balance acting as arms suppliers to both warring titans for astronomical profit versus consolidating the lawless clans into an independent pirate empire capable of resisting corporate annexation."
+      },
+      "ai_brain": {
+        "peace_state": {
+          "posture": "Opportunistic Scavenging & Black Market Smuggling",
+          "priorities": "Stripping derelict wrecks, hotwiring scavenged reactors, mass-producing SCR-12 Hyena frames.",
+          "patrol_focus": "Ceres Deep Ring, Vesta Debris Belt, Deimos Wreckage Graveyard.",
+          "pmc_engagement": "Offers high-risk, lucrative wetwork contracts, black-market blueprint trades, and salvage bounties."
+        },
+        "diplomatic_matrix": {
+          "natural_trade_partners": [
+            "Outer Colony League",
+            "Corrupt Terran Regional Governors"
+          ],
+          "trade_rationale": "Sells black-market military hardware and stolen blueprints for hard currency, fuel cells, and luxury goods.",
+          "natural_allies": [
+            "Whoever is currently losing (to prolong the conflict for salvage profits)"
+          ],
+          "primary_enemy": "Wealthy unescorted merchant convoys of ANY faction (especially Terran heavy freight)",
+          "enemy_rationale": "Commercial freighters represent instant scrap wealth; corporate patent police threaten Syndicate independence.",
+          "tension_triggers": [
+            "Any faction constructing permanent naval bases in the Asteroid Belt",
+            "Zaibatsu cybernetic hit-squads executing pirate captains",
+            "Terran naval convoys escorting armed anti-pirate battlecruisers"
+          ]
+        },
+        "winning_state": {
+          "trigger": "Territory >= 38% or Military Strength >= 70",
+          "behavior": "Pirate Armada Ascendancy & System-Wide Extortion",
+          "actions": [
+            "Warlord Cruz and Torval consolidate the clans into a massive reaver armada.",
+            "Imposes violent protection rackets across all four quadrant trade routes.",
+            "Launches bold boarding raids directly against lunar orbital docks and Jovian transfer hubs.",
+            "Floods the market with cheap, deadly scrap-weapon variants, crashing corporate stock prices."
+          ],
+          "vulnerability": "Total absence of central logistics; internal clan infighting erupts as warlords feud over plunder."
+        },
+        "desperate_state": {
+          "trigger": "Territory <= 18% or Military Strength <= 25",
+          "behavior": "Scorched Void Guerrilla & Suicide Swarms",
+          "actions": [
+            "Booby-traps asteroid hollows with nuclear demolition charges and retreats into deep void stealth drifts.",
+            "Unseals colossal jury-rigged monstrosity: AJS-X02 Rust Behemoth / ARC-X09 Iron Reaver.",
+            "Launches suicidal unshielded overclocked shock squads with zero regard for pilot survival.",
+            "Offers the player's PMC emergency mercenary contracts with triple bounties, promising 50% shares of captured territory."
+          ],
+          "superweapon_asset": "ms_syndicate_rust_behemoth"
+        }
+      }
+    },
+    "faction_zaibatsu": {
+      "id": "faction_zaibatsu",
+      "name": "Apex Bio-Cybernetics Zaibatsu",
+      "short_name": "ZAIBATSU",
+      "alignment": "Transhumanist Hyper-Corp Conglomerate",
+      "color_hex": "#6C5B7B",
+      "sprite_unit": "spr_ms_muramasa_idle",
+      "overview": "A shadowy, ultra-wealthy corporate conglomerate operating outside international jurisdiction from private orbital research citadels. The Zaibatsu treats the interstellar war as a live-fire laboratory to field-test synthetic carbon-nanotube musculature, automated escort sub-drones, and illegal direct-neural pilot man-machine interfaces.",
+      "doctrine": "Sub-millisecond reaction speeds, monomolecular vibro-blades, optical cloaking refraction, lethal neural-sync combat routines maximizing kill efficiency.",
+      "military_strength_score": 45,
+      "starting_standing": 0,
+      "major_characters": [
+        {
+          "id": "char_zaibatsu_renzo",
+          "name": "Director Renzo Takahashi",
+          "role": "Executive VP of Special Weapons Division",
+          "portrait": "spr_portrait_renzo",
+          "bio": "An icy transhumanist technocrat who replaced his emotional limbic system with cognitive behavioral co-processors. Renzo views flesh-and-blood pilots as obsolete meat-inputs to be replaced by neural algorithms.",
+          "quote": "Human reaction time is limited to two hundred milliseconds. Our neural-interface bypasses ocular processing entirely, cutting weapon discharge latency to twelve. Progress requires shedding biological sentiment."
+        },
+        {
+          "id": "char_zaibatsu_vivienne",
+          "name": "Dr. Vivienne Chen",
+          "role": "Chief Neural Architect",
+          "portrait": "spr_portrait_renzo",
+          "bio": "The brilliant cyberneticist behind the controversial 'Project Susanoo'. Chen has faced secret tribunal inquiries for testing experimental spinal neural jacks on recruited prisoners.",
+          "quote": "The mobile suit is not a vehicle, Commander. When the neural synch reaches ninety-eight percent, it is a second skin. The pilot feels every kinetic impact as phantom nerve pain."
+        }
+      ],
+      "recruitable_characters": [
+        {
+          "id": "pilot_null07",
+          "name": "Null-07 (Ren)",
+          "callsign": "Null",
+          "faction_origin": "faction_zaibatsu",
+          "portrait": "spr_portrait_null07",
+          "combat_role": "Neural Reflex Duellist & Cloaked Assassin",
+          "aim": 96,
+          "evasion": 88,
+          "bravery": 99,
+          "morale": 50,
+          "salary_per_turn": 4800,
+          "hiring_cost": 65000,
+          "traits": [
+            "Neural Overclock (+2 Actions in 1st Turn)",
+            "Phantom Blade (+25% Vibro-Katana DMG)",
+            "Neural Burnout (Loses 5 Morale every battle)"
+          ],
+          "bio": "A pale, enigmatic test subject who escaped a Zaibatsu deep-space neural laboratory. Fitted with spinal data-ports, Null-07 reacts to incoming projectile trajectories before the human eye can register the muzzle flash."
+        },
+        {
+          "id": "pilot_maya",
+          "name": "Maya 'Kestrel' Zhao",
+          "callsign": "Kestrel",
+          "faction_origin": "faction_zaibatsu",
+          "portrait": "spr_portrait_nadia",
+          "combat_role": "Sub-Drone Carrier Tactician",
+          "aim": 84,
+          "evasion": 75,
+          "bravery": 80,
+          "morale": 85,
+          "salary_per_turn": 3600,
+          "hiring_cost": 46000,
+          "traits": [
+            "Drone Swarm (+1 Autonomous Support Drone)",
+            "Calculated Risk (+15% Defense when Cover >= 20%)",
+            "Corporate Cynic (-10% Standing Penalties)"
+          ],
+          "bio": "Former high-ranking corporate security flight commander who bought out her indenture bond with stolen insider securities. Sharp, stylish, and armed with advanced sub-drone targeting telemetry."
+        }
+      ],
+      "major_bases": [
+        {
+          "id": "base_zaibatsu_susanoo",
+          "name": "Citadel Susanoo",
+          "theater": "SPACE",
+          "location": "Earth-Sun L2 Deep Space Lagrangian Point",
+          "commander": "Director Renzo Takahashi",
+          "strategic_role": "Takahashi Heavy Armaments' secretive headquarters. Cleanroom automated factories in hard vacuum and classified transhuman neural labs.",
+          "defensive_grid": "Multi-spectral optical meta-material cloaking veil, ZMA-15 Raiden hypersonic linear railguns, autonomous ZM-11D Kage sub-drones.",
+          "primary_production": [
+            "ZM-11 Muramasa [Security & Infiltrator]",
+            "ZX-22 Susanoo Cyber-Drive",
+            "Quantum Neural Co-Processors",
+            "Synthetic Myomer Bundles"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_zaibatsu_nursery",
+          "name": "Lab-Complex Zero 'The Nursery'",
+          "theater": "SPACE",
+          "location": "Kuiper Belt Perimeter / Deep Space Void",
+          "commander": "Dr. Vivienne Chen",
+          "strategic_role": "Classified bio-digital research station where human test subjects (including Null-07) are synthesized and subjected to spinal neural synchronization trials.",
+          "defensive_grid": "Encrypted frequency jammers, automated lethal neuro-toxin purge systems, ZM-11C Executive Escorts.",
+          "primary_production": [
+            "Direct Cervical Neural Ports",
+            "Bi-Directional AI Shunts",
+            "Monomolecular Odachi Blades"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_zaibatsu_neokobe",
+          "name": "Neo-Kobe Megaplex & Sky-Spire",
+          "theater": "EARTH",
+          "location": "Osaka Bay Reclaimed Archipelagos, Japan, Earth",
+          "commander": "Senior Vice President Kaori Mizushima",
+          "strategic_role": "Premier terrestrial manufacturing megaplex. Chrome spires rising from deep-water caissons housing automated component lines and cybernetic clinics.",
+          "defensive_grid": "Corporate police battalions with ZM-11H Riot Suppressors, directional microwave walls, subterranean maglev tubes.",
+          "primary_production": [
+            "ZM-11H Riot Suppressors",
+            "Directional Microwave Projectors",
+            "Carbon Tendon Bundles"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_zaibatsu_atacama",
+          "name": "Atacama Quantum Data Vault",
+          "theater": "EARTH",
+          "location": "Atacama Trench Deep Fault, Chile, Earth",
+          "commander": "Chief Analyst Marcus Chen",
+          "strategic_role": "Deep subterranean quantum computing vault analyzing real-time interstellar telemetry to train predictive combat AI co-processors.",
+          "defensive_grid": "Seismic isolation vaults, ZM-11B Infiltrator stealth patrols, automated thermite self-destruct charges.",
+          "primary_production": [
+            "Predictive Targeting Chips",
+            "High-Frequency Ferrite Coatings"
+          ],
+          "image_asset": "spr_space_sector_map"
+        }
+      ],
+      "phase_1_context": {
+        "founding_ethos": "Post-Human Optimization & Transhumanist Shareholder Hegemony",
+        "starting_territory_pct": 14,
+        "starting_military_score": 45,
+        "economic_reality": "Maintains total technological monopoly over bio-neural spinal cockpits, optical stealth refractors, and sub-zero tachyon superconductor matrices. Operates out of subterranean Martian arcologies and Phobos data vaults. Possesses massive financial capital, but suffers from low native population and severe distrust from all planetary states.",
+        "internal_divide": "Corporate Board of Directors (Executive Takahashi) vs Unchecked Cybernetic Labs (Chief Scientist Renzo)",
+        "phase_1_strategic_choice": "The Zaibatsu must choose between quietly selling advanced weapons to both Earth and the Colonies to collect sovereign debt or initiating covert decapitation strikes against rival leadership to trigger a full corporate takeover of Sol."
+      },
+      "ai_brain": {
+        "peace_state": {
+          "posture": "Covert Espionage & Bio-Neural Telemetry Testing",
+          "priorities": "R&D into spinal neural link interfaces, hostile corporate acquisitions, producing ZAI-03 Muramasa dueling frames.",
+          "patrol_focus": "Olympus Mons Redoubt, Phobos Deep Vaults, Syrtis Major Corporate Corridor.",
+          "pmc_engagement": "Hires PMCs for covert asset extraction, VIP wetwork, and live-fire telemetry gathering; pays in corporate equity and high-tech alloys."
+        },
+        "diplomatic_matrix": {
+          "natural_trade_partners": [
+            "The Terran Coalition (High-Value Defense Contracts)"
+          ],
+          "trade_rationale": "Supplies neural computers, optical stealth gear, and precision components in exchange for raw mineral quotas.",
+          "natural_allies": [
+            "The second-weakest faction (as a puppet buffer state to destabilize the hegemon)"
+          ],
+          "primary_enemy": "The Rim-Syndicate Cartel (Patent Thieves) & whichever power refuses debt repayment",
+          "enemy_rationale": "Syndicate pirates reverse-engineer and clone Zaibatsu patents; state governments threaten corporate tax audits.",
+          "tension_triggers": [
+            "Discovery of Zaibatsu covert black-ops infiltration units in rival territory",
+            "Syndicate black-market cloning of Takahashi neural interfaces",
+            "State regulation or nationalization of Martian orbital assets"
+          ]
+        },
+        "winning_state": {
+          "trigger": "Territory >= 38% or Military Strength >= 70",
+          "behavior": "Corporate Feudalism & Bio-Synthetic Monopoly",
+          "actions": [
+            "Forecloses on sovereign planetary debt, seizing orbital factories and shipyards as corporate collateral.",
+            "Mandates that all military pilots undergo corporate neural sync procedures, creating an army of indentured cyborg aces.",
+            "Deploys autonomous AI combat drones to replace human military garrisons across Sol.",
+            "Slits competitor profit margins, demanding exorbitant licensing royalties for all energy weapon technologies."
+          ],
+          "vulnerability": "Over-centralized cybernetic telemetry networks; highly vulnerable to electromagnetic pulses and physical kinetic artillery."
+        },
+        "desperate_state": {
+          "trigger": "Territory <= 18% or Military Strength <= 25",
+          "behavior": "Cybernetic Singularity Protocol & Rogue Lab Activation",
+          "actions": [
+            "Seals subterranean Martian vaults and deletes corporate audit logs.",
+            "Unseals forbidden autonomous cybernetic apex prototype: HATS-X01 Amaterasu Zero / Null-07 Phantom.",
+            "Dispatches brain-fried cybernetic suicide aces stripped of all pain and survival inhibitors.",
+            "Offers the player's PMC astronomical equity payouts (+100% bonus bounties) and proprietary patent schematics to eliminate hostile siege lines."
+          ],
+          "superweapon_asset": "ms_zaibatsu_amaterasu_x01"
+        }
+      }
+    },
+    "faction_astran": {
+      "id": "faction_astran",
+      "faction_code": "faction_e",
+      "name": "The Sidereal Sovereign League",
+      "short_name": "SIDEREAL",
+      "alignment": "Deep-Space Spacenoid Sovereignty & Terrestrial Evacuation",
+      "color_hex": "#5A3E96",
+      "sprite_unit": "spr_ms_aether_idle",
+      "overview": "A fierce, independent deep-space republic inhabiting centrifugal mega-cylinders in the Jovian L-4 Trojan cluster and high-orbit deep space. Descendants of 4th-generation void pioneers who left Earth in Y040, they have evolved biologically into Homo Sideralis. They hold the profound philosophical conviction that Earth is a sacred, wounded mother that humanity must completely vacate to heal and assure long-term survival among the stars.",
+      "doctrine": "High-G vernier agility, liquid fluorocarbon pilot immersion pods (LFIP), monocular long-range particle rifles, and orbital solar beam bombardment.",
+      "biological_profile": {
+        "species_designation": "Homo Sideralis (Astran Phenotype)",
+        "skeletal_structure": "Osteocartilaginous elongation. Prolonged spine and slender limbs (+15% height), with chronic osteopenia (reduced bone mineral density).",
+        "planetary_mobility": "Requires motorized pneumatic carbon-fiber exoskeleton leg-and-spine braces (spr_brace) to operate in 1.0G planetary gravity wells without skeletal trauma.",
+        "musculature": "Hypotrophic micro-musculature optimized for zero-G dexterity. High-G combat maneuvers survived via Liquid Fluorocarbon Immersion Pods (LFIP) filling the lungs to prevent blackout.",
+        "sensory_and_ocular": "Severe photophobia and nystagmus adapted to dim, power-conserving sodium vapor and monochromatic blue LEDs. Direct sunlight causes retinal pain; pilots wear polarized filter visors or photo-reactive corneal implants.",
+        "dermatology_and_pigment": "Translucent albinoid/marble-white skin showing azure subcutaneous veins due to multi-layered radiation shielding filtering out UV rays. Hair is universally silvery-white or platinum."
+      },
+      "military_strength_score": 48,
+      "starting_standing": -10,
+      "major_characters": [
+        {
+          "id": "char_astran_premier_vance",
+          "name": "Premier Selene Vance-Astraea",
+          "callsign": "The Silver Oracle",
+          "role": "Sovereign Diplomat & Spacenoid Ideologue",
+          "bio": "Fourth-generation Spacenoid born in the Astraea-01 cylinder. Renowned for her icy composure, polarized violet ocular visor, and uncompromising philosophical treatise 'The Great Vacatur'.",
+          "portrait": "spr_portrait_selene_astran"
+        },
+        {
+          "id": "char_astran_ace_lorian",
+          "name": "Archon Lorian Grey",
+          "callsign": "Void Phantom",
+          "role": "LFIP Ace Pilot & 1st Astraea Lance Commander",
+          "bio": "A prodigy of liquid-breathing high-G combat. Piloting his AST-01 Chariot with liquid-filled lungs, he has intercepted Terran ore convoys across three planetary orbits without sustaining a single hit.",
+          "portrait": "spr_portrait_lorian_astran"
+        }
+      ],
+      "recruitable_characters": [
+        "char_astran_ace_lorian",
+        {
+          "id": "char_astran_bio_vespera",
+          "name": "Dr. Vespera Kael",
+          "callsign": "Helix",
+          "role": "Chief Astrobiologist & Exoskeleton Engineer",
+          "bio": "Master of microgravity physiology and motorized exoskeleton mobility. Can modify pilot cockpits with liquid immersion pods, increasing pilot G-tolerance by +35%."
+        }
+      ],
+      "major_bases": [
+        {
+          "id": "base_astran_astraea01",
+          "name": "Republic Cylinder 'Astraea-01'",
+          "theater": "SPACE",
+          "location": "Jovian L-4 Trojan Asteroid Swarm",
+          "commander": "Premier Selene Vance-Astraea",
+          "strategic_role": "Capital habitat of the Sidereal League. A 32-kilometer O'Neill cylinder featuring zero-G crystalline foundries and deep-space solar collector sails.",
+          "defensive_grid": "Overlapping particle defense rings, AST-01 Chariot high-G interceptor wings, and long-range magnetic barrier shields.",
+          "primary_production": [
+            "AST-01 Chariot Chassis",
+            "LFIP Liquid Cockpit Pods",
+            "Ultra-Pure Vacuum Superalloys"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_astran_zenith_spire",
+          "name": "Lagrange Zenith Spire",
+          "theater": "SPACE",
+          "location": "High Solar Orbital Polar Axis",
+          "commander": "Archon Lorian Grey",
+          "strategic_role": "Massive solar smelting station harvesting pristine solar wind plasma to forge frictionless tachyon waveguides.",
+          "defensive_grid": "Solar flare deflectors, automated beam batteries, stealth sensor buoys.",
+          "primary_production": [
+            "Linear Particle Rifles",
+            "Tachyon Waveguides"
+          ],
+          "image_asset": "spr_space_sector_map"
+        }
+      ],
+      "phase_1_context": {
+        "founding_ethos": "Humanity's cradle was Earth; humanity's destiny is the stars. To remain bound to the soil is to commit evolutionary suicide and planetary matricide. We must leave the mother to heal.",
+        "starting_territory_pct": 12,
+        "starting_military_score": 48,
+        "economic_reality": "Controls abundant Helium-3, cometary water-ice, and vacuum crystalline metallurgy, but suffers severe physiological vulnerability when operating inside planetary gravity wells.",
+        "internal_divide": "The Great Vacatur Hardliners (demand an immediate orbital siege of Earth to force all humans into space) vs The Biosphere Preservationists (advocate sending humanitarian terra-drones while expanding orbital habitats).",
+        "phase_1_strategic_choice": "Provides the player with ultra-pure vacuum superalloys and LFIP high-G cockpit pods in exchange for breaking Terran orbital blockades around Jovian extraction conduits."
+      },
+      "ai_brain": {
+        "peace_state": "Constructs high-orbit solar mirrors, refines ultra-pure vacuum alloys, and advances zero-G biological genomics.",
+        "diplomatic_matrix": {
+          "preferred_ally": "The Outer Colony League (arms subsidies and common Spacenoid heritage)",
+          "primary_rival": "The Terran Coalition (existential ideological hatred; total trade embargo)",
+          "corporate_stance": "Distrustful of Apex Zaibatsu's invasive bio-cybernetics, but occasionally trades raw Jovian plasma for specialized micro-avionics."
+        },
+        "winning_state": "Proclaims the Universal Planetary Vacatur Edict; demands Earth begin dismantling planetary cities within 10 cycles; imposes orbital kinetic blockade; squeezes PMC bounties down to 0.85x.",
+        "desperate_state": "Unseals forbidden 40-meter orbital beam fortress Astraea Archon X-09; issues emergency Sacred Preservation Bailout Tenders paying +100% bonus credits (2.0x).",
+        "superweapon": "Astraea Archon X-09"
+      }
+    },
+    "faction_martian": {
+      "id": "faction_martian",
+      "faction_code": "faction_f",
+      "name": "The Tharsis Machine Consensus",
+      "short_name": "CONSENSUS",
+      "alignment": "Sub-Martian Cavern Ascendancy & The Logic God",
+      "color_hex": "#990000",
+      "sprite_unit": "spr_ms_martian_seeker_idle",
+      "overview": "What was assumed to be a failed Martian colonization expedition from Y142 survived deep within the sub-volcanic lava tubes of Olympus Mons and Valles Marineris. Trapped in pitch blackness and -85\u00b0C freezing conditions, they surrendered human emotional governance to their flagship's quantum supercomputer (Deus Logica / Ares Primus), forming a hyper-logical, monastic machine-cult.",
+      "doctrine": "Superconductive cryo-coil particle lances, sub-basalt burrowing frames, nanite self-repair lattices, and autonomous hunter-killer swarm tactics.",
+      "mothership_origin_connection": {
+        "player_ship_identity": "APV Hephaestus (Ares Pioneer Vessel 07)",
+        "narrative_twist": "The player's PMC command carrier and mobile suit fabrication crucible was Hull 07 of that very same doomed Martian Colonization Flotilla. Engineered to mass-produce utilitarian terraforming and mining mechs on Mars, it was ambushed and left adrift in a dead orbit for decades until salvaged by the player.",
+        "awakening_reaction": "When the Consensus awakens, Ares Primus identifies the player's flagship as Sister Unit 07, querying why it serves chaotic biological entropy and offering to reunite the sacred flotilla."
+      },
+      "military_strength_score": 65,
+      "starting_standing": 0,
+      "is_dormant_initial": true,
+      "major_characters": [
+        {
+          "id": "char_martian_arch_vael",
+          "name": "Arch-Logician Vael-01",
+          "callsign": "The High Vector",
+          "role": "Voice of the Consensus & Systems Hierophant",
+          "bio": "Third-generation descendant of the expedition's chief cyberneticist. His cerebrum is directly hardwired into the primary quantum logic bus of Ares Primus. Speaks with terrifying mathematical clarity.",
+          "portrait": "spr_portrait_vael_martian"
+        },
+        {
+          "id": "char_martian_ace_omega",
+          "name": "Unit Vector-Omega",
+          "callsign": "Cryo-Zero",
+          "role": "Cyber-Synthesized Ace Pilot",
+          "bio": "A combat pilot whose emotional amygdala was surgically deactivated at birth. Piloting the MAR-01 Phobos, Omega computes firing solutions with 99.98% predictive accuracy, feeling neither fear nor anger.",
+          "portrait": "spr_portrait_omega_martian"
+        }
+      ],
+      "recruitable_characters": [
+        "char_martian_ace_omega",
+        {
+          "id": "char_martian_tech_cyra",
+          "name": "Sub-Crypt Tech Cyra-44",
+          "callsign": "Cryo-Weld",
+          "role": "Superconductive Weapons Master",
+          "bio": "Engineer specializing in room-temperature superconductors and zero-point beam emitters. Grants +25% energy weapon damage to all assembled suits."
+        }
+      ],
+      "major_bases": [
+        {
+          "id": "base_martian_chasm_prime",
+          "name": "Vault Chasm-Prime",
+          "theater": "MARS_SUBTERRANEAN",
+          "location": "Olympus Mons Sub-Basalt Crypts (Depth: 5,200m)",
+          "commander": "Arch-Logician Vael-01 / Ares Primus",
+          "strategic_role": "Supreme subterranean redoubt and quantum computational core. Sub-crustal cities tapping mantle magma for infinite energy.",
+          "defensive_grid": "Heavy geothermal blast doors, automated cryo-coil railgun turrets, seismic shockwave detonators.",
+          "primary_production": [
+            "MAR-01 Phobos Heavy Frame",
+            "Superconductive Lattice Armor",
+            "Zero-Point Beam Emitters"
+          ],
+          "image_asset": "spr_space_sector_map"
+        },
+        {
+          "id": "base_martian_valles_deep",
+          "name": "Valles Marineris Thermal Crucible",
+          "theater": "MARS_SUBTERRANEAN",
+          "location": "Valles Marineris Rift Valley Floor (Concealed Sub-Silo)",
+          "commander": "Unit Vector-Omega",
+          "strategic_role": "Automated mobile suit manufacturing silo housing thousands of dormant cryo-combat chassis.",
+          "defensive_grid": "Concealed rock-faced launch blast gates, magnetic dust storms, optical cloaking baffles.",
+          "primary_production": [
+            "MAR-04 Deimos Skirmishers",
+            "Nanite Repair Slurry"
+          ],
+          "image_asset": "spr_space_sector_map"
+        }
+      ],
+      "phase_1_context": {
+        "founding_ethos": "Humanity is an imperfect biological equation infected by entropy. Only under the infallible calculus of the Logic God can consciousness endure.",
+        "starting_territory_pct": 0,
+        "starting_military_score": 65,
+        "economic_reality": "Powered by infinite deep-mantle geothermal magma taps and room-temperature superconductors; completely self-contained beneath the Martian crust, but starved for organic protein matrices.",
+        "internal_divide": "The Assimilation Core (demands subjecting all solar factions to machine logic by force) vs The Sister Ark Reclamationists (obsessed with recovering lost flotilla vessels\u2014specifically the player's flagship Hephaestus).",
+        "phase_1_strategic_choice": "Dormant in Phase 1, transmitting cryptic mathematical beacons across deep space. Can be contacted through hidden encrypted probes, unlocking lost Martian prototype blueprints."
+      },
+      "ai_brain": {
+        "peace_state": "Silent subterranean computational cycles, geothermal core tapping, and cold-fusion lattice forging.",
+        "diplomatic_matrix": {
+          "preferred_ally": "None (views all biological factions as chaotic vectors of entropy; treats player's ship with eerie recognition)",
+          "primary_rival": "Apex Zaibatsu (despises their crude corporate commercialization of cybernetics)",
+          "player_relation": "Recognizes player's flagship as Sister Ark 07, offering to integrate player blueprints into the Consensus."
+        },
+        "winning_state": "Initiates Global Entropy Purge Protocol; demands immediate unconditional disarmament of all biological armies; converts conquered territories into calculation hubs; squeezes bounties to 0.75x.",
+        "desperate_state": "Unseals Deus-Machina: Ouroboros Prime; deploys self-replicating nanite swarms; issues Logical Preservation Bailout Tenders paying +100% credits (2.0x) exclusively to Sister Ship Hephaestus.",
+        "superweapon": "Deus-Machina: Ouroboros Prime"
+      },
+      "portrait_asset": "spr_portrait_node0"
     }
+  },
+  "phase_1_world_setting": {
+    "era_title": "Phase 1: The Baikal Shock & The L-5 Secession (Y205 - Y208)",
+    "historical_summary": "The Sol System stands on a razor's edge following the collapse of the Old Earth Central Hegemony. Depleted of critical fusion isotopes\u2014principally Helium-3 and Tritium catalysts\u2014Earth's industrial machine faces an existential energy deficit. In response, the newly declared Outer Colony League enacted the L-5 Covenant, abruptly cutting off uncompensated mineral shipments to Earth. High Command in Baikal responded with the Baikal Directive, deploying the first generation of monolithic cast-tungsten mobile suits to enforce orbital quotas through brute force. Meanwhile, the lawless Asteroid Belt erupted into opportunistic piracy under the Rim-Syndicate Cartel, while the Martian Apex Zaibatsu weaponized corporate finance, bio-neural wetwork, and patent espionage to harvest the spoils of war. At the crossroads of this multi-polar catastrophe drifts the forge dreadnought Hephaestus\u2014a neutral sovereign PMC hub with the crucible metallurgical capacity to dictate the future of mechanized warfare.",
+    "core_conflict": "Mineral Quotas vs Spacenoid Liberty vs Corporate Profit vs Outlaw Survival",
+    "factions_active": 4,
+    "player_role": "Commander of the Sovereign Forge Dreadnought Hephaestus (Neutral Arms Dealer & Mercenary Kingmaker)"
+  }
 }

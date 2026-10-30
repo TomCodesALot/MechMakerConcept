@@ -6,8 +6,8 @@
     "class": "Heavy Assault",
     "role": "Sustained Linebreaker & Heavy Fire Support",
     "tier": 2,
-    "manufacturer": "Vanguard Defense Systems",
-    "description": "Standard mainline heavy siege suit of the Terran Coalition.",
+    "manufacturer": "Iron Ridge Dynamics (Vanguard Foundry)",
+    "description": "PROJECT PROMETHEUS (Unit-01 Prototype): The world's first operational bipedal Mobile Suit, secretly engineered inside our mobile Dreadnought Foundry. Combines compact thermonuclear Tokamak power with neural-link hydraulic bipedal locomotion, rendering conventional tracked armor obsolete.",
     "chassis": {
         "frame_type": "Heavy Bipedal Reinforced",
         "empty_mass_tonnes": 58.0,

@@ -1,3 +1,7 @@
+audio_master_gain(0.0);
+var _log_f = file_text_open_append("boot_log.txt");
+file_text_write_string(_log_f, "[BOOT] rm_init RoomCreationCode started!\n");
+file_text_close(_log_f);
 /// @description rm_init Room Creation Code
 // Bootstrap core manager singletons and transition to rm_hq_terminal
 
@@ -35,6 +39,13 @@ if (!instance_exists(obj_AudioManager)) {
     show_debug_message("[rm_init] Created obj_AudioManager");
 }
 
+
+// 4c. Instantiate persistent obj_DebugManager if not already created
+if (!instance_exists(obj_DebugManager)) {
+    instance_create_depth(0, 0, -9999, obj_DebugManager);
+    show_debug_message("[rm_init] Created obj_DebugManager");
+}
+
 // 5. Synchronize pilot hiring market between obj_GameManager and obj_NemesisManager
 if (instance_exists(obj_GameManager)) {
     var _gm = instance_find(obj_GameManager, 0);
@@ -45,3 +56,7 @@ if (instance_exists(obj_GameManager)) {
 
 show_debug_message("[rm_init] Core managers initialized. Transitioning to rm_hq_terminal...");
 room_goto(rm_hq_terminal);
+
+var _log_f2 = file_text_open_append("boot_log.txt");
+file_text_write_string(_log_f2, "[BOOT] rm_init finished, room_goto(rm_hq_terminal) called!\n");
+file_text_close(_log_f2);

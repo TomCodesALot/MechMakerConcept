@@ -43,7 +43,8 @@ print("\n=== 2. VERIFYING 16-BIT RETRO SPRITE ASSETS ===")
 stamp_yy = os.path.join(BASE_DIR, 'sprites/spr_snes_trial_stamps/spr_snes_trial_stamps.yy')
 assert os.path.exists(stamp_yy), "spr_snes_trial_stamps.yy missing!"
 with open(stamp_yy, 'r', encoding='utf-8') as f:
-    sdata = json.load(f)
+    sraw = re.sub(r",\s*([\]}])", r"\1", f.read())
+    sdata = json.loads(sraw)
 assert sdata['width'] == 84 and sdata['height'] == 26
 assert len(sdata['frames']) == 6
 print(f"  ✓ spr_snes_trial_stamps verified: 84x26 px, 6 distinct 16-bit status frames (Grade S, A, Cond, Rej, Mod II, Tooling)")

@@ -1,5 +1,5 @@
 {
-  "total_figures": 204,
+  "total_figures": 207,
   "characters": [
     {
       "id": "char_terran_vance",
@@ -15166,6 +15166,137 @@
         }
       },
       "portrait_asset": "spr_portrait_cole"
+    },
+    {
+      "id": "char_martian_node0",
+      "name": "Consensus Node 0-Prime",
+      "callsign": "Ares Primus",
+      "faction_id": "faction_martian",
+      "tier": 4,
+      "role": "Deus Logica Quantum Mainframe Sovereign",
+      "is_recruitable": false,
+      "family_dynasty": "The Consensus",
+      "kinship": [],
+      "mentor_id": null,
+      "wingman_id": "char_martian_commissar_kane",
+      "rival_id": "char_zaibatsu_sato",
+      "traits": [
+        "entropy_purge",
+        "superconducting_grid",
+        "calculated_retaliation"
+      ],
+      "preferred_chassis": "THS-01",
+      "hiring_cost_cr": 0,
+      "salary_per_cycle_cr": 0,
+      "morale": 100,
+      "is_alive": true,
+      "is_imprisoned": false,
+      "snes_portrait_spec": {
+        "palette": "crypt_crimson_and_basalt",
+        "headgear": "cranial_neural_well",
+        "scars": "cybernetic_ocular_cluster",
+        "eyes": "quantum_cyan_diode",
+        "expression": "porcelain_mask_stillness"
+      },
+      "bio": "The sovereign computational voice of the lost First Ares Colonization Fleet. Governs through pure mathematical entropy reduction.",
+      "allegiance_variance": {
+        "canonical_faction": "faction_martian",
+        "ideological_loyalty": "diehard_purist",
+        "flexibility_score": 0.0,
+        "playthrough_weights": {
+          "faction_martian": 1.0,
+          "independent": 0.0
+        }
+      },
+      "portrait_asset": "spr_portrait_node0"
+    },
+    {
+      "id": "char_martian_commissar_kane",
+      "name": "Commissar Kane-7",
+      "callsign": "Logic Inquisitor",
+      "faction_id": "faction_martian",
+      "tier": 3,
+      "role": "Subterranean Redoubt Inquisitor",
+      "is_recruitable": false,
+      "family_dynasty": "The Consensus",
+      "kinship": [],
+      "mentor_id": "char_martian_node0",
+      "wingman_id": null,
+      "rival_id": "char_terran_vance",
+      "traits": [
+        "mathematical_inquisition",
+        "frost_endurance"
+      ],
+      "preferred_chassis": "THS-04",
+      "hiring_cost_cr": 0,
+      "salary_per_cycle_cr": 0,
+      "morale": 95,
+      "is_alive": true,
+      "is_imprisoned": false,
+      "snes_portrait_spec": {
+        "palette": "crypt_crimson_and_basalt",
+        "headgear": "sub_basalt_hood",
+        "scars": "cranial_conduits",
+        "eyes": "infrared_sensor",
+        "expression": "severe_flatline"
+      },
+      "bio": "Enforces calculation quotas across the Tharsis Montes crypts. Conducts tactical interrogations via direct neural telemetry.",
+      "portrait_asset": "spr_portrait_node0",
+      "allegiance_variance": {
+        "canonical_faction": "faction_martian",
+        "ideological_loyalty": "diehard_purist",
+        "flexibility_score": 0.0,
+        "playthrough_weights": {
+          "faction_martian": 1.0,
+          "independent": 0.0
+        },
+        "defection_hooks": {}
+      }
+    },
+    {
+      "id": "pilot_martian_cryo_01",
+      "name": "Acolyte 09-Vane",
+      "callsign": "Permafrost",
+      "faction_id": "faction_martian",
+      "tier": 2,
+      "role": "Cryo-Skirmisher Ace Pilot",
+      "is_recruitable": true,
+      "family_dynasty": "The Consensus",
+      "kinship": [],
+      "mentor_id": "char_martian_node0",
+      "wingman_id": null,
+      "rival_id": null,
+      "traits": [
+        "sub_zero_cooling",
+        "zero_jerk_aim"
+      ],
+      "preferred_chassis": "THS-01",
+      "hiring_cost_cr": 140000,
+      "salary_per_cycle_cr": 6500,
+      "morale": 90,
+      "is_alive": true,
+      "is_imprisoned": false,
+      "snes_portrait_spec": {
+        "palette": "crypt_crimson_and_basalt",
+        "headgear": "neural_headset",
+        "scars": "none",
+        "eyes": "cyan_glow",
+        "expression": "unblinking_calm"
+      },
+      "bio": "Raised entirely in 0.38G subterranean lava tubes. Executes micro-precise railgun deflection shots while ignoring high-G strain.",
+      "portrait_asset": "spr_portrait_node0",
+      "allegiance_variance": {
+        "canonical_faction": "faction_martian",
+        "ideological_loyalty": "pragmatic_loyalist",
+        "flexibility_score": 0.15,
+        "playthrough_weights": {
+          "faction_martian": 0.85,
+          "independent": 0.15
+        },
+        "defection_hooks": {
+          "independent": "Contracted as independent subterranean skirmish ace."
+        }
+      }
     }
   ]
 }

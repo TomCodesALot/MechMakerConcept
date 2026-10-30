@@ -1,24 +1,26 @@
 {
-  "$GMSound": "v1",
-  "%Name": "snd_explosion_small",
-  "audioGroupId": {
-    "name": "audiogroup_default",
-    "path": "audiogroups/audiogroup_default"
+  "$GMSound":"v2",
+  "%Name":"snd_explosion_small",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
   },
-  "bitDepth": 1,
-  "bitRate": 128,
-  "compression": 0,
-  "conversionMode": 0,
-  "duration": 0.45,
+  "bitDepth":1,
+  "channelFormat":0,
+  "compression":0,
+  "compressionQuality":4,
+  "conversionMode":0,
+  "duration":0.45,
+  "exportDir":"",
+  "name":"snd_explosion_small",
   "parent": {
-    "name": "sounds",
-    "path": "folders/sounds.yy"
+    "name": "MechMakerConcept",
+    "path": "MechMakerConcept.yyp"
   },
-  "preload": true,
-  "resourceType": "GMSound",
-  "resourceVersion": "2.0",
-  "sampleRate": 44100,
-  "soundFile": "snd_explosion_small.wav",
-  "type": 0,
-  "volume": 1.0
+  "preload":true,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"snd_explosion_small.wav",
+  "volume":1.0,
 }

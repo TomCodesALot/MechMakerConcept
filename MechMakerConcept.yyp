@@ -1,838 +1,325 @@
 {
-  "$GMProject": "v1",
-  "%Name": "MechMakerConcept",
-  "AudioGroups": [
-    {
-      "$GMAudioGroup": "v1",
-      "%Name": "audiogroup_default",
-      "exportDir": "",
-      "name": "audiogroup_default",
-      "resourceType": "GMAudioGroup",
-      "resourceVersion": "2.0",
-      "targets": -1
-    }
+  "$GMProject":"v1",
+  "%Name":"MechMakerConcept",
+  "AudioGroups":[
+    {"$GMAudioGroup":"v1","%Name":"audiogroup_default","exportDir":"","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
   ],
-  "configs": {
-    "children": [],
-    "name": "Default"
+  "configs":{
+    "children":[],
+    "name":"Default",
   },
-  "defaultScriptType": 0,
-  "Folders": [],
-  "ForcedPrefabProjectReferences": [],
-  "IncludedFiles": [
-    {
-      "$GMIncludedFile": "",
-      "%Name": "bp_ms_ironclad_07.json",
-      "CopyToMask": -1,
-      "filePath": "datafiles/blueprints",
-      "name": "bp_ms_ironclad_07.json",
-      "resourceType": "GMIncludedFile",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMIncludedFile": "",
-      "%Name": "heavy_assault_blueprint.json",
-      "CopyToMask": -1,
-      "filePath": "datafiles/blueprints",
-      "name": "heavy_assault_blueprint.json",
-      "resourceType": "GMIncludedFile",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMIncludedFile": "",
-      "%Name": "bp_ms_ironclad_07.json",
-      "CopyToMask": -1,
-      "filePath": "datafiles",
-      "name": "bp_ms_ironclad_07.json",
-      "resourceType": "GMIncludedFile",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMIncludedFile": "",
-      "%Name": "pmc_economy.json",
-      "CopyToMask": -1,
-      "filePath": "datafiles/economy",
-      "name": "pmc_economy.json",
-      "resourceType": "GMIncludedFile",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMIncludedFile": "",
-      "%Name": "narrative_events.json",
-      "CopyToMask": -1,
-      "filePath": "datafiles",
-      "name": "narrative_events.json",
-      "resourceType": "GMIncludedFile",
-      "resourceVersion": "2.0"
-    }
+  "defaultScriptType":0,
+  "Folders":[],
+  "ForcedPrefabProjectReferences":[],
+  "IncludedFiles":[
+    {"$GMIncludedFile":"","%Name":"bp_ms_aether_09.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_aether_09.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_behemoth_11.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_behemoth_11.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_bulwark_03.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_bulwark_03.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_chimera_19.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_chimera_19.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_helios_07.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_helios_07.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_hyena_12.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_hyena_12.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_ironclad_07.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_ironclad_07.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_marauder_05.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_marauder_05.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_muramasa_11.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_muramasa_11.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_raiden_15.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_raiden_15.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_ronin_06.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_ronin_06.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_seraphim_15.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_seraphim_15.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_siegebreaker_07b.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_siegebreaker_07b.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_slag_lobber_14.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_slag_lobber_14.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_susanoo_22.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_susanoo_22.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_sylph_04.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_ms_sylph_04.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_player_ghost_sniper.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_player_ghost_sniper.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_player_scrapper_brawler.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_player_scrapper_brawler.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_player_stratos_interceptor.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_player_stratos_interceptor.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_player_vanguard_heavy.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"bp_player_vanguard_heavy.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"heavy_assault_blueprint.json","CopyToMask":-1,"filePath":"datafiles/blueprints","name":"heavy_assault_blueprint.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"bp_ms_ironclad_07.json","CopyToMask":-1,"filePath":"datafiles","name":"bp_ms_ironclad_07.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"characters_roster.json","CopyToMask":-1,"filePath":"datafiles","name":"characters_roster.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"conventional_vehicles.json","CopyToMask":-1,"filePath":"datafiles","name":"conventional_vehicles.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"pmc_economy.json","CopyToMask":-1,"filePath":"datafiles/economy","name":"pmc_economy.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"factions_lore.json","CopyToMask":-1,"filePath":"datafiles","name":"factions_lore.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"materials_periodic_table.json","CopyToMask":-1,"filePath":"datafiles","name":"materials_periodic_table.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"mobile_suit_catalog.json","CopyToMask":-1,"filePath":"datafiles","name":"mobile_suit_catalog.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"mobile_suits_timeline.json","CopyToMask":-1,"filePath":"datafiles","name":"mobile_suits_timeline.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"mobile_suit_catalog.json","CopyToMask":-1,"filePath":"datafiles/mobile_suits","name":"mobile_suit_catalog.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"narrative_events.json","CopyToMask":-1,"filePath":"datafiles","name":"narrative_events.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"solar_mining_nodes.json","CopyToMask":-1,"filePath":"datafiles","name":"solar_mining_nodes.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
   ],
-  "isEcma": false,
-  "LibraryEmitters": [],
-  "MetaData": {
-    "IDEVersion": "2026.0.0.16"
+  "isEcma":false,
+  "LibraryEmitters":[],
+  "MetaData":{
+    "IDEVersion":"2026.0.0.16",
   },
-  "name": "MechMakerConcept",
-  "resources": [
-    {"id":{"name":"spr_ms_custom_aero_striker_back_idle","path":"sprites/spr_ms_custom_aero_striker_back_idle/spr_ms_custom_aero_striker_back_idle.yy",},},
-    {"id":{"name":"spr_ms_custom_aero_striker_idle","path":"sprites/spr_ms_custom_aero_striker_idle/spr_ms_custom_aero_striker_idle.yy",},},
-    {"id":{"name":"spr_ms_custom_tread_artillery_back_idle","path":"sprites/spr_ms_custom_tread_artillery_back_idle/spr_ms_custom_tread_artillery_back_idle.yy",},},
-    {"id":{"name":"spr_ms_custom_tread_artillery_idle","path":"sprites/spr_ms_custom_tread_artillery_idle/spr_ms_custom_tread_artillery_idle.yy",},},
-    {"id":{"name":"spr_ms_custom_hover_sniper_back_idle","path":"sprites/spr_ms_custom_hover_sniper_back_idle/spr_ms_custom_hover_sniper_back_idle.yy",},},
-    {"id":{"name":"spr_ms_custom_hover_sniper_idle","path":"sprites/spr_ms_custom_hover_sniper_idle/spr_ms_custom_hover_sniper_idle.yy",},},
-    {"id":{"name":"spr_ms_custom_biped_heavy_back_idle","path":"sprites/spr_ms_custom_biped_heavy_back_idle/spr_ms_custom_biped_heavy_back_idle.yy",},},
-    {"id":{"name":"spr_ms_custom_biped_heavy_idle","path":"sprites/spr_ms_custom_biped_heavy_idle/spr_ms_custom_biped_heavy_idle.yy",},},
-    {"id":{"name":"spr_ms_titan_proto_back_idle","path":"sprites/spr_ms_titan_proto_back_idle/spr_ms_titan_proto_back_idle.yy",},},
-    {"id":{"name":"spr_ms_hephaestus_avatar_back_idle","path":"sprites/spr_ms_hephaestus_avatar_back_idle/spr_ms_hephaestus_avatar_back_idle.yy",},},
-    {"id":{"name":"spr_ms_tessen_back_idle","path":"sprites/spr_ms_tessen_back_idle/spr_ms_tessen_back_idle.yy",},},
-    {"id":{"name":"spr_ms_ronin_back_idle","path":"sprites/spr_ms_ronin_back_idle/spr_ms_ronin_back_idle.yy",},},
-    {"id":{"name":"spr_ms_kage_back_idle","path":"sprites/spr_ms_kage_back_idle/spr_ms_kage_back_idle.yy",},},
-    {"id":{"name":"spr_ms_vandal_back_idle","path":"sprites/spr_ms_vandal_back_idle/spr_ms_vandal_back_idle.yy",},},
-    {"id":{"name":"spr_ms_bloodhound_back_idle","path":"sprites/spr_ms_bloodhound_back_idle/spr_ms_bloodhound_back_idle.yy",},},
-    {"id":{"name":"spr_ms_gorgon_back_idle","path":"sprites/spr_ms_gorgon_back_idle/spr_ms_gorgon_back_idle.yy",},},
-    {"id":{"name":"spr_ms_oberon_back_idle","path":"sprites/spr_ms_oberon_back_idle/spr_ms_oberon_back_idle.yy",},},
-    {"id":{"name":"spr_ms_kepler_back_idle","path":"sprites/spr_ms_kepler_back_idle/spr_ms_kepler_back_idle.yy",},},
-    {"id":{"name":"spr_ms_zephyr_back_idle","path":"sprites/spr_ms_zephyr_back_idle/spr_ms_zephyr_back_idle.yy",},},
-    {"id":{"name":"spr_ms_trenchcoat_back_idle","path":"sprites/spr_ms_trenchcoat_back_idle/spr_ms_trenchcoat_back_idle.yy",},},
-    {"id":{"name":"spr_ms_centurion_back_idle","path":"sprites/spr_ms_centurion_back_idle/spr_ms_centurion_back_idle.yy",},},
-    {"id":{"name":"spr_ms_ballista_back_idle","path":"sprites/spr_ms_ballista_back_idle/spr_ms_ballista_back_idle.yy",},},
-    {"id":{"name":"spr_ms_titan_proto","path":"sprites/spr_ms_titan_proto/spr_ms_titan_proto.yy",},},
-    {"id":{"name":"spr_ms_hephaestus_avatar","path":"sprites/spr_ms_hephaestus_avatar/spr_ms_hephaestus_avatar.yy",},},
-    {"id":{"name":"spr_ms_tessen_idle","path":"sprites/spr_ms_tessen_idle/spr_ms_tessen_idle.yy",},},
-    {"id":{"name":"spr_ms_ronin_idle","path":"sprites/spr_ms_ronin_idle/spr_ms_ronin_idle.yy",},},
-    {"id":{"name":"spr_ms_vandal_idle","path":"sprites/spr_ms_vandal_idle/spr_ms_vandal_idle.yy",},},
-    {"id":{"name":"spr_ms_bloodhound_idle","path":"sprites/spr_ms_bloodhound_idle/spr_ms_bloodhound_idle.yy",},},
-    {"id":{"name":"spr_ms_oberon_idle","path":"sprites/spr_ms_oberon_idle/spr_ms_oberon_idle.yy",},},
-    {"id":{"name":"spr_ms_kepler_idle","path":"sprites/spr_ms_kepler_idle/spr_ms_kepler_idle.yy",},},
-    {"id":{"name":"spr_ms_trenchcoat_idle","path":"sprites/spr_ms_trenchcoat_idle/spr_ms_trenchcoat_idle.yy",},},
-    {"id":{"name":"spr_ms_centurion_idle","path":"sprites/spr_ms_centurion_idle/spr_ms_centurion_idle.yy",},},
-    {
-      "id": {
-        "name": "obj_GameManager",
-        "path": "objects/obj_GameManager/obj_GameManager.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_MobileSuit",
-        "path": "objects/obj_MobileSuit/obj_MobileSuit.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Room1",
-        "path": "rooms/Room1/Room1.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_load_blueprint",
-        "path": "scripts/scr_load_blueprint/scr_load_blueprint.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_ms_state_machine",
-        "path": "scripts/scr_ms_state_machine/scr_ms_state_machine.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_idle",
-        "path": "sprites/spr_ms_ironclad_idle/spr_ms_ironclad_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_fire_rifle",
-        "path": "sprites/spr_ms_ironclad_fire_rifle/spr_ms_ironclad_fire_rifle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_fire_chaingun",
-        "path": "sprites/spr_ms_ironclad_fire_chaingun/spr_ms_ironclad_fire_chaingun.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_fire_missiles",
-        "path": "sprites/spr_ms_ironclad_fire_missiles/spr_ms_ironclad_fire_missiles.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_damage_left_arm",
-        "path": "sprites/spr_ms_ironclad_damage_left_arm/spr_ms_ironclad_damage_left_arm.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_damage_right_arm",
-        "path": "sprites/spr_ms_ironclad_damage_right_arm/spr_ms_ironclad_damage_right_arm.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_crippled",
-        "path": "sprites/spr_ms_ironclad_crippled/spr_ms_ironclad_crippled.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_destroyed",
-        "path": "sprites/spr_ms_ironclad_destroyed/spr_ms_ironclad_destroyed.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_damage_energy",
-        "path": "sprites/spr_ms_ironclad_damage_energy/spr_ms_ironclad_damage_energy.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_damage_kinetic",
-        "path": "sprites/spr_ms_ironclad_damage_kinetic/spr_ms_ironclad_damage_kinetic.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_damage_melee",
-        "path": "sprites/spr_ms_ironclad_damage_melee/spr_ms_ironclad_damage_melee.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_damage_rocket",
-        "path": "sprites/spr_ms_ironclad_damage_rocket/spr_ms_ironclad_damage_rocket.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_hit_energy",
-        "path": "sprites/spr_ms_ironclad_hit_energy/spr_ms_ironclad_hit_energy.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_hit_kinetic",
-        "path": "sprites/spr_ms_ironclad_hit_kinetic/spr_ms_ironclad_hit_kinetic.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_hit_melee",
-        "path": "sprites/spr_ms_ironclad_hit_melee/spr_ms_ironclad_hit_melee.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_hit_rocket",
-        "path": "sprites/spr_ms_ironclad_hit_rocket/spr_ms_ironclad_hit_rocket.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_crippled_idle",
-        "path": "sprites/spr_ms_ironclad_crippled_idle/spr_ms_ironclad_crippled_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_damage_both_arms",
-        "path": "sprites/spr_ms_ironclad_damage_both_arms/spr_ms_ironclad_damage_both_arms.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_hit_armless",
-        "path": "sprites/spr_ms_ironclad_hit_armless/spr_ms_ironclad_hit_armless.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_hit_crippled",
-        "path": "sprites/spr_ms_ironclad_hit_crippled/spr_ms_ironclad_hit_crippled.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_hit_left_arm_off",
-        "path": "sprites/spr_ms_ironclad_hit_left_arm_off/spr_ms_ironclad_hit_left_arm_off.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_hit_right_arm_off",
-        "path": "sprites/spr_ms_ironclad_hit_right_arm_off/spr_ms_ironclad_hit_right_arm_off.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_idle_critical",
-        "path": "sprites/spr_ms_ironclad_idle_critical/spr_ms_ironclad_idle_critical.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_idle_damaged",
-        "path": "sprites/spr_ms_ironclad_idle_damaged/spr_ms_ironclad_idle_damaged.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_attack_melee",
-        "path": "sprites/spr_ms_ironclad_attack_melee/spr_ms_ironclad_attack_melee.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_FactionManager",
-        "path": "objects/obj_FactionManager/obj_FactionManager.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_BlueprintManager",
-        "path": "objects/obj_BlueprintManager/obj_BlueprintManager.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_HQTerminal",
-        "path": "objects/obj_HQTerminal/obj_HQTerminal.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "rm_init",
-        "path": "rooms/rm_init/rm_init.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "rm_hq_terminal",
-        "path": "rooms/rm_hq_terminal/rm_hq_terminal.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_save_system",
-        "path": "scripts/scr_save_system/scr_save_system.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_BattleManager",
-        "path": "objects/obj_BattleManager/obj_BattleManager.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "rm_combat",
-        "path": "rooms/rm_combat/rm_combat.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_space_sector_map",
-        "path": "sprites/spr_space_sector_map/spr_space_sector_map.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_mech_schematic",
-        "path": "sprites/spr_mech_schematic/spr_mech_schematic.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_icon_tungsten",
-        "path": "sprites/spr_icon_tungsten/spr_icon_tungsten.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_icon_silica",
-        "path": "sprites/spr_icon_silica/spr_icon_silica.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_icon_flux",
-        "path": "sprites/spr_icon_flux/spr_icon_flux.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_icon_tritium",
-        "path": "sprites/spr_icon_tritium/spr_icon_tritium.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_icon_slag",
-        "path": "sprites/spr_icon_slag/spr_icon_slag.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_icon_vanguard",
-        "path": "sprites/spr_icon_vanguard/spr_icon_vanguard.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_comp_reactor",
-        "path": "sprites/spr_comp_reactor/spr_comp_reactor.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_comp_legs",
-        "path": "sprites/spr_comp_legs/spr_comp_legs.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_comp_weapon",
-        "path": "sprites/spr_comp_weapon/spr_comp_weapon.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_comp_head",
-        "path": "sprites/spr_comp_head/spr_comp_head.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_comp_torso",
-        "path": "sprites/spr_comp_torso/spr_comp_torso.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_comp_thruster",
-        "path": "sprites/spr_comp_thruster/spr_comp_thruster.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_decade_evolution",
-        "path": "sprites/spr_decade_evolution/spr_decade_evolution.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_portrait_vance",
-        "path": "sprites/spr_portrait_vance/spr_portrait_vance.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_portrait_cole",
-        "path": "sprites/spr_portrait_cole/spr_portrait_cole.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_portrait_cassian",
-        "path": "sprites/spr_portrait_cassian/spr_portrait_cassian.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_portrait_sorren",
-        "path": "sprites/spr_portrait_sorren/spr_portrait_sorren.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_portrait_cruz",
-        "path": "sprites/spr_portrait_cruz/spr_portrait_cruz.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_portrait_nadia",
-        "path": "sprites/spr_portrait_nadia/spr_portrait_nadia.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_portrait_renzo",
-        "path": "sprites/spr_portrait_renzo/spr_portrait_renzo.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_portrait_null07",
-        "path": "sprites/spr_portrait_null07/spr_portrait_null07.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_aether_idle",
-        "path": "sprites/spr_ms_aether_idle/spr_ms_aether_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_aether_boost",
-        "path": "sprites/spr_ms_aether_boost/spr_ms_aether_boost.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_aether_fire_beam",
-        "path": "sprites/spr_ms_aether_fire_beam/spr_ms_aether_fire_beam.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_aether_attack_saber",
-        "path": "sprites/spr_ms_aether_attack_saber/spr_ms_aether_attack_saber.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_hyena_idle",
-        "path": "sprites/spr_ms_hyena_idle/spr_ms_hyena_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_hyena_walk",
-        "path": "sprites/spr_ms_hyena_walk/spr_ms_hyena_walk.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_hyena_fire_flak",
-        "path": "sprites/spr_ms_hyena_fire_flak/spr_ms_hyena_fire_flak.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_hyena_attack_claw",
-        "path": "sprites/spr_ms_hyena_attack_claw/spr_ms_hyena_attack_claw.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_muramasa_idle",
-        "path": "sprites/spr_ms_muramasa_idle/spr_ms_muramasa_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_muramasa_sprint",
-        "path": "sprites/spr_ms_muramasa_sprint/spr_ms_muramasa_sprint.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_muramasa_attack_blade",
-        "path": "sprites/spr_ms_muramasa_attack_blade/spr_ms_muramasa_attack_blade.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_muramasa_fire_plasma",
-        "path": "sprites/spr_ms_muramasa_fire_plasma/spr_ms_muramasa_fire_plasma.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_siegebreaker_anchor",
-        "path": "sprites/spr_ms_siegebreaker_anchor/spr_ms_siegebreaker_anchor.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_siegebreaker_elevate",
-        "path": "sprites/spr_ms_siegebreaker_elevate/spr_ms_siegebreaker_elevate.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_siegebreaker_fire",
-        "path": "sprites/spr_ms_siegebreaker_fire/spr_ms_siegebreaker_fire.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_siegebreaker_eject",
-        "path": "sprites/spr_ms_siegebreaker_eject/spr_ms_siegebreaker_eject.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_alloy_color_synthesis",
-        "path": "scripts/scr_alloy_color_synthesis/scr_alloy_color_synthesis.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_alloy_discovery_codex",
-        "path": "scripts/scr_alloy_discovery_codex/scr_alloy_discovery_codex.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ironclad_back_idle",
-        "path": "sprites/spr_ms_ironclad_back_idle/spr_ms_ironclad_back_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_aether_back_idle",
-        "path": "sprites/spr_ms_aether_back_idle/spr_ms_aether_back_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_hyena_back_idle",
-        "path": "sprites/spr_ms_hyena_back_idle/spr_ms_hyena_back_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_muramasa_back_idle",
-        "path": "sprites/spr_ms_muramasa_back_idle/spr_ms_muramasa_back_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_proj_cannon_120mm",
-        "path": "sprites/spr_proj_cannon_120mm/spr_proj_cannon_120mm.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_proj_vulcan",
-        "path": "sprites/spr_proj_vulcan/spr_proj_vulcan.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_proj_beam",
-        "path": "sprites/spr_proj_beam/spr_proj_beam.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_proj_missile",
-        "path": "sprites/spr_proj_missile/spr_proj_missile.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_proj_railgun",
-        "path": "sprites/spr_proj_railgun/spr_proj_railgun.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_fx_explosion",
-        "path": "sprites/spr_fx_explosion/spr_fx_explosion.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_fx_spark",
-        "path": "sprites/spr_fx_spark/spr_fx_spark.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_isometric_math",
-        "path": "scripts/scr_isometric_math/scr_isometric_math.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_combat_projectiles",
-        "path": "scripts/scr_combat_projectiles/scr_combat_projectiles.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_NemesisManager",
-        "path": "objects/obj_NemesisManager/obj_NemesisManager.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_nemesis_system",
-        "path": "scripts/scr_nemesis_system/scr_nemesis_system.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_ballista_idle",
-        "path": "sprites/spr_ms_ballista_idle/spr_ms_ballista_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_zephyr_idle",
-        "path": "sprites/spr_ms_zephyr_idle/spr_ms_zephyr_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_gorgon_idle",
-        "path": "sprites/spr_ms_gorgon_idle/spr_ms_gorgon_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ms_kage_idle",
-        "path": "sprites/spr_ms_kage_idle/spr_ms_kage_idle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_draw_animated_mobile_suit",
-        "path": "scripts/scr_draw_animated_mobile_suit/scr_draw_animated_mobile_suit.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_snes_faction_crests",
-        "path": "sprites/spr_snes_faction_crests/spr_snes_faction_crests.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_snes_panel_corner",
-        "path": "sprites/spr_snes_panel_corner/spr_snes_panel_corner.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_snes_hazard_stripe",
-        "path": "sprites/spr_snes_hazard_stripe/spr_snes_hazard_stripe.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_snes_led_indicators",
-        "path": "sprites/spr_snes_led_indicators/spr_snes_led_indicators.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_snes_tactical_cursor",
-        "path": "sprites/spr_snes_tactical_cursor/spr_snes_tactical_cursor.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_snes_crt_scanline",
-        "path": "sprites/spr_snes_crt_scanline/spr_snes_crt_scanline.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_snes_ui",
-        "path": "scripts/scr_snes_ui/scr_snes_ui.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_snes_trial_stamps",
-        "path": "sprites/spr_snes_trial_stamps/spr_snes_trial_stamps.yy"
-      }
-    },
+  "name":"MechMakerConcept",
+  "resources":[{"id":{"name":"spr_mini_ship_hephaestus","path":"sprites/spr_mini_ship_hephaestus/spr_mini_ship_hephaestus.yy",},},{"id":{"name":"spr_map_earth_global","path":"sprites/spr_map_earth_global/spr_map_earth_global.yy",},},
+    {"id":{"name":"obj_AudioManager","path":"objects/obj_AudioManager/obj_AudioManager.yy",},},
+    {"id":{"name":"obj_BattleManager","path":"objects/obj_BattleManager/obj_BattleManager.yy",},},
+    {"id":{"name":"obj_BlueprintManager","path":"objects/obj_BlueprintManager/obj_BlueprintManager.yy",},},
+    {"id":{"name":"obj_FactionManager","path":"objects/obj_FactionManager/obj_FactionManager.yy",},},    {"id":{"name":"obj_DebugManager","path":"objects/obj_DebugManager/obj_DebugManager.yy",},},
 
-      {"id":{"name":"snd_ui_click","path":"sounds/snd_ui_click/snd_ui_click.yy",},},
-    {"id":{"name":"snd_ui_hover","path":"sounds/snd_ui_hover/snd_ui_hover.yy",},},
-    {"id":{"name":"snd_ui_tab","path":"sounds/snd_ui_tab/snd_ui_tab.yy",},},
-    {"id":{"name":"snd_ui_confirm","path":"sounds/snd_ui_confirm/snd_ui_confirm.yy",},},
-    {"id":{"name":"snd_ui_cancel","path":"sounds/snd_ui_cancel/snd_ui_cancel.yy",},},
-    {"id":{"name":"snd_ui_terminal_boot","path":"sounds/snd_ui_terminal_boot/snd_ui_terminal_boot.yy",},},
-    {"id":{"name":"snd_ui_stamp","path":"sounds/snd_ui_stamp/snd_ui_stamp.yy",},},
+    {"id":{"name":"obj_GameManager","path":"objects/obj_GameManager/obj_GameManager.yy",},},
+    {"id":{"name":"obj_HQTerminal","path":"objects/obj_HQTerminal/obj_HQTerminal.yy",},},
+    {"id":{"name":"obj_MobileSuit","path":"objects/obj_MobileSuit/obj_MobileSuit.yy",},},
+    {"id":{"name":"obj_NemesisManager","path":"objects/obj_NemesisManager/obj_NemesisManager.yy",},},
+    {"id":{"name":"rm_combat","path":"rooms/rm_combat/rm_combat.yy",},},
+    {"id":{"name":"rm_hq_terminal","path":"rooms/rm_hq_terminal/rm_hq_terminal.yy",},},
+    {"id":{"name":"rm_init","path":"rooms/rm_init/rm_init.yy",},},
+    {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+    {"id":{"name":"scr_alloy_color_synthesis","path":"scripts/scr_alloy_color_synthesis/scr_alloy_color_synthesis.yy",},},
+    {"id":{"name":"scr_alloy_discovery_codex","path":"scripts/scr_alloy_discovery_codex/scr_alloy_discovery_codex.yy",},},
+    {"id":{"name":"scr_audio_manager","path":"scripts/scr_audio_manager/scr_audio_manager.yy",},},
+    {"id":{"name":"scr_combat_projectiles","path":"scripts/scr_combat_projectiles/scr_combat_projectiles.yy",},},
+    {"id":{"name":"scr_draw_animated_mobile_suit","path":"scripts/scr_draw_animated_mobile_suit/scr_draw_animated_mobile_suit.yy",},},
+    {"id":{"name":"scr_isometric_math","path":"scripts/scr_isometric_math/scr_isometric_math.yy",},},
+    {"id":{"name":"scr_load_blueprint","path":"scripts/scr_load_blueprint/scr_load_blueprint.yy",},},
+    {"id":{"name":"scr_ms_state_machine","path":"scripts/scr_ms_state_machine/scr_ms_state_machine.yy",},},
+    {"id":{"name":"scr_nemesis_system","path":"scripts/scr_nemesis_system/scr_nemesis_system.yy",},},
+    {"id":{"name":"scr_save_system","path":"scripts/scr_save_system/scr_save_system.yy",},},
+    {"id":{"name":"scr_snes_ui","path":"scripts/scr_snes_ui/scr_snes_ui.yy",},},
+    {"id":{"name":"scr_vn_engine","path":"scripts/scr_vn_engine/scr_vn_engine.yy",},},
+    {"id":{"name":"scr_territory_war_system","path":"scripts/scr_territory_war_system/scr_territory_war_system.yy",},},
+    {"id":{"name":"scr_research_tree_system","path":"scripts/scr_research_tree_system/scr_research_tree_system.yy",},},
+    {"id":{"name":"bgm_combat_engage","path":"sounds/bgm_combat_engage/bgm_combat_engage.yy",},},
+    {"id":{"name":"bgm_defeat_somber","path":"sounds/bgm_defeat_somber/bgm_defeat_somber.yy",},},
+    {"id":{"name":"bgm_hq_ambience","path":"sounds/bgm_hq_ambience/bgm_hq_ambience.yy",},},
+    {"id":{"name":"bgm_nemesis_incursion","path":"sounds/bgm_nemesis_incursion/bgm_nemesis_incursion.yy",},},
+    {"id":{"name":"bgm_prototyping_bay","path":"sounds/bgm_prototyping_bay/bgm_prototyping_bay.yy",},},
+    {"id":{"name":"bgm_victory_fanfare","path":"sounds/bgm_victory_fanfare/bgm_victory_fanfare.yy",},},
+    {"id":{"name":"snd_alarm_critical","path":"sounds/snd_alarm_critical/snd_alarm_critical.yy",},},
     {"id":{"name":"snd_crucible_pour","path":"sounds/snd_crucible_pour/snd_crucible_pour.yy",},},
-    {"id":{"name":"snd_hydraulic_press","path":"sounds/snd_hydraulic_press/snd_hydraulic_press.yy",},},
-    {"id":{"name":"snd_plasma_weld","path":"sounds/snd_plasma_weld/snd_plasma_weld.yy",},},
     {"id":{"name":"snd_discovery_fanfare","path":"sounds/snd_discovery_fanfare/snd_discovery_fanfare.yy",},},
-    {"id":{"name":"snd_mech_step","path":"sounds/snd_mech_step/snd_mech_step.yy",},},
-    {"id":{"name":"snd_mech_boost","path":"sounds/snd_mech_boost/snd_mech_boost.yy",},},
-    {"id":{"name":"snd_mech_servo","path":"sounds/snd_mech_servo/snd_mech_servo.yy",},},
-    {"id":{"name":"snd_weapon_vulcan","path":"sounds/snd_weapon_vulcan/snd_weapon_vulcan.yy",},},
-    {"id":{"name":"snd_weapon_cannon_120mm","path":"sounds/snd_weapon_cannon_120mm/snd_weapon_cannon_120mm.yy",},},
-    {"id":{"name":"snd_weapon_missile_launch","path":"sounds/snd_weapon_missile_launch/snd_weapon_missile_launch.yy",},},
-    {"id":{"name":"snd_weapon_beam_rifle","path":"sounds/snd_weapon_beam_rifle/snd_weapon_beam_rifle.yy",},},
-    {"id":{"name":"snd_weapon_plasma_blade","path":"sounds/snd_weapon_plasma_blade/snd_weapon_plasma_blade.yy",},},
-    {"id":{"name":"snd_weapon_railgun","path":"sounds/snd_weapon_railgun/snd_weapon_railgun.yy",},},
+    {"id":{"name":"snd_explosion_large","path":"sounds/snd_explosion_large/snd_explosion_large.yy",},},
+    {"id":{"name":"snd_explosion_small","path":"sounds/snd_explosion_small/snd_explosion_small.yy",},},
+    {"id":{"name":"snd_hydraulic_press","path":"sounds/snd_hydraulic_press/snd_hydraulic_press.yy",},},
     {"id":{"name":"snd_impact_armor","path":"sounds/snd_impact_armor/snd_impact_armor.yy",},},
     {"id":{"name":"snd_impact_penetrate","path":"sounds/snd_impact_penetrate/snd_impact_penetrate.yy",},},
-    {"id":{"name":"snd_explosion_small","path":"sounds/snd_explosion_small/snd_explosion_small.yy",},},
-    {"id":{"name":"snd_explosion_large","path":"sounds/snd_explosion_large/snd_explosion_large.yy",},},
-    {"id":{"name":"snd_alarm_critical","path":"sounds/snd_alarm_critical/snd_alarm_critical.yy",},},
-    {"id":{"name":"bgm_hq_ambience","path":"sounds/bgm_hq_ambience/bgm_hq_ambience.yy",},},
-    {"id":{"name":"bgm_prototyping_bay","path":"sounds/bgm_prototyping_bay/bgm_prototyping_bay.yy",},},
-    {"id":{"name":"bgm_combat_engage","path":"sounds/bgm_combat_engage/bgm_combat_engage.yy",},},
-    {"id":{"name":"bgm_nemesis_incursion","path":"sounds/bgm_nemesis_incursion/bgm_nemesis_incursion.yy",},},
-    {"id":{"name":"bgm_victory_fanfare","path":"sounds/bgm_victory_fanfare/bgm_victory_fanfare.yy",},},
-    {"id":{"name":"bgm_defeat_somber","path":"sounds/bgm_defeat_somber/bgm_defeat_somber.yy",},},
-    {"id":{"name":"obj_AudioManager","path":"objects/obj_AudioManager/obj_AudioManager.yy",},},
-    {"id":{"name":"scr_audio_manager","path":"scripts/scr_audio_manager/scr_audio_manager.yy",},},
-    {"id":{"name":"spr_portrait_commander_male","path":"sprites/spr_portrait_commander_male/spr_portrait_commander_male.yy",},},
-    {"id":{"name":"spr_portrait_commander_female","path":"sprites/spr_portrait_commander_female/spr_portrait_commander_female.yy",},},
-    {"id":{"name":"spr_portrait_commander_silhouette","path":"sprites/spr_portrait_commander_silhouette/spr_portrait_commander_silhouette.yy",},},
+    {"id":{"name":"snd_mech_boost","path":"sounds/snd_mech_boost/snd_mech_boost.yy",},},
+    {"id":{"name":"snd_mech_servo","path":"sounds/snd_mech_servo/snd_mech_servo.yy",},},
+    {"id":{"name":"snd_mech_step","path":"sounds/snd_mech_step/snd_mech_step.yy",},},
+    {"id":{"name":"snd_plasma_weld","path":"sounds/snd_plasma_weld/snd_plasma_weld.yy",},},
+    {"id":{"name":"snd_ui_cancel","path":"sounds/snd_ui_cancel/snd_ui_cancel.yy",},},
+    {"id":{"name":"snd_ui_click","path":"sounds/snd_ui_click/snd_ui_click.yy",},},
+    {"id":{"name":"snd_ui_confirm","path":"sounds/snd_ui_confirm/snd_ui_confirm.yy",},},
+    {"id":{"name":"snd_ui_hover","path":"sounds/snd_ui_hover/snd_ui_hover.yy",},},
+    {"id":{"name":"snd_ui_stamp","path":"sounds/snd_ui_stamp/snd_ui_stamp.yy",},},
+    {"id":{"name":"snd_ui_tab","path":"sounds/snd_ui_tab/snd_ui_tab.yy",},},
+    {"id":{"name":"snd_ui_terminal_boot","path":"sounds/snd_ui_terminal_boot/snd_ui_terminal_boot.yy",},},
+    {"id":{"name":"snd_weapon_beam_rifle","path":"sounds/snd_weapon_beam_rifle/snd_weapon_beam_rifle.yy",},},
+    {"id":{"name":"snd_weapon_cannon_120mm","path":"sounds/snd_weapon_cannon_120mm/snd_weapon_cannon_120mm.yy",},},
+    {"id":{"name":"snd_weapon_missile_launch","path":"sounds/snd_weapon_missile_launch/snd_weapon_missile_launch.yy",},},
+    {"id":{"name":"snd_weapon_plasma_blade","path":"sounds/snd_weapon_plasma_blade/snd_weapon_plasma_blade.yy",},},
+    {"id":{"name":"snd_weapon_railgun","path":"sounds/snd_weapon_railgun/snd_weapon_railgun.yy",},},
+    {"id":{"name":"snd_weapon_vulcan","path":"sounds/snd_weapon_vulcan/snd_weapon_vulcan.yy",},},
+    {"id":{"name":"spr_comp_head","path":"sprites/spr_comp_head/spr_comp_head.yy",},},
+    {"id":{"name":"spr_comp_legs","path":"sprites/spr_comp_legs/spr_comp_legs.yy",},},
+    {"id":{"name":"spr_comp_reactor","path":"sprites/spr_comp_reactor/spr_comp_reactor.yy",},},
+    {"id":{"name":"spr_comp_thruster","path":"sprites/spr_comp_thruster/spr_comp_thruster.yy",},},
+    {"id":{"name":"spr_comp_torso","path":"sprites/spr_comp_torso/spr_comp_torso.yy",},},
+    {"id":{"name":"spr_comp_weapon","path":"sprites/spr_comp_weapon/spr_comp_weapon.yy",},},
+    {"id":{"name":"spr_decade_evolution","path":"sprites/spr_decade_evolution/spr_decade_evolution.yy",},},
+    {"id":{"name":"spr_fx_explosion","path":"sprites/spr_fx_explosion/spr_fx_explosion.yy",},},
+    {"id":{"name":"spr_fx_spark","path":"sprites/spr_fx_spark/spr_fx_spark.yy",},},
+    {"id":{"name":"spr_icon_flux","path":"sprites/spr_icon_flux/spr_icon_flux.yy",},},
+    {"id":{"name":"spr_icon_silica","path":"sprites/spr_icon_silica/spr_icon_silica.yy",},},
+    {"id":{"name":"spr_icon_slag","path":"sprites/spr_icon_slag/spr_icon_slag.yy",},},
+    {"id":{"name":"spr_icon_tritium","path":"sprites/spr_icon_tritium/spr_icon_tritium.yy",},},
+    {"id":{"name":"spr_icon_tungsten","path":"sprites/spr_icon_tungsten/spr_icon_tungsten.yy",},},
+    {"id":{"name":"spr_icon_vanguard","path":"sprites/spr_icon_vanguard/spr_icon_vanguard.yy",},},
+    {"id":{"name":"spr_inf_colony_squad_back_idle","path":"sprites/spr_inf_colony_squad_back_idle/spr_inf_colony_squad_back_idle.yy",},},
+    {"id":{"name":"spr_inf_colony_squad_defeat","path":"sprites/spr_inf_colony_squad_defeat/spr_inf_colony_squad_defeat.yy",},},
+    {"id":{"name":"spr_inf_colony_squad_fire","path":"sprites/spr_inf_colony_squad_fire/spr_inf_colony_squad_fire.yy",},},
+    {"id":{"name":"spr_inf_colony_squad_idle","path":"sprites/spr_inf_colony_squad_idle/spr_inf_colony_squad_idle.yy",},},
+    {"id":{"name":"spr_inf_suppressed","path":"sprites/spr_inf_suppressed/spr_inf_suppressed.yy",},},
+    {"id":{"name":"spr_inf_syndicate_squad_back_idle","path":"sprites/spr_inf_syndicate_squad_back_idle/spr_inf_syndicate_squad_back_idle.yy",},},
+    {"id":{"name":"spr_inf_syndicate_squad_defeat","path":"sprites/spr_inf_syndicate_squad_defeat/spr_inf_syndicate_squad_defeat.yy",},},
+    {"id":{"name":"spr_inf_syndicate_squad_fire","path":"sprites/spr_inf_syndicate_squad_fire/spr_inf_syndicate_squad_fire.yy",},},
+    {"id":{"name":"spr_inf_syndicate_squad_idle","path":"sprites/spr_inf_syndicate_squad_idle/spr_inf_syndicate_squad_idle.yy",},},
+    {"id":{"name":"spr_inf_terran_squad_back_idle","path":"sprites/spr_inf_terran_squad_back_idle/spr_inf_terran_squad_back_idle.yy",},},
+    {"id":{"name":"spr_inf_terran_squad_defeat","path":"sprites/spr_inf_terran_squad_defeat/spr_inf_terran_squad_defeat.yy",},},
+    {"id":{"name":"spr_inf_terran_squad_fire","path":"sprites/spr_inf_terran_squad_fire/spr_inf_terran_squad_fire.yy",},},
+    {"id":{"name":"spr_inf_terran_squad_idle","path":"sprites/spr_inf_terran_squad_idle/spr_inf_terran_squad_idle.yy",},},
+    {"id":{"name":"spr_inf_zaibatsu_squad_back_idle","path":"sprites/spr_inf_zaibatsu_squad_back_idle/spr_inf_zaibatsu_squad_back_idle.yy",},},
+    {"id":{"name":"spr_inf_zaibatsu_squad_defeat","path":"sprites/spr_inf_zaibatsu_squad_defeat/spr_inf_zaibatsu_squad_defeat.yy",},},
+    {"id":{"name":"spr_inf_zaibatsu_squad_fire","path":"sprites/spr_inf_zaibatsu_squad_fire/spr_inf_zaibatsu_squad_fire.yy",},},
+    {"id":{"name":"spr_inf_zaibatsu_squad_idle","path":"sprites/spr_inf_zaibatsu_squad_idle/spr_inf_zaibatsu_squad_idle.yy",},},
     {"id":{"name":"spr_loc_hangar_bay","path":"sprites/spr_loc_hangar_bay/spr_loc_hangar_bay.yy",},},
     {"id":{"name":"spr_loc_war_room","path":"sprites/spr_loc_war_room/spr_loc_war_room.yy",},},
+    {"id":{"name":"spr_mech_schematic","path":"sprites/spr_mech_schematic/spr_mech_schematic.yy",},},
+    {"id":{"name":"spr_ms_aether_attack_saber","path":"sprites/spr_ms_aether_attack_saber/spr_ms_aether_attack_saber.yy",},},
+    {"id":{"name":"spr_ms_aether_back_idle","path":"sprites/spr_ms_aether_back_idle/spr_ms_aether_back_idle.yy",},},
+    {"id":{"name":"spr_ms_aether_boost","path":"sprites/spr_ms_aether_boost/spr_ms_aether_boost.yy",},},
+    {"id":{"name":"spr_ms_aether_fire_beam","path":"sprites/spr_ms_aether_fire_beam/spr_ms_aether_fire_beam.yy",},},
+    {"id":{"name":"spr_ms_aether_idle","path":"sprites/spr_ms_aether_idle/spr_ms_aether_idle.yy",},},
+    {"id":{"name":"spr_ms_ballista_back_idle","path":"sprites/spr_ms_ballista_back_idle/spr_ms_ballista_back_idle.yy",},},
+    {"id":{"name":"spr_ms_ballista_idle","path":"sprites/spr_ms_ballista_idle/spr_ms_ballista_idle.yy",},},
+    {"id":{"name":"spr_ms_bloodhound_back_idle","path":"sprites/spr_ms_bloodhound_back_idle/spr_ms_bloodhound_back_idle.yy",},},
+    {"id":{"name":"spr_ms_bloodhound_idle","path":"sprites/spr_ms_bloodhound_idle/spr_ms_bloodhound_idle.yy",},},
+    {"id":{"name":"spr_ms_centurion_back_idle","path":"sprites/spr_ms_centurion_back_idle/spr_ms_centurion_back_idle.yy",},},
+    {"id":{"name":"spr_ms_centurion_idle","path":"sprites/spr_ms_centurion_idle/spr_ms_centurion_idle.yy",},},
+    {"id":{"name":"spr_ms_custom_aero_striker_back_idle","path":"sprites/spr_ms_custom_aero_striker_back_idle/spr_ms_custom_aero_striker_back_idle.yy",},},
+    {"id":{"name":"spr_ms_custom_aero_striker_idle","path":"sprites/spr_ms_custom_aero_striker_idle/spr_ms_custom_aero_striker_idle.yy",},},
+    {"id":{"name":"spr_ms_custom_biped_heavy_back_idle","path":"sprites/spr_ms_custom_biped_heavy_back_idle/spr_ms_custom_biped_heavy_back_idle.yy",},},
+    {"id":{"name":"spr_ms_custom_biped_heavy_idle","path":"sprites/spr_ms_custom_biped_heavy_idle/spr_ms_custom_biped_heavy_idle.yy",},},
+    {"id":{"name":"spr_ms_custom_hover_sniper_back_idle","path":"sprites/spr_ms_custom_hover_sniper_back_idle/spr_ms_custom_hover_sniper_back_idle.yy",},},
+    {"id":{"name":"spr_ms_custom_hover_sniper_idle","path":"sprites/spr_ms_custom_hover_sniper_idle/spr_ms_custom_hover_sniper_idle.yy",},},
+    {"id":{"name":"spr_ms_custom_tread_artillery_back_idle","path":"sprites/spr_ms_custom_tread_artillery_back_idle/spr_ms_custom_tread_artillery_back_idle.yy",},},
+    {"id":{"name":"spr_ms_custom_tread_artillery_idle","path":"sprites/spr_ms_custom_tread_artillery_idle/spr_ms_custom_tread_artillery_idle.yy",},},
+    {"id":{"name":"spr_ms_gorgon_back_idle","path":"sprites/spr_ms_gorgon_back_idle/spr_ms_gorgon_back_idle.yy",},},
+    {"id":{"name":"spr_ms_gorgon_idle","path":"sprites/spr_ms_gorgon_idle/spr_ms_gorgon_idle.yy",},},
+    {"id":{"name":"spr_ms_hephaestus_avatar_back_idle","path":"sprites/spr_ms_hephaestus_avatar_back_idle/spr_ms_hephaestus_avatar_back_idle.yy",},},
+    {"id":{"name":"spr_ms_hephaestus_avatar","path":"sprites/spr_ms_hephaestus_avatar/spr_ms_hephaestus_avatar.yy",},},
+    {"id":{"name":"spr_ms_hyena_attack_claw","path":"sprites/spr_ms_hyena_attack_claw/spr_ms_hyena_attack_claw.yy",},},
+    {"id":{"name":"spr_ms_hyena_back_idle","path":"sprites/spr_ms_hyena_back_idle/spr_ms_hyena_back_idle.yy",},},
+    {"id":{"name":"spr_ms_hyena_fire_flak","path":"sprites/spr_ms_hyena_fire_flak/spr_ms_hyena_fire_flak.yy",},},
+    {"id":{"name":"spr_ms_hyena_idle","path":"sprites/spr_ms_hyena_idle/spr_ms_hyena_idle.yy",},},
+    {"id":{"name":"spr_ms_hyena_walk","path":"sprites/spr_ms_hyena_walk/spr_ms_hyena_walk.yy",},},
+    {"id":{"name":"spr_ms_ironclad_attack_melee","path":"sprites/spr_ms_ironclad_attack_melee/spr_ms_ironclad_attack_melee.yy",},},
+    {"id":{"name":"spr_ms_ironclad_back_idle","path":"sprites/spr_ms_ironclad_back_idle/spr_ms_ironclad_back_idle.yy",},},
+    {"id":{"name":"spr_ms_ironclad_crippled_idle","path":"sprites/spr_ms_ironclad_crippled_idle/spr_ms_ironclad_crippled_idle.yy",},},
+    {"id":{"name":"spr_ms_ironclad_crippled","path":"sprites/spr_ms_ironclad_crippled/spr_ms_ironclad_crippled.yy",},},
+    {"id":{"name":"spr_ms_ironclad_damage_both_arms","path":"sprites/spr_ms_ironclad_damage_both_arms/spr_ms_ironclad_damage_both_arms.yy",},},
+    {"id":{"name":"spr_ms_ironclad_damage_energy","path":"sprites/spr_ms_ironclad_damage_energy/spr_ms_ironclad_damage_energy.yy",},},
+    {"id":{"name":"spr_ms_ironclad_damage_kinetic","path":"sprites/spr_ms_ironclad_damage_kinetic/spr_ms_ironclad_damage_kinetic.yy",},},
+    {"id":{"name":"spr_ms_ironclad_damage_left_arm","path":"sprites/spr_ms_ironclad_damage_left_arm/spr_ms_ironclad_damage_left_arm.yy",},},
+    {"id":{"name":"spr_ms_ironclad_damage_melee","path":"sprites/spr_ms_ironclad_damage_melee/spr_ms_ironclad_damage_melee.yy",},},
+    {"id":{"name":"spr_ms_ironclad_damage_right_arm","path":"sprites/spr_ms_ironclad_damage_right_arm/spr_ms_ironclad_damage_right_arm.yy",},},
+    {"id":{"name":"spr_ms_ironclad_damage_rocket","path":"sprites/spr_ms_ironclad_damage_rocket/spr_ms_ironclad_damage_rocket.yy",},},
+    {"id":{"name":"spr_ms_ironclad_destroyed","path":"sprites/spr_ms_ironclad_destroyed/spr_ms_ironclad_destroyed.yy",},},
+    {"id":{"name":"spr_ms_ironclad_fire_chaingun","path":"sprites/spr_ms_ironclad_fire_chaingun/spr_ms_ironclad_fire_chaingun.yy",},},
+    {"id":{"name":"spr_ms_ironclad_fire_missiles","path":"sprites/spr_ms_ironclad_fire_missiles/spr_ms_ironclad_fire_missiles.yy",},},
+    {"id":{"name":"spr_ms_ironclad_fire_rifle","path":"sprites/spr_ms_ironclad_fire_rifle/spr_ms_ironclad_fire_rifle.yy",},},
+    {"id":{"name":"spr_ms_ironclad_hit_armless","path":"sprites/spr_ms_ironclad_hit_armless/spr_ms_ironclad_hit_armless.yy",},},
+    {"id":{"name":"spr_ms_ironclad_hit_crippled","path":"sprites/spr_ms_ironclad_hit_crippled/spr_ms_ironclad_hit_crippled.yy",},},
+    {"id":{"name":"spr_ms_ironclad_hit_energy","path":"sprites/spr_ms_ironclad_hit_energy/spr_ms_ironclad_hit_energy.yy",},},
+    {"id":{"name":"spr_ms_ironclad_hit_kinetic","path":"sprites/spr_ms_ironclad_hit_kinetic/spr_ms_ironclad_hit_kinetic.yy",},},
+    {"id":{"name":"spr_ms_ironclad_hit_left_arm_off","path":"sprites/spr_ms_ironclad_hit_left_arm_off/spr_ms_ironclad_hit_left_arm_off.yy",},},
+    {"id":{"name":"spr_ms_ironclad_hit_melee","path":"sprites/spr_ms_ironclad_hit_melee/spr_ms_ironclad_hit_melee.yy",},},
+    {"id":{"name":"spr_ms_ironclad_hit_right_arm_off","path":"sprites/spr_ms_ironclad_hit_right_arm_off/spr_ms_ironclad_hit_right_arm_off.yy",},},
+    {"id":{"name":"spr_ms_ironclad_hit_rocket","path":"sprites/spr_ms_ironclad_hit_rocket/spr_ms_ironclad_hit_rocket.yy",},},
+    {"id":{"name":"spr_ms_ironclad_idle_critical","path":"sprites/spr_ms_ironclad_idle_critical/spr_ms_ironclad_idle_critical.yy",},},
+    {"id":{"name":"spr_ms_ironclad_idle_damaged","path":"sprites/spr_ms_ironclad_idle_damaged/spr_ms_ironclad_idle_damaged.yy",},},
+    {"id":{"name":"spr_ms_ironclad_idle","path":"sprites/spr_ms_ironclad_idle/spr_ms_ironclad_idle.yy",},},
+    {"id":{"name":"spr_ms_kage_back_idle","path":"sprites/spr_ms_kage_back_idle/spr_ms_kage_back_idle.yy",},},
+    {"id":{"name":"spr_ms_kage_idle","path":"sprites/spr_ms_kage_idle/spr_ms_kage_idle.yy",},},
+    {"id":{"name":"spr_ms_kepler_back_idle","path":"sprites/spr_ms_kepler_back_idle/spr_ms_kepler_back_idle.yy",},},
+    {"id":{"name":"spr_ms_kepler_idle","path":"sprites/spr_ms_kepler_idle/spr_ms_kepler_idle.yy",},},
+    {"id":{"name":"spr_ms_muramasa_attack_blade","path":"sprites/spr_ms_muramasa_attack_blade/spr_ms_muramasa_attack_blade.yy",},},
+    {"id":{"name":"spr_ms_muramasa_back_idle","path":"sprites/spr_ms_muramasa_back_idle/spr_ms_muramasa_back_idle.yy",},},
+    {"id":{"name":"spr_ms_muramasa_fire_plasma","path":"sprites/spr_ms_muramasa_fire_plasma/spr_ms_muramasa_fire_plasma.yy",},},
+    {"id":{"name":"spr_ms_muramasa_idle","path":"sprites/spr_ms_muramasa_idle/spr_ms_muramasa_idle.yy",},},
+    {"id":{"name":"spr_ms_muramasa_sprint","path":"sprites/spr_ms_muramasa_sprint/spr_ms_muramasa_sprint.yy",},},
+    {"id":{"name":"spr_ms_oberon_back_idle","path":"sprites/spr_ms_oberon_back_idle/spr_ms_oberon_back_idle.yy",},},
+    {"id":{"name":"spr_ms_oberon_idle","path":"sprites/spr_ms_oberon_idle/spr_ms_oberon_idle.yy",},},
+    {"id":{"name":"spr_ms_ronin_back_idle","path":"sprites/spr_ms_ronin_back_idle/spr_ms_ronin_back_idle.yy",},},
+    {"id":{"name":"spr_ms_ronin_idle","path":"sprites/spr_ms_ronin_idle/spr_ms_ronin_idle.yy",},},
+    {"id":{"name":"spr_ms_siegebreaker_anchor","path":"sprites/spr_ms_siegebreaker_anchor/spr_ms_siegebreaker_anchor.yy",},},
+    {"id":{"name":"spr_ms_siegebreaker_eject","path":"sprites/spr_ms_siegebreaker_eject/spr_ms_siegebreaker_eject.yy",},},
+    {"id":{"name":"spr_ms_siegebreaker_elevate","path":"sprites/spr_ms_siegebreaker_elevate/spr_ms_siegebreaker_elevate.yy",},},
+    {"id":{"name":"spr_ms_siegebreaker_fire","path":"sprites/spr_ms_siegebreaker_fire/spr_ms_siegebreaker_fire.yy",},},
+    {"id":{"name":"spr_ms_tessen_back_idle","path":"sprites/spr_ms_tessen_back_idle/spr_ms_tessen_back_idle.yy",},},
+    {"id":{"name":"spr_ms_tessen_idle","path":"sprites/spr_ms_tessen_idle/spr_ms_tessen_idle.yy",},},
+    {"id":{"name":"spr_ms_titan_proto_back_idle","path":"sprites/spr_ms_titan_proto_back_idle/spr_ms_titan_proto_back_idle.yy",},},
+    {"id":{"name":"spr_ms_titan_proto","path":"sprites/spr_ms_titan_proto/spr_ms_titan_proto.yy",},},
+    {"id":{"name":"spr_ms_trenchcoat_back_idle","path":"sprites/spr_ms_trenchcoat_back_idle/spr_ms_trenchcoat_back_idle.yy",},},
+    {"id":{"name":"spr_ms_trenchcoat_idle","path":"sprites/spr_ms_trenchcoat_idle/spr_ms_trenchcoat_idle.yy",},},
+    {"id":{"name":"spr_ms_vandal_back_idle","path":"sprites/spr_ms_vandal_back_idle/spr_ms_vandal_back_idle.yy",},},
+    {"id":{"name":"spr_ms_vandal_idle","path":"sprites/spr_ms_vandal_idle/spr_ms_vandal_idle.yy",},},
+    {"id":{"name":"spr_ms_zephyr_back_idle","path":"sprites/spr_ms_zephyr_back_idle/spr_ms_zephyr_back_idle.yy",},},
+    {"id":{"name":"spr_ms_zephyr_idle","path":"sprites/spr_ms_zephyr_idle/spr_ms_zephyr_idle.yy",},},
+    {"id":{"name":"spr_portrait_cassian","path":"sprites/spr_portrait_cassian/spr_portrait_cassian.yy",},},
+    {"id":{"name":"spr_portrait_cole","path":"sprites/spr_portrait_cole/spr_portrait_cole.yy",},},
+    {"id":{"name":"spr_portrait_commander_female","path":"sprites/spr_portrait_commander_female/spr_portrait_commander_female.yy",},},
+    {"id":{"name":"spr_portrait_commander_male","path":"sprites/spr_portrait_commander_male/spr_portrait_commander_male.yy",},},
+    {"id":{"name":"spr_portrait_commander_silhouette","path":"sprites/spr_portrait_commander_silhouette/spr_portrait_commander_silhouette.yy",},},
+    {"id":{"name":"spr_portrait_cruz","path":"sprites/spr_portrait_cruz/spr_portrait_cruz.yy",},},
+    {"id":{"name":"spr_portrait_nadia","path":"sprites/spr_portrait_nadia/spr_portrait_nadia.yy",},},
+    {"id":{"name":"spr_portrait_null07","path":"sprites/spr_portrait_null07/spr_portrait_null07.yy",},},
+    {"id":{"name":"spr_portrait_renzo","path":"sprites/spr_portrait_renzo/spr_portrait_renzo.yy",},},
+    {"id":{"name":"spr_portrait_sorren","path":"sprites/spr_portrait_sorren/spr_portrait_sorren.yy",},},
+    {"id":{"name":"spr_portrait_vance","path":"sprites/spr_portrait_vance/spr_portrait_vance.yy",},},
+    {"id":{"name":"spr_proj_beam","path":"sprites/spr_proj_beam/spr_proj_beam.yy",},},
+    {"id":{"name":"spr_proj_cannon_120mm","path":"sprites/spr_proj_cannon_120mm/spr_proj_cannon_120mm.yy",},},
+    {"id":{"name":"spr_proj_missile","path":"sprites/spr_proj_missile/spr_proj_missile.yy",},},
+    {"id":{"name":"spr_proj_railgun","path":"sprites/spr_proj_railgun/spr_proj_railgun.yy",},},
+    {"id":{"name":"spr_proj_vulcan","path":"sprites/spr_proj_vulcan/spr_proj_vulcan.yy",},},
+    {"id":{"name":"spr_snes_crt_scanline","path":"sprites/spr_snes_crt_scanline/spr_snes_crt_scanline.yy",},},
+    {"id":{"name":"spr_snes_faction_crests","path":"sprites/spr_snes_faction_crests/spr_snes_faction_crests.yy",},},
+    {"id":{"name":"spr_snes_hazard_stripe","path":"sprites/spr_snes_hazard_stripe/spr_snes_hazard_stripe.yy",},},
+    {"id":{"name":"spr_snes_led_indicators","path":"sprites/spr_snes_led_indicators/spr_snes_led_indicators.yy",},},
+    {"id":{"name":"spr_snes_panel_corner","path":"sprites/spr_snes_panel_corner/spr_snes_panel_corner.yy",},},
+    {"id":{"name":"spr_snes_tactical_cursor","path":"sprites/spr_snes_tactical_cursor/spr_snes_tactical_cursor.yy",},},
+    {"id":{"name":"spr_snes_trial_stamps","path":"sprites/spr_snes_trial_stamps/spr_snes_trial_stamps.yy",},},
+    {"id":{"name":"spr_space_sector_map","path":"sprites/spr_space_sector_map/spr_space_sector_map.yy",},},
+    {"id":{"name":"spr_veh_colony_dart_back_idle","path":"sprites/spr_veh_colony_dart_back_idle/spr_veh_colony_dart_back_idle.yy",},},
+    {"id":{"name":"spr_veh_colony_dart_fire","path":"sprites/spr_veh_colony_dart_fire/spr_veh_colony_dart_fire.yy",},},
+    {"id":{"name":"spr_veh_colony_dart_idle","path":"sprites/spr_veh_colony_dart_idle/spr_veh_colony_dart_idle.yy",},},
+    {"id":{"name":"spr_veh_colony_gunship_back_idle","path":"sprites/spr_veh_colony_gunship_back_idle/spr_veh_colony_gunship_back_idle.yy",},},
+    {"id":{"name":"spr_veh_colony_gunship_fire","path":"sprites/spr_veh_colony_gunship_fire/spr_veh_colony_gunship_fire.yy",},},
+    {"id":{"name":"spr_veh_colony_gunship_idle","path":"sprites/spr_veh_colony_gunship_idle/spr_veh_colony_gunship_idle.yy",},},
+    {"id":{"name":"spr_veh_colony_stiletto_back_idle","path":"sprites/spr_veh_colony_stiletto_back_idle/spr_veh_colony_stiletto_back_idle.yy",},},
+    {"id":{"name":"spr_veh_colony_stiletto_fire","path":"sprites/spr_veh_colony_stiletto_fire/spr_veh_colony_stiletto_fire.yy",},},
+    {"id":{"name":"spr_veh_colony_stiletto_idle","path":"sprites/spr_veh_colony_stiletto_idle/spr_veh_colony_stiletto_idle.yy",},},
+    {"id":{"name":"spr_veh_syndicate_bomber_back_idle","path":"sprites/spr_veh_syndicate_bomber_back_idle/spr_veh_syndicate_bomber_back_idle.yy",},},
+    {"id":{"name":"spr_veh_syndicate_bomber_fire","path":"sprites/spr_veh_syndicate_bomber_fire/spr_veh_syndicate_bomber_fire.yy",},},
+    {"id":{"name":"spr_veh_syndicate_bomber_idle","path":"sprites/spr_veh_syndicate_bomber_idle/spr_veh_syndicate_bomber_idle.yy",},},
+    {"id":{"name":"spr_veh_syndicate_technical_back_idle","path":"sprites/spr_veh_syndicate_technical_back_idle/spr_veh_syndicate_technical_back_idle.yy",},},
+    {"id":{"name":"spr_veh_syndicate_technical_fire","path":"sprites/spr_veh_syndicate_technical_fire/spr_veh_syndicate_technical_fire.yy",},},
+    {"id":{"name":"spr_veh_syndicate_technical_idle","path":"sprites/spr_veh_syndicate_technical_idle/spr_veh_syndicate_technical_idle.yy",},},
+    {"id":{"name":"spr_veh_terran_mammoth_back_idle","path":"sprites/spr_veh_terran_mammoth_back_idle/spr_veh_terran_mammoth_back_idle.yy",},},
+    {"id":{"name":"spr_veh_terran_mammoth_fire","path":"sprites/spr_veh_terran_mammoth_fire/spr_veh_terran_mammoth_fire.yy",},},
+    {"id":{"name":"spr_veh_terran_mammoth_idle","path":"sprites/spr_veh_terran_mammoth_idle/spr_veh_terran_mammoth_idle.yy",},},
+    {"id":{"name":"spr_veh_terran_skyhammer_back_idle","path":"sprites/spr_veh_terran_skyhammer_back_idle/spr_veh_terran_skyhammer_back_idle.yy",},},
+    {"id":{"name":"spr_veh_terran_skyhammer_fire","path":"sprites/spr_veh_terran_skyhammer_fire/spr_veh_terran_skyhammer_fire.yy",},},
+    {"id":{"name":"spr_veh_terran_skyhammer_idle","path":"sprites/spr_veh_terran_skyhammer_idle/spr_veh_terran_skyhammer_idle.yy",},},
+    {"id":{"name":"spr_veh_wreckage_plane","path":"sprites/spr_veh_wreckage_plane/spr_veh_wreckage_plane.yy",},},
+    {"id":{"name":"spr_veh_wreckage_tank","path":"sprites/spr_veh_wreckage_tank/spr_veh_wreckage_tank.yy",},},
+    {"id":{"name":"spr_veh_zaibatsu_drone_jet_back_idle","path":"sprites/spr_veh_zaibatsu_drone_jet_back_idle/spr_veh_zaibatsu_drone_jet_back_idle.yy",},},
+    {"id":{"name":"spr_veh_zaibatsu_drone_jet_fire","path":"sprites/spr_veh_zaibatsu_drone_jet_fire/spr_veh_zaibatsu_drone_jet_fire.yy",},},
+    {"id":{"name":"spr_veh_zaibatsu_drone_jet_idle","path":"sprites/spr_veh_zaibatsu_drone_jet_idle/spr_veh_zaibatsu_drone_jet_idle.yy",},},
+    {"id":{"name":"spr_veh_zaibatsu_kurogane_back_idle","path":"sprites/spr_veh_zaibatsu_kurogane_back_idle/spr_veh_zaibatsu_kurogane_back_idle.yy",},},
+    {"id":{"name":"spr_veh_zaibatsu_kurogane_fire","path":"sprites/spr_veh_zaibatsu_kurogane_fire/spr_veh_zaibatsu_kurogane_fire.yy",},},
+    {"id":{"name":"spr_veh_zaibatsu_kurogane_idle","path":"sprites/spr_veh_zaibatsu_kurogane_idle/spr_veh_zaibatsu_kurogane_idle.yy",},},
+      {"id":{"name":"spr_map_space_theater","path":"sprites/spr_map_space_theater/spr_map_space_theater.yy",},},
+    {"id":{"name":"spr_map_earth_theater","path":"sprites/spr_map_earth_theater/spr_map_earth_theater.yy",},},
+    {"id":{"name":"spr_map_mars_theater","path":"sprites/spr_map_mars_theater/spr_map_mars_theater.yy",},},
+    {"id":{"name":"spr_loc_colony_cylinder","path":"sprites/spr_loc_colony_cylinder/spr_loc_colony_cylinder.yy",},},
+    {"id":{"name":"spr_loc_luna_city","path":"sprites/spr_loc_luna_city/spr_loc_luna_city.yy",},},
+    {"id":{"name":"spr_loc_space_citadel","path":"sprites/spr_loc_space_citadel/spr_loc_space_citadel.yy",},},
+    {"id":{"name":"spr_loc_earth_granite","path":"sprites/spr_loc_earth_granite/spr_loc_earth_granite.yy",},},
+    {"id":{"name":"spr_loc_mars_redoubt","path":"sprites/spr_loc_mars_redoubt/spr_loc_mars_redoubt.yy",},},
+    {"id":{"name":"spr_hex_base_colony","path":"sprites/spr_hex_base_colony/spr_hex_base_colony.yy",},},
+    {"id":{"name":"spr_hex_base_mars","path":"sprites/spr_hex_base_mars/spr_hex_base_mars.yy",},},
+    {"id":{"name":"spr_hex_base_pmc","path":"sprites/spr_hex_base_pmc/spr_hex_base_pmc.yy",},},
+    {"id":{"name":"spr_hex_base_sidereal","path":"sprites/spr_hex_base_sidereal/spr_hex_base_sidereal.yy",},},
+    {"id":{"name":"spr_hex_base_syndicate","path":"sprites/spr_hex_base_syndicate/spr_hex_base_syndicate.yy",},},
+    {"id":{"name":"spr_hex_base_terran","path":"sprites/spr_hex_base_terran/spr_hex_base_terran.yy",},},
+    {"id":{"name":"spr_hex_base_zaibatsu","path":"sprites/spr_hex_base_zaibatsu/spr_hex_base_zaibatsu.yy",},},
+    {"id":{"name":"spr_mini_inf_exo_squad","path":"sprites/spr_mini_inf_exo_squad/spr_mini_inf_exo_squad.yy",},},
+    {"id":{"name":"spr_mini_ms_aerostriker","path":"sprites/spr_mini_ms_aerostriker/spr_mini_ms_aerostriker.yy",},},
+    {"id":{"name":"spr_mini_ms_artillery","path":"sprites/spr_mini_ms_artillery/spr_mini_ms_artillery.yy",},},
+    {"id":{"name":"spr_mini_ms_commander","path":"sprites/spr_mini_ms_commander/spr_mini_ms_commander.yy",},},
+    {"id":{"name":"spr_mini_ms_grunt","path":"sprites/spr_mini_ms_grunt/spr_mini_ms_grunt.yy",},},
+    {"id":{"name":"spr_mini_ms_hoversniper","path":"sprites/spr_mini_ms_hoversniper/spr_mini_ms_hoversniper.yy",},},
+    {"id":{"name":"spr_mini_ms_ironclad","path":"sprites/spr_mini_ms_ironclad/spr_mini_ms_ironclad.yy",},},
+    {"id":{"name":"spr_mini_veh_dropship","path":"sprites/spr_mini_veh_dropship/spr_mini_veh_dropship.yy",},},
+    {"id":{"name":"spr_mini_veh_gunship","path":"sprites/spr_mini_veh_gunship/spr_mini_veh_gunship.yy",},},
+    {"id":{"name":"spr_mini_veh_heavy_tank","path":"sprites/spr_mini_veh_heavy_tank/spr_mini_veh_heavy_tank.yy",},},
+    {"id":{"name":"spr_mini_veh_technical","path":"sprites/spr_mini_veh_technical/spr_mini_veh_technical.yy",},},
+    {"id":{"name":"spr_tactical_bracket","path":"sprites/spr_tactical_bracket/spr_tactical_bracket.yy",},},
+    {"id":{"name":"spr_radar_earth_amber","path":"sprites/spr_radar_earth_amber/spr_radar_earth_amber.yy",},},
+    {"id":{"name":"spr_portrait_node0","path":"sprites/spr_portrait_node0/spr_portrait_node0.yy",},},
+    {"id":{"name":"spr_ms_martian_seeker_idle","path":"sprites/spr_ms_martian_seeker_idle/spr_ms_martian_seeker_idle.yy",},},
 ],
-  "resourceType": "GMProject",
-  "resourceVersion": "2.0",
-  "RoomOrderNodes": [
-    {
-      "roomId": {
-        "name": "rm_init",
-        "path": "rooms/rm_init/rm_init.yy"
-      }
-    },
-    {
-      "roomId": {
-        "name": "rm_hq_terminal",
-        "path": "rooms/rm_hq_terminal/rm_hq_terminal.yy"
-      }
-    },
-    {
-      "roomId": {
-        "name": "Room1",
-        "path": "rooms/Room1/Room1.yy"
-      }
-    },
-    {
-      "roomId": {
-        "name": "rm_combat",
-        "path": "rooms/rm_combat/rm_combat.yy"
-      }
-    }
+  "resourceType":"GMProject",
+  "resourceVersion":"2.0",
+  "RoomOrderNodes":[
+    {"roomId":{"name":"rm_init","path":"rooms/rm_init/rm_init.yy",},},
+    {"roomId":{"name":"rm_hq_terminal","path":"rooms/rm_hq_terminal/rm_hq_terminal.yy",},},
+    {"roomId":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+    {"roomId":{"name":"rm_combat","path":"rooms/rm_combat/rm_combat.yy",},},
   ],
-  "templateType": "game",
-  "TextureGroups": [
-    {
-      "$GMTextureGroup": "",
-      "%Name": "Default",
-      "autocrop": true,
-      "border": 2,
-      "compressFormat": "bz2",
-      "customOptions": "",
-      "directory": "",
-      "groupParent": null,
-      "isScaled": true,
-      "loadType": "default",
-      "mipsToGenerate": 0,
-      "name": "Default",
-      "resourceType": "GMTextureGroup",
-      "resourceVersion": "2.0",
-      "targets": -1
-    }
-  ]
+  "templateType":"game",
+  "TextureGroups":[
+    {"$GMTextureGroup":"","%Name":"Default","autocrop":true,"border":2,"compressFormat":"bz2","customOptions":"","directory":"","groupParent":null,"isScaled":true,"loadType":"default","mipsToGenerate":0,"name":"Default","resourceType":"GMTextureGroup","resourceVersion":"2.0","targets":-1,},
+  ],
 }

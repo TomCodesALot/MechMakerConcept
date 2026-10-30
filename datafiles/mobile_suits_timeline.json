@@ -4,13 +4,14 @@
     "start_year": 205,
     "current_year": 214,
     "future_year": 215,
-    "total_models": 54,
-    "factions_represented": 4,
+    "total_models": 57,
+    "factions_represented": 5,
     "models_per_faction": {
       "faction_terran": 13,
       "faction_colony": 14,
       "faction_syndicate": 14,
-      "faction_zaibatsu": 13
+      "faction_zaibatsu": 13,
+      "faction_martian": 3
     }
   },
   "mobile_suits": [
@@ -3082,6 +3083,175 @@
       "primary_theaters": [
         "Historical Campaign Arc",
         "Colonial Reclamation Sector"
+      ]
+    },
+    {
+      "id": "ms_martian_seeker_01",
+      "name": "THS-01 Cryo-Seeker",
+      "model_code": "THS-01",
+      "faction_id": "faction_martian",
+      "year_introduced": 206,
+      "era": "Competitor Rollout",
+      "role": "Subterranean Recon & Cryo-Skirmisher",
+      "tier": 2,
+      "armor_rating": 480,
+      "structure_hp": 820,
+      "power_output_mw": 1150,
+      "heat_dispersion_rate": 32.0,
+      "walk_speed_kph": 38.0,
+      "boost_speed_kph": 62.0,
+      "alloy_cost": {
+        "tungsten": 30,
+        "silica": 25,
+        "tritium": 6,
+        "flux": 12,
+        "slag": 4
+      },
+      "armament": [
+        "Type-09 Magnetic Rail-Carbine",
+        "Sub-Zero Cryo-Blade Emitter"
+      ],
+      "manufacturing_lore": "Forged in the subterranean lava tube foundry of Olympus Mons. Utilizes proprietary Martian superconducting cryo-radiators that vent liquid frost mist to dump extreme weapon heat instantaneously.",
+      "battlefield_reputation": "Terran tank commanders reported sensor ghosts leaping out of Martian canyons, firing hyper-velocity slugs before vanishing in clouds of white cold vapor.",
+      "height_meters": 16.8,
+      "empty_weight_tonnes": 42.0,
+      "combat_weight_tonnes": 54.0,
+      "reactor_type": "Ares-Primus Superconducting Cryo-Tokamak",
+      "metal_type": "Sub-Basalt Tungsten Sinter with Superconducting Busbars",
+      "general_purpose": "High-Mobility Sub-Surface Recon & Skirmishing",
+      "variants": [
+        "THS-01 Seeker Baseline",
+        "THS-01S Sniper Recon",
+        "THS-01C Cryo-Lance Breacher"
+      ],
+      "reactor_power_mw": 1150,
+      "production_count": 420,
+      "active_units": 395,
+      "casualty_count": 25,
+      "kill_count": 680,
+      "combat_loss_ratio": 0.036,
+      "survivability_rating": 88,
+      "adoption_status": "standard_service",
+      "replaced_by": "",
+      "adoption_turn": 35,
+      "dynamic_lore_chronicle": [
+        "[Year 206 - TIMELINE ENTRY] Deployed from Olympus Mons sub-crypts. Superior heat dispersion dominates Terran armor."
+      ],
+      "primary_theaters": [
+        "Martian Sub-Caldera Theater",
+        "Valles Marineris Chasm"
+      ]
+    },
+    {
+      "id": "ms_martian_basalt_04",
+      "name": "THS-04 Basalt Colossus",
+      "model_code": "THS-04",
+      "faction_id": "faction_martian",
+      "year_introduced": 209,
+      "era": "Industrial Escalation",
+      "role": "Monolithic Sub-Basalt Heavy Siege Platform",
+      "tier": 3,
+      "armor_rating": 780,
+      "structure_hp": 1350,
+      "power_output_mw": 1650,
+      "heat_dispersion_rate": 28.0,
+      "walk_speed_kph": 24.0,
+      "boost_speed_kph": 42.0,
+      "alloy_cost": {
+        "tungsten": 65,
+        "silica": 35,
+        "tritium": 12,
+        "flux": 20,
+        "slag": 8
+      },
+      "armament": [
+        "Twin 150mm Superconducting Heavy Rail-Cannons",
+        "Cryo-Mortar Cluster",
+        "Point-Defense Pulse Laser"
+      ],
+      "manufacturing_lore": "Engineered from monolithic cast basalt-tungsten plates. Designed to withstand surface asteroid bombardments and hold subterranean chokepoints against invading armies.",
+      "battlefield_reputation": "Known as 'The Walking Fortress of Tharsis.' Its twin rail-cannons can punch through planetary drop-ships before they enter the upper stratosphere.",
+      "height_meters": 19.4,
+      "empty_weight_tonnes": 78.0,
+      "combat_weight_tonnes": 96.0,
+      "reactor_type": "Ares Dual-Core Magnetic Confinement Reactor",
+      "metal_type": "Monolithic Basalt-Tungsten Matrix",
+      "general_purpose": "Heavy Defile Defense & Siege Artillery",
+      "variants": [
+        "THS-04 Colossus (Base)",
+        "THS-04A Planetary Bombardment"
+      ],
+      "reactor_power_mw": 1650,
+      "production_count": 180,
+      "active_units": 172,
+      "casualty_count": 8,
+      "kill_count": 490,
+      "combat_loss_ratio": 0.016,
+      "survivability_rating": 94,
+      "adoption_status": "standard_service",
+      "replaced_by": "",
+      "adoption_turn": 80,
+      "dynamic_lore_chronicle": [
+        "[Year 209 - TIMELINE ENTRY] Deployed at Ascraeus Mons. Shattered Terran drop divisions in minutes."
+      ],
+      "primary_theaters": [
+        "Martian Sub-Caldera Theater",
+        "Phobos Planetary Approach"
+      ]
+    },
+    {
+      "id": "ms_martian_ouroboros_apex",
+      "name": "Deus-Machina: Ouroboros Prime",
+      "model_code": "THS-X00",
+      "faction_id": "faction_martian",
+      "year_introduced": 214,
+      "era": "Apex Crisis",
+      "role": "Superconducting Quantum Flagship Chassis",
+      "tier": 4,
+      "armor_rating": 980,
+      "structure_hp": 1950,
+      "power_output_mw": 2600,
+      "heat_dispersion_rate": 55.0,
+      "walk_speed_kph": 52.0,
+      "boost_speed_kph": 95.0,
+      "alloy_cost": {
+        "tungsten": 90,
+        "silica": 60,
+        "tritium": 35,
+        "flux": 40,
+        "slag": 0
+      },
+      "armament": [
+        "Quantum Singularity Linear Accelerator",
+        "Omnidirectional Tachyon Field Generator",
+        "Cryo-Plasma Lance"
+      ],
+      "manufacturing_lore": "Direct manifestation of Ares Primus. Manufactured using the original automated crucible algorithms of Hull 01, sister ship to the player's Hephaestus.",
+      "battlefield_reputation": "The apex crisis of the late war. Erases entire mobile suit lances with tachyon disruption waves.",
+      "height_meters": 22.0,
+      "empty_weight_tonnes": 95.0,
+      "combat_weight_tonnes": 125.0,
+      "reactor_type": "Zero-Point Quantum Resonance Core",
+      "metal_type": "Superconducting Tachyon-Laminated Ceramic",
+      "general_purpose": "Entropy Pacification Flagship",
+      "variants": [
+        "Ouroboros Prime"
+      ],
+      "reactor_power_mw": 2600,
+      "production_count": 1,
+      "active_units": 1,
+      "casualty_count": 0,
+      "kill_count": 140,
+      "combat_loss_ratio": 0.0,
+      "survivability_rating": 99,
+      "adoption_status": "apex_boss",
+      "replaced_by": "",
+      "adoption_turn": 140,
+      "dynamic_lore_chronicle": [
+        "[Year 214 - TIMELINE ENTRY] Ares Primus awakens Ouroboros Prime. Unconditional pacification order initiated."
+      ],
+      "primary_theaters": [
+        "Sol-Wide Apex Crisis"
       ]
     }
   ]
