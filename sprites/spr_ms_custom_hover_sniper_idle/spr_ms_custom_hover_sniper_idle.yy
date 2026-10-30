@@ -1,5 +1,5 @@
 {
-  "": "v2",
+  "$GMSprite": "v2",
   "%Name": "spr_ms_custom_hover_sniper_idle",
   "bboxMode": 0,
   "bbox_bottom": 159,
@@ -13,28 +13,28 @@
   "For3D": false,
   "frames": [
     {
-      "": "v1",
+      "$GMSpriteFrame": "v1",
       "%Name": "f383ada6-fc2f-4529-82b1-f71e5223a19d",
       "name": "f383ada6-fc2f-4529-82b1-f71e5223a19d",
       "resourceType": "GMSpriteFrame",
       "resourceVersion": "2.0"
     },
     {
-      "": "v1",
+      "$GMSpriteFrame": "v1",
       "%Name": "c1731bf6-ada4-489d-b971-c4ea36575e7e",
       "name": "c1731bf6-ada4-489d-b971-c4ea36575e7e",
       "resourceType": "GMSpriteFrame",
       "resourceVersion": "2.0"
     },
     {
-      "": "v1",
+      "$GMSpriteFrame": "v1",
       "%Name": "a1add384-b3bf-49e6-bd33-d9aff7265531",
       "name": "a1add384-b3bf-49e6-bd33-d9aff7265531",
       "resourceType": "GMSpriteFrame",
       "resourceVersion": "2.0"
     },
     {
-      "": "v1",
+      "$GMSpriteFrame": "v1",
       "%Name": "498b4f57-293c-402e-8bb3-e617a182b61b",
       "name": "498b4f57-293c-402e-8bb3-e617a182b61b",
       "resourceType": "GMSpriteFrame",
@@ -47,7 +47,7 @@
   "HTile": false,
   "layers": [
     {
-      "": "",
+      "$GMImageLayer": "",
       "%Name": "8c0515b6-e3a7-4beb-b2d7-4c669304d3a6",
       "blendMode": 0,
       "displayName": "default",
@@ -63,14 +63,14 @@
   "nineSlice": null,
   "origin": 9,
   "parent": {
-    "name": "sprites",
-    "path": "folders/Sprites.yy"
+    "name": "MechMakerConcept",
+    "path": "MechMakerConcept.yyp"
   },
   "preMultiplyAlpha": false,
   "resourceType": "GMSprite",
   "resourceVersion": "2.0",
   "sequence": {
-    "": "v1",
+    "$GMSequence": "v1",
     "%Name": "spr_ms_custom_hover_sniper_idle",
     "autoRecord": true,
     "backdropHeight": 768,
@@ -80,7 +80,7 @@
     "backdropXOffset": 0.0,
     "backdropYOffset": 0.0,
     "events": {
-      "<MessageEventKeyframe>": "",
+      "$KeyframeStore<MessageEventKeyframe>": "",
       "Keyframes": [],
       "resourceType": "KeyframeStore<MessageEventKeyframe>",
       "resourceVersion": "2.0"
@@ -90,7 +90,7 @@
     "length": 4.0,
     "lockOrigin": false,
     "moments": {
-      "<MomentsEventKeyframe>": "",
+      "$KeyframeStore<MomentsEventKeyframe>": "",
       "Keyframes": [],
       "resourceType": "KeyframeStore<MomentsEventKeyframe>",
       "resourceVersion": "2.0"
@@ -99,25 +99,27 @@
     "playback": 1,
     "playbackSpeed": 6.0,
     "playbackSpeedType": 0,
+    "resourceType": "GMSequence",
+    "resourceVersion": "2.0",
     "showBackdrop": true,
     "showBackdropImage": false,
     "timeUnits": 1,
     "tracks": [
       {
-        "": "",
+        "$GMSpriteFramesTrack": "",
         "builtinName": 0,
         "events": [],
         "inheritsTrackColour": true,
         "interpolation": 1,
         "isCreationTrack": false,
         "keyframes": {
-          "<SpriteFrameKeyframe>": "",
+          "$KeyframeStore<SpriteFrameKeyframe>": "",
           "Keyframes": [
             {
-              "<SpriteFrameKeyframe>": "",
+              "$Keyframe<SpriteFrameKeyframe>": "",
               "Channels": {
                 "0": {
-                  "": "",
+                  "$SpriteFrameKeyframe": "",
                   "Id": {
                     "name": "f383ada6-fc2f-4529-82b1-f71e5223a19d",
                     "path": "sprites/spr_ms_custom_hover_sniper_idle/spr_ms_custom_hover_sniper_idle.yy"
@@ -136,10 +138,10 @@
               "Stretch": false
             },
             {
-              "<SpriteFrameKeyframe>": "",
+              "$Keyframe<SpriteFrameKeyframe>": "",
               "Channels": {
                 "0": {
-                  "": "",
+                  "$SpriteFrameKeyframe": "",
                   "Id": {
                     "name": "c1731bf6-ada4-489d-b971-c4ea36575e7e",
                     "path": "sprites/spr_ms_custom_hover_sniper_idle/spr_ms_custom_hover_sniper_idle.yy"
@@ -158,10 +160,10 @@
               "Stretch": false
             },
             {
-              "<SpriteFrameKeyframe>": "",
+              "$Keyframe<SpriteFrameKeyframe>": "",
               "Channels": {
                 "0": {
-                  "": "",
+                  "$SpriteFrameKeyframe": "",
                   "Id": {
                     "name": "a1add384-b3bf-49e6-bd33-d9aff7265531",
                     "path": "sprites/spr_ms_custom_hover_sniper_idle/spr_ms_custom_hover_sniper_idle.yy"
@@ -180,10 +182,10 @@
               "Stretch": false
             },
             {
-              "<SpriteFrameKeyframe>": "",
+              "$Keyframe<SpriteFrameKeyframe>": "",
               "Channels": {
                 "0": {
-                  "": "",
+                  "$SpriteFrameKeyframe": "",
                   "Id": {
                     "name": "498b4f57-293c-402e-8bb3-e617a182b61b",
                     "path": "sprites/spr_ms_custom_hover_sniper_idle/spr_ms_custom_hover_sniper_idle.yy"

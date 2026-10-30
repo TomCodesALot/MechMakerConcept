@@ -1,5 +1,5 @@
 {
-  "": "v2",
+  "$GMSprite": "v2",
   "%Name": "spr_ms_custom_tread_artillery_back_idle",
   "bboxMode": 0,
   "bbox_bottom": 159,
@@ -13,28 +13,28 @@
   "For3D": false,
   "frames": [
     {
-      "": "v1",
+      "$GMSpriteFrame": "v1",
       "%Name": "837a11b7-48d7-4cc3-81ee-1aa9bfd7aca6",
       "name": "837a11b7-48d7-4cc3-81ee-1aa9bfd7aca6",
       "resourceType": "GMSpriteFrame",
       "resourceVersion": "2.0"
     },
     {
-      "": "v1",
+      "$GMSpriteFrame": "v1",
       "%Name": "f6b29cd9-41e0-4f97-8bb2-34eef8349c64",
       "name": "f6b29cd9-41e0-4f97-8bb2-34eef8349c64",
       "resourceType": "GMSpriteFrame",
       "resourceVersion": "2.0"
     },
     {
-      "": "v1",
+      "$GMSpriteFrame": "v1",
       "%Name": "a13c6138-d638-4676-97e3-0970ff76d05d",
       "name": "a13c6138-d638-4676-97e3-0970ff76d05d",
       "resourceType": "GMSpriteFrame",
       "resourceVersion": "2.0"
     },
     {
-      "": "v1",
+      "$GMSpriteFrame": "v1",
       "%Name": "3d0cc9b1-01f4-4d3f-a1de-eb5ea2c7a7b8",
       "name": "3d0cc9b1-01f4-4d3f-a1de-eb5ea2c7a7b8",
       "resourceType": "GMSpriteFrame",
@@ -47,7 +47,7 @@
   "HTile": false,
   "layers": [
     {
-      "": "",
+      "$GMImageLayer": "",
       "%Name": "32b0faf6-4259-47cf-af9c-b1f14509aa74",
       "blendMode": 0,
       "displayName": "default",
@@ -63,14 +63,14 @@
   "nineSlice": null,
   "origin": 9,
   "parent": {
-    "name": "sprites",
-    "path": "folders/Sprites.yy"
+    "name": "MechMakerConcept",
+    "path": "MechMakerConcept.yyp"
   },
   "preMultiplyAlpha": false,
   "resourceType": "GMSprite",
   "resourceVersion": "2.0",
   "sequence": {
-    "": "v1",
+    "$GMSequence": "v1",
     "%Name": "spr_ms_custom_tread_artillery_back_idle",
     "autoRecord": true,
     "backdropHeight": 768,
@@ -80,7 +80,7 @@
     "backdropXOffset": 0.0,
     "backdropYOffset": 0.0,
     "events": {
-      "<MessageEventKeyframe>": "",
+      "$KeyframeStore<MessageEventKeyframe>": "",
       "Keyframes": [],
       "resourceType": "KeyframeStore<MessageEventKeyframe>",
       "resourceVersion": "2.0"
@@ -90,7 +90,7 @@
     "length": 4.0,
     "lockOrigin": false,
     "moments": {
-      "<MomentsEventKeyframe>": "",
+      "$KeyframeStore<MomentsEventKeyframe>": "",
       "Keyframes": [],
       "resourceType": "KeyframeStore<MomentsEventKeyframe>",
       "resourceVersion": "2.0"
@@ -99,25 +99,27 @@
     "playback": 1,
     "playbackSpeed": 6.0,
     "playbackSpeedType": 0,
+    "resourceType": "GMSequence",
+    "resourceVersion": "2.0",
     "showBackdrop": true,
     "showBackdropImage": false,
     "timeUnits": 1,
     "tracks": [
       {
-        "": "",
+        "$GMSpriteFramesTrack": "",
         "builtinName": 0,
         "events": [],
         "inheritsTrackColour": true,
         "interpolation": 1,
         "isCreationTrack": false,
         "keyframes": {
-          "<SpriteFrameKeyframe>": "",
+          "$KeyframeStore<SpriteFrameKeyframe>": "",
           "Keyframes": [
             {
-              "<SpriteFrameKeyframe>": "",
+              "$Keyframe<SpriteFrameKeyframe>": "",
               "Channels": {
                 "0": {
-                  "": "",
+                  "$SpriteFrameKeyframe": "",
                   "Id": {
                     "name": "837a11b7-48d7-4cc3-81ee-1aa9bfd7aca6",
                     "path": "sprites/spr_ms_custom_tread_artillery_back_idle/spr_ms_custom_tread_artillery_back_idle.yy"
@@ -136,10 +138,10 @@
               "Stretch": false
             },
             {
-              "<SpriteFrameKeyframe>": "",
+              "$Keyframe<SpriteFrameKeyframe>": "",
               "Channels": {
                 "0": {
-                  "": "",
+                  "$SpriteFrameKeyframe": "",
                   "Id": {
                     "name": "f6b29cd9-41e0-4f97-8bb2-34eef8349c64",
                     "path": "sprites/spr_ms_custom_tread_artillery_back_idle/spr_ms_custom_tread_artillery_back_idle.yy"
@@ -158,10 +160,10 @@
               "Stretch": false
             },
             {
-              "<SpriteFrameKeyframe>": "",
+              "$Keyframe<SpriteFrameKeyframe>": "",
               "Channels": {
                 "0": {
-                  "": "",
+                  "$SpriteFrameKeyframe": "",
                   "Id": {
                     "name": "a13c6138-d638-4676-97e3-0970ff76d05d",
                     "path": "sprites/spr_ms_custom_tread_artillery_back_idle/spr_ms_custom_tread_artillery_back_idle.yy"
@@ -180,10 +182,10 @@
               "Stretch": false
             },
             {
-              "<SpriteFrameKeyframe>": "",
+              "$Keyframe<SpriteFrameKeyframe>": "",
               "Channels": {
                 "0": {
-                  "": "",
+                  "$SpriteFrameKeyframe": "",
                   "Id": {
                     "name": "3d0cc9b1-01f4-4d3f-a1de-eb5ea2c7a7b8",
                     "path": "sprites/spr_ms_custom_tread_artillery_back_idle/spr_ms_custom_tread_artillery_back_idle.yy"

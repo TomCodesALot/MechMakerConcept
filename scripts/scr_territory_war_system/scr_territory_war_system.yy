@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_territory_war_system",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_territory_war_system",
+  "parent":{
+    "name":"MechMakerConcept",
+    "path":"MechMakerConcept.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

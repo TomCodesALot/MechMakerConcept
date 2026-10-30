@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_vn_engine",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_vn_engine",
+  "parent":{
+    "name":"MechMakerConcept",
+    "path":"MechMakerConcept.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

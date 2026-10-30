@@ -30,10 +30,10 @@ function scr_campaign_seed_allegiance_roll(_seed) {
     // First pass: Roll candidate factions based on allegiance weights
     for (var i = 0; i < _total; i++) {
         var _cid = _keys[i];
-        var _c = _mgr.characters_map[$ _cid];
+        var _c = variable_struct_get(_mgr.characters_map, _cid);
         if (!is_struct(_c)) continue;
 
-        var _var_data = _c[$ "allegiance_variance"];
+        var _var_data = variable_struct_get(_c, "allegiance_variance");
         if (!is_struct(_var_data)) {
             _c.current_faction_id = _c.faction_id;
             continue;
@@ -43,7 +43,7 @@ function scr_campaign_seed_allegiance_roll(_seed) {
         if (_var_data.ideological_loyalty == "diehard_purist") {
             _c.current_faction_id = _var_data.canonical_faction;
             if (_c.is_recruitable && variable_struct_exists(_counts, _c.current_faction_id)) {
-                _counts[$ _c.current_faction_id]++;
+                variable_struct_set(_counts, _c.current_faction_id, variable_struct_get(_counts, _c.current_faction_id) + 1);
             }
             continue;
         }
@@ -58,7 +58,7 @@ function scr_campaign_seed_allegiance_roll(_seed) {
         for (var f = 0; f < array_length(_fac_names); f++) {
             var _fn = _fac_names[f];
             if (variable_struct_exists(_weights, _fn)) {
-                _cumulative += _weights[$ _fn];
+                _cumulative += variable_struct_get(_weights, _fn);
                 if (_roll <= _cumulative) {
                     _assigned = _fn;
                     break;
@@ -68,7 +68,7 @@ function scr_campaign_seed_allegiance_roll(_seed) {
 
         _c.current_faction_id = _assigned;
         if (_c.is_recruitable && variable_struct_exists(_counts, _assigned)) {
-            _counts[$ _assigned]++;
+            variable_struct_set(_counts, _assigned, variable_struct_get(_counts, _assigned) + 1);
         }
     }
 
@@ -76,15 +76,17 @@ function scr_campaign_seed_allegiance_roll(_seed) {
     var _major_factions = ["faction_terran", "faction_colony", "faction_syndicate", "faction_zaibatsu"];
     for (var m = 0; m < array_length(_major_factions); m++) {
         var _mf = _major_factions[m];
-        while (_counts[$ _mf] < 20) {
+        while (variable_struct_get(_counts, _mf) < 20) {
             // Find a flexible pilot whose canonical faction is this one, and revert them
             var _reverted = false;
             for (var r = 0; r < _total; r++) {
-                var _rc = _mgr.characters_map[$ _keys[r]];
-                if (_rc.is_recruitable && _rc.allegiance_variance.canonical_faction == _mf && _rc.current_faction_id != _mf) {
-                    _counts[$ _rc.current_faction_id]--;
+                var _rc = variable_struct_get(_mgr.characters_map, _keys[r]);
+                var _rc_has_var = (variable_struct_exists(_rc, "allegiance_variance") && is_struct(_rc.allegiance_variance) && variable_struct_exists(_rc.allegiance_variance, "canonical_faction"));
+                var _rc_canon = _rc_has_var ? _rc.allegiance_variance.canonical_faction : _rc.faction_id;
+                if (_rc.is_recruitable && _rc_canon == _mf && _rc.current_faction_id != _mf) {
+                    variable_struct_set(_counts, _rc.current_faction_id, variable_struct_get(_counts, _rc.current_faction_id) - 1);
                     _rc.current_faction_id = _mf;
-                    _counts[$ _mf]++;
+                    variable_struct_set(_counts, _mf, variable_struct_get(_counts, _mf) + 1);
                     _reverted = true;
                     break;
                 }
@@ -103,20 +105,22 @@ function scr_campaign_seed_allegiance_roll(_seed) {
     };
 
     for (var k = 0; k < _total; k++) {
-        var _fin_c = _mgr.characters_map[$ _keys[k]];
+        var _fin_c = variable_struct_get(_mgr.characters_map, _keys[k]);
         var _curr_fac = _fin_c.current_faction_id;
+        var _fin_has_var = (variable_struct_exists(_fin_c, "allegiance_variance") && is_struct(_fin_c.allegiance_variance) && variable_struct_exists(_fin_c.allegiance_variance, "canonical_faction"));
+        var _canon_fac = _fin_has_var ? _fin_c.allegiance_variance.canonical_faction : _fin_c.faction_id;
 
         // Set active defection hook
-        if (_curr_fac != _fin_c.allegiance_variance.canonical_faction) {
-            var _hooks = _fin_c.allegiance_variance.defection_hooks;
-            _fin_c.active_defection_hook = (variable_struct_exists(_hooks, _curr_fac)) ? _hooks[$ _curr_fac] : "Serving under alternate faction contract.";
+        if (_curr_fac != _canon_fac) {
+            var _hooks = (_fin_has_var && variable_struct_exists(_fin_c.allegiance_variance, "defection_hooks") && is_struct(_fin_c.allegiance_variance.defection_hooks)) ? _fin_c.allegiance_variance.defection_hooks : {};
+            _fin_c.active_defection_hook = (variable_struct_exists(_hooks, _curr_fac)) ? variable_struct_get(_hooks, _curr_fac) : "Serving under alternate faction contract.";
         } else {
             _fin_c.active_defection_hook = "";
         }
 
         // Add to active faction roster
         if (variable_struct_exists(_mgr.faction_rosters, _curr_fac)) {
-            array_push(_mgr.faction_rosters[$ _curr_fac], _fin_c.id);
+            array_push(variable_struct_get(_mgr.faction_rosters, _curr_fac), _fin_c.id);
         }
     }
 
@@ -138,7 +142,7 @@ function scr_nemesis_event_dispatch(_victim_id, _killer_id, _event_type) {
         return undefined;
     }
 
-    var _victim = _mgr.characters_map[$ _victim_id];
+    var _victim = variable_struct_get(_mgr.characters_map, _victim_id);
     var _summary = {
         victim_name: _victim.name,
         event_type: _event_type,
@@ -171,14 +175,14 @@ function scr_nemesis_event_dispatch(_victim_id, _killer_id, _event_type) {
     }
 
     // 3. Evaluate Direct Kinship Edges (K_kinship = 2.5x for immediate, 1.3x for extended)
-    var _kin = _victim[$ "kinship"];
+    var _kin = variable_struct_get(_victim, "kinship");
     if (is_array(_kin)) {
         for (var k = 0; k < array_length(_kin); k++) {
             var _edge = _kin[k];
             var _rel_id = _edge.target_id;
 
             if (variable_struct_exists(_mgr.characters_map, _rel_id)) {
-                var _rel = _mgr.characters_map[$ _rel_id];
+                var _rel = variable_struct_get(_mgr.characters_map, _rel_id);
                 if (!_rel.is_alive) continue;
 
                 var _rel_type = _edge.relation;
@@ -189,7 +193,7 @@ function scr_nemesis_event_dispatch(_victim_id, _killer_id, _event_type) {
 
                 var _grudge_delta = min(100, floor(_base_sev * _k_mult));
                 _rel.morale = max(0, _rel.morale - 30);
-                _rel.grudge = min(100, (_rel[$ "grudge"] ?? 0) + _grudge_delta);
+                _rel.grudge = min(100, (variable_struct_get(_rel, "grudge") ?? 0) + _grudge_delta);
 
                 // Vendetta Threshold Check (Grudge >= 70)
                 if (_rel.grudge >= 70 && !_mgr.is_nemesis_active(_rel_id)) {
@@ -207,17 +211,17 @@ function scr_nemesis_event_dispatch(_victim_id, _killer_id, _event_type) {
     }
 
     // 4. Evaluate Wingman & Mentor Connections (K = 1.8x)
-    var _allies = [_victim[$ "wingman_id"], _victim[$ "mentor_id"]];
+    var _allies = [variable_struct_get(_victim, "wingman_id"), variable_struct_get(_victim, "mentor_id")];
     for (var a = 0; a < array_length(_allies); a++) {
         var _ally_id = _allies[a];
         if (!is_string(_ally_id) || !variable_struct_exists(_mgr.characters_map, _ally_id)) continue;
 
-        var _ally = _mgr.characters_map[$ _ally_id];
+        var _ally = variable_struct_get(_mgr.characters_map, _ally_id);
         if (!_ally.is_alive) continue;
 
         var _ally_grudge = min(100, floor(_base_sev * 1.8));
         _ally.morale = max(0, _ally.morale - 20);
-        _ally.grudge = min(100, (_ally[$ "grudge"] ?? 0) + _ally_grudge);
+        _ally.grudge = min(100, (variable_struct_get(_ally, "grudge") ?? 0) + _ally_grudge);
 
         if (_ally.grudge >= 70 && !_mgr.is_nemesis_active(_ally_id)) {
             array_push(_mgr.active_nemeses, {
@@ -231,16 +235,16 @@ function scr_nemesis_event_dispatch(_victim_id, _killer_id, _event_type) {
     }
 
     // 5. Evaluate Close Friendship Circle (-25 Morale, +30 Grudge)
-    var _fr = _victim[$ "friendships"];
-    if (is_struct(_fr) && is_array(_fr[$ "friend_ids"])) {
+    var _fr = variable_struct_get(_victim, "friendships");
+    if (is_struct(_fr) && is_array(variable_struct_get(_fr, "friend_ids"))) {
         var _f_ids = _fr.friend_ids;
         for (var f = 0; f < array_length(_f_ids); f++) {
             var _fid = _f_ids[f];
             if (variable_struct_exists(_mgr.characters_map, _fid)) {
-                var _friend = _mgr.characters_map[$ _fid];
+                var _friend = variable_struct_get(_mgr.characters_map, _fid);
                 if (_friend.is_alive) {
                     _friend.morale = max(0, _friend.morale - 25);
-                    _friend.grudge = min(100, (_friend[$ "grudge"] ?? 0) + 30);
+                    _friend.grudge = min(100, (variable_struct_get(_friend, "grudge") ?? 0) + 30);
                 }
             }
         }
@@ -258,24 +262,24 @@ function scr_check_romance_trauma(_casualty_id, _killer_id) {
     if (!instance_exists(obj_NemesisManager)) return _res;
 
     var _mgr = obj_NemesisManager;
-    var _casualty = _mgr.characters_map[$ _casualty_id];
+    var _casualty = variable_struct_get(_mgr.characters_map, _casualty_id);
     if (!is_struct(_casualty)) return _res;
 
-    var _rom = _casualty[$ "love_interest"];
+    var _rom = variable_struct_get(_casualty, "love_interest");
     if (!is_struct(_rom) || !variable_struct_exists(_rom, "target_id")) return _res;
 
     var _lover_id = _rom.target_id;
     if (!variable_struct_exists(_mgr.characters_map, _lover_id)) return _res;
 
-    var _lover = _mgr.characters_map[$ _lover_id];
+    var _lover = variable_struct_get(_mgr.characters_map, _lover_id);
     if (!_lover.is_alive) return _res;
 
     // Apply Heartbreak Trauma
     _res.triggered = true;
     _res.lover_id = _lover_id;
-    _res.trauma_mode = _rom[$ "trauma_reaction"] ?? "berserker_rage";
+    _res.trauma_mode = variable_struct_get(_rom, "trauma_reaction") ?? "berserker_rage";
 
-    var _g_mult = _rom[$ "grudge_multiplier"] ?? 3.0;
+    var _g_mult = variable_struct_get(_rom, "grudge_multiplier") ?? 3.0;
     var _rom_grudge_delta = min(100, floor(75 * (_g_mult / 3.0)));
 
     _lover.morale = 0;
@@ -308,16 +312,16 @@ function scr_get_friendship_referral_discount(_pilot_id) {
     if (!variable_instance_exists(_mgr, "characters_map") || !is_struct(_mgr.characters_map)) return 0.0;
 
     if (!variable_struct_exists(_mgr.characters_map, _pilot_id)) return 0.0;
-    var _pilot = _mgr.characters_map[$ _pilot_id];
-    var _fr = _pilot[$ "friendships"];
-    if (!is_struct(_fr) || !is_array(_fr[$ "friend_ids"])) return 0.0;
+    var _pilot = variable_struct_get(_mgr.characters_map, _pilot_id);
+    var _fr = variable_struct_get(_pilot, "friendships");
+    if (!is_struct(_fr) || !is_array(variable_struct_get(_fr, "friend_ids"))) return 0.0;
 
     var _f_ids = _fr.friend_ids;
     var _player_pilots = _gm.player_pilots; // Array of hired pilot structs or IDs
 
     for (var i = 0; i < array_length(_player_pilots); i++) {
         var _hired = _player_pilots[i];
-        var _hired_id = is_struct(_hired) ? (_hired[$ "character_id"] ?? (_hired[$ "id"] ?? "")) : string(_hired);
+        var _hired_id = is_struct(_hired) ? (variable_struct_get(_hired, "character_id") ?? (variable_struct_get(_hired, "id") ?? "")) : string(_hired);
         if (_hired_id == "") continue;
         for (var f = 0; f < array_length(_f_ids); f++) {
             if (_hired_id == _f_ids[f]) {
@@ -341,7 +345,7 @@ function scr_prisoner_triage(_prisoner_id, _action) {
     var _gm = obj_GameManager;
 
     if (!variable_struct_exists(_mgr.characters_map, _prisoner_id)) return false;
-    var _p = _mgr.characters_map[$ _prisoner_id];
+    var _p = variable_struct_get(_mgr.characters_map, _prisoner_id);
 
     // Remove from brig prisoner list
     var _found_idx = -1;
@@ -387,9 +391,30 @@ function scr_prisoner_triage(_prisoner_id, _action) {
         if (_found_idx != -1) array_delete(_mgr.prisoner_list, _found_idx, 1);
         _p.is_imprisoned = false;
         _p.current_faction_id = "independent";
-        _p.morale = 60;
+        _p.morale = 75;
 
-        array_push(_gm.player_pilots, _p);
+        // Ensure full pilot struct normalization for Tab 6 Pilots Deck (Doc 51)
+        if (!variable_struct_exists(_p, "status")) _p.status = "ACTIVE";
+        if (!variable_struct_exists(_p, "recovery_days")) _p.recovery_days = 0;
+        if (!variable_struct_exists(_p, "recovery_days_left")) _p.recovery_days_left = 0;
+        if (!variable_struct_exists(_p, "is_deployed")) _p.is_deployed = false;
+        if (!variable_struct_exists(_p, "kills")) _p.kills = 0;
+        if (!variable_struct_exists(_p, "sorties")) _p.sorties = 0;
+        if (!variable_struct_exists(_p, "fatigue")) _p.fatigue = 0;
+        if (!variable_struct_exists(_p, "xp")) _p.xp = 60;
+        if (!variable_struct_exists(_p, "rank_perks") || !is_array(_p.rank_perks)) _p.rank_perks = ["Deadly Aim"];
+        if (!variable_struct_exists(_p, "salary_daily")) _p.salary_daily = 220;
+        if (!variable_struct_exists(_p, "rank")) _p.rank = "Defector Ace";
+        if (!variable_struct_exists(_p, "accuracy")) _p.accuracy = 84;
+        if (!variable_struct_exists(_p, "reflexes")) _p.reflexes = 78;
+        if (!variable_struct_exists(_p, "affinity")) _p.affinity = "ironclad";
+        if (!variable_struct_exists(_p, "bio")) _p.bio = "Former hostile operative defected to Iron Ridge PMC after capture.";
+
+        if (variable_struct_exists(_gm, "facilities") && variable_struct_exists(_gm.facilities, "roster_pilots")) {
+            array_push(_gm.facilities.roster_pilots, _p);
+        } else {
+            array_push(_gm.player_pilots, _p);
+        }
         show_debug_message("[PRISONER RECRUIT] Turned " + _p.name + " into player PMC roster.");
         return true;
     }
@@ -446,10 +471,10 @@ function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _exp
         };
     }
 
-    var _cid = _c[$ "character_id"] ?? (_c[$ "id"] ?? "");
-    var _fac = _c[$ "current_faction_id"] ?? (_c[$ "faction_id"] ?? "independent");
-    var _canon_fac = _c[$ "faction_id"] ?? "independent";
-    var _spec = _c[$ "snes_portrait_spec"] ?? {};
+    var _cid = variable_struct_get(_c, "character_id") ?? (variable_struct_get(_c, "id") ?? "");
+    var _fac = variable_struct_get(_c, "current_faction_id") ?? (variable_struct_get(_c, "faction_id") ?? "independent");
+    var _canon_fac = variable_struct_get(_c, "faction_id") ?? "independent";
+    var _spec = variable_struct_get(_c, "snes_portrait_spec") ?? {};
     var _is_nem = false;
     if (instance_exists(obj_NemesisManager) && _cid != "") {
         var _mgr_inst2 = instance_find(obj_NemesisManager, 0);
@@ -557,8 +582,8 @@ function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _exp
     // -------------------------------------------------------------------------
     var _expr = _expr_override;
     if (_expr == "") {
-        if (_c[$ "combat_trauma_mode"] == "berserker_rage" || (_c[$ "grudge"] ?? 0) >= 70 || _is_nem) _expr = "enraged";
-        else if (_c[$ "morale"] < 30) _expr = "defeated";
+        if (variable_struct_get(_c, "combat_trauma_mode") == "berserker_rage" || (variable_struct_get(_c, "grudge") ?? 0) >= 70 || _is_nem) _expr = "enraged";
+        else if (variable_struct_get(_c, "morale") < 30) _expr = "defeated";
         else _expr = "stoic";
     }
 
@@ -588,7 +613,7 @@ function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _exp
     // -------------------------------------------------------------------------
     // LAYER 3: Battle Trauma & Shrapnel Scars
     // -------------------------------------------------------------------------
-    var _scars = string(_spec[$ "scars"] ?? "");
+    var _scars = string(variable_struct_get(_spec, "scars") ?? "");
     if (_scars != "none" && _scars != "") {
         if (string_pos("shrapnel", _scars) > 0 || string_pos("cut", _scars) > 0 || string_pos("slash", _scars) > 0 || string_pos("gash", _scars) > 0 || string_pos("scar", _scars) > 0) {
             // Jagged cheek laceration
@@ -619,8 +644,8 @@ function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _exp
     // -------------------------------------------------------------------------
     // LAYER 4: Cybernetic Prosthetics & Tachyon Optic Implants
     // -------------------------------------------------------------------------
-    var _eyes = string(_spec[$ "eyes"] ?? "");
-    var _head = string(_spec[$ "headgear"] ?? "");
+    var _eyes = string(variable_struct_get(_spec, "eyes") ?? "");
+    var _head = string(variable_struct_get(_spec, "headgear") ?? "");
     var _has_bionic = (string_pos("optic", _eyes) > 0 || string_pos("cyber", _eyes) > 0 || string_pos("synthetic", _eyes) > 0 || _fac == "faction_zaibatsu" || string_pos("null07", _cid) > 0);
 
     if (_has_bionic) {
@@ -693,7 +718,7 @@ function scr_draw_composite_portrait(_char_ref, _x, _y, _size, _show_frame, _exp
     }
 
     // Bottom-Left: Pilot Tier Stars (1 to 4 Pips)
-    var _t_rank = clamp(_c[$ "tier"] ?? 1, 1, 4);
+    var _t_rank = clamp(variable_struct_get(_c, "tier") ?? 1, 1, 4);
     for (var tp = 0; tp < _t_rank; tp++) {
         draw_set_color(make_color_rgb(245, 215, 90));
         draw_rectangle(_x + 6 + (tp * 6), _y + _size - 10, _x + 9 + (tp * 6), _y + _size - 7, false);

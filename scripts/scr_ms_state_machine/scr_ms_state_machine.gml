@@ -46,7 +46,7 @@ function scr_struct_clone(_val) {
         var _len = array_length(_keys);
         for (var i = 0; i < _len; i++) {
             var _k = _keys[i];
-            _copy[$ _k] = scr_struct_clone(_val[$ _k]);
+            variable_struct_set(_copy, _k, scr_struct_clone(variable_struct_get(_val, _k)));
         }
         return _copy;
     }

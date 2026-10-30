@@ -51,17 +51,17 @@ masterwork_inventory = [];
 
 add_masterwork = function(_mw_struct) {
     array_push(masterwork_inventory, _mw_struct);
-    show_debug_message("[obj_BlueprintManager] Added Masterwork: " + string(_mw_struct[$ "name"] ?? "Component"));
+    show_debug_message("[obj_BlueprintManager] Added Masterwork: " + string(variable_struct_get(_mw_struct, "name") ?? "Component"));
 };
 
 // 5. Methods for Registry and File Loading
 load_blueprint = function(_file_name) {
     var _bp = scr_load_blueprint(_file_name);
     if (!is_undefined(_bp) && is_struct(_bp)) {
-        var _id = _bp[$ "blueprint_id"];
+        var _id = variable_struct_exists(_bp, "blueprint_id") ? variable_struct_get(_bp, "blueprint_id") : (variable_struct_exists(_bp, "id") ? variable_struct_get(_bp, "id") : "");
         if (is_string(_id) && _id != "") {
-            unlocked_blueprints[$ _id] = _bp;
-            show_debug_message("[obj_BlueprintManager] Registered blueprint: " + _id + " (" + string(_bp[$ "name"] ?? "") + ")");
+            variable_struct_set(unlocked_blueprints, _id, _bp);
+            show_debug_message("[obj_BlueprintManager] Registered blueprint: " + _id + " (" + string(variable_struct_exists(_bp, "name") ? variable_struct_get(_bp, "name") : "") + ")");
             return _bp;
         } else {
             show_debug_message("[obj_BlueprintManager] WARNING: Blueprint in " + string(_file_name) + " missing 'blueprint_id'");
@@ -74,7 +74,7 @@ load_blueprint = function(_file_name) {
 
 get_blueprint = function(_blueprint_id) {
     if (variable_struct_exists(unlocked_blueprints, _blueprint_id)) {
-        return unlocked_blueprints[$ _blueprint_id];
+        return variable_struct_get(unlocked_blueprints, _blueprint_id);
     }
     return undefined;
 };
@@ -92,7 +92,7 @@ get_blueprints_by_faction = function(_fid) {
     var _filtered = [];
     for (var i = 0; i < array_length(all_blueprint_list); i++) {
         var _bp = all_blueprint_list[i];
-        var _bfac = _bp[$ "faction_id"] ?? "";
+        var _bfac = variable_struct_get(_bp, "faction_id") ?? "";
         if (_fid == "faction_terran" && (_bfac == "faction_terran" || _bfac == "faction_a")) {
             array_push(_filtered, _bp);
         } else if (_fid == "faction_colony" && (_bfac == "faction_colony" || _bfac == "faction_b")) {
@@ -101,7 +101,7 @@ get_blueprints_by_faction = function(_fid) {
             array_push(_filtered, _bp);
         } else if (_fid == "faction_zaibatsu" && (_bfac == "faction_zaibatsu" || _bfac == "faction_d")) {
             array_push(_filtered, _bp);
-        } else if (_fid == "player" && (_bfac == "player" || _bfac == "pmc_player" || string_pos("player", _bp.blueprint_id) > 0 || string_pos("Player", _bp[$ "class"] ?? "") > 0)) {
+        } else if (_fid == "player" && (_bfac == "player" || _bfac == "pmc_player" || string_pos("player", _bp.blueprint_id) > 0 || string_pos("Player", variable_struct_get(_bp, "class") ?? "") > 0)) {
             array_push(_filtered, _bp);
         } else if (_bfac == _fid) {
             array_push(_filtered, _bp);
@@ -117,9 +117,9 @@ get_blueprint_count = function() {
 register_custom_blueprint = function(_blueprint_struct) {
     if (!is_struct(_blueprint_struct)) return false;
     var _id = _blueprint_struct.id;
-    unlocked_blueprints[$ _id] = _blueprint_struct;
+    variable_struct_set(unlocked_blueprints, _id, _blueprint_struct);
     if (variable_struct_exists(_blueprint_struct, "model_code")) {
-        unlocked_blueprints[$ _blueprint_struct.model_code] = _blueprint_struct;
+        variable_struct_set(unlocked_blueprints, _blueprint_struct.model_code, _blueprint_struct);
     }
     var _found = false;
     for (var i = 0; i < array_length(all_blueprint_list); i++) {
@@ -138,7 +138,7 @@ register_custom_blueprint = function(_blueprint_struct) {
 
 register_component = function(_comp_id, _comp_struct) {
     if (is_string(_comp_id) && _comp_id != "" && is_struct(_comp_struct)) {
-        unlocked_components[$ _comp_id] = _comp_struct;
+        variable_struct_set(unlocked_components, _comp_id, _comp_struct);
         return true;
     }
     return false;
@@ -146,7 +146,7 @@ register_component = function(_comp_id, _comp_struct) {
 
 get_component = function(_comp_id) {
     if (variable_struct_exists(unlocked_components, _comp_id)) {
-        return unlocked_components[$ _comp_id];
+        return variable_struct_get(unlocked_components, _comp_id);
     }
     return undefined;
 };
@@ -154,9 +154,9 @@ get_component = function(_comp_id) {
 // 6. Preload Starter Blueprint (GHA-07 Ironclad)
 var _ironclad = load_blueprint("bp_ms_ironclad_07.json");
 if (!is_undefined(_ironclad)) {
-    _ironclad.id = "bp_ms_ironclad_07";
+    variable_struct_set(_ironclad, "id", "bp_ms_ironclad_07");
     _ironclad.model_code = "GHA-07";
-    _ironclad.faction_id = "faction_terran";
+    _ironclad.faction_id = "player";
     _ironclad.associated_sprite = spr_ms_ironclad_idle;
     _ironclad.schematic_sprite = spr_mech_schematic;
     _ironclad.tier = 2;
@@ -174,11 +174,11 @@ if (!is_undefined(_ironclad)) {
     _ironclad.alloy_cost = { tungsten: 50, silica: 20, slag: 10, flux: 10, tritium: 5 };
     _ironclad.armament = ["Type-77 120mm Solid-Slug Autocannon", "GAU-88 Heavy Vulcan Rotary", "Swarm-16 Heavy Micro-Missile Pod"];
     _ironclad.variants = ["GHA-07 Block I Prototype", "GHA-07 Block II Standard Linebreaker", "GHA-07E Heavy Trench Refit", "GHA-07S Jovian Siege Pack"];
-    _ironclad.manufacturing_lore = "Engineered by Vanguard Defense Systems to resolve the Orbital Beachhead Crisis. Sacrifices flight agility for impenetrable composite plating and heavy kinetic saturation.";
-    _ironclad.battlefield_reputation = "Nicknamed 'The Walking Vault' - shrugs off solid slug fire and pulverizes enemy trench lines.";
+    _ironclad.manufacturing_lore = "PROJECT PROMETHEUS (Unit-01 Prototype): The world's first operational bipedal Mobile Suit, engineered in secret inside our mobile Dreadnought Foundry. Combines compact Tokamak thermonuclear fusion with hydraulic limbs to shatter conventional armored warfare.";
+    _ironclad.battlefield_reputation = "Nicknamed 'The Walking God of War' - impervious to conventional tank shells, capable of leaping trenches and crushing armored columns in close combat.";
 
-    unlocked_blueprints[$ "bp_ms_ironclad_07"] = _ironclad;
-    unlocked_blueprints[$ "GHA-07"] = _ironclad;
+    variable_struct_set(unlocked_blueprints, "bp_ms_ironclad_07", _ironclad);
+    variable_struct_set(unlocked_blueprints, "GHA-07", _ironclad);
     array_push(all_blueprint_list, _ironclad);
     show_debug_message("[obj_BlueprintManager] GHA-07 Ironclad preloaded into registry & list.");
 }
@@ -307,8 +307,8 @@ var _bp_player_4 = {
 var _p_docs = [_bp_player_1, _bp_player_2, _bp_player_3, _bp_player_4];
 for (var p = 0; p < array_length(_p_docs); p++) {
     var _p_doc = _p_docs[p];
-    unlocked_blueprints[$ _p_doc.id] = _p_doc;
-    unlocked_blueprints[$ _p_doc.model_code] = _p_doc;
+    variable_struct_set(unlocked_blueprints, _p_doc.id, _p_doc);
+    variable_struct_set(unlocked_blueprints, _p_doc.model_code, _p_doc);
     array_push(all_blueprint_list, _p_doc);
 }
 show_debug_message("[obj_BlueprintManager] Registered 4 Player Mass-Production Doctrines into registry & list.");
@@ -316,12 +316,9 @@ show_debug_message("[obj_BlueprintManager] Registered 4 Player Mass-Production D
 // 8. Load & Register Canonical Faction Mobile Suit Blueprints from Timeline JSON
 if (file_exists("mobile_suits_timeline.json")) {
     try {
-        var _f_bp = file_text_open_read("mobile_suits_timeline.json");
-        var _json_bp = "";
-        while (!file_text_eof(_f_bp)) {
-            _json_bp += file_text_readln(_f_bp);
-        }
-        file_text_close(_f_bp);
+        var _buf_bp = buffer_load("mobile_suits_timeline.json");
+        var _json_bp = buffer_read(_buf_bp, buffer_string);
+        buffer_delete(_buf_bp);
         var _timeline_bp = json_parse(_json_bp);
         if (variable_struct_exists(_timeline_bp, "mobile_suits")) {
             var _ms_arr = _timeline_bp.mobile_suits;
@@ -339,9 +336,9 @@ if (file_exists("mobile_suits_timeline.json")) {
                 _suit.schematic_sprite = spr_mech_schematic;
                 _suit.blueprint_id = _bid;
 
-                unlocked_blueprints[$ _bid] = _suit;
+                variable_struct_set(unlocked_blueprints, _bid, _suit);
                 if (variable_struct_exists(_suit, "model_code")) {
-                    unlocked_blueprints[$ _suit.model_code] = _suit;
+                    variable_struct_set(unlocked_blueprints, _suit.model_code, _suit);
                 }
                 array_push(all_blueprint_list, _suit);
             }
@@ -374,9 +371,9 @@ for (var b = 0; b < array_length(_canonical_files); b++) {
         _loaded_bp.associated_sprite = _spr;
         _loaded_bp.schematic_sprite = spr_mech_schematic;
         
-        unlocked_blueprints[$ _bid] = _loaded_bp;
+        variable_struct_set(unlocked_blueprints, _bid, _loaded_bp);
         if (variable_struct_exists(_loaded_bp, "model_code")) {
-            unlocked_blueprints[$ _loaded_bp.model_code] = _loaded_bp;
+            variable_struct_set(unlocked_blueprints, _loaded_bp.model_code, _loaded_bp);
         }
         array_push(all_blueprint_list, _loaded_bp);
     }
@@ -397,7 +394,7 @@ for (var cp = 0; cp < array_length(_cat_paths); cp++) {
                 var _c_names = variable_struct_get_names(_c_parsed);
                 for (var cn = 0; cn < array_length(_c_names); cn++) {
                     var _suit_id = _c_names[cn];
-                    var _ms = _c_parsed[$ _suit_id];
+                    var _ms = variable_struct_get(_c_parsed, _suit_id);
                     if (is_struct(_ms)) {
                         _ms.blueprint_id = _suit_id;
                         var _spr_asset = spr_ms_ironclad_idle;
@@ -405,25 +402,25 @@ for (var cp = 0; cp < array_length(_cat_paths); cp++) {
                             var _idx = asset_get_index(_ms.sprite_asset);
                             if (_idx != -1) _spr_asset = _idx;
                         } else {
-                            if (_ms[$ "faction_id"] == "faction_b" || _ms[$ "faction_id"] == "faction_colony") _spr_asset = spr_ms_aether_idle;
-                            else if (_ms[$ "faction_id"] == "faction_c" || _ms[$ "faction_id"] == "faction_syndicate") _spr_asset = spr_ms_hyena_idle;
-                            else if (_ms[$ "faction_id"] == "faction_d" || _ms[$ "faction_id"] == "faction_zaibatsu") _spr_asset = spr_ms_muramasa_idle;
+                            if (variable_struct_get(_ms, "faction_id") == "faction_b" || variable_struct_get(_ms, "faction_id") == "faction_colony") _spr_asset = spr_ms_aether_idle;
+                            else if (variable_struct_get(_ms, "faction_id") == "faction_c" || variable_struct_get(_ms, "faction_id") == "faction_syndicate") _spr_asset = spr_ms_hyena_idle;
+                            else if (variable_struct_get(_ms, "faction_id") == "faction_d" || variable_struct_get(_ms, "faction_id") == "faction_zaibatsu") _spr_asset = spr_ms_muramasa_idle;
                         }
                         _ms.associated_sprite = _spr_asset;
                         _ms.schematic_sprite = spr_mech_schematic;
 
-                        unlocked_blueprints[$ _suit_id] = _ms;
+                        variable_struct_set(unlocked_blueprints, _suit_id, _ms);
                         if (variable_struct_exists(_ms, "model_code")) {
-                            unlocked_blueprints[$ _ms.model_code] = _ms;
+                            variable_struct_set(unlocked_blueprints, _ms.model_code, _ms);
                         }
                         if (variable_struct_exists(_ms, "short_name")) {
-                            unlocked_blueprints[$ _ms.short_name] = _ms;
+                            variable_struct_set(unlocked_blueprints, _ms.short_name, _ms);
                         }
 
                         // Check if already in all_blueprint_list
                         var _exists_in_list = false;
                         for (var bl = 0; bl < array_length(all_blueprint_list); bl++) {
-                            if (all_blueprint_list[bl][$ "blueprint_id"] == _suit_id || all_blueprint_list[bl][$ "id"] == _suit_id) {
+                            if (variable_struct_get(all_blueprint_list[bl], "blueprint_id") == _suit_id || variable_struct_get(all_blueprint_list[bl], "id") == _suit_id) {
                                 _exists_in_list = true;
                                 break;
                             }
@@ -446,17 +443,17 @@ for (var cp = 0; cp < array_length(_cat_paths); cp++) {
 get_suit_record = function(_suit_id) {
     if (is_struct(_suit_id)) return _suit_id;
     if (variable_struct_exists(unlocked_blueprints, _suit_id)) {
-        return unlocked_blueprints[$ _suit_id];
+        return variable_struct_get(unlocked_blueprints, _suit_id);
     }
     for (var i = 0; i < array_length(all_blueprint_list); i++) {
         var _s = all_blueprint_list[i];
-        if (_s[$ "id"] == _suit_id || _s[$ "blueprint_id"] == _suit_id || _s[$ "name"] == _suit_id || _s[$ "short_name"] == _suit_id || _s[$ "model_code"] == _suit_id) {
+        if (variable_struct_get(_s, "id") == _suit_id || variable_struct_get(_s, "blueprint_id") == _suit_id || variable_struct_get(_s, "name") == _suit_id || variable_struct_get(_s, "short_name") == _suit_id || variable_struct_get(_s, "model_code") == _suit_id) {
             return _s;
         }
     }
     if (instance_exists(obj_GameManager) && is_struct(obj_GameManager.mobile_suit_catalog)) {
         if (variable_struct_exists(obj_GameManager.mobile_suit_catalog, _suit_id)) {
-            return obj_GameManager.mobile_suit_catalog[$ _suit_id];
+            return variable_struct_get(obj_GameManager.mobile_suit_catalog, _suit_id);
         }
     }
     return undefined;
@@ -469,15 +466,15 @@ append_suit_dynamic_lore = function(_suit_id, _log_entry) {
             _s.dynamic_lore_chronicle = [];
         }
         array_push(_s.dynamic_lore_chronicle, _log_entry);
-        show_debug_message("[obj_BlueprintManager] Dynamic Lore Chronicle logged for " + string(_s[$ "name"] ?? _suit_id) + ": " + _log_entry);
+        show_debug_message("[obj_BlueprintManager] Dynamic Lore Chronicle logged for " + string(variable_struct_get(_s, "name") ?? _suit_id) + ": " + _log_entry);
     }
 };
 
 record_suit_production = function(_suit_id, _quantity, _reason) {
     var _s = get_suit_record(_suit_id);
     if (!is_undefined(_s)) {
-        var _cur_prod = _s[$ "production_count"] ?? 0;
-        var _cur_act = _s[$ "active_units"] ?? 0;
+        var _cur_prod = variable_struct_get(_s, "production_count") ?? 0;
+        var _cur_act = variable_struct_get(_s, "active_units") ?? 0;
         _s.production_count = _cur_prod + _quantity;
         _s.active_units = _cur_act + _quantity;
         var _turn = instance_exists(obj_GameManager) ? obj_GameManager.turn_number : 1;
@@ -488,19 +485,19 @@ record_suit_production = function(_suit_id, _quantity, _reason) {
 record_suit_casualty = function(_victim_suit_id, _killer_suit_id) {
     var _vic = get_suit_record(_victim_suit_id);
     if (!is_undefined(_vic)) {
-        var _cas = _vic[$ "casualty_count"] ?? 0;
-        var _act = _vic[$ "active_units"] ?? 100;
+        var _cas = variable_struct_get(_vic, "casualty_count") ?? 0;
+        var _act = variable_struct_get(_vic, "active_units") ?? 100;
         _vic.casualty_count = _cas + 1;
         _vic.active_units = max(0, _act - 1);
-        var _kills = _vic[$ "kill_count"] ?? 0;
+        var _kills = variable_struct_get(_vic, "kill_count") ?? 0;
         _vic.combat_loss_ratio = round((_vic.casualty_count / max(1, _kills)) * 100.0) / 100.0;
         _vic.survivability_rating = round(100.0 * _kills / max(1, _kills + _vic.casualty_count));
     }
     var _kil = get_suit_record(_killer_suit_id);
     if (!is_undefined(_kil)) {
-        var _kills = _kil[$ "kill_count"] ?? 0;
+        var _kills = variable_struct_get(_kil, "kill_count") ?? 0;
         _kil.kill_count = _kills + 1;
-        var _cas = _kil[$ "casualty_count"] ?? 0;
+        var _cas = variable_struct_get(_kil, "casualty_count") ?? 0;
         _kil.combat_loss_ratio = round((_cas / max(1, _kil.kill_count)) * 100.0) / 100.0;
         _kil.survivability_rating = round(100.0 * _kil.kill_count / max(1, _kil.kill_count + _cas));
         if (_kil.kill_count mod 25 == 0) {
@@ -516,8 +513,8 @@ record_suit_adoption = function(_suit_id, _faction_id, _winner_name, _is_player,
         var _turn = instance_exists(obj_GameManager) ? obj_GameManager.turn_number : 1;
         _s.adoption_status = "adopted";
         _s.adoption_turn = _turn;
-        var _cur_prod = _s[$ "production_count"] ?? 0;
-        var _cur_act = _s[$ "active_units"] ?? 0;
+        var _cur_prod = variable_struct_get(_s, "production_count") ?? 0;
+        var _cur_act = variable_struct_get(_s, "active_units") ?? 0;
         _s.production_count = _cur_prod + _units;
         _s.active_units = _cur_act + _units;
         append_suit_dynamic_lore(_suit_id, "[Cycle " + string(_turn) + " - TENDER ADOPTED] Formally adopted by " + string_upper(_faction_id) + " as mainline doctrine! Tender won by " + _winner_name + ". Authorized +" + string(_units) + " active units.");
@@ -531,7 +528,7 @@ record_suit_replacement = function(_old_suit_id, _new_suit_name, _is_player, _fa
         _s.adoption_status = _is_player ? "replaced_by_player" : "replaced_by_competitor";
         _s.replaced_by = _new_suit_name;
         _s.adoption_turn = _turn;
-        var _who = _is_player ? "PMC Hephaestus blueprint "" + _new_suit_name + """ : "Competitor model "" + _new_suit_name + """;
+        var _who = _is_player ? ("PMC Hephaestus blueprint '" + _new_suit_name + "'") : ("Competitor model '" + _new_suit_name + "'");
         append_suit_dynamic_lore(_old_suit_id, "[Cycle " + string(_turn) + " - OBSOLESCENCE NOTICE] Procurement canceled by " + string_upper(_faction_id) + ". Replaced on frontline assembly by " + _who + ". Retooling active.");
     }
 };
@@ -642,9 +639,9 @@ active_prototype_tuning = {
 get_comprehensive_stats = function(_bp) {
     if (is_undefined(_bp) || !is_struct(_bp)) return undefined;
 
-    var _code = string(_bp[$ "model_code"] ?? (_bp[$ "blueprint_id"] ?? "PMC-01"));
-    var _tier = _bp[$ "tier"] ?? 2;
-    var _fac = _bp[$ "faction_id"] ?? "player";
+    var _code = string(variable_struct_get(_bp, "model_code") ?? (variable_struct_get(_bp, "blueprint_id") ?? "PMC-01"));
+    var _tier = variable_struct_get(_bp, "tier") ?? 2;
+    var _fac = variable_struct_get(_bp, "faction_id") ?? "player";
 
     // Gihren's Greed Pilot Limit % (Genkai) Baseline
     var _limit = 115;
@@ -686,7 +683,7 @@ get_comprehensive_stats = function(_bp) {
     }
     if (string_pos("susanoo", string_lower(_code)) > 0) _ter = { ground: "S", space: "S", urban: "S", trench: "A" };
 
-    // Minovsky / ECM Particle Dispersion %
+    // Prometheus Flux / ECM Particle Dispersion %
     var _ecm = 25;
     if (_fac == "faction_zaibatsu") _ecm = 55 + (_tier * 5);
     else if (_fac == "faction_colony") _ecm = 45 + (_tier * 5);
@@ -702,14 +699,14 @@ get_comprehensive_stats = function(_bp) {
     else _search = "C";
 
     // Power & Weight Dynamics
-    var _tot = _bp[$ "totals_and_specs"] ?? {};
-    var _w = _tot[$ "total_weight_tonnes"] ?? 75.0;
-    var _p_out = _tot[$ "total_power_output_mw"] ?? 250.0;
-    var _p_drain = _tot[$ "total_power_drain_mw"] ?? 120.0;
+    var _tot = variable_struct_get(_bp, "totals_and_specs") ?? {};
+    var _w = variable_struct_get(_tot, "total_weight_tonnes") ?? 75.0;
+    var _p_out = variable_struct_get(_tot, "total_power_output_mw") ?? 250.0;
+    var _p_drain = variable_struct_get(_tot, "total_power_drain_mw") ?? 120.0;
     var _surplus = _p_out - _p_drain;
     var _pw_ratio = round((_p_out / max(1.0, _w)) * 10.0) / 10.0;
-    var _armor = _tot[$ "total_armor_hp"] ?? 2000;
-    var _recoil = _tot[$ "recoil_absorption_pct"] ?? 0.50;
+    var _armor = variable_struct_get(_tot, "total_armor_hp") ?? 2000;
+    var _recoil = variable_struct_get(_tot, "recoil_absorption_pct") ?? 0.50;
 
     return {
         pilot_limit_pct: _limit,
@@ -738,47 +735,141 @@ apply_tuning_to_custom_mech = function(_custom_mech) {
     // Apply Reactor Tuning
     if (_r.grade != "UNTESTED") {
         _custom_mech.power_output = floor(_custom_mech.power_output * _r.output_mult);
-        _custom_mech[$ "heat_dissipation"] = floor(35.0 * _r.heat_diss_mult);
+        variable_struct_set(_custom_mech, "heat_dissipation", floor(35.0 * _r.heat_diss_mult));
     }
 
     // Apply Hydraulic Tuning (Pilot Limit Genkai)
     if (_h.grade != "UNTESTED") {
-        _custom_mech[$ "pilot_limit_pct"] = _h.pilot_limit_pct;
-        _custom_mech[$ "recoil_absorption_pct"] = clamp(0.50 * _h.recoil_mult, 0.20, 0.95);
-        _custom_mech[$ "armor_rating"] = floor(_custom_mech.armor_rating * _h.leg_armor_mult);
+        variable_struct_set(_custom_mech, "pilot_limit_pct", _h.pilot_limit_pct);
+        variable_struct_set(_custom_mech, "recoil_absorption_pct", clamp(0.50 * _h.recoil_mult, 0.20, 0.95));
+        variable_struct_set(_custom_mech, "armor_rating", floor(_custom_mech.armor_rating * _h.leg_armor_mult));
     } else {
-        _custom_mech[$ "pilot_limit_pct"] = 125;
-        _custom_mech[$ "recoil_absorption_pct"] = 0.50;
+        variable_struct_set(_custom_mech, "pilot_limit_pct", 125);
+        variable_struct_set(_custom_mech, "recoil_absorption_pct", 0.50);
     }
 
     // Apply Thruster Calibration
     if (_t.grade != "UNTESTED") {
         _custom_mech.speed = max(1, floor(_custom_mech.speed * _t.thrust_mult));
-        _custom_mech[$ "evasion_bonus"] = _t.evasion_bonus;
-        _custom_mech[$ "propellant_max"] = floor(150 * _t.fuel_eff_mult);
-        _custom_mech[$ "propellant_cur"] = _custom_mech.propellant_max;
+        variable_struct_set(_custom_mech, "evasion_bonus", _t.evasion_bonus);
+        variable_struct_set(_custom_mech, "propellant_max", floor(150 * _t.fuel_eff_mult));
+        variable_struct_set(_custom_mech, "propellant_cur", _custom_mech.propellant_max);
     } else {
-        _custom_mech[$ "evasion_bonus"] = 0;
-        _custom_mech[$ "propellant_max"] = 140;
-        _custom_mech[$ "propellant_cur"] = 140;
+        variable_struct_set(_custom_mech, "evasion_bonus", 0);
+        variable_struct_set(_custom_mech, "propellant_max", 140);
+        variable_struct_set(_custom_mech, "propellant_cur", 140);
     }
 
-    _custom_mech[$ "terrain"] = { ground: "A", space: (_t.space_terrain != "" ? _t.space_terrain : "A"), urban: "A", trench: "B" };
-    _custom_mech[$ "ecm_dispersion_pct"] = 35;
-    _custom_mech[$ "sensor_search_grade"] = "A";
-    _custom_mech[$ "tuning_grades"] = {
+    variable_struct_set(_custom_mech, "terrain", { ground: "A", space: (_t.space_terrain != "" ? _t.space_terrain : "A"), urban: "A", trench: "B" });
+    variable_struct_set(_custom_mech, "ecm_dispersion_pct", 35);
+    variable_struct_set(_custom_mech, "sensor_search_grade", "A");
+    variable_struct_set(_custom_mech, "tuning_grades", {
         reactor: _r.grade,
         hydraulics: _h.grade,
         thrusters: _t.grade
-    };
+    });
 
-    if (_r.grade == "S" || _h.grade == "S" || _t.grade == "S") {
+    // Check for S-Grade Masterwork condition (Goal D)
+    var _avg_score = (_r.score + _h.score + _t.score) / 3.0;
+    var _autotune_active = (instance_exists(obj_HQTerminal) && variable_instance_exists(obj_HQTerminal, "assembly_autotune_enabled") && obj_HQTerminal.assembly_autotune_enabled);
+    var _is_s_masterwork = (_r.grade == "S" && _h.grade == "S" && _t.grade == "S") || (_avg_score >= 88.0) || _autotune_active;
+
+    if (_is_s_masterwork) {
+        _custom_mech.is_masterwork = true;
+        _custom_mech.quality_grade = "S_GRADE_MASTERWORK";
+        // Permanent Stat Boosts: +10% Power, -15% Mass, +1 AP, +25% OSS pitch score
+        _custom_mech.power_output = floor(_custom_mech.power_output * 1.10);
+        _custom_mech.weight_tonnes = max(10.0, round(_custom_mech.weight_tonnes * 0.85 * 10.0) / 10.0);
+        variable_struct_set(_custom_mech, "ap_bonus", (variable_struct_get(_custom_mech, "ap_bonus") ?? 0) + 1);
+        variable_struct_set(_custom_mech, "oss_pitch_bonus_pct", 25.0);
+        _custom_mech.speed = max(1, floor(_custom_mech.speed * 1.10));
+        _custom_mech.combat_rating = floor(_custom_mech.combat_rating * 1.25);
+        _custom_mech.name += " [★ S-GRADE MASTERWORK ★]";
+        _custom_mech.callsign += " [S-Masterwork]";
+
+        add_masterwork({
+            id: "mw_chassis_" + string(_custom_mech.id),
+            name: _custom_mech.name,
+            slot: "FULL_CHASSIS",
+            bonus: "+10% Power, -15% Mass, +1 AP, +25% OSS Pitch Score",
+            grade: "S"
+        });
+
+        if (instance_exists(obj_HQTerminal)) {
+            obj_HQTerminal.show_toast("★ S-GRADE MASTERWORK COMMISSIONED! (+10% Pwr, -15% Mass, +1 AP, +25% OSS)", c_yellow);
+        }
+    } else if (_r.grade == "S" || _h.grade == "S" || _t.grade == "S") {
+        _custom_mech.quality_grade = "ACE_SPEC";
         _custom_mech.name += " [Ace Prototype Spec-X]";
         _custom_mech.callsign += " [Ace Spec-X]";
     } else if (_r.grade == "A" || _h.grade == "A" || _t.grade == "A") {
+        _custom_mech.quality_grade = "A_GRADE_SPEC";
         _custom_mech.name += " [Masterwork Spec]";
         _custom_mech.callsign += " [Masterwork]";
+    } else {
+        _custom_mech.quality_grade = "STANDARD";
     }
 
     return _custom_mech;
+};
+
+// Auto-Tune Prototyping Bench Method (Goal D)
+auto_tune_prototype = function() {
+    var _base_chance = 35.0;
+    if (instance_exists(obj_GameManager)) {
+        var _gm = obj_GameManager;
+        var _fab_tier = (variable_struct_exists(_gm, "flagship") && variable_struct_exists(_gm.flagship, "upgrades")) ? (_gm.flagship.upgrades.fabrication_tier ?? 1) : 1;
+        var _lines = (variable_struct_exists(_gm, "facilities") && variable_struct_exists(_gm.facilities, "assembly_lines")) ? _gm.facilities.assembly_lines : 1;
+        _base_chance += (_fab_tier * 10.0) + (_lines * 5.0);
+    }
+    var _roll = random(100.0);
+    var _is_s_rank = (_roll < _base_chance);
+
+    if (_is_s_rank) {
+        active_prototype_tuning.reactor.score = 96.0;
+        active_prototype_tuning.reactor.grade = "S";
+        active_prototype_tuning.reactor.output_mult = 1.25;
+        active_prototype_tuning.reactor.heat_diss_mult = 1.35;
+        active_prototype_tuning.reactor.energy_dmg_mult = 1.20;
+        active_prototype_tuning.reactor.en_cap_mult = 1.30;
+
+        active_prototype_tuning.hydraulics.score = 95.0;
+        active_prototype_tuning.hydraulics.grade = "S";
+        active_prototype_tuning.hydraulics.pilot_limit_pct = 200;
+        active_prototype_tuning.hydraulics.recoil_mult = 1.30;
+        active_prototype_tuning.hydraulics.ap_bonus = 1;
+        active_prototype_tuning.hydraulics.leg_armor_mult = 1.25;
+
+        active_prototype_tuning.thrusters.score = 96.0;
+        active_prototype_tuning.thrusters.grade = "S";
+        active_prototype_tuning.thrusters.thrust_mult = 1.35;
+        active_prototype_tuning.thrusters.evasion_bonus = 25;
+        active_prototype_tuning.thrusters.space_terrain = "S";
+        active_prototype_tuning.thrusters.fuel_eff_mult = 1.35;
+
+        if (instance_exists(obj_HQTerminal)) {
+            obj_HQTerminal.show_toast("AUTO-TUNE CRITICAL SUCCESS! All Benches Tuned to S-Grade Masterwork!", c_lime);
+        }
+        return true;
+    } else {
+        active_prototype_tuning.reactor.score = 86.0;
+        active_prototype_tuning.reactor.grade = "A";
+        active_prototype_tuning.reactor.output_mult = 1.15;
+        active_prototype_tuning.reactor.heat_diss_mult = 1.20;
+
+        active_prototype_tuning.hydraulics.score = 86.0;
+        active_prototype_tuning.hydraulics.grade = "A";
+        active_prototype_tuning.hydraulics.pilot_limit_pct = 175;
+        active_prototype_tuning.hydraulics.recoil_mult = 1.20;
+
+        active_prototype_tuning.thrusters.score = 87.0;
+        active_prototype_tuning.thrusters.grade = "A";
+        active_prototype_tuning.thrusters.thrust_mult = 1.20;
+        active_prototype_tuning.thrusters.evasion_bonus = 15;
+
+        if (instance_exists(obj_HQTerminal)) {
+            obj_HQTerminal.show_toast("AUTO-TUNE COMPLETED: Calibrated to A-Grade Masterwork Spec.", c_yellow);
+        }
+        return false;
+    }
 };

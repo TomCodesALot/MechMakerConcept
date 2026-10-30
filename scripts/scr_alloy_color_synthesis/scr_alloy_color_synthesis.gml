@@ -184,7 +184,7 @@ function scr_get_alloy_procedural_color(_alloy_data_or_key, _opt_temp = 2500, _o
         var _keys = variable_struct_get_names(_alloy_data_or_key);
         for (var k = 0; k < array_length(_keys); k++) {
             var _kname = _keys[k];
-            var _qty = _alloy_data_or_key[$ _kname];
+            var _qty = variable_struct_get(_alloy_data_or_key, _kname);
             if (!is_numeric(_qty) || _qty <= 0) continue;
 
             var _er = 128;

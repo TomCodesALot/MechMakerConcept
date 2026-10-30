@@ -15,13 +15,14 @@ if (instance_number(obj_FactionManager) > 1) {
 // Faction A: Terran Coalition (Earth-central heavy armor & mass production)
 // Faction B: Outer Colonies (High mobility energy weapon prototypes)
 // Faction C: Rogue Mercenary Syndicates (Black market arms smugglers)
+// Era 0 Starting Standings: Superpowers enforce sanctions, heavy tariffs, and border friction
 faction_standing = {
-    faction_a: 45,      // Starting status with Terran Coalition
-    faction_b: -20,     // Starting status with Outer Colonies
-    faction_c: 10,      // Starting status with Rogue Syndicates
-    faction_d: 0,       // Starting status with Apex Zaibatsu
-    faction_e: -10,     // Starting status with Sidereal Sovereign League
-    faction_f: 0        // Starting status with Tharsis Machine Consensus (Dormant)
+    faction_a: -15,     // Terran Coalition (Hostile border friction & mineral quotas)
+    faction_b: -25,     // Outer Colonies (Sanctioned / Suspicious)
+    faction_c: -30,     // Rogue Syndicates (Hostile outlaws & piracy)
+    faction_d: -10,     // Apex Zaibatsu (Dismissive corporate isolation)
+    faction_e: -20,     // Sidereal Sovereign League (Hostile / Neutral)
+    faction_f: 0        // Tharsis Machine Consensus (Dormant)
 };
 
 // 3. Faction Detailed Structs & Military Strengths (docs/04)
@@ -144,18 +145,21 @@ factions = {
     }
 };
 
-// 4. Strategic Territory Control & Contested Sectors (docs/04, docs/12)
+// 4. Strategic Territory Control & Contested Sectors (docs/04, docs/12, docs/39)
 territory_control = {
-    terran_pct: 35,
-    colony_pct: 28,
-    syndicate_pct: 14,
-    zaibatsu_pct: 11,
-    astran_pct: 12,
+    terran_pct: 20,
+    colony_pct: 20,
+    syndicate_pct: 20,
+    zaibatsu_pct: 20,
+    astran_pct: 20,
     martian_pct: 0,
     pmc_pct: 0,
-    contested_sector: "SECTOR 4-B // FRONTLINE TRENCHES",
-    last_shift_report: "Terran Coalition 1st Armored Division holds forward orbital perimeter."
+    contested_sector: "GIBRALTAR & IRONSPIRE BASTION CORRIDOR",
+    last_shift_report: "Superpowers entrenched across Earth and Space frontlines (20% Sol parity)."
 };
+territory_database = scr_init_territory_database();
+mars_unlocked = false;
+scr_territory_recalculate_control_percentages();
 
 // 4b. Mass Production Replacement Doctrine Contracts (docs/12_sandbox_and_endgame_systems.md)
 mass_production_contracts = {
@@ -319,7 +323,7 @@ roll_playthrough_mass_production_selection = function(_forced_seed = undefined) 
     var _f_keys = ["faction_a", "faction_b", "faction_c", "faction_d", "faction_e", "faction_f"];
     for (var f = 0; f < array_length(_f_keys); f++) {
         var _fk = _f_keys[f];
-        var _pool = mass_production_candidates[$ _fk];
+        var _pool = variable_struct_get(mass_production_candidates, _fk);
         var _idx = 0;
         if (!is_undefined(_forced_seed)) {
             _idx = (_forced_seed + f * 7) % array_length(_pool);
@@ -328,7 +332,7 @@ roll_playthrough_mass_production_selection = function(_forced_seed = undefined) 
         }
         var _chosen = _pool[_idx];
 
-        var _contract = mass_production_contracts[$ _fk];
+        var _contract = variable_struct_get(mass_production_contracts, _fk);
         if (!is_undefined(_contract)) {
             _contract.baseline_suit_id = _chosen.id;
             _contract.baseline_suit_name = _chosen.name;
@@ -613,35 +617,35 @@ coalition_active = false;
 active_contracts = [];       // Currently accepted contracts with active deadlines
 available_contracts = [
     {
-        id: "cnt_terran_mass_01",
+        id: "cnt_terran_convoy_01",
         faction: "faction_a",
         faction_name: "The Terran Coalition",
-        type: "MASS_PRODUCTION",
-        title: "OPERATION IRON SHIELD: HEAVY ASSAULT SUIT ORDER",
-        briefing: "Terran Frontline Command requires a ready-to-deploy GHA-07 Ironclad chassis delivered to planetary staging grounds in Sector 4.",
-        required_tier: 2,
+        type: "ESCORT_SORTIE",
+        title: "OPERATION MAMMOTH ESCORT: TANK CONVOY DEFENSE",
+        briefing: "Terran Coalition requires armored support to escort a supply convoy of T-720 Mammoth Battle Tanks through contested volcanic terrain.",
+        required_tier: 1,
         required_quantity: 1,
         delivered_quantity: 0,
-        payout_credits: 480000,
+        payout_credits: 320000,
         reputation_gain: 15,
-        reputation_penalty: -25,
-        deadline_days: 30,
-        days_remaining: 30,
-        penalty_credits: 120000
+        reputation_penalty: -15,
+        deadline_days: 25,
+        days_remaining: 25,
+        penalty_credits: 60000
     },
     {
-        id: "cnt_colony_bounty_01",
+        id: "cnt_colony_patrol_01",
         faction: "faction_b",
         faction_name: "The Outer Colonies",
-        type: "PROTOTYPE_BOUNTY",
-        title: "PROJECT AETHER: MASTERWORK TUNED FUSION CORE",
-        briefing: "Colony ace interceptor pilots demand an over-tuned fusion core prototype (+15% Power Output) forged in your R&D Oscilloscope lab.",
-        required_tier: 2,
+        type: "INTERCEPTION_SORTIE",
+        title: "SECTOR HARRIER: INTERCEPT SYNDICATE TECHNICALS",
+        briefing: "Colony defense militia requests fast tactical interdiction against roving packs of pirate technicals threatening water mining claims.",
+        required_tier: 1,
         required_quantity: 1,
         delivered_quantity: 0,
-        payout_credits: 260000,
+        payout_credits: 280000,
         reward_material_id: "mat_tritium",
-        reward_material_amount: 6,
+        reward_material_amount: 5,
         reputation_gain: 20,
         reputation_penalty: -10,
         deadline_days: 18,
@@ -653,12 +657,12 @@ available_contracts = [
         faction: "faction_c",
         faction_name: "Rogue Mercenary Syndicates",
         type: "BLACK_OPS_SALE",
-        title: "BLACK MARKET RUN: UNCATALOGED VULCAN MUNITIONS",
-        briefing: "Smugglers will pay top dollar in refined Synthetic Flux for uncataloged GAU-88 Vulcan weapon crates. 35% Risk of Terran Intelligence leak!",
+        title: "BLACK MARKET RUN: EXPERIMENTAL TOKAMAK FLUX",
+        briefing: "Smugglers will pay top dollar in refined Synthetic Flux for uncataloged magnetic containment rings. 35% Risk of Terran Intelligence leak!",
         required_tier: 1,
         required_quantity: 1,
         delivered_quantity: 0,
-        payout_credits: 190000,
+        payout_credits: 220000,
         reward_material_id: "mat_syn_flux",
         reward_material_amount: 8,
         tech_leak_risk_pct: 35,
@@ -691,14 +695,14 @@ available_contracts = [
 
 // 6. Standing Management Methods
 get_standing = function(_faction_id) {
-    return faction_standing[$ _faction_id] ?? 0;
+    return variable_struct_get(faction_standing, _faction_id) ?? 0;
 };
 
 set_standing = function(_faction_id, _val) {
     var _clamped = clamp(_val, -100, 100);
-    faction_standing[$ _faction_id] = _clamped;
+    variable_struct_set(faction_standing, _faction_id, _clamped);
     if (variable_struct_exists(factions, _faction_id)) {
-        factions[$ _faction_id].standing = _clamped;
+        variable_struct_get(factions, _faction_id).standing = _clamped;
     }
     return _clamped;
 };
@@ -711,17 +715,17 @@ modify_standing = function(_faction_id, _delta) {
 // 7. Dynamic Macro War Map & Faction AI Diplomacy Engine (docs/04, docs/12, docs/21)
 
 // 7a. Add Diplomatic Cable to Teletype Log
-add_diplomatic_cable = function(_sender, _recipient, _title, _body, _priority, _state) {
+add_diplomatic_cable = function(_sender = "Unknown Command", _recipient = "Sol Network", _title = "Diplomatic Notice", _body = "", _priority = "NORMAL", _state = "COLD_WAR") {
     var _c_turn = (instance_exists(obj_GameManager)) ? obj_GameManager.current_turn : 1;
     var _cable = {
         id: "cable_" + string(_c_turn) + "_" + string(irandom(9999)),
         turn: _c_turn,
-        sender: _sender,
-        recipient: _recipient,
-        title: _title,
-        body: _body,
-        priority: _priority,
-        state: _state
+        sender: is_undefined(_sender) ? "Unknown Command" : string(_sender),
+        recipient: is_undefined(_recipient) ? "Sol Network" : string(_recipient),
+        title: is_undefined(_title) ? "Diplomatic Notice" : string(_title),
+        body: is_undefined(_body) ? "" : string(_body),
+        priority: is_undefined(_priority) ? "NORMAL" : string(_priority),
+        state: is_undefined(_state) ? "COLD_WAR" : string(_state)
     };
     array_push(diplomatic_cables_log, _cable);
     if (array_length(diplomatic_cables_log) > 30) {
@@ -739,7 +743,7 @@ add_diplomatic_cable = function(_sender, _recipient, _title, _body, _priority, _
 get_relation = function(_f1, _f2) {
     var _keys = variable_struct_get_names(diplomatic_relations);
     for (var k = 0; k < array_length(_keys); k++) {
-        var _rel = diplomatic_relations[$ _keys[k]];
+        var _rel = variable_struct_get(diplomatic_relations, _keys[k]);
         if ((_rel.faction_1 == _f1 && _rel.faction_2 == _f2) || (_rel.faction_1 == _f2 && _rel.faction_2 == _f1)) {
             return _rel;
         }
@@ -749,7 +753,7 @@ get_relation = function(_f1, _f2) {
 
 get_relation_by_id = function(_pair_id) {
     if (variable_struct_exists(diplomatic_relations, _pair_id)) {
-        return diplomatic_relations[$ _pair_id];
+        return variable_struct_get(diplomatic_relations, _pair_id);
     }
     return undefined;
 };
@@ -809,6 +813,20 @@ declare_war = function(_pair_id, _casus_belli) {
     var _title = "WAR DECLARED: " + string_upper(_rel.name_1) + " VS " + string_upper(_rel.name_2);
     var _body = "Hostilities commenced! Casus Belli: " + _casus_belli + ". All active treaties voided.";
     add_diplomatic_cable(_rel.name_1, _rel.name_2, _title, _body, "URGENT", "WAR");
+
+    // Milestone 54: Visual Novel Geopolitical War Declaration Episode Dispatch
+    if (instance_exists(obj_HQTerminal) && !scr_vn_is_active()) {
+        if (_pair_id == "rel_tc" && !variable_struct_exists(_rel, "vn_war_shown")) {
+            _rel.vn_war_shown = true;
+            scr_vn_start_episode("ep_war_terran_vs_colony");
+        } else if (_pair_id == "rel_cz" && !variable_struct_exists(_rel, "vn_war_shown")) {
+            _rel.vn_war_shown = true;
+            scr_vn_start_episode("ep_war_zaibatsu_vs_tharsis");
+        } else if ((_pair_id == "rel_ts" || _pair_id == "rel_cs" || _pair_id == "rel_sc") && !variable_struct_exists(_rel, "vn_war_shown")) {
+            _rel.vn_war_shown = true;
+            scr_vn_start_episode("ep_war_syndicate_vs_sidereal");
+        }
+    }
 };
 
 // 7f. Broker Ceasefire Truce
@@ -826,6 +844,15 @@ broker_truce = function(_pair_id, _duration, _reason) {
     var _title = "CEASEFIRE ACCORD: " + string_upper(_rel.name_1) + " - " + string_upper(_rel.name_2);
     var _body = "Armistice signed for " + string(_duration) + " turns. " + _reason;
     add_diplomatic_cable(_rel.name_1, _rel.name_2, _title, _body, "HIGH", "TRUCE");
+
+    // Milestone 54: Visual Novel Geopolitical Ceasefire Episode Dispatch
+    if (instance_exists(obj_HQTerminal) && !scr_vn_is_active()) {
+        if (_pair_id == "rel_tc") {
+            scr_vn_start_episode("ep_ceasefire_terran_colony");
+        } else if (_pair_id == "rel_cz") {
+            scr_vn_start_episode("ep_ceasefire_zaibatsu_tharsis");
+        }
+    }
 };
 
 // 7g. Broker Coalition Alliance
@@ -851,7 +878,7 @@ evaluate_faction_ai_turn = function() {
 
     for (var k = 0; k < array_length(_keys); k++) {
         var _pid = _keys[k];
-        var _rel = diplomatic_relations[$ _pid];
+        var _rel = variable_struct_get(diplomatic_relations, _pid);
 
         // 1. Decrement treaty countdowns
         if (_rel.treaty_turns_left > 0) {
@@ -922,12 +949,12 @@ evaluate_faction_ai_turn = function() {
     // Check if any single faction controls > 40% of Sol territory
     var _tc = territory_control;
     var _pcts = [
-        { id: "faction_a", name: "The Terran Coalition", pct: _tc[$ "terran_pct"] ?? 35 },
-        { id: "faction_b", name: "The Outer Colonies", pct: _tc[$ "colony_pct"] ?? 28 },
-        { id: "faction_c", name: "Rogue Mercenary Syndicates", pct: _tc[$ "syndicate_pct"] ?? 14 },
-        { id: "faction_d", name: "Apex Bio-Cybernetics Zaibatsu", pct: _tc[$ "zaibatsu_pct"] ?? 11 },
-        { id: "faction_e", name: "The Sidereal Sovereign League", pct: _tc[$ "astran_pct"] ?? 12 },
-        { id: "faction_f", name: "The Tharsis Machine Consensus", pct: _tc[$ "martian_pct"] ?? 0 }
+        { id: "faction_a", name: "The Terran Coalition", pct: variable_struct_get(_tc, "terran_pct") ?? 35 },
+        { id: "faction_b", name: "The Outer Colonies", pct: variable_struct_get(_tc, "colony_pct") ?? 28 },
+        { id: "faction_c", name: "Rogue Mercenary Syndicates", pct: variable_struct_get(_tc, "syndicate_pct") ?? 14 },
+        { id: "faction_d", name: "Apex Bio-Cybernetics Zaibatsu", pct: variable_struct_get(_tc, "zaibatsu_pct") ?? 11 },
+        { id: "faction_e", name: "The Sidereal Sovereign League", pct: variable_struct_get(_tc, "astran_pct") ?? 12 },
+        { id: "faction_f", name: "The Tharsis Machine Consensus", pct: variable_struct_get(_tc, "martian_pct") ?? 0 }
     ];
 
     var _hegemon = undefined;
@@ -944,7 +971,7 @@ evaluate_faction_ai_turn = function() {
 
         // Threat surge: Decrease bilateral tensions between the other 3 factions by -15
         for (var k2 = 0; k2 < array_length(_keys); k2++) {
-            var _r2 = diplomatic_relations[$ _keys[k2]];
+            var _r2 = variable_struct_get(diplomatic_relations, _keys[k2]);
             if (_r2.faction_1 != _hegemon.id && _r2.faction_2 != _hegemon.id) {
                 _r2.tension = max(10, _r2.tension - 2.0);
 
@@ -968,35 +995,37 @@ evaluate_faction_ai_turn = function() {
     var _f_ids = ["faction_a", "faction_b", "faction_c", "faction_d", "faction_e", "faction_f"];
     for (var fi = 0; fi < array_length(_f_ids); fi++) {
         var _fid = _f_ids[fi];
-        var _f = factions[$ _fid];
+        var _f = variable_struct_get(factions, _fid);
         var _fpct = 20;
-        if (_fid == "faction_a") _fpct = _tc[$ "terran_pct"] ?? 35;
-        else if (_fid == "faction_b") _fpct = _tc[$ "colony_pct"] ?? 28;
-        else if (_fid == "faction_c") _fpct = _tc[$ "syndicate_pct"] ?? 14;
-        else if (_fid == "faction_d") _fpct = _tc[$ "zaibatsu_pct"] ?? 11;
-        else if (_fid == "faction_e") _fpct = _tc[$ "astran_pct"] ?? 12;
-        else if (_fid == "faction_f") _fpct = _tc[$ "martian_pct"] ?? 0;
+        if (_fid == "faction_a") _fpct = variable_struct_get(_tc, "terran_pct") ?? 35;
+        else if (_fid == "faction_b") _fpct = variable_struct_get(_tc, "colony_pct") ?? 28;
+        else if (_fid == "faction_c") _fpct = variable_struct_get(_tc, "syndicate_pct") ?? 14;
+        else if (_fid == "faction_d") _fpct = variable_struct_get(_tc, "zaibatsu_pct") ?? 11;
+        else if (_fid == "faction_e") _fpct = variable_struct_get(_tc, "astran_pct") ?? 12;
+        else if (_fid == "faction_f") _fpct = variable_struct_get(_tc, "martian_pct") ?? 0;
 
-        // Special handling: Tharsis Machine Consensus Awakening
-        if (_fid == "faction_f" && (_f[$ "is_dormant"] ?? false)) {
+        // Special handling: Tharsis Machine Consensus Awakening (Doc 37, Doc 39)
+        if (_fid == "faction_f" && ((variable_struct_get(_f, "is_dormant") ?? false) || !mars_unlocked)) {
             var _cur_turn = (instance_exists(obj_GameManager)) ? obj_GameManager.current_turn : 1;
             if (_cur_turn >= 15) {
                 _f.is_dormant = false;
-                add_diplomatic_cable("THARSIS SUB-CRYPT", "Sister Ark 07 (Player)", "ARES PRIMUS AWAKENS: Sister Vessel Hephaestus Identified", "Subterranean blast doors detonate across Mars. The Logic God unseals cryo-foundries and hails Sister Vessel 07!", "URGENT", "WAR");
+                if (!mars_unlocked) {
+                    scr_territory_unlock_mars();
+                }
             }
         }
 
         // Check if currently engaged in active WAR with any faction
         var _in_war = false;
         for (var wk = 0; wk < array_length(_keys); wk++) {
-            var _wrel = diplomatic_relations[$ _keys[wk]];
+            var _wrel = variable_struct_get(diplomatic_relations, _keys[wk]);
             if ((_wrel.faction_1 == _fid || _wrel.faction_2 == _fid) && _wrel.state == "WAR") {
                 _in_war = true;
                 break;
             }
         }
 
-        var _old_ai_state = _f[$ "ai_state"] ?? "PEACE";
+        var _old_ai_state = variable_struct_get(_f, "ai_state") ?? "PEACE";
 
         // DESPERATE STATE: Territory <= 18% OR Military Strength <= 25
         if (_fpct <= 18 || _f.military_strength_score <= 25) {
@@ -1004,8 +1033,8 @@ evaluate_faction_ai_turn = function() {
             _f.contract_bounty_multiplier = 2.0; // Emergency bailout tenders pay +100% bounties!
             if (!_f.superweapon_unsealed) {
                 _f.superweapon_unsealed = true;
-                var _sw_name = _f[$ "superweapon_name"] ?? "Apex Prototype";
-                add_diplomatic_cable(_fid, "EMERGENCY MEASURE: " + _f.name + " unseals forbidden warframe [" + _sw_name + "] and issues emergency PMC bailout tenders (+100% Bounty)!");
+                var _sw_name = variable_struct_get(_f, "superweapon_name") ?? "Apex Prototype";
+                add_diplomatic_cable(_f.name, "All Solar Factions", "EMERGENCY MEASURE: UNSEALED FORBIDDEN WARFRAME", _f.name + " unseals forbidden warframe [" + _sw_name + "] and issues emergency PMC bailout tenders (+100% Bounty)!", "URGENT", "WAR");
             }
         }
         // WINNING STATE: Territory >= 38% OR Military Strength >= 70
@@ -1013,7 +1042,7 @@ evaluate_faction_ai_turn = function() {
             _f.ai_state = "WINNING";
             _f.contract_bounty_multiplier = 0.85; // Imperial hubris squeezes mercenary profit margins
             if (_old_ai_state != "WINNING") {
-                add_diplomatic_cable(_fid, "HEGEMONIC ASCENDANCY: " + _f.name + " claims strategic superiority across Sol. Planetary tariffs and mineral quotas enforced.");
+                add_diplomatic_cable(_f.name, "All Solar Factions", "HEGEMONIC ASCENDANCY CLAIMED", _f.name + " claims strategic superiority across Sol. Planetary tariffs and mineral quotas enforced.", "HIGH", "COLD_WAR");
             }
         }
         // STANDARD WAR
@@ -1107,7 +1136,7 @@ simulate_war_turn = function() {
 
     var _keys = variable_struct_get_names(diplomatic_relations);
     for (var k = 0; k < array_length(_keys); k++) {
-        var _r = diplomatic_relations[$ _keys[k]];
+        var _r = variable_struct_get(diplomatic_relations, _keys[k]);
         if (_r.state == "ALLIANCE") {
             if (_r.faction_1 == "faction_a" || _r.faction_2 == "faction_a") _allies_t += 12;
             if (_r.faction_1 == "faction_b" || _r.faction_2 == "faction_b") _allies_c += 12;
@@ -1122,6 +1151,12 @@ simulate_war_turn = function() {
     var _zaibatsu_pwr  = factions.faction_d.military_strength_score + _z_bonus + _allies_z;
 
     var _clash_reports = [];
+
+    // Gundam-Style Planetary & Orbital Territory Clashes (Doc 39)
+    var _territory_clash_reports = scr_territory_simulate_faction_clash();
+    for (var tcr = 0; tcr < array_length(_territory_clash_reports); tcr++) {
+        array_push(_clash_reports, _territory_clash_reports[tcr]);
+    }
 
     // Clash 1: Terran vs Colony (if at WAR)
     var _rel_tc = get_relation("faction_a", "faction_b");
@@ -1188,7 +1223,7 @@ simulate_war_turn = function() {
 // 7b. Pitch Mass-Production Replacement Doctrine (docs/12)
 pitch_mass_production_replacement = function(_faction_id, _blueprint_id, _custom_name) {
     if (!variable_struct_exists(mass_production_contracts, _faction_id)) return false;
-    var _mp = mass_production_contracts[$ _faction_id];
+    var _mp = variable_struct_get(mass_production_contracts, _faction_id);
     if (_mp.replaced) {
         if (instance_exists(obj_HQTerminal)) {
             obj_HQTerminal.show_toast("ALREADY LICENSED: " + _mp.faction_name + " already mass-produces your " + _mp.replacement_name + "!", c_yellow);
@@ -1225,7 +1260,7 @@ pitch_mass_production_replacement = function(_faction_id, _blueprint_id, _custom
 
     modify_standing(_faction_id, 35);
     if (variable_struct_exists(factions, _faction_id)) {
-        factions[$ _faction_id].military_strength_score = min(100, factions[$ _faction_id].military_strength_score + 15);
+        variable_struct_get(factions, _faction_id).military_strength_score = min(100, variable_struct_get(factions, _faction_id).military_strength_score + 15);
     }
 
     if (instance_exists(obj_HQTerminal)) {
@@ -1260,22 +1295,22 @@ launch_pmc_offensive = function(_target_faction_id, _mech_idx, _pilot_idx) {
         return false;
     }
 
-    var _tf = factions[$ _target_faction_id];
+    var _tf = variable_struct_get(factions, _target_faction_id);
     if (is_undefined(_tf)) return false;
 
     pmc_expeditions_launched += 1;
 
-    var _pilot_cstat = _pilot[$ "combat_stat"] ?? floor((_pilot[$ "accuracy"] ?? 80) / 10);
+    var _pilot_cstat = variable_struct_get(_pilot, "combat_stat") ?? floor((variable_struct_get(_pilot, "accuracy") ?? 80) / 10);
     var _pmc_pwr = _mech.armor_rating + _mech.power_output + (_pilot_cstat * 12) + irandom_range(15, 40);
     var _def_pwr = _tf.military_strength_score * 1.8 + irandom_range(10, 30);
 
     if (_pmc_pwr >= _def_pwr) {
         var _captured = irandom_range(3, 6);
         var _t_key = (_target_faction_id == "faction_a") ? "terran_pct" : ((_target_faction_id == "faction_b") ? "colony_pct" : ((_target_faction_id == "faction_c") ? "syndicate_pct" : "zaibatsu_pct"));
-        var _cur_t = territory_control[$ _t_key];
+        var _cur_t = variable_struct_get(territory_control, _t_key);
         var _actual_taken = min(_cur_t, _captured);
 
-        territory_control[$ _t_key] = max(0, _cur_t - _actual_taken);
+        variable_struct_set(territory_control, _t_key, max(0, _cur_t - _actual_taken));
         territory_control.pmc_pct = min(100, territory_control.pmc_pct + _actual_taken);
 
         _tf.military_strength_score = max(0, _tf.military_strength_score - 10);
@@ -1287,8 +1322,8 @@ launch_pmc_offensive = function(_target_faction_id, _mech_idx, _pilot_idx) {
         _gm.add_raw_material("mat_tritium", irandom_range(1, 3));
         _gm.total_sorties_won += 1;
 
-        if (territory_control[$ _t_key] <= 0 || _tf.military_strength_score <= 5) {
-            territory_control[$ _t_key] = 0;
+        if (variable_struct_get(territory_control, _t_key) <= 0 || _tf.military_strength_score <= 5) {
+            variable_struct_set(territory_control, _t_key, 0);
             _tf.military_strength_score = 0;
             _tf.standing_title = "OVERTHROWN / ANNEXED";
             if (array_get_index(factions_overthrown, _target_faction_id) == -1) {
@@ -1323,7 +1358,7 @@ launch_pmc_offensive = function(_target_faction_id, _mech_idx, _pilot_idx) {
 accept_contract = function(_contract_id) {
     var _count = array_length(available_contracts);
     for (var i = 0; i < _count; i++) {
-        if (available_contracts[i][$ "id"] == _contract_id) {
+        if (variable_struct_get(available_contracts[i], "id") == _contract_id) {
             var _c = available_contracts[i];
             array_delete(available_contracts, i, 1);
             array_push(active_contracts, _c);
@@ -1345,7 +1380,7 @@ fulfill_contract = function(_contract_id) {
             // Calculate dynamic AI bounty multiplier (docs/36)
             var _b_mult = 1.0;
             if (variable_struct_exists(factions, _cnt.faction)) {
-                _b_mult = factions[$ _cnt.faction][$ "contract_bounty_multiplier"] ?? 1.0;
+                _b_mult = variable_struct_get(variable_struct_get(factions, _cnt.faction), "contract_bounty_multiplier") ?? 1.0;
             }
             var _final_payout = round(_cnt.payout_credits * _b_mult);
 
@@ -1437,12 +1472,9 @@ timeline_suits_data = [];
 
 if (file_exists("factions_lore.json")) {
     try {
-        var _f = file_text_open_read("factions_lore.json");
-        var _json_str = "";
-        while (!file_text_eof(_f)) {
-            _json_str += file_text_readln(_f);
-        }
-        file_text_close(_f);
+        var _buf_fl = buffer_load("factions_lore.json");
+        var _json_str = buffer_read(_buf_fl, buffer_string);
+        buffer_delete(_buf_fl);
         factions_lore_data = json_parse(_json_str);
         show_debug_message("[obj_FactionManager] Loaded factions_lore.json successfully.");
     } catch (_ex) {
@@ -1452,12 +1484,9 @@ if (file_exists("factions_lore.json")) {
 
 if (file_exists("mobile_suits_timeline.json")) {
     try {
-        var _f2 = file_text_open_read("mobile_suits_timeline.json");
-        var _json_str2 = "";
-        while (!file_text_eof(_f2)) {
-            _json_str2 += file_text_readln(_f2);
-        }
-        file_text_close(_f2);
+        var _buf_tl = buffer_load("mobile_suits_timeline.json");
+        var _json_str2 = buffer_read(_buf_tl, buffer_string);
+        buffer_delete(_buf_tl);
         var _t_parsed = json_parse(_json_str2);
         if (variable_struct_exists(_t_parsed, "mobile_suits")) {
             timeline_suits_data = _t_parsed.mobile_suits;
@@ -1529,26 +1558,26 @@ incumbent_doctrines = {
 };
 
 get_incumbent_specs = function(_faction_id) {
-    var _base = variable_struct_exists(incumbent_doctrines, _faction_id) ? incumbent_doctrines[$ _faction_id] : incumbent_doctrines.faction_a;
+    var _base = variable_struct_exists(incumbent_doctrines, _faction_id) ? variable_struct_get(incumbent_doctrines, _faction_id) : incumbent_doctrines.faction_a;
 
     // Dynamically query mass_production_contracts for active playthrough line chassis (docs/29)
     if (variable_struct_exists(mass_production_contracts, _faction_id)) {
-        var _mpc = mass_production_contracts[$ _faction_id];
+        var _mpc = variable_struct_get(mass_production_contracts, _faction_id);
         if (is_struct(_mpc) && variable_struct_exists(_mpc, "baseline_suit_name")) {
             _base.name = _mpc.baseline_suit_name;
-            _base.id = _mpc.baseline_suit_id;
+            variable_struct_set(_base, "id", _mpc.baseline_suit_id);
             _base.armor = _mpc.req_armor * 10;
             _base.power = _mpc.req_power;
-            _base.doctrine_focus = _mpc[$ "doctrine"] ?? _base.doctrine_focus;
+            _base.doctrine_focus = variable_struct_get(_mpc, "doctrine") ?? _base.doctrine_focus;
         }
     }
 
     // Dynamically query competitor catalog for active era chassis (docs/27)
     if (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "competitor_catalog")) {
         var _corp_map = { faction_a: "corp_vhi", faction_b: "corp_aod", faction_c: "corp_rust", faction_d: "corp_hats" };
-        var _cid = _corp_map[$ _faction_id] ?? "corp_vhi";
+        var _cid = variable_struct_get(_corp_map, _faction_id) ?? "corp_vhi";
         if (variable_struct_exists(obj_GameManager.competitor_catalog, _cid)) {
-            var _cp = obj_GameManager.competitor_catalog[$ _cid];
+            var _cp = variable_struct_get(obj_GameManager.competitor_catalog, _cid);
             if (!is_undefined(_cp.active_line_chassis)) {
                 return {
                     id: _cp.active_line_chassis.id,
@@ -1574,10 +1603,10 @@ run_procurement_trial = function(_faction_id, _mech) {
     var _inc = get_incumbent_specs(_faction_id);
     if (is_undefined(_mech)) return undefined;
 
-    var _cand_armor = _mech[$ "armor_rating"] ?? 600;
-    var _cand_power = _mech[$ "power_output"] ?? 10;
-    var _cand_speed = _mech[$ "speed"] ?? 60;
-    var _cand_combat = _mech[$ "combat_rating"] ?? 400;
+    var _cand_armor = variable_struct_get(_mech, "armor_rating") ?? 600;
+    var _cand_power = variable_struct_get(_mech, "power_output") ?? 10;
+    var _cand_speed = variable_struct_get(_mech, "speed") ?? 60;
+    var _cand_combat = variable_struct_get(_mech, "combat_rating") ?? 400;
 
     // 4 Diagnostic Phase Scores (Base 100 is exact parity with incumbent)
     var _score_armor = clamp((_cand_armor / max(1, _inc.armor)) * 100.0, 20.0, 160.0);
@@ -1595,11 +1624,25 @@ run_procurement_trial = function(_faction_id, _mech) {
     var _pedigree_bonus = 0.0;
     var _pedigree_rating = "UNTESTED";
     if (variable_struct_exists(_mech, "combat_pedigree") && is_struct(_mech.combat_pedigree)) {
-        _pedigree_bonus = _mech.combat_pedigree[$ "telemetry_bonus"] ?? 0.0;
-        _pedigree_rating = _mech.combat_pedigree[$ "pedigree_rating"] ?? "UNTESTED";
+        _pedigree_bonus = variable_struct_get(_mech.combat_pedigree, "telemetry_bonus") ?? 0.0;
+        _pedigree_rating = variable_struct_get(_mech.combat_pedigree, "pedigree_rating") ?? "UNTESTED";
     }
 
     var _composite_score = round((_base_weighted + _st_bonus + _pedigree_bonus) * 10.0) / 10.0;
+
+    // S-Grade Masterwork OSS Pitch Score Bonus (+25% multiplier) (Goal D)
+    var _oss_bonus_pct = 0.0;
+    if (variable_struct_exists(_mech, "oss_pitch_bonus_pct")) {
+        _oss_bonus_pct = _mech.oss_pitch_bonus_pct;
+    } else if (variable_struct_exists(_mech, "is_masterwork") && _mech.is_masterwork) {
+        _oss_bonus_pct = 25.0;
+    } else if (variable_struct_exists(_mech, "quality_grade") && _mech.quality_grade == "S_GRADE_MASTERWORK") {
+        _oss_bonus_pct = 25.0;
+    }
+
+    if (_oss_bonus_pct > 0.0) {
+        _composite_score = round(_composite_score * (1.0 + (_oss_bonus_pct / 100.0)) * 10.0) / 10.0;
+    }
 
     var _passed = (_composite_score >= 100.0);
 
@@ -1608,6 +1651,9 @@ run_procurement_trial = function(_faction_id, _mech) {
         _report = "TENDER APPROVED: " + _mech.name + " outperformed incumbent " + _inc.name + " (" + string(_composite_score) + "/100). Faction board recommends immediate mass-production contract!";
         if (_pedigree_bonus > 0) {
             _report += " [Combat Telemetry: " + _pedigree_rating + " (+" + string(_pedigree_bonus) + " pts)]";
+        }
+        if (_oss_bonus_pct > 0.0) {
+            _report += " [★ S-Grade Masterwork Pitch: +" + string(floor(_oss_bonus_pct)) + "% OSS Score ★]";
         }
     } else {
         var _deficit = 100.0 - _composite_score;
@@ -1642,13 +1688,13 @@ run_procurement_trial = function(_faction_id, _mech) {
 
 award_procurement_contract = function(_faction_id, _mech, _trial_result) {
     if (!variable_struct_exists(mass_production_contracts, _faction_id)) return false;
-    var _mp = mass_production_contracts[$ _faction_id];
-    var _f = factions[$ _faction_id];
+    var _mp = variable_struct_get(mass_production_contracts, _faction_id);
+    var _f = variable_struct_get(factions, _faction_id);
     var _is_upgrade = _mp.replaced;
 
     _mp.replaced = true;
     _mp.replacement_name = _mech.name;
-    _mp.replacement_blueprint_id = _mech[$ "blueprint_id"] ?? "bp_custom";
+    _mp.replacement_blueprint_id = variable_struct_get(_mech, "blueprint_id") ?? "bp_custom";
     _mp.combat_bonus = max(_is_upgrade ? _mp.combat_bonus + 4 : 18, floor(_trial_result.composite_score / 5));
     _mp.adoption_stage = "TOOLING";
     _mp.tooling_turns_remaining = 2;
@@ -1659,7 +1705,7 @@ award_procurement_contract = function(_faction_id, _mech, _trial_result) {
     if (instance_exists(obj_BlueprintManager)) {
         var _base_suit_id = _mp.baseline_suit_id;
         obj_BlueprintManager.record_suit_replacement(_base_suit_id, _mech.name, true, _faction_id);
-        var _new_bid = _mech[$ "blueprint_id"] ?? (_mech[$ "id"] ?? "bp_custom");
+        var _new_bid = variable_struct_get(_mech, "blueprint_id") ?? (variable_struct_get(_mech, "id") ?? "bp_custom");
         obj_BlueprintManager.record_suit_adoption(_new_bid, _faction_id, _mech.name, true, 1500);
     }
 
@@ -1716,10 +1762,10 @@ run_procurement_trial_phase = function(_faction_id, _mech, _phase_idx = 4, _refi
     var _inc = get_incumbent_specs(_faction_id);
     if (is_undefined(_mech)) return undefined;
 
-    var _cand_armor = _mech[$ "armor_rating"] ?? 600;
-    var _cand_power = _mech[$ "power_output"] ?? 10;
-    var _cand_speed = _mech[$ "speed"] ?? 60;
-    var _cand_combat = _mech[$ "combat_rating"] ?? 400;
+    var _cand_armor = variable_struct_get(_mech, "armor_rating") ?? 600;
+    var _cand_power = variable_struct_get(_mech, "power_output") ?? 10;
+    var _cand_speed = variable_struct_get(_mech, "speed") ?? 60;
+    var _cand_combat = variable_struct_get(_mech, "combat_rating") ?? 400;
 
     // Apply Emergency Field Refinements
     var _ref_power_mod = 1.0;
@@ -1752,11 +1798,25 @@ run_procurement_trial_phase = function(_faction_id, _mech, _phase_idx = 4, _refi
     var _pedigree_bonus = 0.0;
     var _pedigree_rating = "UNTESTED";
     if (variable_struct_exists(_mech, "combat_pedigree") && is_struct(_mech.combat_pedigree)) {
-        _pedigree_bonus = _mech.combat_pedigree[$ "telemetry_bonus"] ?? 0.0;
-        _pedigree_rating = _mech.combat_pedigree[$ "pedigree_rating"] ?? "UNTESTED";
+        _pedigree_bonus = variable_struct_get(_mech.combat_pedigree, "telemetry_bonus") ?? 0.0;
+        _pedigree_rating = variable_struct_get(_mech.combat_pedigree, "pedigree_rating") ?? "UNTESTED";
     }
 
     var _composite_score = round((_base_weighted + _st_bonus + _pedigree_bonus) * 10.0) / 10.0;
+
+    // S-Grade Masterwork OSS Pitch Score Bonus (+25% multiplier) (Goal D)
+    var _oss_bonus_pct = 0.0;
+    if (variable_struct_exists(_mech, "oss_pitch_bonus_pct")) {
+        _oss_bonus_pct = _mech.oss_pitch_bonus_pct;
+    } else if (variable_struct_exists(_mech, "is_masterwork") && _mech.is_masterwork) {
+        _oss_bonus_pct = 25.0;
+    } else if (variable_struct_exists(_mech, "quality_grade") && _mech.quality_grade == "S_GRADE_MASTERWORK") {
+        _oss_bonus_pct = 25.0;
+    }
+
+    if (_oss_bonus_pct > 0.0) {
+        _composite_score = round(_composite_score * (1.0 + (_oss_bonus_pct / 100.0)) * 10.0) / 10.0;
+    }
 
     var _grade = "GRADE F";
     var _passed = false;
@@ -1788,6 +1848,9 @@ run_procurement_trial_phase = function(_faction_id, _mech, _phase_idx = 4, _refi
         _report = "TENDER APPROVED (" + _grade + "): " + _mech.name + " outperformed " + _inc.name + " & " + _rival_corp + " (" + string(_composite_score) + "/100). Faction board recommends immediate mass-production contract!";
         if (_pedigree_bonus > 0) {
             _report += " [Combat Telemetry: " + _pedigree_rating + " (+" + string(_pedigree_bonus) + " pts)]";
+        }
+        if (_oss_bonus_pct > 0.0) {
+            _report += " [★ S-Grade Masterwork Pitch: +" + string(floor(_oss_bonus_pct)) + "% OSS Score ★]";
         }
     } else {
         var _deficit = 100.0 - _composite_score;
@@ -1830,7 +1893,7 @@ run_procurement_trial_phase = function(_faction_id, _mech, _phase_idx = 4, _refi
 
 expedite_adoption_tooling = function(_faction_id) {
     if (!variable_struct_exists(mass_production_contracts, _faction_id)) return false;
-    var _mp = mass_production_contracts[$ _faction_id];
+    var _mp = variable_struct_get(mass_production_contracts, _faction_id);
     if (_mp.adoption_stage != "TOOLING") return false;
 
     var _cost = 40000;
@@ -1855,7 +1918,7 @@ expedite_adoption_tooling = function(_faction_id) {
 
 upgrade_adoption_block_ii = function(_faction_id) {
     if (!variable_struct_exists(mass_production_contracts, _faction_id)) return false;
-    var _mp = mass_production_contracts[$ _faction_id];
+    var _mp = variable_struct_get(mass_production_contracts, _faction_id);
     if (!_mp.replaced || _mp.block_level >= 2) return false;
 
     _mp.block_level = 2;
@@ -1867,7 +1930,7 @@ upgrade_adoption_block_ii = function(_faction_id) {
         obj_GameManager.funds += _bounty;
         array_push(obj_GameManager.last_turn_events, "! BLOCK II MODERNIZATION: " + _mp.faction_name + " accepted Block II spec for " + _mp.replacement_name + "! Modernization Bounty: +" + string(_bounty) + " Cr!");
     }
-    var _f = factions[$ _faction_id];
+    var _f = variable_struct_get(factions, _faction_id);
     _f.military_strength_score = min(100, _f.military_strength_score + 10);
 
     if (instance_exists(obj_HQTerminal)) {
@@ -1878,7 +1941,7 @@ upgrade_adoption_block_ii = function(_faction_id) {
 
 upgrade_adoption_block_iii = function(_faction_id) {
     if (!variable_struct_exists(mass_production_contracts, _faction_id)) return false;
-    var _mp = mass_production_contracts[$ _faction_id];
+    var _mp = variable_struct_get(mass_production_contracts, _faction_id);
     if (!_mp.replaced || _mp.block_level != 2) return false;
 
     _mp.block_level = 3;
@@ -1916,7 +1979,7 @@ upgrade_adoption_block_iii = function(_faction_id) {
         array_push(obj_GameManager.inventory.deployable_mechs, _new_ace_unit);
         array_push(obj_GameManager.last_turn_events, "! BLOCK III APEX SPEC: " + _mp.faction_name + " ratified Block III Vanguard! Prestige Bounty: +" + string(_bounty) + " Cr & Free Ace Custom added to Hangar!");
     }
-    var _f = factions[$ _faction_id];
+    var _f = variable_struct_get(factions, _faction_id);
     _f.military_strength_score = min(100, _f.military_strength_score + 15);
 
     if (instance_exists(obj_HQTerminal)) {
@@ -2109,7 +2172,7 @@ execute_trade_sell = function(_faction_id, _item, _qty) {
     } else if (_item.cat == "alloys") {
         _available = obj_GameManager.get_alloy(_item.id);
     } else if (_item.cat == "parts") {
-        var _slot_arr = obj_GameManager.inventory.parts[$ _item.slot] ?? [];
+        var _slot_arr = variable_struct_get(obj_GameManager.inventory.parts, _item.slot) ?? [];
         for (var p = 0; p < array_length(_slot_arr); p++) {
             if (_slot_arr[p].id == _item.id) _available++;
         }
@@ -2126,7 +2189,7 @@ execute_trade_sell = function(_faction_id, _item, _qty) {
     } else if (_item.cat == "alloys") {
         obj_GameManager.spend_alloy(_item.id, _qty);
     } else if (_item.cat == "parts") {
-        var _slot_arr2 = obj_GameManager.inventory.parts[$ _item.slot];
+        var _slot_arr2 = variable_struct_get(obj_GameManager.inventory.parts, _item.slot);
         var _removed = 0;
         for (var p2 = array_length(_slot_arr2) - 1; p2 >= 0; p2--) {
             if (_slot_arr2[p2].id == _item.id) {
@@ -2152,7 +2215,7 @@ execute_trade_sell = function(_faction_id, _item, _qty) {
 // 12. Dynamic Frontline World Reflection Methods (docs/27)
 get_faction_active_line_chassis = function(_faction_id) {
     if (!variable_struct_exists(mass_production_contracts, _faction_id)) return undefined;
-    var _mp = mass_production_contracts[$ _faction_id];
+    var _mp = variable_struct_get(mass_production_contracts, _faction_id);
     if (_mp.replaced) {
         return {
             name: _mp.replacement_name,
@@ -2182,7 +2245,7 @@ get_faction_patrol_squad = function(_faction_id) {
     if (is_undefined(_chassis)) return [];
     var _spr = spr_ms_ironclad_idle;
     if (variable_struct_exists(mass_production_contracts, _faction_id)) {
-        _spr = mass_production_contracts[$ _faction_id][$ "sprite_asset"] ?? _spr;
+        _spr = variable_struct_get(variable_struct_get(mass_production_contracts, _faction_id), "sprite_asset") ?? _spr;
     }
     var _squad = [];
     for (var u = 0; u < 4; u++) {
@@ -2208,7 +2271,7 @@ evaluate_battlefield_faction_intervention = function(_sector_sphere) {
     for (var f = 0; f < array_length(_f_keys); f++) {
         var _fid = _f_keys[f];
         var _std = get_standing(_fid);
-        var _f_info = factions[$ _fid];
+        var _f_info = variable_struct_get(factions, _fid);
         var _fname = _f_info.name;
 
         // ALLIED INTERVENTION (Standing >= +25)
@@ -2277,4 +2340,70 @@ evaluate_battlefield_faction_intervention = function(_sector_sphere) {
         }
     }
     return _interventions;
+};
+
+// =============================================================================
+// THE PROMETHEUS PROTOCOL: DIPLOMATIC REVOLUTION (doc 38)
+// =============================================================================
+on_mobile_suit_revolution = function() {
+    show_debug_message("[obj_FactionManager] The Prometheus Revolution triggered! Factions pivoting from hostility to desperate cooperation...");
+
+    // 1. Diplomatic Truce & Standing Surge (+35 to all active factions)
+    var _f_keys = ["faction_a", "faction_b", "faction_c", "faction_d", "faction_e"];
+    for (var f = 0; f < array_length(_f_keys); f++) {
+        var _fid = _f_keys[f];
+        variable_struct_set(faction_standing, _fid, clamp(variable_struct_get(faction_standing, _fid) + 35, 15, 80));
+        if (variable_struct_exists(factions, _fid)) {
+            var _fc = variable_struct_get(factions, _fid);
+            _fc.standing = variable_struct_get(faction_standing, _fid);
+            _fc.standing_title = "Arms Monopoly Partner";
+            _fc.contract_bounty_multiplier = 3.0; // 300% bounty surge for player's mobile suit!
+            _fc.ai_state = "MS_REVERSE_ENGINEERING";
+            _fc.ai_behavior_title = "Desperate Reverse-Engineering & High-Bounty Procurement";
+        }
+    }
+
+        // 2. Inject Urgent Prometheus High-Bounty Tenders
+    array_push(available_contracts, {
+        id: "cnt_prometheus_linebreaker_01",
+        faction: "faction_a",
+        faction_name: "The Terran Coalition",
+        type: "PROMETHEUS_TENDER",
+        title: "★ THE PROMETHEUS TENDER: BREAK THE TRENCH LINE ★",
+        briefing: "Terran High Command offers an astronomical 3.0x bounty to deploy your bipedal Mobile Suit into Sector 4 to crush entrenched heavy tank battalions!",
+        required_tier: 2,
+        required_quantity: 1,
+        delivered_quantity: 0,
+        payout_credits: 750000,
+        reward_material_id: "mat_tungsten",
+        reward_material_amount: 50,
+        reputation_gain: 30,
+        reputation_penalty: -10,
+        deadline_days: 35,
+        days_remaining: 35,
+        penalty_credits: 0
+    });
+    array_push(available_contracts, {
+        id: "cnt_prometheus_colony_01",
+        faction: "faction_b",
+        faction_name: "The Outer Colonies",
+        type: "PROMETHEUS_TENDER",
+        title: "★ LIBERATION PACT: ORBITAL BEACHHEAD MOBILE SUIT DEFENSE ★",
+        briefing: "Colonial Alliance requests Mobile Suit tactical superiority to shatter an incoming tank invasion force. Offers emergency Tritium reserves.",
+        required_tier: 2,
+        required_quantity: 1,
+        delivered_quantity: 0,
+        payout_credits: 680000,
+        reward_material_id: "mat_tritium",
+        reward_material_amount: 25,
+        reputation_gain: 35,
+        reputation_penalty: -15,
+        deadline_days: 28,
+        days_remaining: 28,
+        penalty_credits: 0
+    });
+
+    if (variable_struct_exists(territory_control, "last_shift_report")) {
+        territory_control.last_shift_report = "GLOBAL CEASEFIRE: Superpowers suspend operations to negotiate Mobile Suit contracts with the Iron Vanguard!";
+    }
 };

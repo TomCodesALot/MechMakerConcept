@@ -45,7 +45,7 @@ if (instance_exists(obj_GameManager)) {
     var _master_bp = obj_GameManager.get_blueprint("bp_ms_ironclad_07");
     if (!is_undefined(_master_bp) && is_struct(_master_bp)) {
         suit_data = scr_struct_clone(_master_bp);
-        suit_name = suit_data[$ "name"] ?? "GHA-07 Ironclad";
+        suit_name = variable_struct_get(suit_data, "name") ?? "GHA-07 Ironclad";
         show_debug_message("[obj_MobileSuit] Instance created with cloned blueprint: " + suit_name);
     }
 }

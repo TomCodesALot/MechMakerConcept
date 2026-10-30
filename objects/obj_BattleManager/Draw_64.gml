@@ -10,439 +10,516 @@ var _click = mouse_check_button_pressed(mb_left);
 
 var _cur_u = (selected_unit_idx >= 0 && selected_unit_idx < array_length(units)) ? units[selected_unit_idx] : undefined;
 
-// =========================================================================
-// 1. TOP MISSION & PLATOON TIMELINE HUD BAR (y: 0 to 86)
-// =========================================================================
-scr_draw_snes_panel(0, 0, _gw, 86, "", -1, false, 0.04);
+// -------------------------------------------------------------------------
+// GIHREN'S GREED + FRONT MISSION 2-TIER CINEMATIC BATTLE CLASH OVERLAY
+// -------------------------------------------------------------------------
+if (battle_cinematic.active) {
+    draw_battle_cinematic_stage();
+    exit;
+}
 
-// Sector Title & Subtitle
-draw_set_color(make_color_rgb(100, 210, 255));
-draw_text(16, 8, "TACTICAL ISOMETRIC ENGAGEMENT // SECTOR 4 MINING OUTPOST");
-draw_set_color(make_color_rgb(150, 180, 210));
-draw_text(16, 26, "OBJECTIVE: Neutralize Syndicate Battlegroup (13 Units) | Allied Forces: 8 Units");
+// =========================================================================
+// 1. TOP SECTOR TELEMETRY RIBBON (y: 0 to 48) - 16-Bit Front Mission Steel
+// =========================================================================
+scr_draw_snes_panel(0, 0, _gw, 48, "", -1, false, 0.04);
 
-// Current Phase Badge
-var _phase_str = "[PLAYER PHASE]";
-var _phase_col = make_color_rgb(80, 240, 120);
+// Left: Sector Classification & Phase Badge
+draw_set_color(make_color_rgb(100, 220, 255));
+draw_text(16, 6, "SECTOR 04: MINING OUTPOST // THEATER: " + string_upper(map_definitions[current_map_id].theater));
+
+var _phase_str = "[PLAYER COMMAND PHASE]";
+var _phase_col = make_color_rgb(60, 240, 100);
 if (state == COMBAT_STATE.AI_PHASE) {
-    _phase_str = "[HOSTILE PHASE // ENEMY ENGAGING]";
+    _phase_str = "[HOSTILE PHASE // ENEMY ADVANCE]";
     _phase_col = make_color_rgb(255, 80, 80);
 } else if (state == COMBAT_STATE.MOVE_MODE) {
-    _phase_str = "[MANEUVER MODE // SELECT DESTINATION]";
+    _phase_str = (split_mode_active ? "[SPLIT SQUAD MARCH // SELECT CELL]" : "[BATTLEGROUP MARCH // SELECT CELL]");
     _phase_col = make_color_rgb(100, 220, 255);
 } else if (state == COMBAT_STATE.TARGET_MODE) {
-    _phase_str = "[TARGETING WEAPON // SELECT TARGET]";
+    _phase_str = "[AUTOMATED MAXIMUM FIREPOWER // SELECT TARGET]";
     _phase_col = make_color_rgb(255, 200, 80);
 } else if (state == COMBAT_STATE.AUTO_SIM) {
-    _phase_str = "[AUTO-SIMULATION ACTIVE]";
+    _phase_str = "[AUTONOMOUS SIMULATION ACTIVE]";
     _phase_col = make_color_rgb(210, 140, 255);
 }
 draw_set_color(_phase_col);
-draw_text(16, 46, "STATUS: " + _phase_str + " | TURN: " + string(turn_number));
+draw_text(16, 26, "STATUS: " + _phase_str + " | TURN: " + string(turn_number));
 
-// Camera Navigation Hints
+// Center: Allied vs Hostile Battlegroup Tallies
+var _allied_alive = 0;
+var _hostile_alive = 0;
+for (var u = 0; u < array_length(units); u++) {
+    if (!units[u].is_destroyed) {
+        if (units[u].team == "ALLIED") _allied_alive++;
+        else _hostile_alive++;
+    }
+}
+
+draw_set_color(make_color_rgb(60, 220, 255));
+draw_text(_gw * 0.38, 14, "PMC BATTLEGROUP: " + string(_allied_alive) + " UNITS");
 draw_set_color(make_color_rgb(140, 170, 200));
-draw_text(16, 64, "[WASD/Drag] Pan | [Wheel] Zoom: " + string(round(zoom * 100)) + "% | [R] Reset | [TAB] Cycle | [F] Facing");
+draw_text(_gw * 0.38 + 160, 14, "|");
+draw_set_color(make_color_rgb(255, 90, 80));
+draw_text(_gw * 0.38 + 175, 14, "OPFOR: " + string(_hostile_alive) + " UNITS");
 
-// Platoon Roster Mini Selector Strip (x: 580 to 1120)
-var _strip_x = 580;
-var _btn_w = 64;
-var _btn_h = 36;
-for (var u = 0; u < 8; u++) {
-    if (u >= array_length(units)) break;
-    var _allied_u = units[u];
-    var _bx = _strip_x + u * (_btn_w + 4);
-    var _by = 12;
+// Right: Quick Action Controls Chips
+var _btn_y = 8;
+var _btn_h = 32;
 
-    var _hov = (_mx >= _bx && _mx <= _bx + _btn_w && _my >= _by && _my <= _by + _btn_h);
-    if (_hov && _click && state == COMBAT_STATE.PLAYER_PHASE && !_allied_u.is_destroyed) {
-        select_unit(u);
-    }
-
-    var _is_sel = (selected_unit_idx == u);
-    scr_draw_snes_button(_bx, _by, _btn_w, _btn_h, "A-0" + string(u + 1), _hov, _is_sel, make_color_rgb(80, 220, 255));
-
-    // Mini AP Pips
-    if (!_allied_u.is_destroyed) {
-        for (var p = 0; p < _allied_u.max_ap; p++) {
-            var _px = _bx + 6 + p * 8;
-            var _py = _by + 20;
-            var _has_ap = (p < _allied_u.current_ap);
-            draw_set_color(_has_ap ? make_color_rgb(60, 240, 100) : make_color_rgb(18, 28, 22));
-            draw_rectangle(_px, _py, _px + 6, _py + 7, false);
-            draw_set_color(make_color_rgb(8, 14, 10));
-            draw_rectangle(_px, _py, _px + 6, _py + 7, true);
-        }
-    } else {
-        draw_set_color(c_red);
-        draw_text(_bx + 6, _by + 16, "KIA");
-    }
+// [C] Cinematic Duels Toggle Button
+var _cd_x = _gw - 430;
+var _cd_w = 120;
+var _cd_hov = (_mx >= _cd_x && _mx <= _cd_x + _cd_w && _my >= _btn_y && _my <= _btn_y + _btn_h);
+if (_cd_hov && _click) {
+    cinematic_combat_enabled = !cinematic_combat_enabled;
+    scr_audio_play_ui("confirm");
 }
+scr_draw_snes_button(_cd_x, _btn_y, _cd_w, _btn_h, "[C] DUELS: " + (cinematic_combat_enabled ? "ON" : "OFF"), _cd_hov, cinematic_combat_enabled, cinematic_combat_enabled ? make_color_rgb(60, 240, 120) : make_color_rgb(220, 120, 80));
 
-// Pre-Battle Deployment Deck & Hangar Staging Button
-var _dd_x = 990;
-var _dd_y = 12;
-var _dd_w = 175;
-var _dd_h = 36;
-var _dd_hov = (_mx >= _dd_x && _mx <= _dd_x + _dd_w && _my >= _dd_y && _my <= _dd_y + _dd_h);
-if (_dd_hov && _click) {
-    deployment_deck_active = !deployment_deck_active;
+// [⚙] Audio Settings Button
+var _aud_x = _cd_x + _cd_w + 8;
+var _aud_w = 110;
+var _aud_hov = (_mx >= _aud_x && _mx <= _aud_x + _aud_w && _my >= _btn_y && _my <= _btn_y + _btn_h);
+if (_aud_hov && _click) {
+    show_settings_modal = !show_settings_modal;
+    scr_audio_play_ui("click");
 }
-scr_draw_snes_button(_dd_x, _dd_y, _dd_w, _dd_h, deployment_deck_active ? "[CLOSE DECK]" : "[DEPLOYMENT DECK]", _dd_hov, deployment_deck_active, make_color_rgb(100, 220, 255));
+var _is_aud_muted = scr_audio_is_muted();
+scr_draw_snes_button(_aud_x, _btn_y, _aud_w, _btn_h, _is_aud_muted ? "[MUTED]" : "[⚙ AUDIO]", _aud_hov, _is_aud_muted, _is_aud_muted ? make_color_rgb(255, 90, 90) : make_color_rgb(100, 220, 255));
 
-// Retreat / Abort Button (Top Right)
-var _ab_x = 1180;
-var _ab_y = 12;
-var _ab_w = 170;
-var _ab_h = 36;
-var _ab_hov = (_mx >= _ab_x && _mx <= _ab_x + _ab_w && _my >= _ab_y && _my <= _ab_y + _ab_h);
-if (_ab_hov && _click) {
+// [ESC] Retreat Button
+var _ret_x = _aud_x + _aud_w + 8;
+var _ret_w = 160;
+var _ret_hov = (_mx >= _ret_x && _mx <= _ret_x + _ret_w && _my >= _btn_y && _my <= _btn_y + _btn_h);
+if (_ret_hov && _click) {
     if (room_exists(rm_hq_terminal)) room_goto(rm_hq_terminal);
 }
-scr_draw_snes_button(_ab_x, _ab_y, _ab_w, _ab_h, "[ESC: RETREAT HQ]", _ab_hov, false, make_color_rgb(220, 90, 50));
+scr_draw_snes_button(_ret_x, _btn_y, _ret_w, _btn_h, "[ESC: RETREAT HQ]", _ret_hov, false, make_color_rgb(220, 80, 50));
+
+// 1b. PROLOGUE AMBUSH DIRECTIVE (DOC 51)
+var _is_prologue_combat = (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "active_combat_context") && !is_undefined(obj_GameManager.active_combat_context) && variable_struct_exists(obj_GameManager.active_combat_context, "is_prologue") && obj_GameManager.active_combat_context.is_prologue);
+if (_is_prologue_combat) {
+    var _pb_y = 50;
+    var _pb_w = _gw - 40;
+    var _pb_h = 24;
+    draw_set_color(make_color_rgb(18, 28, 42));
+    draw_rectangle(20, _pb_y, 20 + _pb_w, _pb_y + _pb_h, false);
+    draw_set_color(make_color_rgb(0, 240, 255));
+    draw_rectangle(20, _pb_y, 20 + _pb_w, _pb_y + _pb_h, true);
+    draw_set_color(make_color_rgb(100, 230, 255));
+    draw_text(28, _pb_y + 4, "★ PROLOGUE SORTIE // DAWN OF THE MOBILE SUIT // PILOT GHA-00 PROTOTYPE // NEUTRALIZE 3 PIRATE RAIDER CRAFT ★");
+}
+
+// 1b. OPERATION GROUNDWORK // CADRE COMBAT GUIDANCE (DOC 50)
+if (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "tutorial_step") && obj_GameManager.tutorial_step == 4) {
+    var _tb_y = 50;
+    var _tb_w = _gw - 40;
+    var _tb_h = 24;
+    draw_set_color(make_color_rgb(14, 20, 32));
+    draw_rectangle(20, _tb_y, 20 + _tb_w, _tb_y + _tb_h, false);
+    draw_set_color(make_color_rgb(255, 180, 40));
+    draw_rectangle(20, _tb_y, 20 + _tb_w, _tb_y + _tb_h, true);
+    draw_set_color(make_color_rgb(255, 220, 80));
+    draw_text(28, _tb_y + 4, "★ CADRE TACTICAL INSTRUCTION: 1. Click Unit -> 2. Click Cyan Tile to Move -> 3. Click [ATTACK] -> 4. Choose Aimed Limb Shot!");
+}
+
 
 // =========================================================================
-// 2. ACTIVE UNIT STATUS, AP & HEAT BAR (y: 92 to 135)
+// 2. ACTIVE UNIT STATUS & AP/HEAT HUD (Middle-Left, y: 56 to 110)
 // =========================================================================
 if (_cur_u != undefined) {
-    scr_draw_snes_panel(16, 92, 899, 43, "", -1, false, 0.03);
+    var _stat_x = 20;
+    var _stat_y = 56;
+    var _stat_w = min(680, stack_drawer_x - 40);
+    scr_draw_snes_panel(_stat_x, _stat_y, _stat_w, 50, "", -1, false, 0.03);
 
-    // Callsign & Pilot
     draw_set_color(make_color_rgb(100, 220, 255));
-    draw_text(26, 96, "SELECTED: " + _cur_u.callsign);
+    draw_text(_stat_x + 12, _stat_y + 8, string_upper(_cur_u.callsign));
     draw_set_color(make_color_rgb(160, 190, 220));
-    draw_text(26, 114, "PILOT: " + _cur_u.pilot_name + " | TYPE: " + string_upper(_cur_u.mech_type) + " | FACING: " + string(_cur_u.facing));
+    draw_text(_stat_x + 12, _stat_y + 26, "PILOT: " + _cur_u.pilot_name + " | " + string_upper(_cur_u.mech_type));
 
-    // Action Points (AP) Battery Pips
-    var _ap_x = 380;
-    var _ap_y = 96;
+    // AP Battery Pips
+    var _ap_x = _stat_x + 280;
+    var _ap_y = _stat_y + 8;
     draw_set_color(c_white);
-    draw_text(_ap_x, _ap_y, "AP: " + string(_cur_u.current_ap) + " / " + string(_cur_u.max_ap));
+    draw_text(_ap_x, _ap_y, "AP: " + string(_cur_u.current_ap) + "/" + string(_cur_u.max_ap));
     for (var p = 0; p < _cur_u.max_ap; p++) {
-        var _px = _ap_x + p * 24;
+        var _px = _ap_x + p * 16;
         var _py = _ap_y + 18;
         var _has_ap = (p < _cur_u.current_ap);
-        draw_set_color(_has_ap ? make_color_rgb(50, 220, 100) : make_color_rgb(30, 45, 35));
-        draw_rectangle(_px, _py, _px + 18, _py + 16, false);
+        draw_set_color(_has_ap ? make_color_rgb(60, 240, 100) : make_color_rgb(26, 38, 30));
+        draw_rectangle(_px, _py, _px + 12, _py + 10, false);
         draw_set_color(make_color_rgb(80, 255, 140));
-        draw_rectangle(_px, _py, _px + 18, _py + 16, true);
+        draw_rectangle(_px, _py, _px + 12, _py + 10, true);
     }
 
-    // Chassis Heat Gauge
-    var _heat_x = 640;
-    var _heat_y = 96;
+    // Heat Gauge
+    var _heat_x = _ap_x + 150;
+    var _heat_y = _stat_y + 8;
     var _h_norm = clamp(_cur_u.current_heat / _cur_u.max_heat, 0, 1);
     var _h_col = (_h_norm > 0.8) ? c_red : ((_h_norm > 0.5) ? c_orange : make_color_rgb(100, 200, 255));
     draw_set_color(c_white);
-    draw_text(_heat_x, _heat_y, "HEAT: " + string(floor(_cur_u.current_heat)) + "% / 100%");
-    scr_draw_snes_gauge(_heat_x, _heat_y + 18, 250, 14, _cur_u.current_heat, _cur_u.max_heat, _h_col);
+    draw_text(_heat_x, _heat_y, "HEAT: " + string(floor(_cur_u.current_heat)) + "%");
+    scr_draw_snes_gauge(_heat_x, _heat_y + 18, 140, 12, _cur_u.current_heat, _cur_u.max_heat, _h_col);
 }
 
+
 // =========================================================================
-// 3. FRONT MISSION TARGET DUEL & DIAGNOSTICS (Right Panel: x 930 to 1350)
+// 3. TARGETING FORECAST & COMBAT TELEMETRY (When in TARGET_MODE)
 // =========================================================================
-var _diag_x = 930;
-var _diag_y = 92;
-var _diag_w = _gw - _diag_x - 16;
-var _diag_h = 470;
+if (state == COMBAT_STATE.TARGET_MODE && _cur_u != undefined) {
+    var _fc_x = 20;
+    var _fc_y = 114;
+    var _fc_w = min(420, stack_drawer_x - 40);
+    var _fc_h = 180;
 
-var _is_target = false;
-if (_view_u != undefined) _is_target = (_view_u.team == "HOSTILE");
-scr_draw_snes_panel(_diag_x, _diag_y, _diag_w, _diag_h, _is_target ? "TARGET DIAGNOSTICS: HOSTILE" : "UNIT STATUS: ALLIED", _is_target ? make_color_rgb(255, 120, 120) : make_color_rgb(100, 220, 255), true, 0.04);
+    scr_draw_snes_panel(_fc_x, _fc_y, _fc_w, _fc_h, "AUTOMATED MAXIMUM FIREPOWER // FORECAST", make_color_rgb(255, 180, 60), true, 0.04);
 
-// Check if viewing targeted enemy vs selected allied unit
-var _view_u = (target_unit_idx >= 0 && target_unit_idx < array_length(units) && !units[target_unit_idx].is_destroyed) ? units[target_unit_idx] : _cur_u;
+    var _friendly_stack = get_stack_at_tile(_cur_u.grid_c, _cur_u.grid_r, _cur_u.team);
+    var _target_u = (target_unit_idx >= 0 && target_unit_idx < array_length(units) && !units[target_unit_idx].is_destroyed) ? units[target_unit_idx] : undefined;
 
-if (_view_u != undefined) {
-    var _is_target = (_view_u.team == "HOSTILE");
-    draw_set_color(_is_target ? make_color_rgb(255, 120, 120) : make_color_rgb(100, 220, 255));
-    draw_text(_diag_x + 16, _diag_y + 12, _is_target ? "== TARGET DIAGNOSTICS: HOSTILE ==" : "== UNIT STATUS SCHEMATIC: ALLIED ==");
+    if (_target_u != undefined) {
+        var _dist = calculate_distance(_cur_u.grid_c, _cur_u.grid_r, _target_u.grid_c, _target_u.grid_r);
+        var _fp = get_stack_max_firepower(_friendly_stack, _target_u, _dist);
 
-    draw_set_color(c_white);
-    draw_text(_diag_x + 16, _diag_y + 32, _view_u.callsign);
+        draw_set_color(make_color_rgb(255, 90, 80));
+        draw_text(_fc_x + 12, _fc_y + 14, "TARGET: " + string_upper(_target_u.callsign));
+        draw_set_color(make_color_rgb(160, 190, 220));
+        draw_text(_fc_x + 12, _fc_y + 32, "DISTANCE: " + string(_dist) + " TILES | EVASION: " + string(_target_u.evasion) + "%");
+
+        draw_set_color(make_color_rgb(255, 215, 60));
+        draw_text(_fc_x + 12, _fc_y + 54, "PARTICIPATING SALVO: [" + string(_fp.unit_count) + "/" + string(array_length(_friendly_stack)) + " UNITS FIRING]");
+        draw_set_color(make_color_rgb(60, 240, 140));
+        draw_text(_fc_x + 12, _fc_y + 72, "ESTIMATED DAMAGE: " + string(_fp.min_dmg) + " - " + string(_fp.max_dmg) + " HP");
+
+        var _hit_est = calculate_hit_chance(_cur_u, _target_u, _dist);
+        draw_set_color(make_color_rgb(100, 220, 255));
+        draw_text(_fc_x + 12, _fc_y + 92, "LEAD ACCURACY: " + string(_hit_est) + "% | [CLICK TARGET TO FIRE]");
+
+        // Goal F: Vector, High Ground & Cover HUD
+        var _elev_delta = _cur_u.elev - _target_u.elev;
+        var _inc_dir = iso_get_facing(_target_u.grid_c, _target_u.grid_r, _cur_u.grid_c, _cur_u.grid_r);
+        var _is_rear = (_inc_dir == (_target_u.facing + 2) % 4);
+        var _is_flank = (_inc_dir == (_target_u.facing + 1) % 4 || _inc_dir == (_target_u.facing + 3) % 4);
+        var _tact_str = _is_rear ? "REAR AMBUSH (+40% CORE DMG / +30% HIT)" : (_is_flank ? "FLANKING ANGLE (+20% DMG / +15% HIT)" : "FRONTAL CONFRONTATION");
+        var _tact_col = _is_rear ? make_color_rgb(255, 90, 90) : (_is_flank ? make_color_rgb(255, 200, 60) : make_color_rgb(180, 200, 220));
+        draw_set_color(_tact_col);
+        draw_text(_fc_x + 12, _fc_y + 112, "VECTOR: " + _tact_str);
+
+        var _elev_str = (_elev_delta > 0) ? ("HIGH GROUND +" + string(15 * _elev_delta) + "% VELOCITY / +" + string(10 * _elev_delta) + "% HIT") : ((_elev_delta < 0) ? "UPHILL LOW-GROUND PENALTY (-15% DMG / -15% HIT)" : "LEVEL ELEVATION (ELEV " + string(_cur_u.elev) + ")");
+        var _elev_col = (_elev_delta > 0) ? make_color_rgb(100, 240, 255) : ((_elev_delta < 0) ? make_color_rgb(240, 140, 100) : make_color_rgb(160, 180, 200));
+        draw_set_color(_elev_col);
+        draw_text(_fc_x + 12, _fc_y + 130, "TERRAIN: " + _elev_str);
+
+        var _cov_val = grid_cover[_target_u.grid_c][_target_u.grid_r];
+        var _is_supp = variable_struct_exists(_target_u, "is_suppressed") && _target_u.is_suppressed;
+        var _stat_str = "";
+        if (_cov_val == 2) _stat_str += "[HEAVY BASTION: 40% COV] ";
+        else if (_cov_val == 1) _stat_str += "[LIGHT RUBBLE: 25% COV] ";
+        if (_is_supp) _stat_str += "[TARGET PINNED/SUPPRESSED] ";
+        if (_stat_str != "") {
+            draw_set_color(make_color_rgb(255, 220, 100));
+            draw_text(_fc_x + 12, _fc_y + 148, "DEFENSE: " + _stat_str);
+        }
+    } else {
+        draw_set_color(make_color_rgb(200, 210, 225));
+        draw_text(_fc_x + 12, _fc_y + 24, "Hover cursor over enemy tile to lock on.");
+        draw_set_color(make_color_rgb(255, 215, 60));
+        draw_text(_fc_x + 12, _fc_y + 48, "All units in battlegroup with range");
+        draw_text(_fc_x + 12, _fc_y + 66, "will auto-fire maximum damage weapons!");
+    }
+}
+
+
+// =========================================================================
+// 4. RIGHT BATTLEGROUP STACK DRAWER (x: stack_drawer_x to _gw, y: 48 to 754)
+// =========================================================================
+var _dr_x = stack_drawer_x;
+var _dr_y = 48;
+var _dr_w = stack_drawer_w;
+var _dr_h = _gh - _dr_y - 14;
+
+// Left Edge Toggle Tab Button
+var _tab_x = _dr_x - 24;
+var _tab_y = 340;
+var _tab_w = 24;
+var _tab_h = 60;
+var _tab_hov = (_mx >= _tab_x && _mx <= _tab_x + _tab_w && _my >= _tab_y && _my <= _tab_y + _tab_h);
+if (_tab_hov && _click) {
+    stack_drawer_open = !stack_drawer_open;
+    scr_audio_play_ui("click");
+}
+draw_set_color(make_color_rgb(18, 25, 36));
+draw_rectangle(_tab_x, _tab_y, _tab_x + _tab_w, _tab_y + _tab_h, false);
+draw_set_color(_tab_hov ? make_color_rgb(0, 220, 255) : make_color_rgb(70, 95, 125));
+draw_rectangle(_tab_x, _tab_y, _tab_x + _tab_w, _tab_y + _tab_h, true);
+draw_set_color(c_white);
+draw_text(_tab_x + 6, _tab_y + 22, stack_drawer_open ? "▶" : "◀");
+
+if (_dr_x < _gw - 30) {
+    // Render Expanded 16-Bit Metallic Console Drawer
+    scr_draw_snes_panel(_dr_x, _dr_y, _dr_w, _dr_h, "BATTLEGROUP STACK [6 SLOTS]", make_color_rgb(100, 220, 255), true, 0.04);
+
+    var _tile_stack = (_cur_u != undefined) ? get_stack_at_tile(_cur_u.grid_c, _cur_u.grid_r, _cur_u.team) : [];
+    var _stack_cnt = array_length(_tile_stack);
+
+    // Sub-header controls
+    var _btn_reorg_w = 140;
+    var _btn_reorg_h = 24;
+    var _btn_reorg_x = _dr_x + 12;
+    var _btn_reorg_y = _dr_y + 12;
+    var _rhov = (_mx >= _btn_reorg_x && _mx <= _btn_reorg_x + _btn_reorg_w && _my >= _btn_reorg_y && _my <= _btn_reorg_y + _btn_reorg_h);
+    if (_rhov && _click && _cur_u != undefined) {
+        reorganize_stack(_cur_u.grid_c, _cur_u.grid_r, _cur_u.team);
+    }
+    scr_draw_snes_button(_btn_reorg_x, _btn_reorg_y, _btn_reorg_w, _btn_reorg_h, "[R] SWAP ROWS ⇄", _rhov, false, make_color_rgb(100, 220, 255));
+
+    var _btn_split_w = 148;
+    var _btn_split_x = _btn_reorg_x + _btn_reorg_w + 8;
+    var _shov = (_mx >= _btn_split_x && _mx <= _btn_split_x + _btn_split_w && _my >= _btn_reorg_y && _my <= _btn_reorg_y + _btn_reorg_h);
+    if (_shov && _click) {
+        split_mode_active = !split_mode_active;
+        scr_audio_play_ui("click");
+    }
+    scr_draw_snes_button(_btn_split_x, _btn_reorg_y, _btn_split_w, _btn_reorg_h, split_mode_active ? "[✓] SPLIT ACTIVE" : "[S] SPLIT SQUAD", _shov, split_mode_active, split_mode_active ? make_color_rgb(0, 240, 140) : make_color_rgb(240, 190, 50));
+
+    // Stack Count Summary Banner
     draw_set_color(make_color_rgb(160, 190, 220));
-    draw_text(_diag_x + 16, _diag_y + 48, "PILOT: " + _view_u.pilot_name + " | ACC: " + string(_view_u.accuracy) + "% | EVA: " + string(_view_u.evasion) + "%");
+    draw_text(_dr_x + 14, _dr_y + 40, "CURRENT CELL OCCUPANCY: [" + string(_stack_cnt) + "/6 UNITS]");
 
-    // Gihren's Greed & Front Mission Operational Telemetry (Doc 20)
-    var _lim_val = _view_u[$ "pilot_limit_pct"] ?? 120;
-    var _ecm_val = _view_u[$ "ecm_dispersion_pct"] ?? 25;
-    var _prop_cur = _view_u[$ "propellant_cur"] ?? 140;
-    var _prop_max = _view_u[$ "propellant_max"] ?? 140;
-    var _ter_obj = _view_u[$ "terrain"] ?? { ground: "A", space: "B" };
-    var _ter_str = "G:" + string(_ter_obj[$ "ground"] ?? "A") + " S:" + string(_ter_obj[$ "space"] ?? "B");
+    // Section 1: Vanguard (Frontline 1-3)
+    draw_set_color(make_color_rgb(255, 215, 60));
+    draw_text(_dr_x + 14, _dr_y + 60, "── VANGUARD (FRONTLINE 1–3) ──");
 
-    draw_set_color(make_color_rgb(255, 215, 80));
-    draw_text(_diag_x + 16, _diag_y + 64, "LIMIT: " + string(_lim_val) + "% | ECM: " + string(_ecm_val) + "% | EN: " + string(_prop_cur) + "/" + string(_prop_max) + " | TER: " + _ter_str);
+    // Section 2: Support (Rearguard 4-6)
+    draw_set_color(make_color_rgb(100, 220, 255));
+    draw_text(_dr_x + 14, _dr_y + 365, "── SUPPORT (REARGUARD 4–6) ──");
 
-    // Component Breakdown Function
-    var _draw_comp_bar = function(_lbl, _cur, _max, _armor, _intact, _bx, _by) {
-        var _col = _intact ? ((_cur / _max > 0.4) ? c_lime : c_yellow) : c_red;
-        draw_set_color(_intact ? c_white : c_gray);
-        draw_text(_bx, _by, _lbl);
-        draw_set_color(_col);
-        draw_text(_bx + 140, _by, _intact ? (string(_cur) + " / " + string(_max) + " HP") : "[SEVERED]");
+    // Render Compact Unit Cards (up to 6 units)
+    for (var s = 0; s < 6; s++) {
+        var _is_vanguard = (s < 3);
+        var _card_y = _is_vanguard ? (_dr_y + 80 + s * 92) : (_dr_y + 385 + (s - 3) * 92);
+        var _card_x = _dr_x + 12;
+        var _card_w = 296;
+        var _card_h = 86;
 
-        if (_intact) {
-            scr_draw_snes_gauge(_bx + 235, _by + 2, 120, 12, _cur, _max, _col);
-        } else {
-            draw_set_color(make_color_rgb(32, 12, 16));
-            draw_rectangle(_bx + 235, _by + 2, _bx + 355, _by + 14, false);
-            draw_set_color(c_red);
-            draw_text(_bx + 250, _by, "[DESTROYED]");
-        }
-    };
+        if (s < _stack_cnt) {
+            var _su = _tile_stack[s];
+            var _is_sel = (_cur_u != undefined && _su == _cur_u);
+            var _card_hov = (_mx >= _card_x && _mx <= _card_x + _card_w && _my >= _card_y && _my <= _card_y + _card_h);
 
-    var _cy_start = _diag_y + 84;
-    var _comps = _view_u.components;
-    _draw_comp_bar("TORSO CORE", _comps.torso.cur, _comps.torso.max, _comps.torso.armor, _comps.torso.intact, _diag_x + 16, _cy_start);
-    _draw_comp_bar("HEAD SENSORS", _comps.head.cur, _comps.head.max, _comps.head.armor, _comps.head.intact, _diag_x + 16, _cy_start + 24);
-    _draw_comp_bar("LEFT ARM", _comps.arm_left.cur, _comps.arm_left.max, _comps.arm_left.armor, _comps.arm_left.intact, _diag_x + 16, _cy_start + 48);
-    _draw_comp_bar("RIGHT ARM", _comps.arm_right.cur, _comps.arm_right.max, _comps.arm_right.armor, _comps.arm_right.intact, _diag_x + 16, _cy_start + 72);
-    _draw_comp_bar("HYDRAULIC LEGS", _comps.legs.cur, _comps.legs.max, _comps.legs.armor, _comps.legs.intact, _diag_x + 16, _cy_start + 96);
-    _draw_comp_bar("VERNIER PACK", _comps.backpack.cur, _comps.backpack.max, _comps.backpack.armor, _comps.backpack.intact, _diag_x + 16, _cy_start + 120);
+            // Card Background
+            draw_set_color(_is_sel ? make_color_rgb(24, 38, 56) : (_card_hov ? make_color_rgb(18, 28, 42) : make_color_rgb(14, 20, 30)));
+            draw_rectangle(_card_x, _card_y, _card_x + _card_w, _card_y + _card_h, false);
+            draw_set_color(_is_sel ? make_color_rgb(0, 240, 255) : make_color_rgb(45, 65, 90));
+            draw_rectangle(_card_x, _card_y, _card_x + _card_w, _card_y + _card_h, true);
 
-    // Front Mission 4-Part Aimed Shot Targeting & Platoon Squad Status
-    var _aim_y = _cy_start + 144;
-    if (_is_target && _cur_u != undefined) {
-        if (_view_u.squad_type == "SUPER_ACE") {
-            draw_set_color(make_color_rgb(240, 210, 100));
-            draw_text(_diag_x + 16, _aim_y, "FRONT MISSION AIMED SHOT [SUPER ACE]:");
+            // Unit Chassis Miniature / Icon
+            var _spr_icon = get_unit_sprite(_su);
+            if (sprite_exists(_spr_icon)) {
+                draw_sprite_ext(_spr_icon, 0, _card_x + 28, _card_y + 70, 0.42, 0.42, 0, _su.image_blend, 1.0);
+            }
 
-            var _parts = ["torso", "arm_left", "arm_right", "legs", "head"];
-            var _part_labels = ["TORSO", "L-ARM", "R-ARM", "LEGS", "HEAD"];
-            for (var p = 0; p < array_length(_parts); p++) {
-                var _p_name = _parts[p];
-                var _px = _diag_x + 16 + p * 76;
-                var _py = _aim_y + 18;
-                var _pw = 70;
-                var _ph = 20;
-                var _phov = (_mx >= _px && _mx <= _px + _pw && _my >= _py && _my <= _py + _ph);
-                var _psel = (_cur_u.targeted_limb == _p_name);
-                if (_phov && _click) {
-                    _cur_u.targeted_limb = _p_name;
-                    _cur_u.is_aimed_shot = true;
+            // Callsign & Pilot
+            draw_set_color(_is_sel ? make_color_rgb(0, 240, 255) : c_white);
+            draw_text(_card_x + 64, _card_y + 6, string_copy(_su.callsign, 1, 18));
+            draw_set_color(make_color_rgb(150, 180, 210));
+            draw_text(_card_x + 64, _card_y + 22, _su.pilot_name + " (" + string_upper(_su.mech_type) + ")");
+
+            // HP Bar
+            var _hp_cur = _su.components.torso.cur;
+            var _hp_max = _su.components.torso.max;
+            var _hp_pct = clamp(_hp_cur / max(1, _hp_max), 0.0, 1.0);
+            var _hp_col = (_hp_pct > 0.6) ? make_color_rgb(60, 240, 100) : ((_hp_pct > 0.25) ? make_color_rgb(240, 200, 50) : make_color_rgb(255, 60, 60));
+
+            draw_set_color(make_color_rgb(120, 150, 180));
+            draw_text(_card_x + 64, _card_y + 40, "HP:");
+            draw_set_color(make_color_rgb(16, 22, 32));
+            draw_rectangle(_card_x + 90, _card_y + 42, _card_x + 200, _card_y + 50, false);
+            draw_set_color(_hp_col);
+            draw_rectangle(_card_x + 90, _card_y + 42, _card_x + 90 + floor(110 * _hp_pct), _card_y + 50, false);
+            draw_set_color(make_color_rgb(45, 65, 90));
+            draw_rectangle(_card_x + 90, _card_y + 42, _card_x + 200, _card_y + 50, true);
+            draw_set_color(c_white);
+            draw_text_transformed(_card_x + 204, _card_y + 40, string(_hp_cur) + "/" + string(_hp_max), 0.75, 0.75, 0);
+
+            // AP Pips
+            draw_set_color(make_color_rgb(120, 150, 180));
+            draw_text(_card_x + 64, _card_y + 58, "AP:");
+            for (var ap = 0; ap < _su.max_ap; ap++) {
+                var _apx = _card_x + 90 + ap * 12;
+                var _apy = _card_y + 60;
+                var _has_ap = (ap < _su.current_ap);
+                draw_set_color(_has_ap ? make_color_rgb(60, 240, 100) : make_color_rgb(24, 34, 28));
+                draw_rectangle(_apx, _apy, _apx + 8, _apy + 7, false);
+                draw_set_color(make_color_rgb(60, 180, 100));
+                draw_rectangle(_apx, _apy, _apx + 8, _apy + 7, true);
+            }
+
+            // Detach / Split Button
+            if (split_mode_active) {
+                var _is_sp = (variable_struct_exists(split_selected_units, _su.id) && split_selected_units[$ _su.id] == true);
+                var _sp_btn_w = 64;
+                var _sp_btn_x = _card_x + _card_w - _sp_btn_w - 6;
+                var _sp_btn_y = _card_y + 10;
+                var _sphov = (_mx >= _sp_btn_x && _mx <= _sp_btn_x + _sp_btn_w && _my >= _sp_btn_y && _my <= _sp_btn_y + 22);
+                if (_sphov && _click) {
+                    if (_is_sp) variable_struct_remove(split_selected_units, _su.id);
+                    else split_selected_units[$ _su.id] = true;
+                    scr_audio_play_ui("click");
                 }
-                scr_draw_snes_button(_px, _py, _pw, _ph, _part_labels[p], _phov, _psel, make_color_rgb(255, 180, 60));
+                scr_draw_snes_button(_sp_btn_x, _sp_btn_y, _sp_btn_w, 22, _is_sp ? "[✓] PEEL" : "[+] PEEL", _sphov, _is_sp, _is_sp ? make_color_rgb(0, 240, 140) : make_color_rgb(240, 190, 50));
+            } else {
+                var _det_btn_w = 64;
+                var _det_btn_x = _card_x + _card_w - _det_btn_w - 6;
+                var _det_btn_y = _card_y + 10;
+                var _dethov = (_mx >= _det_btn_x && _mx <= _det_btn_x + _det_btn_w && _my >= _det_btn_y && _my <= _det_btn_y + 22);
+                if (_dethov && _click) {
+                    // Solo detach: select this unit only and enter move mode
+                    for (var u = 0; u < array_length(units); u++) {
+                        if (units[u] == _su) {
+                            select_unit(u);
+                            split_mode_active = true;
+                            split_selected_units = {};
+                            split_selected_units[$ _su.id] = true;
+                            recalculate_moves();
+                            state = COMBAT_STATE.MOVE_MODE;
+                            add_log("[DETACH] " + _su.callsign + " detached for solo orders.");
+                            break;
+                        }
+                    }
+                }
+                scr_draw_snes_button(_det_btn_x, _det_btn_y, _det_btn_w, 22, "DETACH", _dethov, false, make_color_rgb(100, 220, 255));
             }
 
-            var _aim_btn_x = _diag_x + 16;
-            var _aim_btn_y = _aim_y + 42;
-            var _aim_btn_w = 380;
-            var _aim_btn_h = 22;
-            var _ab_hov = (_mx >= _aim_btn_x && _mx <= _aim_btn_x + _aim_btn_w && _my >= _aim_btn_y && _my <= _aim_btn_y + _aim_btn_h);
-            if (_ab_hov && _click) {
-                _cur_u.is_aimed_shot = !_cur_u.is_aimed_shot;
+            // Aimed Shot Precision Limb Toggle [AIM: OFF / TORSO / ARMS / LEGS]
+            var _aim_btn_w = 64;
+            var _aim_btn_x = _card_x + _card_w - _aim_btn_w - 6;
+            var _aim_btn_y = _card_y + 36;
+            var _aimhov = (_mx >= _aim_btn_x && _mx <= _aim_btn_x + _aim_btn_w && _my >= _aim_btn_y && _my <= _aim_btn_y + 20);
+            if (_aimhov && _click) {
+                if (!variable_struct_exists(_su, "is_aimed_shot") || !_su.is_aimed_shot) {
+                    _su.is_aimed_shot = true;
+                    _su.targeted_limb = "torso";
+                } else if (_su.targeted_limb == "torso") {
+                    _su.targeted_limb = "arm_right";
+                } else if (_su.targeted_limb == "arm_right") {
+                    _su.targeted_limb = "legs";
+                } else {
+                    _su.is_aimed_shot = false;
+                    _su.targeted_limb = "";
+                }
+                scr_audio_play_ui("click");
+                add_log("[AIM OVERRIDE] " + _su.callsign + " target: " + (_su.is_aimed_shot ? string_upper(_su.targeted_limb) : "AUTO"));
             }
-            var _aim_status_txt = _cur_u.is_aimed_shot ? ("[AIMED SHOT: ON // " + string_upper(_cur_u.targeted_limb) + " (-15% ACC)]") : "[AIMED SHOT: OFF // AUTO-SCATTER]";
-            scr_draw_snes_button(_aim_btn_x, _aim_btn_y, _aim_btn_w, _aim_btn_h, _aim_status_txt, _ab_hov, _cur_u.is_aimed_shot, make_color_rgb(255, 120, 80));
+            var _aim_lbl = (!variable_struct_exists(_su, "is_aimed_shot") || !_su.is_aimed_shot) ? "AIM:OFF" : ("AIM:" + string_upper(string_copy(_su.targeted_limb, 1, 4)));
+            scr_draw_snes_button(_aim_btn_x, _aim_btn_y, _aim_btn_w, 20, _aim_lbl, _aimhov, (variable_struct_exists(_su, "is_aimed_shot") && _su.is_aimed_shot), (variable_struct_exists(_su, "is_aimed_shot") && _su.is_aimed_shot) ? make_color_rgb(255, 140, 40) : make_color_rgb(120, 140, 160));
+
+            // Manual Weapon Override Button
+            var _wpn_btn_w = 64;
+            var _wpn_btn_x = _card_x + _card_w - _wpn_btn_w - 6;
+            var _wpn_btn_y = _card_y + 58;
+            var _wpnhov = (_mx >= _wpn_btn_x && _mx <= _wpn_btn_x + _wpn_btn_w && _my >= _wpn_btn_y && _my <= _wpn_btn_y + 20);
+            if (_wpnhov && _click && array_length(_su.weapons) > 1) {
+                if (!variable_struct_exists(_su, "manual_weapon_idx")) _su.manual_weapon_idx = 0;
+                _su.manual_weapon_idx = (_su.manual_weapon_idx + 1) % array_length(_su.weapons);
+                scr_audio_play_ui("tab");
+                add_log("[WEAPON OVERRIDE] " + _su.callsign + " selected: " + _su.weapons[_su.manual_weapon_idx].short_name);
+            }
+            var _w_name = (variable_struct_exists(_su, "manual_weapon_idx") && _su.manual_weapon_idx >= 0 && _su.manual_weapon_idx < array_length(_su.weapons)) ? string_copy(_su.weapons[_su.manual_weapon_idx].short_name, 1, 6) : "AUTO";
+            scr_draw_snes_button(_wpn_btn_x, _wpn_btn_y, _wpn_btn_w, 20, "W:" + _w_name, _wpnhov, variable_struct_exists(_su, "manual_weapon_idx"), make_color_rgb(255, 215, 60));
+
+            // Click card to select unit
+            if (_card_hov && _click && !_is_sel && !split_mode_active) {
+                for (var u = 0; u < array_length(units); u++) {
+                    if (units[u] == _su) {
+                        select_unit(u);
+                        break;
+                    }
+                }
+            }
         } else {
-            draw_set_color(make_color_rgb(100, 220, 255));
-            draw_text(_diag_x + 16, _aim_y, "PLATOON FORMATION [" + string(_view_u.squad_members_count) + "/3 GRUNTS OPERATIONAL]:");
-            draw_set_color(c_lime);
-            draw_text(_diag_x + 16, _aim_y + 20, "[LEAD MECH: READY] | [WING 1: " + (_view_u.squad_members_count >= 2 ? "OK" : "KIA") + "] | [WING 2: " + (_view_u.squad_members_count >= 3 ? "OK" : "KIA") + "]");
-        }
-    }
-
-    // Selected Weapon Hit Calculation Breakdown
-    if (_cur_u != undefined && selected_weapon < array_length(_cur_u.weapons)) {
-        var _calc_y = _cy_start + 215;
-        var _sel_w = _cur_u.weapons[selected_weapon];
-
-        draw_set_color(make_color_rgb(240, 210, 100));
-        draw_text(_diag_x + 16, _calc_y, "ACTIVE WEAPON: " + _sel_w.name);
-        draw_set_color(make_color_rgb(180, 205, 230));
-        draw_text(_diag_x + 16, _calc_y + 20, "* Range: " + string(_sel_w.range_min) + "-" + string(_sel_w.range_max) + " Cells | Projectile: " + _sel_w.proj_type);
-        draw_text(_diag_x + 16, _calc_y + 38, "* AP Cost: " + string(_sel_w.ap_cost) + " AP | Thermal Gen: +" + string(_sel_w.heat_cost) + "% Heat");
-
-        if (_is_target) {
-            var _dist_to_t = calculate_distance(_cur_u.grid_c, _cur_u.grid_r, _view_u.grid_c, _view_u.grid_r);
-            var _hit_pct = calculate_hit_chance(_cur_u, _view_u, _dist_to_t);
-            if (_cur_u.is_aimed_shot) _hit_pct = max(10, _hit_pct - 15);
-
-            draw_set_color(make_color_rgb(100, 255, 140));
-            draw_text(_diag_x + 16, _calc_y + 64, "CALCULATED HIT PROBABILITY: " + string(_hit_pct) + "% (Dist: " + string(_dist_to_t) + ")");
-            draw_set_color(make_color_rgb(255, 140, 80));
-            draw_text(_diag_x + 16, _calc_y + 84, "ESTIMATED DIRECT IMPACT: " + string(_sel_w.damage) + " DAMAGE");
+            // Empty formation slot
+            draw_set_color(make_color_rgb(10, 14, 20));
+            draw_rectangle(_card_x, _card_y, _card_x + _card_w, _card_y + _card_h, false);
+            draw_set_color(make_color_rgb(26, 36, 48));
+            draw_rectangle(_card_x, _card_y, _card_x + _card_w, _card_y + _card_h, true);
+            draw_set_color(make_color_rgb(60, 80, 105));
+            draw_text(_card_x + 90, _card_y + 34, "[EMPTY FORMATION SLOT " + string(s + 1) + "]");
         }
     }
 }
 
-// =========================================================================
-// 4. COMMAND ACTION BAR (Bottom Left: x 16 to 915, y: 575 to 755)
-// =========================================================================
-var _act_x = 16;
-var _act_y = 575;
-var _act_w = 900;
-var _act_h = _gh - _act_y - 12;
 
-scr_draw_snes_panel(_act_x, _act_y, _act_w, _act_h, "TACTICAL COMMAND BUS // MANEUVER & ORDNANCE", make_color_rgb(100, 220, 255), false, 0.04);
+// =========================================================================
+// 5. BOTTOM COMMAND RIBBON (x: 20 to min(1026, stack_drawer_x - 16), y: 704 to 754)
+// =========================================================================
+var _act_x = 20;
+var _act_y = 704;
+var _act_w = min(1010, stack_drawer_x - 36);
+var _act_h = 50;
 
-// Action Button Definitions
-var _btn_defs = [
-    { label: "[M] MOVE (1 AP/CELL)", mode: COMBAT_STATE.MOVE_MODE },
-    { label: "[1] WPN 1 (CANNON / BEAM)", mode: COMBAT_STATE.TARGET_MODE, wpn: 0 },
-    { label: "[2] WPN 2 (VULCAN / FLAK)", mode: COMBAT_STATE.TARGET_MODE, wpn: 1 },
-    { label: "[3] WPN 3 (MISSILE / PLASMA)", mode: COMBAT_STATE.TARGET_MODE, wpn: 2 },
-    { label: "[4] WPN 4 (MELEE STRIKE)", mode: COMBAT_STATE.TARGET_MODE, wpn: 3 },
-    { label: "[B] BRACE & VENT (2 AP)", brace: true },
-    { label: "[TAB] NEXT ALLIED UNIT", next_unit: true },
-    { label: "[F] ROTATE PERSPECTIVE", cycle_face: true },
-    { label: "[A] AUTO-COMBAT", auto_sim: true },
-    { label: "[SPACE] END TURN", end_turn: true }
+scr_draw_snes_panel(_act_x, _act_y, _act_w, _act_h, "", -1, false, 0.04);
+
+var _cmd_buttons = [
+    { label: "[M] MARCH", mode: COMBAT_STATE.MOVE_MODE },
+    { label: "[A] ATTACK", mode: COMBAT_STATE.TARGET_MODE },
+    { label: "[S] SPLIT", split_toggle: true },
+    { label: "[R] REORG", reorg_action: true },
+    { label: "[B] BRACE", brace: true },
+    { label: "[O] ORBITAL", orbital_strike: true },
+    { label: "[SPACE] STANDBY", end_turn: true },
+    { label: "[AUTO] SIM", auto_sim: true }
 ];
 
-var _bx_start = _act_x + 12;
-var _by_start = _act_y + 10;
-var _b_w = 168;
-var _b_h = 32;
+var _num_btns = array_length(_cmd_buttons);
+var _cb_w = floor((_act_w - 24 - (_num_btns - 1) * 6) / _num_btns);
+var _cb_h = 34;
 
-for (var b = 0; b < array_length(_btn_defs); b++) {
-    var _bd = _btn_defs[b];
-    var _col_idx = b % 5;
-    var _row_idx = floor(b / 5);
-    var _cur_bx = _bx_start + _col_idx * (_b_w + 8);
-    var _cur_by = _by_start + _row_idx * (_b_h + 8);
+for (var b = 0; b < _num_btns; b++) {
+    var _cmd = _cmd_buttons[b];
+    var _bx = _act_x + 12 + b * (_cb_w + 6);
+    var _by = _act_y + 8;
+    var _bhov = (_mx >= _bx && _mx <= _bx + _cb_w && _my >= _by && _my <= _by + _cb_h);
 
-    var _b_hov = (_mx >= _cur_bx && _mx <= _cur_bx + _b_w && _my >= _cur_by && _my <= _cur_by + _b_h);
-
-    if (_b_hov && _click && state == COMBAT_STATE.PLAYER_PHASE) {
-        if (variable_struct_exists(_bd, "mode")) {
-            if (variable_struct_exists(_bd, "wpn")) selected_weapon = _bd.wpn;
-            if (_bd.mode == COMBAT_STATE.MOVE_MODE) recalculate_moves();
-            state = _bd.mode;
-        } else if (variable_struct_exists(_bd, "brace")) {
+    if (_bhov && _click && state == COMBAT_STATE.PLAYER_PHASE) {
+        if (variable_struct_exists(_cmd, "mode")) {
+            if (_cmd.mode == COMBAT_STATE.MOVE_MODE) recalculate_moves();
+            state = _cmd.mode;
+        } else if (variable_struct_exists(_cmd, "split_toggle")) {
+            split_mode_active = !split_mode_active;
+            scr_audio_play_ui("click");
+            add_log("[SPLIT SQUAD] " + (split_mode_active ? "Select units in drawer to peel off." : "Disengaged."));
+        } else if (variable_struct_exists(_cmd, "reorg_action")) {
+            if (_cur_u != undefined) reorganize_stack(_cur_u.grid_c, _cur_u.grid_r, _cur_u.team);
+        } else if (variable_struct_exists(_cmd, "brace")) {
             if (_cur_u != undefined && _cur_u.current_ap >= 2) {
                 _cur_u.current_ap -= 2;
                 _cur_u.braced = true;
                 _cur_u.current_heat = max(0, _cur_u.current_heat - 25);
                 add_log("[TACTICAL DEFENSE] " + _cur_u.callsign + " braced! +35% Evasion, -25% Heat vented.");
             }
-        } else if (variable_struct_exists(_bd, "next_unit")) {
-            cycle_allied_unit();
-        } else if (variable_struct_exists(_bd, "cycle_face")) {
-            if (_cur_u != undefined) cycle_unit_facing(_cur_u);
-        } else if (variable_struct_exists(_bd, "auto_sim")) {
-            auto_combat_enabled = !auto_combat_enabled;
-            if (auto_combat_enabled) state = COMBAT_STATE.AUTO_SIM;
-            add_log("[AUTO-COMBAT] " + (auto_combat_enabled ? "Autonomous Simulation Engaged!" : "Disengaged."));
-        } else if (variable_struct_exists(_bd, "end_turn")) {
+        } else if (variable_struct_exists(_cmd, "end_turn")) {
             add_log("[TURN END] Initiative passed to hostile battlegroup.");
             state = COMBAT_STATE.AI_PHASE;
             ai_action_timer = 0;
             ai_unit_index = 0;
+        } else if (variable_struct_exists(_cmd, "orbital_strike")) {
+            var _tx = (target_unit_idx >= 0 && target_unit_idx < array_length(units)) ? units[target_unit_idx].grid_c : 11;
+            var _ty = (target_unit_idx >= 0 && target_unit_idx < array_length(units)) ? units[target_unit_idx].grid_r : 11;
+            call_flagship_orbital_strike(_tx, _ty);
+        } else if (variable_struct_exists(_cmd, "auto_sim")) {
+            auto_combat_enabled = !auto_combat_enabled;
+            if (auto_combat_enabled) state = COMBAT_STATE.AUTO_SIM;
+            add_log("[AUTO-COMBAT] " + (auto_combat_enabled ? "Autonomous Simulation Engaged!" : "Disengaged."));
         }
     }
 
-    scr_draw_snes_button(_cur_bx, _cur_by, _b_w, _b_h, _bd.label, _b_hov, false, make_color_rgb(100, 220, 255));
-}
+    var _is_cmd_act = false;
+    if (variable_struct_exists(_cmd, "mode") && state == _cmd.mode) _is_cmd_act = true;
+    if (variable_struct_exists(_cmd, "split_toggle") && split_mode_active) _is_cmd_act = true;
 
-// =========================================================================
-// 4b. FLAGSHIP ORBITAL FIRE SUPPORT & TACTICAL SUPERWEAPONS (Docs 23 & 24)
-// =========================================================================
-if (instance_exists(obj_GameManager) && obj_GameManager.flagship.upgrades.weapons_tier >= 2) {
-    var _fs = obj_GameManager.flagship;
-    var _wt = _fs.upgrades.weapons_tier;
-    var _orb_x = _act_x;
-    var _orb_y = _act_y - 34;
-    var _orb_w = 340;
-    var _orb_h = 28;
-    var _orb_rdy = (_fs.orbital_strike_available && state == COMBAT_STATE.PLAYER_PHASE);
-    var _orb_hov = (_mx >= _orb_x && _mx <= _orb_x + _orb_w && _my >= _orb_y && _my <= _orb_y + _orb_h);
-
-    if (_orb_rdy && _orb_hov && _click) {
-        _fs.orbital_strike_available = false;
-        var _cd = (_wt == 2) ? 3 : ((_wt <= 4) ? 2 : 1);
-        if (_fs.specialization_protocol == "siege_fortress") _cd = max(1, _cd - 1);
-        _fs.orbital_strike_cooldown = _cd;
-        screen_shake = (_wt >= 5) ? 26.0 : 20.0;
-
-        var _dmg_min = 600;
-        var _dmg_max = 1100;
-        var _wpn_name = "600mm Spinal Mass Drivers";
-        if (_wt == 3) {
-            _dmg_min = 1200; _dmg_max = 1800;
-            _wpn_name = "Spinal Particle Lance";
-        } else if (_wt == 4) {
-            _dmg_min = 2000; _dmg_max = 3000;
-            _wpn_name = "Kinetic Rod Penetrator Array";
-        } else if (_wt >= 5) {
-            _dmg_min = 3500; _dmg_max = 5000;
-            _wpn_name = "Doomsday Tachyon Cleaver";
-        }
-
-        if (_fs.specialization_protocol == "siege_fortress") {
-            _dmg_min = floor(_dmg_min * 1.5);
-            _dmg_max = floor(_dmg_max * 1.5);
-        }
-
-        var _targets_hit = 0;
-        for (var u = 0; u < array_length(units); u++) {
-            var _un = units[u];
-            if ((_un.team == "ENEMY" || _un.team == 1) && !_un.is_destroyed) {
-                var _dmg = irandom_range(_dmg_min, _dmg_max);
-                if (variable_struct_exists(_un, "components") && variable_struct_exists(_un.components, "torso")) {
-                    _un.components.torso.cur = max(0, _un.components.torso.cur - _dmg);
-                    if (_un.components.torso.cur <= 0) {
-                        _un.is_destroyed = true;
-                        _un.components.torso.intact = false;
-                        _un.anim_state = "destroyed";
-                    }
-                } else if (variable_struct_exists(_un, "current_hp")) {
-                    _un.current_hp = max(0, _un.current_hp - _dmg);
-                    if (_un.current_hp <= 0) _un.is_destroyed = true;
-                }
-                _targets_hit++;
-                array_push(floating_texts, {
-                    x: _un.grid_c * 48,
-                    y: _un.grid_r * 48 - 20,
-                    text: "-" + string(_dmg) + " " + string_upper(_wpn_name) + "!",
-                    col: (_wt >= 5) ? c_fuchsia : c_red,
-                    alpha: 1.0,
-                    life: 70
-                });
-                if (_un.is_destroyed) {
-                    add_log("[ORBITAL KILL] " + _un.callsign + " vaporized by " + _wpn_name + "!");
-                }
-            }
-        }
-        add_log("[ORBITAL STRIKE] USN-X Hephaestus fired " + _wpn_name + "! Obliterated " + string(_targets_hit) + " hostile target(s)!");
-    }
-
-    draw_set_color(_orb_rdy ? (_orb_hov ? make_color_rgb(100, 30, 20) : make_color_rgb(60, 18, 12)) : make_color_rgb(18, 22, 28));
-    draw_rectangle(_orb_x, _orb_y, _orb_x + _orb_w, _orb_y + _orb_h, false);
-    draw_set_color(_orb_rdy ? make_color_rgb(255, 60, 40) : make_color_rgb(45, 60, 75));
-    draw_rectangle(_orb_x, _orb_y, _orb_x + _orb_w, _orb_y + _orb_h, true);
-    draw_set_color(_orb_rdy ? c_white : c_gray);
-    var _strike_lbl = _orb_rdy ? ("* [O] CALL FLAGSHIP " + (_wt >= 5 ? "TACHYON CLEAVER" : "ORBITAL STRIKE") + " (READY)") : ("* FLAGSHIP ORBITAL SUPPORT (" + (_fs.orbital_strike_cooldown > 0 ? ("COOLDOWN: " + string(_fs.orbital_strike_cooldown) + "T") : "RELOADING") + ")");
-    draw_text_transformed(_orb_x + 10, _orb_y + 6, _strike_lbl, 0.82, 0.82, 0);
-}
-
-// =========================================================================
-// 5. LIVE COMBAT TERMINAL FEED (Bottom Right: x 930 to 1350, y: 575 to 755)
-// =========================================================================
-var _log_x = _diag_x;
-var _log_y = _act_y;
-var _log_w = _diag_w;
-var _log_h = _act_h;
-
-draw_set_color(make_color_rgb(8, 12, 18));
-draw_rectangle(_log_x, _log_y, _log_x + _log_w, _log_y + _log_h, false);
-draw_set_color(make_color_rgb(30, 50, 75));
-draw_rectangle(_log_x, _log_y, _log_x + _log_w, _log_y + _log_h, true);
-
-draw_set_color(make_color_rgb(100, 200, 255));
-draw_text(_log_x + 12, _log_y + 8, ">> LIVE TACTICAL COMBAT LOG <<");
-
-for (var l = 0; l < array_length(combat_log); l++) {
-    var _line = combat_log[l];
-    var _lcol = make_color_rgb(180, 210, 240);
-    if (string_pos("CRITICAL", _line) > 0 || string_pos("BREACH", _line) > 0 || string_pos("KILL", _line) > 0) _lcol = make_color_rgb(255, 90, 90);
-    else if (string_pos("HIT", _line) > 0 || string_pos("IMPACT", _line) > 0) _lcol = make_color_rgb(255, 200, 80);
-    else if (string_pos("ACCOMPLISHED", _line) > 0 || string_pos("SECURED", _line) > 0) _lcol = c_lime;
-    else if (string_pos("PERSPECTIVE", _line) > 0) _lcol = make_color_rgb(100, 240, 255);
-
-    draw_set_color(_lcol);
-    draw_text_transformed(_log_x + 12, _log_y + 28 + l * 17, _line, 0.82, 0.82, 0);
+    scr_draw_snes_button(_bx, _by, _cb_w, _cb_h, _cmd.label, _bhov, _is_cmd_act, _is_cmd_act ? make_color_rgb(0, 240, 140) : make_color_rgb(100, 220, 255));
 }
 
 // =========================================================================
@@ -478,8 +555,13 @@ if (state == COMBAT_STATE.VICTORY_AAR || state == COMBAT_STATE.DEFEAT_AAR) {
     draw_set_color(_is_win ? c_lime : c_red);
     draw_rectangle(_mw_x, _mw_y, _mw_x + _mw_w, _mw_y + _mw_h, true);
 
+    var _is_prologue_aar = (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "active_combat_context") && !is_undefined(obj_GameManager.active_combat_context) && variable_struct_exists(obj_GameManager.active_combat_context, "is_prologue") && obj_GameManager.active_combat_context.is_prologue);
     draw_set_color(_is_win ? make_color_rgb(80, 255, 120) : make_color_rgb(255, 80, 80));
-    draw_text(_mw_x + 30, _mw_y + 24, _is_win ? "== MISSION ACCOMPLISHED // SECTOR SECURED ==" : "== DEFEAT // VANGUARD BATTERY DESTROYED ==");
+    if (_is_prologue_aar) {
+        draw_text(_mw_x + 30, _mw_y + 24, _is_win ? "== PROLOGUE SORTIE VICTORY // GHA-00 PROTOTYPE SECURES DOCKING BAY ==" : "== AMBUSH OVERWHELMED // PROTOTYPE CRITICAL ==");
+    } else {
+        draw_text(_mw_x + 30, _mw_y + 24, _is_win ? "== MISSION ACCOMPLISHED // SECTOR SECURED ==" : "== DEFEAT // VANGUARD BATTERY DESTROYED ==");
+    }
 
     draw_set_color(c_white);
     draw_text(_mw_x + 30, _mw_y + 55, "COMBAT CASUALTIES & AFTER-ACTION SUMMARY:");
@@ -496,6 +578,10 @@ if (state == COMBAT_STATE.VICTORY_AAR || state == COMBAT_STATE.DEFEAT_AAR) {
         draw_text(_mw_x + 50, _mw_y + 195, "-> 4x Vanguard Composite Plating (alloy_vanguard_comp)");
         draw_text(_mw_x + 50, _mw_y + 220, "-> 25x Raw Tungsten Ore (mat_tungsten)");
         draw_text(_mw_x + 50, _mw_y + 245, "-> 2x Syndicate Reaver Heavy Breech Assemblies");
+        if (variable_instance_exists(id, "captured_pows") && array_length(captured_pows) > 0) {
+            draw_set_color(make_color_rgb(120, 240, 255));
+            draw_text(_mw_x + 50, _mw_y + 270, "-> " + string(array_length(captured_pows)) + "x Hostile Ace POWs Secured (Transferred to Flagship Brig)");
+        }
     } else {
         draw_set_color(make_color_rgb(255, 80, 80));
         draw_text(_mw_x + 30, _mw_y + 85, "* CATASTROPHIC DEFEAT: Platoon forces overwhelmed in Sector 4.");
@@ -503,21 +589,72 @@ if (state == COMBAT_STATE.VICTORY_AAR || state == COMBAT_STATE.DEFEAT_AAR) {
         draw_text(_mw_x + 30, _mw_y + 135, "* PMC Morale reduced by -20 Morale.");
     }
 
-    var _btn_p_x = _mw_x + 190;
+    var _btn_p_w = _is_prologue_aar ? 420 : 300;
+    var _btn_p_x = _mw_x + (_mw_w - _btn_p_w) / 2;
     var _btn_p_y = _mw_y + 360;
-    var _btn_p_w = 300;
     var _btn_p_h = 44;
     var _p_hov = (_mx >= _btn_p_x && _mx <= _btn_p_x + _btn_p_w && _my >= _btn_p_y && _my <= _btn_p_y + _btn_p_h);
 
     if (_p_hov && _click) {
         if (instance_exists(obj_GameManager)) {
-            if (_is_win) {
-                obj_GameManager.add_funds(180000);
+            if (_is_prologue_aar) {
+                obj_GameManager.has_completed_prologue = true;
+                obj_GameManager.has_completed_intro = true;
+                obj_GameManager.prologue_active = false;
+                obj_GameManager.add_funds(200000);
                 obj_GameManager.add_alloy("alloy_vanguard_comp", 4);
                 obj_GameManager.add_raw_material("mat_tungsten", 25);
-                if (instance_exists(obj_FactionManager)) {
-                    obj_FactionManager.modify_standing("faction_a", 15);
+                obj_GameManager.active_combat_context = undefined;
+            } else {
+                if (variable_instance_exists(obj_GameManager, "active_combat_context") && !is_undefined(obj_GameManager.active_combat_context)) {
+                    var _ctx = obj_GameManager.active_combat_context;
+                    var _t = scr_territory_get(_ctx.sector_id);
+                    if (!is_undefined(_t)) {
+                        if (_is_win) {
+                            var _prev_fac = _t.controlling_faction;
+                            _t.controlling_faction = "pmc";
+                            _t.defense_rating = max(45, _t.defense_rating - 20);
+                            scr_territory_recalculate_control_percentages();
+                            if (instance_exists(obj_FactionManager)) {
+                                obj_FactionManager.modify_standing(_prev_fac, -15);
+                            }
+                        } else {
+                            _t.defense_rating = max(15, _t.defense_rating - 5);
+                        }
+                    }
+                    obj_GameManager.last_battle_report = {
+                        is_win: _is_win,
+                        sector_id: _ctx.sector_id,
+                        sector_name: _ctx.sector_name,
+                        controlling_faction: _ctx.controlling_faction
+                    };
+                    obj_GameManager.active_combat_context = undefined;
                 }
+
+                // Award Pilot Combat XP & Accumulate Sortie Fatigue (Goal B)
+                if (variable_struct_exists(obj_GameManager.facilities, "roster_pilots")) {
+                    var _xp_reward = _is_win ? 40 : 15;
+                    for (var p = 0; p < array_length(obj_GameManager.facilities.roster_pilots); p++) {
+                        var _plt = obj_GameManager.facilities.roster_pilots[p];
+                        if (_plt.status == "ACTIVE") {
+                            _plt.sorties = (variable_struct_exists(_plt, "sorties") ? _plt.sorties : 0) + 1;
+                            _plt.fatigue = min(5, (variable_struct_exists(_plt, "fatigue") ? _plt.fatigue : 0) + 1);
+                            obj_GameManager.pilot_add_xp(_plt.id, _xp_reward);
+                        }
+                    }
+                }
+                if (_is_win) {
+                    obj_GameManager.add_funds(180000);
+                    obj_GameManager.add_alloy("alloy_vanguard_comp", 4);
+                    obj_GameManager.add_raw_material("mat_tungsten", 25);
+                }
+            }
+        }
+        if (instance_exists(obj_NemesisManager) && variable_instance_exists(id, "captured_pows") && is_array(captured_pows)) {
+            for (var k = 0; k < array_length(captured_pows); k++) {
+                var _pw = captured_pows[k];
+                array_push(obj_NemesisManager.prisoner_list, _pw);
+                variable_struct_set(obj_NemesisManager.characters_map, _pw.id, _pw);
             }
         }
         if (room_exists(rm_hq_terminal)) room_goto(rm_hq_terminal);
@@ -528,7 +665,8 @@ if (state == COMBAT_STATE.VICTORY_AAR || state == COMBAT_STATE.DEFEAT_AAR) {
     draw_set_color(make_color_rgb(80, 240, 120));
     draw_rectangle(_btn_p_x, _btn_p_y, _btn_p_x + _btn_p_w, _btn_p_y + _btn_p_h, true);
     draw_set_color(c_white);
-    draw_text(_btn_p_x + 28, _btn_p_y + 12, "[PROCEED TO HQ COMMAND TERMINAL]");
+    var _btn_txt = _is_prologue_aar ? "[>> DOCK WITH HEPHAESTUS // REBOOT TACTICAL CORE >>]" : "[PROCEED TO HQ COMMAND TERMINAL]";
+    draw_text(_btn_p_x + 16, _btn_p_y + 12, _btn_txt);
 }
 
 // =========================================================================
@@ -635,6 +773,21 @@ if (deployment_deck_active) {
     }
     scr_draw_snes_button(_close_x, _close_y, _close_w, _close_h, "[X CLOSE]", _close_hov, false, make_color_rgb(220, 80, 80));
 
+    // Direct RTB / Retreat Button from Deployment Deck
+    var _rtb_x = _close_x - 145;
+    var _rtb_y = _deck_y + 8;
+    var _rtb_w = 135;
+    var _rtb_h = 28;
+    var _rtb_hov = (_mx >= _rtb_x && _mx <= _rtb_x + _rtb_w && _my >= _rtb_y && _my <= _rtb_y + _rtb_h);
+    if (_rtb_hov && _click) {
+        deployment_deck_active = false;
+        if (room_exists(rm_hq_terminal)) {
+            room_goto(rm_hq_terminal);
+            exit;
+        }
+    }
+    scr_draw_snes_button(_rtb_x, _rtb_y, _rtb_w, _rtb_h, "[RTB: RETREAT]", _rtb_hov, false, make_color_rgb(230, 110, 50));
+
     // COLUMN 1: UNIT SLOTS (x: _deck_x + 16, w: 270)
     var _col1_x = _deck_x + 16;
     var _col1_y = _deck_y + 45;
@@ -703,7 +856,7 @@ if (deployment_deck_active) {
     draw_ellipse(_cad_cx - 70, _cad_cy - 20, _cad_cx + 70, _cad_cy + 20, false);
 
     // Draw Live Animated Mobile Suit in CAD Chamber
-    scr_draw_animated_mobile_suit(_cur_slot_u.mech_type, deployment_anim_state, _cad_cx, _cad_cy, deployment_facing, 1.40, _cur_slot_u.image_blend, 1.0);
+    scr_draw_animated_mobile_suit(_cur_slot_u.mech_type, _cad_cx, _cad_cy, 1.40, (deployment_facing == 0 || deployment_facing == 2) ? 1 : -1, deployment_anim_state, -1, _cur_slot_u.image_blend);
 
     // Overhead Model Tag
     draw_set_color(make_color_rgb(100, 220, 255));
@@ -810,6 +963,10 @@ if (deployment_deck_active) {
     draw_set_color(make_color_rgb(180, 220, 255));
     draw_text(_col2_x + 16, _spec_y + 24, "PROPULSION: " + string_upper(_cur_slot_u.move_type) + " | SPACE ADAPTED: " + (_cur_slot_u.space_adapted ? "YES (NO SPACE PENALTY)" : "NO (1 AP PENALTY)"));
     draw_text(_col2_x + 16, _spec_y + 46, "ARMOR INTEGRITY: " + string(_cur_slot_u.components.torso.max) + " HP | ACCURACY: " + string(_cur_slot_u.accuracy) + "% | EVASION: " + string(_cur_slot_u.evasion) + "%");
+    if (variable_struct_exists(_cur_slot_u, "has_affinity_match") && _cur_slot_u.has_affinity_match) {
+        draw_set_color(make_color_rgb(255, 215, 80));
+        draw_text(_col2_x + 16, _spec_y + 60, "[FRAME AFFINITY: RESONANCE (+8% ACC/EVA, +1 AP)]");
+    }
     draw_text(_col2_x + 16, _spec_y + 68, "AP CAPACITY: " + string(_cur_slot_u.max_ap) + " AP | MAX THERMAL LIMIT: " + string(_cur_slot_u.max_heat) + " C");
     draw_set_color(make_color_rgb(240, 210, 120));
     draw_text(_col2_x + 16, _spec_y + 92, "TERRAIN EFFICIENCY: Road (1 AP) | Rubble (" + string(get_terrain_move_cost(_cur_slot_u, 0, 0, 1, 0)) + " AP) | Water (" + string(get_terrain_move_cost(_cur_slot_u, 0, 0, 2, 0)) + " AP)");
@@ -830,16 +987,16 @@ if (deployment_deck_active) {
         { label: "TEST (4)", key: "TEST", w: 86 }
     ];
     var _cur_tab_x = _col3_x;
-    var _tab_y = _col3_y + 20;
+    var _map_tab_y = _col3_y + 20;
     for (var t = 0; t < array_length(_filter_tabs); t++) {
         var _ft = _filter_tabs[t];
-        var _thov = (_mx >= _cur_tab_x && _mx <= _cur_tab_x + _ft.w && _my >= _tab_y && _my <= _tab_y + 22);
+        var _thov = (_mx >= _cur_tab_x && _mx <= _cur_tab_x + _ft.w && _my >= _map_tab_y && _my <= _map_tab_y + 22);
         var _tsel = (deployment_map_filter == _ft.key);
         if (_thov && _click) {
             deployment_map_filter = _ft.key;
             deployment_map_page = 0;
         }
-        scr_draw_snes_button(_cur_tab_x, _tab_y, _ft.w, 22, _ft.label, _thov, _tsel, make_color_rgb(100, 220, 255));
+        scr_draw_snes_button(_cur_tab_x, _map_tab_y, _ft.w, 22, _ft.label, _thov, _tsel, make_color_rgb(100, 220, 255));
         _cur_tab_x += _ft.w + 6;
     }
 
@@ -897,7 +1054,7 @@ if (deployment_deck_active) {
         draw_text(_col3_x + 10, _my_card + 6, "MAP " + string(_md.id + 1) + ": " + _md.name);
 
         draw_set_color(make_color_rgb(255, 200, 80));
-        draw_text(_col3_x + 10, _my_card + 24, "THEATER: " + _md.theater + " [" + _md.category + "] | GRAV: " + string(_md.gravity) + "G");
+        draw_text(_col3_x + 10, _my_card + 24, string_copy(_md.theater, 1, 20) + " [" + _md.category + "] | " + string(_md.gravity) + "G");
 
         draw_set_color(make_color_rgb(170, 195, 220));
         draw_text_ext(_col3_x + 10, _my_card + 42, _md.desc, 16, _col3_w - 20);
@@ -920,3 +1077,331 @@ if (deployment_deck_active) {
     }
     scr_draw_snes_button(_lnch_x, _lnch_y, _lnch_w, _lnch_h, ">> DEPLOY TO BATTLEFIELD <<", _lnch_hov, false, make_color_rgb(80, 255, 140));
 }
+
+
+// =========================================================================
+// 8. SYSTEM CONFIGURATION & TACTICAL AUDIO MODAL (LEAD AUDIO ENGINEER SPEC)
+// =========================================================================
+if (show_settings_modal) {
+    // 1. Full Screen Backdrop Dimmer
+    draw_set_alpha(0.80);
+    draw_set_color(c_black);
+    draw_rectangle(0, 0, 1366, 768, false);
+    draw_set_alpha(1.0);
+
+    // 2. Modal Dimensions (800x540 centered on 1366x768 -> x: 283, y: 114)
+    var _mw = 800;
+    var _mh = 540;
+    var _mx0 = floor((1366 - _mw) / 2);
+    var _my0 = floor((768 - _mh) / 2);
+
+    // Tactical SNES Border Panel
+    scr_draw_snes_panel(_mx0, _my0, _mw, _mh, "TERMINAL CONFIGURATION // AUDIO & SYSTEM SETTINGS", 0, true, 0.08);
+
+    // Close Button [X] Top Right of Modal
+    var _close_x = _mx0 + _mw - 44;
+    var _close_y = _my0 + 8;
+    var _close_hov = (_mx >= _close_x && _mx <= _close_x + 32 && _my >= _close_y && _my <= _close_y + 26);
+    if (_close_hov && _click) {
+        show_settings_modal = false;
+        scr_audio_play_ui("cancel");
+    }
+    draw_set_color(_close_hov ? make_color_rgb(180, 40, 40) : make_color_rgb(70, 20, 20));
+    draw_rectangle(_close_x, _close_y, _close_x + 32, _close_y + 26, false);
+    draw_set_color(_close_hov ? make_color_rgb(255, 100, 100) : make_color_rgb(200, 50, 50));
+    draw_rectangle(_close_x, _close_y, _close_x + 32, _close_y + 26, true);
+    draw_set_color(c_white);
+    draw_text(_close_x + 10, _close_y + 6, "X");
+
+    // Subtabs: [1. AUDIO CHANNELS & MUTE]  [2. DISPLAY & SHORTCUTS]
+    var _set_tab_y = _my0 + 44;
+    var _t1_w = 260;
+    var _t1_hov = (_mx >= _mx0 + 24 && _mx <= _mx0 + 24 + _t1_w && _my >= _set_tab_y && _my <= _set_tab_y + 28);
+    if (_t1_hov && _click) { settings_active_tab = 0; scr_audio_play_ui("tab"); }
+    scr_draw_snes_button(_mx0 + 24, _set_tab_y, _t1_w, 28, "1. AUDIO & MUTE CONTROL", _t1_hov || (settings_active_tab == 0), (settings_active_tab == 0), (settings_active_tab == 0) ? make_color_rgb(0, 240, 255) : c_white);
+
+    var _t2_x = _mx0 + 24 + _t1_w + 12;
+    var _t2_w = 260;
+    var _t2_hov = (_mx >= _t2_x && _mx <= _t2_x + _t2_w && _my >= _set_tab_y && _my <= _set_tab_y + 28);
+    if (_t2_hov && _click) { settings_active_tab = 1; scr_audio_play_ui("tab"); }
+    scr_draw_snes_button(_t2_x, _set_tab_y, _t2_w, 28, "2. DISPLAY & SHORTCUTS", _t2_hov || (settings_active_tab == 1), (settings_active_tab == 1), (settings_active_tab == 1) ? make_color_rgb(0, 240, 255) : c_white);
+
+    // =====================================================================
+    // TAB 0: AUDIO CHANNELS & MUTE (LEAD AUDIO ENGINEER SPEC)
+    // =====================================================================
+    if (settings_active_tab == 0) {
+        var _is_muted = scr_audio_is_muted();
+        var _m_vol = scr_audio_get_master_volume();
+        var _b_vol = scr_audio_get_bgm_volume();
+        var _s_vol = scr_audio_get_sfx_volume();
+        var _b_muted = scr_audio_is_bgm_muted();
+        var _s_muted = scr_audio_is_sfx_muted();
+
+        // 1. PRIMARY MASTER MUTE HERO BUTTON
+        var _hero_x = _mx0 + 24;
+        var _hero_y = _tab_y + 38;
+        var _hero_w = _mw - 48;
+        var _hero_h = 58;
+        var _hero_hov = (_mx >= _hero_x && _mx <= _hero_x + _hero_w && _my >= _hero_y && _my <= _hero_y + _hero_h);
+
+        if (_hero_hov && _click) {
+            scr_audio_toggle_mute();
+            scr_audio_play_ui("confirm");
+        }
+
+        draw_set_color(_hero_hov ? (_is_muted ? make_color_rgb(90, 28, 28) : make_color_rgb(20, 70, 95)) : (_is_muted ? make_color_rgb(52, 16, 16) : make_color_rgb(14, 38, 54)));
+        draw_rectangle(_hero_x, _hero_y, _hero_x + _hero_w, _hero_y + _hero_h, false);
+        draw_set_color(_hero_hov ? (_is_muted ? make_color_rgb(255, 120, 120) : make_color_rgb(80, 255, 180)) : (_is_muted ? make_color_rgb(220, 60, 60) : make_color_rgb(0, 220, 255)));
+        draw_rectangle(_hero_x, _hero_y, _hero_x + _hero_w, _hero_y + _hero_h, true);
+
+        // Accent indicator block
+        draw_set_color(_is_muted ? make_color_rgb(255, 50, 50) : make_color_rgb(0, 255, 150));
+        draw_rectangle(_hero_x + 4, _hero_y + 4, _hero_x + 12, _hero_y + _hero_h - 4, false);
+
+        draw_set_color(_is_muted ? make_color_rgb(255, 140, 140) : make_color_rgb(0, 240, 255));
+        draw_text(_hero_x + 24, _hero_y + 10, _is_muted ? "[!] MASTER AUDIO IS CURRENTLY MUTED (DEFAULT)" : "[✓] MASTER AUDIO IS ACTIVE & OPERATIONAL");
+        draw_set_color(c_white);
+        draw_text(_hero_x + 24, _hero_y + 30, _is_muted ? ">> CLICK HERE TO UNMUTE ALL AUDIO CHANNELS (Or press [M] on keyboard) <<" : ">> CLICK HERE TO MUTE ALL AUDIO (Silent Running Mode) <<");
+
+        // 2. MASTER VOLUME CHANNEL
+        var _ch_y = _hero_y + _hero_h + 16;
+        var _ch_w = _hero_w;
+        var _ch_h = 74;
+
+        draw_set_color(make_color_rgb(12, 18, 28));
+        draw_rectangle(_hero_x, _ch_y, _hero_x + _ch_w, _ch_y + _ch_h, false);
+        draw_set_color(make_color_rgb(32, 54, 82));
+        draw_rectangle(_hero_x, _ch_y, _hero_x + _ch_w, _ch_y + _ch_h, true);
+
+        draw_set_color(make_color_rgb(100, 210, 255));
+        draw_text(_hero_x + 14, _ch_y + 10, "MASTER VOLUME: " + string(floor(_m_vol * 100)) + "%" + (_is_muted ? " [MUTED]" : ""));
+
+        // Level Meter Bar
+        var _bar_x = _hero_x + 210;
+        var _bar_w = 160;
+        var _bar_h = 16;
+        draw_set_color(make_color_rgb(20, 30, 45));
+        draw_rectangle(_bar_x, _ch_y + 12, _bar_x + _bar_w, _ch_y + 12 + _bar_h, false);
+        var _fill_w = floor(_bar_w * (_is_muted ? 0.0 : _m_vol));
+        if (_fill_w > 0) {
+            draw_set_color(_is_muted ? make_color_rgb(120, 50, 50) : make_color_rgb(0, 240, 255));
+            draw_rectangle(_bar_x, _ch_y + 12, _bar_x + _fill_w, _ch_y + 12 + _bar_h, false);
+        }
+        draw_set_color(make_color_rgb(60, 90, 130));
+        draw_rectangle(_bar_x, _ch_y + 12, _bar_x + _bar_w, _ch_y + 12 + _bar_h, true);
+
+        // Volume Presets: 0%, 25%, 50%, 75%, 100%
+        var _steps = [0.0, 0.25, 0.50, 0.75, 1.0];
+        var _sb_w = 64;
+        var _sb_x0 = _hero_x + 390;
+        for (var vi = 0; vi < 5; vi++) {
+            var _sv = _steps[vi];
+            var _sb_x = _sb_x0 + vi * (_sb_w + 6);
+            var _sb_hov = (_mx >= _sb_x && _mx <= _sb_x + _sb_w && _my >= _ch_y + 8 && _my <= _ch_y + 34);
+            var _is_act = (abs(_m_vol - _sv) < 0.05 && !_is_muted);
+            if (_sb_hov && _click) {
+                scr_audio_set_master_volume(_sv);
+                if (_sv > 0 && _is_muted) scr_audio_set_muted(false);
+                scr_audio_play_ui("click");
+            }
+            scr_draw_snes_button(_sb_x, _ch_y + 8, _sb_w, 26, string(floor(_sv * 100)) + "%", _sb_hov || _is_act, _is_act, _is_act ? make_color_rgb(100, 255, 180) : c_white);
+        }
+        draw_set_color(make_color_rgb(150, 180, 210));
+        draw_text(_hero_x + 14, _ch_y + 44, "Controls overall output gain for all sound channels via GameMaker audio listener.");
+
+        // 3. BGM (MUSIC SCORE) CHANNEL
+        var _ch2_y = _ch_y + _ch_h + 10;
+        draw_set_color(make_color_rgb(12, 18, 28));
+        draw_rectangle(_hero_x, _ch2_y, _hero_x + _ch_w, _ch2_y + _ch_h, false);
+        draw_set_color(make_color_rgb(32, 54, 82));
+        draw_rectangle(_hero_x, _ch2_y, _hero_x + _ch_w, _ch2_y + _ch_h, true);
+
+        draw_set_color(make_color_rgb(100, 210, 255));
+        draw_text(_hero_x + 14, _ch2_y + 10, "BGM SCORE: " + string(floor(_b_vol * 100)) + "%");
+        // Meter Bar
+        draw_set_color(make_color_rgb(20, 30, 45));
+        draw_rectangle(_bar_x, _ch2_y + 12, _bar_x + _bar_w, _ch2_y + 12 + _bar_h, false);
+        var _b_fill = floor(_bar_w * (_b_muted ? 0.0 : _b_vol));
+        if (_b_fill > 0) {
+            draw_set_color(_b_muted ? make_color_rgb(120, 50, 50) : make_color_rgb(255, 200, 80));
+            draw_rectangle(_bar_x, _ch2_y + 12, _bar_x + _b_fill, _ch2_y + 12 + _bar_h, false);
+        }
+        draw_set_color(make_color_rgb(60, 90, 130));
+        draw_rectangle(_bar_x, _ch2_y + 12, _bar_x + _bar_w, _ch2_y + 12 + _bar_h, true);
+
+        for (var bi = 0; bi < 5; bi++) {
+            var _bv = _steps[bi];
+            var _bb_x = _sb_x0 + bi * (_sb_w + 6);
+            var _bb_hov = (_mx >= _bb_x && _mx <= _bb_x + _sb_w && _my >= _ch2_y + 8 && _my <= _ch2_y + 34);
+            var _is_act = (abs(_b_vol - _bv) < 0.05 && !_b_muted);
+            if (_bb_hov && _click) {
+                scr_audio_set_bgm_volume(_bv);
+                if (_b_muted) scr_audio_set_bgm_muted(false);
+                scr_audio_play_ui("click");
+            }
+            scr_draw_snes_button(_bb_x, _ch2_y + 8, _sb_w, 26, string(floor(_bv * 100)) + "%", _bb_hov || _is_act, _is_act, _is_act ? make_color_rgb(100, 255, 180) : c_white);
+        }
+
+        // BGM Mute Button
+        var _bm_w = 110;
+        var _bm_x = _hero_x + 14;
+        var _bm_y = _ch2_y + 38;
+        var _bm_hov = (_mx >= _bm_x && _mx <= _bm_x + _bm_w && _my >= _bm_y && _my <= _bm_y + 26);
+        if (_bm_hov && _click) {
+            scr_audio_set_bgm_muted(!_b_muted);
+            scr_audio_play_ui("click");
+        }
+        scr_draw_snes_button(_bm_x, _bm_y, _bm_w, 26, _b_muted ? "[BGM MUTED]" : "[MUTE BGM]", _bm_hov, _b_muted, _b_muted ? make_color_rgb(255, 100, 100) : c_white);
+        draw_set_color(make_color_rgb(150, 180, 210));
+        draw_text(_hero_x + 140, _ch2_y + 44, "Tactical synth soundtrack (Front Mission / Gundam ambient & battle themes).");
+
+        // 4. SFX (FOLEY & WEAPONS) CHANNEL
+        var _ch3_y = _ch2_y + _ch_h + 10;
+        draw_set_color(make_color_rgb(12, 18, 28));
+        draw_rectangle(_hero_x, _ch3_y, _hero_x + _ch_w, _ch3_y + _ch_h, false);
+        draw_set_color(make_color_rgb(32, 54, 82));
+        draw_rectangle(_hero_x, _ch3_y, _hero_x + _ch_w, _ch3_y + _ch_h, true);
+
+        draw_set_color(make_color_rgb(100, 210, 255));
+        draw_text(_hero_x + 14, _ch3_y + 10, "SFX FOLEY: " + string(floor(_s_vol * 100)) + "%");
+        // Meter Bar
+        draw_set_color(make_color_rgb(20, 30, 45));
+        draw_rectangle(_bar_x, _ch3_y + 12, _bar_x + _bar_w, _ch3_y + 12 + _bar_h, false);
+        var _s_fill = floor(_bar_w * (_s_muted ? 0.0 : _s_vol));
+        if (_s_fill > 0) {
+            draw_set_color(_s_muted ? make_color_rgb(120, 50, 50) : make_color_rgb(0, 240, 140));
+            draw_rectangle(_bar_x, _ch3_y + 12, _bar_x + _s_fill, _ch3_y + 12 + _bar_h, false);
+        }
+        draw_set_color(make_color_rgb(60, 90, 130));
+        draw_rectangle(_bar_x, _ch3_y + 12, _bar_x + _bar_w, _ch3_y + 12 + _bar_h, true);
+
+        for (var si = 0; si < 5; si++) {
+            var _sv = _steps[si];
+            var _sb_x = _sb_x0 + si * (_sb_w + 6);
+            var _sb_hov = (_mx >= _sb_x && _mx <= _sb_x + _sb_w && _my >= _ch3_y + 8 && _my <= _ch3_y + 34);
+            var _is_act = (abs(_s_vol - _sv) < 0.05 && !_s_muted);
+            if (_sb_hov && _click) {
+                scr_audio_set_sfx_volume(_sv);
+                if (_s_muted) scr_audio_set_sfx_muted(false);
+                scr_audio_play_ui("click");
+            }
+            scr_draw_snes_button(_sb_x, _ch3_y + 8, _sb_w, 26, string(floor(_sv * 100)) + "%", _sb_hov || _is_act, _is_act, _is_act ? make_color_rgb(100, 255, 180) : c_white);
+        }
+
+        // SFX Mute Button & Test Sound Button
+        var _sm_w = 110;
+        var _sm_x = _hero_x + 14;
+        var _sm_y = _ch3_y + 38;
+        var _sm_hov = (_mx >= _sm_x && _mx <= _sm_x + _sm_w && _my >= _sm_y && _my <= _sm_y + 26);
+        if (_sm_hov && _click) {
+            scr_audio_set_sfx_muted(!_s_muted);
+            scr_audio_play_ui("click");
+        }
+        scr_draw_snes_button(_sm_x, _sm_y, _sm_w, 26, _s_muted ? "[SFX MUTED]" : "[MUTE SFX]", _sm_hov, _s_muted, _s_muted ? make_color_rgb(255, 100, 100) : c_white);
+
+        var _ts_w = 160;
+        var _ts_x = _sm_x + _sm_w + 12;
+        var _ts_hov = (_mx >= _ts_x && _mx <= _ts_x + _ts_w && _my >= _sm_y && _my <= _sm_y + 26);
+        if (_ts_hov && _click) {
+            scr_audio_play_sfx(snd_weapon_beam_rifle, 1.0, 0.05);
+            scr_audio_play_ui("confirm");
+        }
+        scr_draw_snes_button(_ts_x, _sm_y, _ts_w, 26, "🔊 TEST WEAPON SFX", _ts_hov, false, make_color_rgb(100, 220, 255));
+        draw_set_color(make_color_rgb(150, 180, 210));
+        draw_text(_ts_x + _ts_w + 14, _ch3_y + 44, "Mechanical hydraulics, beam discharge, plasma venting.");
+    }
+
+    // =====================================================================
+    // TAB 1: DISPLAY SETTINGS & SHORTCUTS REFERENCE
+    // =====================================================================
+    else if (settings_active_tab == 1) {
+        var _dsp_x = _mx0 + 24;
+        var _dsp_y = _tab_y + 40;
+        var _dsp_w = _mw - 48;
+
+        // Visual Options Card
+        draw_set_color(make_color_rgb(12, 18, 28));
+        draw_rectangle(_dsp_x, _dsp_y, _dsp_x + _dsp_w, _dsp_y + 110, false);
+        draw_set_color(make_color_rgb(32, 54, 82));
+        draw_rectangle(_dsp_x, _dsp_y, _dsp_x + _dsp_w, _dsp_y + 110, true);
+
+        draw_set_color(make_color_rgb(100, 210, 255));
+        draw_text(_dsp_x + 14, _dsp_y + 12, "TACTICAL DISPLAY & VISUAL FILTER CONFIGURATION:");
+
+        // CRT Scanline Toggle
+        var _crt_w = 260;
+        var _crt_hov = (_mx >= _dsp_x + 14 && _mx <= _dsp_x + 14 + _crt_w && _my >= _dsp_y + 38 && _my <= _dsp_y + 68);
+        if (_crt_hov && _click) {
+            settings_crt_scanlines = !settings_crt_scanlines;
+            scr_audio_play_ui("click");
+        }
+        scr_draw_snes_button(_dsp_x + 14, _dsp_y + 38, _crt_w, 30, settings_crt_scanlines ? "[✓] CRT SCANLINES: ON" : "[X] CRT SCANLINES: OFF", _crt_hov, settings_crt_scanlines, settings_crt_scanlines ? make_color_rgb(0, 240, 140) : make_color_rgb(220, 100, 100));
+
+        // Screen Shake Toggle
+        var _shk_x = _dsp_x + 14 + _crt_w + 16;
+        var _shk_w = 260;
+        var _shk_hov = (_mx >= _shk_x && _mx <= _shk_x + _shk_w && _my >= _dsp_y + 38 && _my <= _dsp_y + 68);
+        if (_shk_hov && _click) {
+            settings_screen_shake = !settings_screen_shake;
+            scr_audio_play_ui("click");
+        }
+        scr_draw_snes_button(_shk_x, _dsp_y + 38, _shk_w, 30, settings_screen_shake ? "[✓] SCREEN SHAKE: ON" : "[X] SCREEN SHAKE: OFF", _shk_hov, settings_screen_shake, settings_screen_shake ? make_color_rgb(0, 240, 140) : make_color_rgb(220, 100, 100));
+
+        draw_set_color(make_color_rgb(150, 180, 210));
+        draw_text(_dsp_x + 14, _dsp_y + 78, "Authentic 1990s cathode-ray CRT phosphor scanline simulation and ballistic impact vibration.");
+
+        // Tactical Keyboard Shortcuts Cheatsheet Card
+        var _kb_y = _dsp_y + 124;
+        var _kb_h = 190;
+        draw_set_color(make_color_rgb(12, 18, 28));
+        draw_rectangle(_dsp_x, _kb_y, _dsp_x + _dsp_w, _kb_y + _kb_h, false);
+        draw_set_color(make_color_rgb(32, 54, 82));
+        draw_rectangle(_dsp_x, _kb_y, _dsp_x + _dsp_w, _kb_y + _kb_h, true);
+
+        draw_set_color(make_color_rgb(255, 220, 90));
+        draw_text(_dsp_x + 14, _kb_y + 12, "TACTICAL HOTKEYS & RAPID COMMAND SHORTCUTS:");
+
+        var _shortcuts = [
+            { key: "[M]", desc: "Toggle Master Audio Mute (Instant on/off anytime)" },
+            { key: "[O]", desc: "Open / Close this System Settings & Audio Window" },
+            { key: "[ESC]", desc: "Dismiss active modal window or return to command deck" },
+            { key: "[F5]", desc: "Quick Save game state to local persistent memory" },
+            { key: "[F9]", desc: "Quick Load last saved PMC career state" },
+            { key: "[1 - 5]", desc: "Direct switch: 1:R&D, 2:Factory, 3:Board, 4:War Map, 5:Hangar" },
+            { key: "[L]", desc: "Open Turn Ledger & Transaction Briefing modal" },
+            { key: "[?] / [F1]", desc: "Access the Field Manual & Tutorial Codex" }
+        ];
+
+        for (var ki = 0; ki < array_length(_shortcuts); ki++) {
+            var _sc = _shortcuts[ki];
+            var _row = ki % 4;
+            var _col = floor(ki / 4);
+            var _rx = _dsp_x + 18 + _col * 360;
+            var _ry = _kb_y + 40 + _row * 34;
+
+            draw_set_color(make_color_rgb(100, 220, 255));
+            draw_text(_rx, _ry, _sc.key);
+            draw_set_color(make_color_rgb(200, 220, 240));
+            draw_text(_rx + 74, _ry, _sc.desc);
+        }
+    }
+
+    // =====================================================================
+    // BOTTOM CLOSE / CONFIRM BUTTON
+    // =====================================================================
+    var _btn_close_w = 260;
+    var _btn_close_h = 38;
+    var _btn_close_x = _mx0 + floor((_mw - _btn_close_w) / 2);
+    var _btn_close_y = _my0 + _mh - 52;
+    var _bc_hov = (_mx >= _btn_close_x && _mx <= _btn_close_x + _btn_close_w && _my >= _btn_close_y && _my <= _btn_close_y + _btn_close_h);
+
+    if (_bc_hov && _click) {
+        show_settings_modal = false;
+        scr_audio_play_ui("confirm");
+    }
+    scr_draw_snes_button(_btn_close_x, _btn_close_y, _btn_close_w, _btn_close_h, ">> CLOSE SETTINGS <<", _bc_hov, false, make_color_rgb(60, 240, 140));
+}
+
+
+// 10. Tactical Radio Comms Intercom Overlay (Doc 52)
+scr_vn_draw_combat_intercom();

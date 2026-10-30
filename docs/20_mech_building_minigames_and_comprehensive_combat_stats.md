@@ -20,7 +20,7 @@
      * **Pilot Reaction Limit % (限界 - Genkai)**: The classic Gihren's Greed mechanic where a mobile suit's hydraulic and neural response speed bottlenecks an Ace pilot's reflexes.
      * **Propellant / Fuel Capacity & Operational Range (EN / 推進剤)**.
      * **Terrain Adaptability Ratings (地形適性)**: Ground, Space, Urban, Trench (S/A/B/C/D).
-     * **Minovsky / ECM Particle Dispersion % (散布率 / 索敵)**: Electronic counter-measures and radar scattering.
+     * **Prometheus Flux / ECM Particle Dispersion % (散布率 / 索敵)**: Electronic counter-measures and radar scattering.
    - **Front Mission Modular Stat Depth**:
      * Power-to-Weight ratios, Surplus MW acceleration bonuses, discrete part armor/structure HP, and recoil dissipation percentages.
    - **Direct Tuning Integration**:
@@ -50,7 +50,7 @@ Every mobile suit in *MechMakerConcept* possesses a unified stat matrix blending
 │    • Pilot Reaction Limit % (限界 - Genkai): 100% to 220%              │
 │    • Propellant / Fuel Max (EN - 推進剤): 80 to 250 Units               │
 │    • Terrain Adaptability Matrix (地形適性): Ground, Space, Urban, Trench │
-│    • Minovsky / ECM Dispersion (散布率): 10% to 75%                    │
+│    • Prometheus Flux / ECM Dispersion (散布率): 10% to 75%                    │
 │    • Sensor Search Grade (索敵): S, A, B, C, D                         │
 │                                                                        │
 │ 3. THERMODYNAMICS & POWER DYNAMICS:                                    │
@@ -63,10 +63,13 @@ Every mobile suit in *MechMakerConcept* possesses a unified stat matrix blending
 ### 2.1 The Pilot Reaction Limit Calculus (限界 - Genkai)
 In Gihren's Greed, giving a high-performance ace pilot a standard mass-produced mobile suit wastes their potential because the actuators cannot keep pace with the pilot's neural synapses.
 
-$$	ext{Effective Pilot Reflex Bonus} = \min\left(	ext{Pilot Reflexes}, 	ext{Mobile Suit Limit \%} - 100ight)$$
+$$	ext{Effective Pilot Reflex Bonus} = \min\left(	ext{Pilot Reflexes}, 	ext{Mobile Suit Limit \%} - 100
+ight)$$
 
-$$	ext{Final Combat Accuracy} = 	ext{Base Weapon Acc} + \left(	ext{Effective Pilot Reflex Bonus} 	imes 0.5ight)$$
-$$	ext{Final Combat Evasion} = 	ext{Base Chassis Eva} + \left(	ext{Effective Pilot Reflex Bonus} 	imes 0.6ight)$$
+$$	ext{Final Combat Accuracy} = 	ext{Base Weapon Acc} + \left(	ext{Effective Pilot Reflex Bonus} 	imes 0.5
+ight)$$
+$$	ext{Final Combat Evasion} = 	ext{Base Chassis Eva} + \left(	ext{Effective Pilot Reflex Bonus} 	imes 0.6
+ight)$$
 
 - **Example 1**: Ace Pilot *Null-07* has Reflexes $= 88$. Assigned to a standard Line *Ironclad* with $	ext{Limit} = 110\%$.
   $$	ext{Effective Bonus} = \min(88, 110 - 100) = 10\% \implies 	ext{Ace is bottlenecked by sluggish hydraulics!}$$
@@ -89,8 +92,8 @@ Each chassis and leg module has environmental ratings across **Ground**, **Space
 - **C-Rank**: $-15\%$ Evasion, $+1	ext{ AP}$ move cost, $+20\%$ fuel consumption.
 - **D-Rank**: Inoperable or $-30\%$ combat penalties (e.g. pure ground walker in zero-G vacuum).
 
-### 2.4 Minovsky / ECM Particle Dispersion (散布 / 索敵)
-- **Minovsky ECM Density (0% to 75%)**: High ECM creates a jamming sphere that deflects laser targeting, reduces enemy lock-on ranges, and grants adjacent allies $+15\%$ to $+35\%$ guided missile decoy chance.
+### 2.4 Prometheus Flux / ECM Particle Dispersion (散布 / 索敵)
+- **Prometheus Flux ECM Density (0% to 75%)**: High ECM creates a jamming sphere that deflects laser targeting, reduces enemy lock-on ranges, and grants adjacent allies $+15\%$ to $+35\%$ guided missile decoy chance.
 - **Sensor Search Grade (S/A/B/C)**: Determines fog-of-war vision radius and critical hit probability.
 
 ---
@@ -125,7 +128,9 @@ When building a custom mobile suit or tuning a prototype in the R&D Lab, the pla
     3. **Phase Offset Slider** ($0.0$ to $360.0^\circ$)
     4. **Harmonic Pulse Commit Button**
 *   **Scoring Formula**:
-    $$	ext{Score} = \max\left(0.0, 100.0 - \left(|\Delta 	ext{Freq}| 	imes 32.0 + |\Delta 	ext{Amp}| 	imes 1.1 + |\Delta 	ext{Phase}| 	imes 0.32ight)ight)$$
+    $$	ext{Score} = \max\left(0.0, 100.0 - \left(|\Delta 	ext{Freq}| 	imes 32.0 + |\Delta 	ext{Amp}| 	imes 1.1 + |\Delta 	ext{Phase}| 	imes 0.32
+ight)
+ight)$$
 *   **Stat Propagation to Mobile Suit**:
     - **S-Rank (95%+)**: $+25\%$ Reactor Output (MW), $+35\%$ Heat Dissipation Rate, $+20\%$ Energy Weapon DMG, $+30\%$ EN Capacity.
     - **A-Rank (85–94%)**: $+15\%$ Reactor Output, $+20\%$ Heat Dissipation Rate, $+10\%$ Energy DMG, $+15\%$ EN Capacity.
@@ -146,7 +151,9 @@ When building a custom mobile suit or tuning a prototype in the R&D Lab, the pla
     4. **Spot-Weld Lock Button**: Locks joint if stress is within optimal $25\% - 45\%$ band. Consumes 1 pulse.
     5. **Pulse Budget**: 8 pulses total.
 *   **Scoring Formula**:
-    $$	ext{Score} = \left(rac{	ext{Locked Joints Count}}{4} 	imes 70.0ight) + \left(rac{	ext{Remaining Pulses}}{8} 	imes 30.0ight)$$
+    $$	ext{Score} = \left(rac{	ext{Locked Joints Count}}{4} 	imes 70.0
+ight) + \left(rac{	ext{Remaining Pulses}}{8} 	imes 30.0
+ight)$$
     *(If any joint is unlocked when budget is depleted, Score is penalized by $-20\%$.)*
 *   **Stat Propagation to Mobile Suit**:
     - **S-Rank (95%+)**: Sets **Pilot Limit (Genkai)** to $200\%$, $+30\%$ Recoil Absorption, $+1	ext{ Base AP}$, $+25\%$ Leg Armor HP.
@@ -167,7 +174,8 @@ When building a custom mobile suit or tuning a prototype in the R&D Lab, the pla
     3. **Stage 3**: Vernier Acceleration Ring ($	ext{Fuel} pprox 75.0, 	ext{Coil} pprox 60.0$).
     4. **Stage 4**: Full Vector Plasma Discharge ($	ext{Fuel} pprox 90.0, 	ext{Coil} pprox 85.0$).
 *   **Scoring Formula**:
-    $$	ext{Stage Resonance} = \max\left(0.0, 100.0 - |\Delta 	ext{Fuel}| 	imes 1.5 - |\Delta 	ext{Coil}| 	imes 1.5ight)$$
+    $$	ext{Stage Resonance} = \max\left(0.0, 100.0 - |\Delta 	ext{Fuel}| 	imes 1.5 - |\Delta 	ext{Coil}| 	imes 1.5
+ight)$$
     $$	ext{Final Score} = rac{1}{4} \sum_{k=1}^4 	ext{Resonance}_k$$
 *   **Stat Propagation to Mobile Suit**:
     - **S-Rank (95%+)**: $+35\%$ Booster Thrust ($kN$), $+25\%$ Evasion %, Space Terrain Adaptability promoted to **S**, $+35\%$ Fuel Efficiency.
@@ -182,7 +190,7 @@ When building a custom mobile suit or tuning a prototype in the R&D Lab, the pla
 
 Below is the complete balance matrix for all 21 canonical mobile suits combining Front Mission and Gihren's Greed stats:
 
-| Model Code | Name | Faction | Pilot Limit % | Max EN | Terrains (G/S/U/T) | Minovsky % | Search | Total Armor | Net MW |
+| Model Code | Name | Faction | Pilot Limit % | Max EN | Terrains (G/S/U/T) | Flux ECM % | Search | Total Armor | Net MW |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **GHA-07** | Ironclad | Terran | 115% | 140 | A / B / A / C | 25% | B | 2,480 | +160 |
 | **GHA-07B**| Siegebreaker | Terran | 120% | 160 | A / B / S / C | 30% | B | 2,850 | +140 |

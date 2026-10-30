@@ -1,3 +1,4 @@
+if (master_muted) audio_master_gain(0.0);
 /// @description obj_AudioManager Step Event
 // Smooth crossfading logic for background music
 
@@ -28,7 +29,7 @@ if (fade_state == 1) {
                 audio_sound_gain(current_bgm_inst, 0.0, 0);
             }
             fade_start_vol = 0.0;
-            fade_target_vol = bgm_volume * master_volume;
+            fade_target_vol = (master_muted || bgm_muted) ? 0.0 : (bgm_volume * master_volume);
         } else {
             fade_state = 0; // IDLE
         }

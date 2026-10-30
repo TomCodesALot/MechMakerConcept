@@ -1,3 +1,6 @@
+var _log_f = file_text_open_append("boot_log.txt");
+file_text_write_string(_log_f, "[BOOT] obj_HQTerminal Create event started!\n");
+file_text_close(_log_f);
 /// @description obj_HQTerminal Create Event
 // Unified Command Deck Terminal UI State Machine & Simulation Hub
 // Strictly implements docs/09_ui_ux_flow.md, docs/02_alloy_chemistry.md & docs/03_prototyping_minigames.md
@@ -9,21 +12,48 @@ if (!instance_exists(obj_GameManager)) instance_create_depth(0, 0, 0, obj_GameMa
 if (!instance_exists(obj_FactionManager)) instance_create_depth(0, 0, 0, obj_FactionManager);
 if (!instance_exists(obj_BlueprintManager)) instance_create_depth(0, 0, 0, obj_BlueprintManager);
 if (!instance_exists(obj_AudioManager)) instance_create_depth(0, 0, 0, obj_AudioManager);
+if (!instance_exists(obj_DebugManager)) instance_create_depth(0, 0, -9999, obj_DebugManager);
+
+// 1. Navigation State
+display_set_gui_size(1366, 768);
+active_tab = 3; // Default to Strategic War Room Centerpiece (Gihren's Greed Style)              // 0 = R&D Lab, 1 = Factory Floor, 2 = Contracts, 3 = War Map
+intro_active = (instance_exists(obj_GameManager) && !obj_GameManager.has_completed_intro && !obj_GameManager.has_completed_dossier);
+show_commander_modal = false;
+intro_page = 0; // 0 = Situation Briefing, 1 = Commander Selection Dossier
+selected_commander_bg = "bg_terran_officer"; // "bg_terran_officer", "bg_colony_guerrilla", "bg_zaibatsu_defector", "bg_scavenger_veteran"
+selected_commander_choice = "bg_terran_officer";
+pilot_deck_subtab = 0; // 0 = Roster & Perks, 1 = Mercenary Cantina, 2 = Medical Bay
+// Space Salvager Origin Questionnaire State (Doc 51)
+q_step = 0; // 0: Scrapper Past, 1: Scavenged Rig, 2: Combat Instinct, 3: Beacon Discovery, 4: Profile Review
+q_choice_past = 3; // Default: Born to the Rust
+q_choice_rig = 0; // Default: Salvaged Ironclad Biped
+q_choice_code = 0; // Default: Point-Blank Breach
+q_choice_beacon = 0; // Default: Military Distress Ping
+q_portrait_idx = 0; // 0: Male, 1: Female, 2: Cyborg, 3: Shadow
+q_callsigns = ["RUST-1", "VANGUARD", "GHOST", "ANVIL", "VALKYRIE", "DEADEYE", "SCAV-PRIME"];
+q_callsign_idx = 0;
+selected_roster_pilot_idx = 0;
+tutorial_pulse_timer = 0;
+hire_pilot_page = 0;
+
+// Initialize Visual Novel Narrative Engine (Doc 51)
+scr_vn_init();
+if (instance_exists(obj_GameManager) && obj_GameManager.has_completed_prologue && !variable_struct_exists(obj_GameManager, "has_seen_ep01")) {
+    obj_GameManager.has_seen_ep01 = true;
+    scr_vn_start_episode("ep_01_inauguration");
+} else if (instance_exists(obj_GameManager) && !obj_GameManager.has_completed_dossier && !variable_struct_exists(obj_GameManager, "has_seen_cabin_intro")) {
+    obj_GameManager.has_seen_cabin_intro = true;
+    scr_vn_start_episode("ep_00_cabin_discovery");
+}
 
 // Start Terminal Background Audio Atmosphere
 scr_audio_play_ui("boot");
 scr_audio_play_location_bgm((active_tab == 0) ? "prototyping" : "hq");
-
-// 1. Navigation State
-// Intro Briefing & Commander Selection State
-intro_active = (instance_exists(obj_GameManager) && !obj_GameManager.has_completed_intro);
-intro_page = 0; // 0 = Situation Briefing, 1 = Commander Selection Dossier
-selected_commander_choice = "silhouette"; // "silhouette", "male", "female"
-show_commander_modal = false;
-
-active_tab = 0;              // 0 = R&D Lab, 1 = Factory Floor, 2 = Contracts, 3 = War Map
 rd_subtab = 0;               // 0 = Crucible Synthesis (Doc 02), 1 = Prototyping Minigames (Doc 03), 2 = Blueprint Specs
 war_subtab = 0;              // 0 = Sector War Map & Mining, 1 = Faction Dossiers, 2 = Faction Diplomacy Matrix (Doc 21), 3 = Decade Mecha Timeline, 4 = PMC Expedition (Doc 12)
+territory_sphere_tab = 0;    // 0 = Earth Sphere (Default Strategic World Map), 1 = Space & Colonies, 2 = Mars Sphere
+selected_territory_id = "earth_granite_redoubt";
+war_map_mode = 0;            // 0 = Cartographic Territory Map & Conquest, 1 = Mining Concessions (16 Nodes)              // 0 = Sector War Map & Mining, 1 = Faction Dossiers, 2 = Faction Diplomacy Matrix (Doc 21), 3 = Decade Mecha Timeline, 4 = PMC Expedition (Doc 12)
 selected_diplo_pair = "terran_colony"; // Selected pair in Diplomacy Matrix (Doc 21)
 flagship_subtab = 0;                   // 0 = Warship & Upgrades, 1 = Celestial Navigation, 2 = Rival Corporate Competitors (Doc 23)
 selected_rival_corp = "corp_vhi";      // Selected rival corporate manufacturer
@@ -41,7 +71,19 @@ selected_strike_faction = "faction_c";
 selected_strike_mech = 0;
 selected_strike_pilot = 0;
 showing_retire_modal = false;
-factory_subtab = 0;          // 0 = Facilities & Assembly (Doc 07), 1 = Modular Part Forge, 2 = Custom Combinations Assembly Bay (Doc 13)
+showing_victory_modal = false;
+assembly_autotune_enabled = false;
+espionage_brig_view_mode = false;
+launch_crisis_boss_sortie = function() {
+    if (instance_exists(obj_GameManager)) {
+        obj_GameManager.launch_crisis_boss_sortie = true;
+    }
+    if (room_exists(rm_combat)) {
+        scr_audio_play_ui("confirm");
+        room_goto(rm_combat);
+    }
+};
+factory_subtab = 2; // Default to Front Mission Style Wanzer Assembly Bay          // 0 = Facilities & Assembly (Doc 07), 1 = Modular Part Forge, 2 = Custom Combinations Assembly Bay (Doc 13)
 forge_selected_slot = 0;     // 0=Heads, 1=Torsos, 2=Arms, 3=Legs, 4=Backpacks, 5=Weapons
 assembly_head_idx = 0;
 assembly_torso_idx = 0;
@@ -122,6 +164,10 @@ save_custom_blueprint = function() {
 
     obj_BlueprintManager.register_custom_blueprint(_new_bp);
     show_toast("ARCHIVED TO CANONICAL BLUEPRINTS: " + assembly_custom_name + " (" + _code + ")!", c_lime);
+    if (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "tutorial_step") && obj_GameManager.tutorial_step == 2) {
+        obj_GameManager.advance_tutorial_step();
+        show_toast("★ STEP 2 COMPLETE: GHA-07 PROTOTYPE ASSEMBLED! REPORT TO WAR MAP [1] ★", make_color_rgb(60, 240, 140));
+    }
     return true;
 };
 
@@ -147,6 +193,7 @@ show_toast = function(_msg, _col = c_white) {
     toast_color = _col;
     toast_timer = 200;
 };
+scr_show_toast = show_toast;
 
 // 3. Alert Ticker Feed (docs/09_ui_ux_flow.md)
 alerts_feed = [
@@ -161,6 +208,12 @@ alert_timer = 0;
 // 4. Modal Dialogs & In-Engine Tutorial Manual State
 active_tutorial_modal = "";        // "" = None, "PMC_MANUAL", "CRUCIBLE", "REACTOR", "HYDRAULIC", "THRUSTER"
 show_turn_briefing_modal = false; // Modal displaying last strategic turn's transaction ledger
+
+// 4b. Settings Modal & Tactical Audio State
+show_settings_modal = false;
+settings_active_tab = 3; // Galactic Map // 0: AUDIO MIXER, 1: CRT DISPLAY & SHORTCUTS
+settings_crt_scanlines = true;
+settings_screen_shake = true;
 
 // 5. Turn-Based Alloy Crucible Synthesis (docs/02_alloy_chemistry.md)
 crucible_temp_c = 25.0;            // Ambient room temperature
@@ -214,10 +267,10 @@ crucible_vent = function() {
 
 crucible_load_mat = function(_mat_id) {
     if (!instance_exists(obj_GameManager)) return;
-    var _available = obj_GameManager.inventory.raw_materials[$ _mat_id] ?? 0;
+    var _available = variable_struct_get(obj_GameManager.inventory.raw_materials, _mat_id) ?? 0;
     if (_available > 0) {
-        obj_GameManager.inventory.raw_materials[$ _mat_id] = _available - 1;
-        crucible_batch[$ _mat_id] = (crucible_batch[$ _mat_id] ?? 0) + 1;
+        variable_struct_set(obj_GameManager.inventory.raw_materials, _mat_id, _available - 1);
+        variable_struct_set(crucible_batch, _mat_id, (variable_struct_get(crucible_batch, _mat_id) ?? 0) + 1);
         scr_audio_play_ui("click");
         if (crucible_batch.mat_tritium > 0 && crucible_batch.mat_syn_flux > 0) {
             volatility_meter = min(100, volatility_meter + 25.0);
@@ -233,10 +286,10 @@ crucible_purge_hopper = function() {
     var _keys = variable_struct_get_names(crucible_batch);
     for (var i = 0; i < array_length(_keys); i++) {
         var _k = _keys[i];
-        var _amt = crucible_batch[$ _k];
+        var _amt = variable_struct_get(crucible_batch, _k);
         if (_amt > 0) {
             obj_GameManager.add_raw_material(_k, _amt);
-            crucible_batch[$ _k] = 0;
+            variable_struct_set(crucible_batch, _k, 0);
         }
     }
     volatility_meter = 0.0;
@@ -289,6 +342,10 @@ crucible_execute_synthesis = function() {
         show_toast("SUCCESS: +1 Vanguard Composite Plating forged into inventory!", c_lime);
         scr_audio_play_sfx(snd_crucible_pour, 0.9, 0.04);
         scr_audio_play_sfx(snd_discovery_fanfare, 1.0, 0.0);
+        if (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "tutorial_step") && obj_GameManager.tutorial_step == 1) {
+            obj_GameManager.advance_tutorial_step();
+            show_toast("★ STEP 1 COMPLETE: VANGUARD COMPOSITE SINTERED! REPORT TO HANGAR [2] ★", make_color_rgb(60, 240, 140));
+        }
         return;
     }
 
@@ -803,51 +860,51 @@ show_debug_message("[obj_HQTerminal] Initialization Complete. Ready for command 
 modular_crafting_catalog = [
     // Heads (Slot 0)
     [
-        { id: "hd_vanguard_01", name: "HD-01 Vanguard Target-Lock", slot: "heads", armor: 120, mass: 4, power_draw: 2, bonus: "+15% Accuracy", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 1, cost_cr: 15000 },
-        { id: "hd_aether_02", name: "HD-02 Aether EW-Dome", slot: "heads", armor: 90, mass: 2, power_draw: 4, bonus: "+18% Evasion", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 1, cost_cr: 25000 },
-        { id: "hd_cyclops_03", name: "HD-03 Cyclops Siege Optic", slot: "heads", armor: 160, mass: 6, power_draw: 3, bonus: "+20% Critical Hit", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 1, cost_cr: 35000 },
-        { id: "hd_damascus_04", name: "HD-04 Damascus Reactive Visor", slot: "heads", armor: 195, mass: 5, power_draw: 3, bonus: "+25% Kinetic Res & Target Lock", req_alloy: "alloy_reactive_damascus", req_alloy_amount: 1, cost_cr: 48000 },
-        { id: "hd_tachyon_05", name: "HD-05 Tachyon Spectral Dome", slot: "heads", armor: 110, mass: 3, power_draw: 5, bonus: "+30% Beam Crit & Deep Radar", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 1, cost_cr: 62000 }
+        { id: "hd_vanguard_01", name: "HD-01 Vanguard Target-Lock", slot: "heads", armor: 120, mass: 4, power_draw: 2, bonus: "+15% Accuracy", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 1, cost_cr: 15000, req_tech_id: "tech_upg_analog_hydraulics" },
+        { id: "hd_aether_02", name: "HD-02 Aether EW-Dome", slot: "heads", armor: 90, mass: 2, power_draw: 4, bonus: "+18% Evasion", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 1, cost_cr: 25000, req_tech_id: "tech_upg_vernier_gimbals" },
+        { id: "hd_cyclops_03", name: "HD-03 Cyclops Siege Optic", slot: "heads", armor: 160, mass: 6, power_draw: 3, bonus: "+20% Critical Hit", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 1, cost_cr: 35000, req_tech_id: "tech_wpn_hyper_velocity_rifle" },
+        { id: "hd_damascus_04", name: "HD-04 Damascus Reactive Visor", slot: "heads", armor: 195, mass: 5, power_draw: 3, bonus: "+25% Kinetic Res & Target Lock", req_alloy: "alloy_reactive_damascus", req_alloy_amount: 1, cost_cr: 48000, req_tech_id: "tech_sld_composite_reactive" },
+        { id: "hd_tachyon_05", name: "HD-05 Tachyon Spectral Dome", slot: "heads", armor: 110, mass: 3, power_draw: 5, bonus: "+30% Beam Crit & Deep Radar", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 1, cost_cr: 62000, req_tech_id: "tech_sld_i_field_emitter" }
     ],
     // Torsos (Slot 1)
     [
-        { id: "tr_colossus_01", name: "TR-01 Colossus Heavy Torso", slot: "torsos", armor: 480, mass: 26, power_output: 28, bonus: "Reinforced Reactor Core", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 3, cost_cr: 65000 },
-        { id: "tr_hyperion_02", name: "TR-02 Hyperion Tokamak Torso", slot: "torsos", armor: 360, mass: 20, power_output: 42, bonus: "High-Spec Fusion Core", req_alloy: "alloy_hyperion_matrix", req_alloy_amount: 2, cost_cr: 95000 },
-        { id: "tr_phantom_03", name: "TR-03 Phantom Striker Torso", slot: "torsos", armor: 300, mass: 14, power_output: 32, bonus: "Lightweight Agility Core", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 75000 },
-        { id: "tr_damascus_04", name: "TR-04 Damascus Reactive Citadel", slot: "torsos", armor: 560, mass: 28, power_output: 36, bonus: "Ablative Blast Deflection Core", req_alloy: "alloy_reactive_damascus", req_alloy_amount: 2, cost_cr: 115000 },
-        { id: "tr_sol_05", name: "TR-05 Sol Ferrite Super-Tokamak", slot: "torsos", armor: 440, mass: 22, power_output: 54, bonus: "Apex Tokamak Core (+54 MW Output)", req_alloy: "alloy_sol_ferrite", req_alloy_amount: 2, cost_cr: 135000 }
+        { id: "tr_colossus_01", name: "TR-01 Colossus Heavy Torso", slot: "torsos", armor: 480, mass: 26, power_output: 28, bonus: "Reinforced Reactor Core", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 3, cost_cr: 65000, req_tech_id: "tech_rea_gas_cooled_fission" },
+        { id: "tr_hyperion_02", name: "TR-02 Hyperion Tokamak Torso", slot: "torsos", armor: 360, mass: 20, power_output: 42, bonus: "High-Spec Fusion Core", req_alloy: "alloy_hyperion_matrix", req_alloy_amount: 2, cost_cr: 95000, req_tech_id: "tech_rea_compact_fusion" },
+        { id: "tr_phantom_03", name: "TR-03 Phantom Striker Torso", slot: "torsos", armor: 300, mass: 14, power_output: 32, bonus: "Lightweight Agility Core", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 75000, req_tech_id: "tech_upg_vernier_gimbals" },
+        { id: "tr_damascus_04", name: "TR-04 Damascus Reactive Citadel", slot: "torsos", armor: 560, mass: 28, power_output: 36, bonus: "Ablative Blast Deflection Core", req_alloy: "alloy_reactive_damascus", req_alloy_amount: 2, cost_cr: 115000, req_tech_id: "tech_rea_catalytic_prometheus" },
+        { id: "tr_sol_05", name: "TR-05 Sol Ferrite Super-Tokamak", slot: "torsos", armor: 440, mass: 22, power_output: 54, bonus: "Apex Tokamak Core (+54 MW Output)", req_alloy: "alloy_sol_ferrite", req_alloy_amount: 2, cost_cr: 135000, req_tech_id: ["tech_rea_antimatter_pinch", "tech_rea_tachyon_cyclotron"] }
     ],
     // Arms (Slot 2)
     [
-        { id: "am_colossus_01", name: "AM-01 Colossus Dual Arms", slot: "arms", armor: 260, mass: 16, power_draw: 4, bonus: "+25% Recoil Control", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 2, cost_cr: 40000 },
-        { id: "am_vernier_02", name: "AM-02 Vernier Fast-Actuators", slot: "arms", armor: 190, mass: 10, power_draw: 5, bonus: "+20% Weapon Handling", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 50000 },
-        { id: "am_adamant_03", name: "AM-03 Adamantine Heavy Brackets", slot: "arms", armor: 320, mass: 22, power_draw: 6, bonus: "+20% Ballistic Damage", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 2, cost_cr: 60000 },
-        { id: "am_aerogel_04", name: "AM-04 Lunar Aerogel Manipulators", slot: "arms", armor: 210, mass: 7, power_draw: 3, bonus: "-55% Arm Mass & +25% Melee Speed", req_alloy: "alloy_lunar_aerogel", req_alloy_amount: 2, cost_cr: 72000 },
-        { id: "am_tachyon_05", name: "AM-05 Tachyon Conduit Arms", slot: "arms", armor: 240, mass: 12, power_draw: 7, bonus: "+35% Energy Weapon Output", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 2, cost_cr: 88000 }
+        { id: "am_colossus_01", name: "AM-01 Colossus Dual Arms", slot: "arms", armor: 260, mass: 16, power_draw: 4, bonus: "+25% Recoil Control", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 2, cost_cr: 40000, req_tech_id: "tech_upg_analog_hydraulics" },
+        { id: "am_vernier_02", name: "AM-02 Vernier Fast-Actuators", slot: "arms", armor: 190, mass: 10, power_draw: 5, bonus: "+20% Weapon Handling", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 50000, req_tech_id: "tech_upg_vernier_gimbals" },
+        { id: "am_adamant_03", name: "AM-03 Adamantine Heavy Brackets", slot: "arms", armor: 320, mass: 22, power_draw: 6, bonus: "+20% Ballistic Damage", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 2, cost_cr: 60000, req_tech_id: "tech_wpn_hyper_velocity_rifle" },
+        { id: "am_aerogel_04", name: "AM-04 Lunar Aerogel Manipulators", slot: "arms", armor: 210, mass: 7, power_draw: 3, bonus: "-55% Arm Mass & +25% Melee Speed", req_alloy: "alloy_lunar_aerogel", req_alloy_amount: 2, cost_cr: 72000, req_tech_id: ["tech_upg_nanite_cooling", "tech_upg_overboost_rig"] },
+        { id: "am_tachyon_05", name: "AM-05 Tachyon Conduit Arms", slot: "arms", armor: 240, mass: 12, power_draw: 7, bonus: "+35% Energy Weapon Output", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 2, cost_cr: 88000, req_tech_id: "tech_wpn_beam_carbine" }
     ],
     // Legs (Slot 3)
     [
-        { id: "lg_vanguard_01", name: "LG-01 Vanguard Heavy Walkers", slot: "legs", armor: 340, mass: 24, power_draw: 5, base_speed: 44, bonus: "+30% Stability", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 3, cost_cr: 55000 },
-        { id: "lg_stratos_02", name: "LG-02 Stratos Vernier Skaters", slot: "legs", armor: 220, mass: 15, power_draw: 7, base_speed: 86, bonus: "+25% Agility", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 70000 },
-        { id: "lg_titan_03", name: "LG-03 Titan Quad-Leg Platform", slot: "legs", armor: 440, mass: 34, power_draw: 8, base_speed: 34, bonus: "+50% Recoil Absorb", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 3, cost_cr: 80000 },
-        { id: "lg_aerogel_04", name: "LG-04 Lunar Aerogel Hover Struts", slot: "legs", armor: 260, mass: 11, power_draw: 6, base_speed: 105, bonus: "High-G Hover Dash & Terrain Master", req_alloy: "alloy_lunar_aerogel", req_alloy_amount: 2, cost_cr: 92000 },
-        { id: "lg_damascus_05", name: "LG-05 Damascus Armored Treads", slot: "legs", armor: 520, mass: 32, power_draw: 7, base_speed: 48, bonus: "Impenetrable Trench Fortress", req_alloy: "alloy_reactive_damascus", req_alloy_amount: 3, cost_cr: 105000 }
+        { id: "lg_vanguard_01", name: "LG-01 Vanguard Heavy Walkers", slot: "legs", armor: 340, mass: 24, power_draw: 5, base_speed: 44, bonus: "+30% Stability", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 3, cost_cr: 55000, req_tech_id: "tech_upg_analog_hydraulics" },
+        { id: "lg_stratos_02", name: "LG-02 Stratos Vernier Skaters", slot: "legs", armor: 220, mass: 15, power_draw: 7, base_speed: 86, bonus: "+25% Agility", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 70000, req_tech_id: "tech_upg_vernier_gimbals" },
+        { id: "lg_titan_03", name: "LG-03 Titan Quad-Leg Platform", slot: "legs", armor: 440, mass: 34, power_draw: 8, base_speed: 34, bonus: "+50% Recoil Absorb", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 3, cost_cr: 80000, req_tech_id: "tech_sld_composite_reactive" },
+        { id: "lg_aerogel_04", name: "LG-04 Lunar Aerogel Hover Struts", slot: "legs", armor: 260, mass: 11, power_draw: 6, base_speed: 105, bonus: "High-G Hover Dash & Terrain Master", req_alloy: "alloy_lunar_aerogel", req_alloy_amount: 2, cost_cr: 92000, req_tech_id: ["tech_upg_nanite_cooling", "tech_upg_overboost_rig"] },
+        { id: "lg_damascus_05", name: "LG-05 Damascus Armored Treads", slot: "legs", armor: 520, mass: 32, power_draw: 7, base_speed: 48, bonus: "Impenetrable Trench Fortress", req_alloy: "alloy_reactive_damascus", req_alloy_amount: 3, cost_cr: 105000, req_tech_id: ["tech_sld_magnetic_barrier", "tech_sld_damascus_citadel"] }
     ],
     // Backpacks (Slot 4)
     [
-        { id: "bp_heavy_01", name: "BP-01 Heavy Booster Pack", slot: "backpacks", armor: 140, mass: 12, power_draw: 3, boost_bonus: 35, bonus: "High Thrust", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 1, cost_cr: 25000 },
-        { id: "bp_vernier_02", name: "BP-02 Dual-Vector Vernier Rig", slot: "backpacks", armor: 100, mass: 8, power_draw: 6, boost_bonus: 65, bonus: "+15% Evade", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 45000 },
-        { id: "bp_plasma_03", name: "BP-03 Plasma Overcharge Booster", slot: "backpacks", armor: 120, mass: 10, power_draw: 9, boost_bonus: 80, bonus: "+1 Dash AP", req_alloy: "alloy_hyperion_matrix", req_alloy_amount: 2, cost_cr: 65000 },
-        { id: "bp_aerogel_04", name: "BP-04 Lunar Aerogel Siphon Rig", slot: "backpacks", armor: 95, mass: 4, power_draw: 4, boost_bonus: 55, bonus: "+60% Heat Venting & Featherweight", req_alloy: "alloy_lunar_aerogel", req_alloy_amount: 2, cost_cr: 78000 },
-        { id: "bp_tachyon_05", name: "BP-05 Tachyon Fold Warp Booster", slot: "backpacks", armor: 130, mass: 11, power_draw: 12, boost_bonus: 115, bonus: "+2 Sortie AP & Micro-Warp Dash", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 2, cost_cr: 110000 }
+        { id: "bp_heavy_01", name: "BP-01 Heavy Booster Pack", slot: "backpacks", armor: 140, mass: 12, power_draw: 3, boost_bonus: 35, bonus: "High Thrust", req_alloy: "alloy_vanguard_comp", req_alloy_amount: 1, cost_cr: 25000, req_tech_id: "tech_upg_analog_hydraulics" },
+        { id: "bp_vernier_02", name: "BP-02 Dual-Vector Vernier Rig", slot: "backpacks", armor: 100, mass: 8, power_draw: 6, boost_bonus: 65, bonus: "+15% Evade", req_alloy: "alloy_aerosteel_flux", req_alloy_amount: 2, cost_cr: 45000, req_tech_id: "tech_upg_vernier_gimbals" },
+        { id: "bp_plasma_03", name: "BP-03 Plasma Overcharge Booster", slot: "backpacks", armor: 120, mass: 10, power_draw: 9, boost_bonus: 80, bonus: "+1 Dash AP", req_alloy: "alloy_hyperion_matrix", req_alloy_amount: 2, cost_cr: 65000, req_tech_id: "tech_rea_catalytic_prometheus" },
+        { id: "bp_aerogel_04", name: "BP-04 Lunar Aerogel Siphon Rig", slot: "backpacks", armor: 95, mass: 4, power_draw: 4, boost_bonus: 55, bonus: "+60% Heat Venting & Featherweight", req_alloy: "alloy_lunar_aerogel", req_alloy_amount: 2, cost_cr: 78000, req_tech_id: ["tech_upg_nanite_cooling", "tech_upg_overboost_rig"] },
+        { id: "bp_tachyon_05", name: "BP-05 Tachyon Fold Warp Booster", slot: "backpacks", armor: 130, mass: 11, power_draw: 12, boost_bonus: 115, bonus: "+2 Sortie AP & Micro-Warp Dash", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 2, cost_cr: 110000, req_tech_id: ["tech_rea_antimatter_pinch", "tech_rea_tachyon_cyclotron"] }
     ],
     // Weapons (Slot 5)
     [
-        { id: "wp_vulcan_01", name: "WP-01 Rotary Vulcan (120mm)", slot: "weapons", armor: 100, mass: 12, power_draw: 3, damage: 180, bonus: "Sustained Fire", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 2, cost_cr: 45000 },
-        { id: "wp_beam_02", name: "WP-02 Particle Beam Pulse Rifle", slot: "weapons", armor: 80, mass: 8, power_draw: 10, damage: 240, bonus: "Armor Piercing", req_alloy: "alloy_hyperion_matrix", req_alloy_amount: 2, cost_cr: 60000 },
-        { id: "wp_rail_03", name: "WP-03 Heavy Siege Rail Cannon", slot: "weapons", armor: 130, mass: 20, power_draw: 8, damage: 380, bonus: "Long Range Siege", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 2, cost_cr: 85000 },
-        { id: "wp_sol_04", name: "WP-04 Sol Ferrite Hyper-Railgun", slot: "weapons", armor: 150, mass: 22, power_draw: 11, damage: 460, bonus: "+45% Shield Pierce & Line Punch", req_alloy: "alloy_sol_ferrite", req_alloy_amount: 2, cost_cr: 125000 },
-        { id: "wp_tachyon_05", name: "WP-05 Tachyon Beam Lance", slot: "weapons", armor: 90, mass: 9, power_draw: 14, damage: 420, bonus: "+40% Energy Armor Melt & Overheat Arc", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 2, cost_cr: 140000 }
+        { id: "wp_vulcan_01", name: "WP-01 Rotary Vulcan (120mm)", slot: "weapons", armor: 100, mass: 12, power_draw: 3, damage: 180, bonus: "Sustained Fire", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 2, cost_cr: 45000, req_tech_id: "tech_wpn_heavy_autocannon" },
+        { id: "wp_beam_02", name: "WP-02 Particle Beam Pulse Rifle", slot: "weapons", armor: 80, mass: 8, power_draw: 10, damage: 240, bonus: "Armor Piercing", req_alloy: "alloy_hyperion_matrix", req_alloy_amount: 2, cost_cr: 60000, req_tech_id: "tech_wpn_beam_carbine" },
+        { id: "wp_rail_03", name: "WP-03 Heavy Siege Rail Cannon", slot: "weapons", armor: 130, mass: 20, power_draw: 8, damage: 380, bonus: "Long Range Siege", req_alloy: "alloy_adamantine_carbide", req_alloy_amount: 2, cost_cr: 85000, req_tech_id: "tech_wpn_electromagnetic_railgun" },
+        { id: "wp_sol_04", name: "WP-04 Sol Ferrite Hyper-Railgun", slot: "weapons", armor: 150, mass: 22, power_draw: 11, damage: 460, bonus: "+45% Shield Pierce & Line Punch", req_alloy: "alloy_sol_ferrite", req_alloy_amount: 2, cost_cr: 125000, req_tech_id: "tech_wpn_electromagnetic_railgun" },
+        { id: "wp_tachyon_05", name: "WP-05 Tachyon Beam Lance", slot: "weapons", armor: 90, mass: 9, power_draw: 14, damage: 420, bonus: "+40% Energy Armor Melt & Overheat Arc", req_alloy: "alloy_tachyon_superalloy", req_alloy_amount: 2, cost_cr: 140000, req_tech_id: "tech_wpn_tachyon_lance" }
     ]
 ];
 
@@ -863,3 +920,65 @@ catalog_perspective = "front"; // "front", "back"
 catalog_scroll_offset = 0;
 trial_candidate_dossier_idx = 0; // 0..3 for inspecting the 4 mass production candidates
 trial_view_candidates_mode = false; // Toggle between flyoff arena and candidate pool comparison
+
+var _log_f2 = file_text_open_append("boot_log.txt");
+file_text_write_string(_log_f2, "[BOOT] obj_HQTerminal Create event finished successfully!\n");
+file_text_close(_log_f2);
+
+// =========================================================================
+// TACTICAL ORDER DISPATCH & UNIT TRANSIT ENGINE (Shin Gihren's Greed System)
+// =========================================================================
+order_dispatch_mode = false;
+order_origin_id = "";
+order_target_id = "";
+order_modal_active = false;
+order_unit_type = "spr_mini_ms_ironclad";
+order_stack_size = 4;
+order_operation_type = "REDEPLOY";
+active_transits = [];
+combat_modal_active = false;
+combat_report = {
+    title: "",
+    origin_name: "",
+    target_name: "",
+    target_faction: "",
+    player_power: 0,
+    enemy_power: 0,
+    result_text: "",
+    is_victory: false,
+    rounds: []
+};
+
+// =========================================================================
+// 2-TIER MAP HIERARCHY (Gihren's Greed Macro / Micro Stronghold System)
+// =========================================================================
+earth_view_mode = "GLOBAL";         // "GLOBAL" (World Map) or "STRONGHOLD" (Dedicated Base Map)
+active_stronghold_id = "earth_granite_redoubt";
+selected_subnode_id = "granite_core";
+
+// =========================================================================
+// SHIN GIHREN'S GREED 16x10 HEX TACTICAL GRID ENGINE
+// =========================================================================
+hex_grid_enabled = true;
+hex_tactical_turn = 1;
+hex_tactical_phase = "PLAYER";      // "PLAYER" or "OPFOR"
+selected_hex_unit_id = "";
+reachable_hexes = {};               // struct of key "c_r" -> cost
+hovered_hex_c = -1;
+hovered_hex_r = -1;
+stronghold_terrain_grid = undefined;
+stronghold_hex_units = [];
+stronghold_combat_log = ["TACTICAL DEPLOYMENT ACTIVE. SELECT SQUADRON TO COMMENCE MANEUVERS."];
+fog_of_war_enabled = true;
+stronghold_fog_grid = undefined;
+
+// Stronghold Victory & Grand Campaign Hegemony State (Phase 5)
+stronghold_victory_modal_open = false;
+stronghold_victory_acknowledged = false;
+stronghold_victory_claimed = false;
+stronghold_victory_data = undefined;
+
+// Stronghold Defeat & Evacuation State
+stronghold_defeat_modal_open = false;
+stronghold_defeat_acknowledged = false;
+stronghold_defeat_data = undefined;

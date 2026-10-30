@@ -79,19 +79,22 @@ function scr_draw_snes_panel(_x, _y, _w, _h, _title = "", _accent_col = -1, _has
         draw_set_color(_acc);
         draw_rectangle(_th_x + 2, _th_y + 2, _th_x + 6, _th_y + _th_h - 2, false);
 
-        // LED Indicator if available
-        if (sprite_exists(spr_snes_led_indicators)) {
-            draw_sprite(spr_snes_led_indicators, 0, _th_x + 12, _th_y + 4);
-            draw_set_color(c_white);
-            draw_text(_th_x + 34, _th_y + 4, "[ " + string_upper(_title) + " ]");
-        } else {
-            draw_set_color(c_white);
-            draw_text(_th_x + 14, _th_y + 4, "[ " + string_upper(_title) + " ]");
-        }
+        // Glowing LED Beacon
+        draw_set_color(_acc);
+        draw_circle(_th_x + 16, _th_y + 12, 3, false);
+        draw_set_color(c_white);
+        draw_circle(_th_x + 16, _th_y + 12, 1, false);
 
-        // Right-side military terminal telemetry
-        draw_set_color(make_color_rgb(120, 145, 170));
-        draw_text(_th_x + _th_w - 180, _th_y + 4, "TAC-COM // 16-BIT SYS");
+        // Crisp Title
+        draw_set_color(c_white);
+        draw_text(_th_x + 26, _th_y + 4, string_upper(_title));
+
+        // Subtle Right-Side Telemetry only if width allows and no collision with title
+        var _t_len = string_width(string_upper(_title));
+        if (_th_w > 550 && (_th_x + 30 + _t_len + 140 < _th_x + _th_w)) {
+            draw_set_color(make_color_rgb(85, 120, 155));
+            draw_text(_th_x + _th_w - 120, _th_y + 4, "TAC-COM // OK");
+        }
     }
 }
 

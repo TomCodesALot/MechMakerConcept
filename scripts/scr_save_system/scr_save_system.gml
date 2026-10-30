@@ -25,7 +25,13 @@ function scr_save_game(_slot_name = "pmc_save_slot_1.json") {
                 time_speed: obj_GameManager.time_speed,
                 pmc_profile: obj_GameManager.pmc_profile,
                 inventory: obj_GameManager.inventory,
-                facilities: obj_GameManager.facilities
+                facilities: obj_GameManager.facilities,
+                research_system: obj_GameManager.research_system,
+                research_system: obj_GameManager.research_system,
+                has_completed_intro: obj_GameManager.has_completed_intro,
+                has_completed_tutorial: (variable_instance_exists(obj_GameManager, "has_completed_tutorial") ? obj_GameManager.has_completed_tutorial : false),
+                tutorial_step: (variable_instance_exists(obj_GameManager, "tutorial_step") ? obj_GameManager.tutorial_step : 0),
+                tutorial_active: (variable_instance_exists(obj_GameManager, "tutorial_active") ? obj_GameManager.tutorial_active : true)
             };
         }
 
@@ -83,12 +89,9 @@ function scr_load_game(_slot_name = "pmc_save_slot_1.json") {
             return false;
         }
 
-        var _file = file_text_open_read(_slot_name);
-        var _json_string = "";
-        while (!file_text_eof(_file)) {
-            _json_string += file_text_readln(_file);
-        }
-        file_text_close(_file);
+        var _buf = buffer_load(_slot_name);
+        var _json_string = buffer_read(_buf, buffer_string);
+        buffer_delete(_buf);
 
         var _save_data = json_parse(_json_string);
         if (!is_struct(_save_data)) {
@@ -97,7 +100,7 @@ function scr_load_game(_slot_name = "pmc_save_slot_1.json") {
         }
 
         // 1. Unpack into obj_GameManager
-        if (instance_exists(obj_GameManager) && is_struct(_save_data[$ "game_state"])) {
+        if (instance_exists(obj_GameManager) && is_struct(variable_struct_get(_save_data, "game_state"))) {
             var _gs = _save_data.game_state;
             if (variable_struct_exists(_gs, "funds")) obj_GameManager.funds = _gs.funds;
             if (variable_struct_exists(_gs, "escrow_funds")) obj_GameManager.escrow_funds = _gs.escrow_funds;
@@ -107,10 +110,20 @@ function scr_load_game(_slot_name = "pmc_save_slot_1.json") {
             if (variable_struct_exists(_gs, "pmc_profile")) obj_GameManager.pmc_profile = _gs.pmc_profile;
             if (variable_struct_exists(_gs, "inventory")) obj_GameManager.inventory = _gs.inventory;
             if (variable_struct_exists(_gs, "facilities")) obj_GameManager.facilities = _gs.facilities;
+            if (variable_struct_exists(_gs, "research_system") && is_struct(_gs.research_system)) {
+                obj_GameManager.research_system = _gs.research_system;
+            }
+            if (variable_struct_exists(_gs, "research_system") && is_struct(_gs.research_system)) {
+                obj_GameManager.research_system = _gs.research_system;
+            }
+            if (variable_struct_exists(_gs, "has_completed_intro")) obj_GameManager.has_completed_intro = _gs.has_completed_intro;
+            if (variable_struct_exists(_gs, "has_completed_tutorial")) obj_GameManager.has_completed_tutorial = _gs.has_completed_tutorial;
+            if (variable_struct_exists(_gs, "tutorial_step")) obj_GameManager.tutorial_step = _gs.tutorial_step;
+            if (variable_struct_exists(_gs, "tutorial_active")) obj_GameManager.tutorial_active = _gs.tutorial_active;
         }
 
         // 2. Unpack into obj_FactionManager
-        if (instance_exists(obj_FactionManager) && is_struct(_save_data[$ "faction_state"])) {
+        if (instance_exists(obj_FactionManager) && is_struct(variable_struct_get(_save_data, "faction_state"))) {
             var _fs = _save_data.faction_state;
             if (variable_struct_exists(_fs, "faction_standing")) obj_FactionManager.faction_standing = _fs.faction_standing;
             if (variable_struct_exists(_fs, "factions")) obj_FactionManager.factions = _fs.factions;
@@ -119,7 +132,7 @@ function scr_load_game(_slot_name = "pmc_save_slot_1.json") {
         }
 
         // 3. Unpack into obj_BlueprintManager
-        if (instance_exists(obj_BlueprintManager) && is_struct(_save_data[$ "blueprint_state"])) {
+        if (instance_exists(obj_BlueprintManager) && is_struct(variable_struct_get(_save_data, "blueprint_state"))) {
             var _bs = _save_data.blueprint_state;
             if (variable_struct_exists(_bs, "unlocked_blueprints")) obj_BlueprintManager.unlocked_blueprints = _bs.unlocked_blueprints;
             if (variable_struct_exists(_bs, "unlocked_components")) obj_BlueprintManager.unlocked_components = _bs.unlocked_components;

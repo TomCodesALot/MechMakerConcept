@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_research_tree_system",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_research_tree_system",
+  "parent":{
+    "name":"MechMakerConcept",
+    "path":"MechMakerConcept.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

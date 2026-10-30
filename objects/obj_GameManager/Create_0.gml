@@ -13,14 +13,84 @@ persistent = true;
 show_debug_message("[obj_GameManager] Initializing Persistent Game Manager Singleton...");
 
 // 2. Economy & Treasury State
-funds = 750000;              // Current Credits (Cr)
-escrow_funds = 120000;       // Escrow withheld for pending operations
+funds = 100000;         // Current Credits (Cr) - Balanced PMC Seed Capital (100k Cr)
+escrow_funds = 0;       // Escrow withheld for pending operations
+
+// --- GOAL A: STRATEGIC LOGISTICS & FLEET UPKEEP ---
+supply_starvation = false;        // True when funds < 0 or Tritium depleted
+mech_upkeep_cr_per_unit = 350;    // Credits per strategic turn per deployable mech
+mech_upkeep_tritium_ratio = 2;    // 1 Tritium consumed per 2 deployable mechs (min 1 if mechs > 0)
+total_fleet_upkeep_cr = 0;        // Cached total credit upkeep
+total_fleet_tritium_burn = 0;     // Cached total tritium fuel burn
+
+// --- GOAL B & C: PILOT HELPER & FLAGSHIP THEATER MAPPING ---
+pilot_add_xp = function(_pilot_id, _xp_gain) {
+    if (!variable_struct_exists(facilities, "roster_pilots")) return;
+    for (var p = 0; p < array_length(facilities.roster_pilots); p++) {
+        var _plt = facilities.roster_pilots[p];
+        if (_plt.id == _pilot_id || _plt.character_id == _pilot_id) {
+            _plt.xp = (variable_struct_exists(_plt, "xp") ? _plt.xp : 0) + _xp_gain;
+
+            // Milestone 56: Automatic Level-Up & Unspent Stat Point Issuance
+            var _cur_lvl = variable_struct_exists(_plt, "level") ? _plt.level : 1;
+            var _calc_lvl = 1 + floor(_plt.xp / 150);
+            if (_calc_lvl > _cur_lvl) {
+                var _lvl_delta = _calc_lvl - _cur_lvl;
+                _plt.level = _calc_lvl;
+                if (!variable_struct_exists(_plt, "unspent_stat_points")) _plt.unspent_stat_points = 0;
+                _plt.unspent_stat_points += _lvl_delta * 2;
+                array_push(last_turn_events, "* PROMOTION: " + _plt.name + " (" + _plt.callsign + ") reached Level " + string(_calc_lvl) + "! Earned +" + string(_lvl_delta * 2) + " Stat Points!");
+                if (instance_exists(obj_HQTerminal)) {
+                    obj_HQTerminal.show_toast("PROMOTION: " + _plt.callsign + " Level " + string(_calc_lvl) + " (+" + string(_lvl_delta * 2) + " Stat Points)!", c_yellow);
+                }
+            }
+
+            if (!variable_struct_exists(_plt, "rank_perks") || !is_array(_plt.rank_perks)) {
+                _plt.rank_perks = [];
+            }
+            // Check Ace Perk thresholds
+            if (_plt.xp >= 100 && !array_contains(_plt.rank_perks, "Quick Draw")) {
+                array_push(_plt.rank_perks, "Quick Draw");
+                array_push(last_turn_events, "* ACE PERK UNLOCKED: " + _plt.name + " (" + _plt.callsign + ") earned 'Quick Draw' (+1 AP on Turn 1)!");
+                if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("★ ACE PERK: " + _plt.callsign + " unlocked Quick Draw!", c_yellow);
+            }
+            if (_plt.xp >= 250 && !array_contains(_plt.rank_perks, "Deadeye")) {
+                array_push(_plt.rank_perks, "Deadeye");
+                array_push(last_turn_events, "* ACE PERK UNLOCKED: " + _plt.name + " (" + _plt.callsign + ") earned 'Deadeye' (+15% Critical Chance)!");
+                if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("★ ACE PERK: " + _plt.callsign + " unlocked Deadeye!", c_yellow);
+            }
+            if (_plt.xp >= 500 && !array_contains(_plt.rank_perks, "Overdrive")) {
+                array_push(_plt.rank_perks, "Overdrive");
+                array_push(last_turn_events, "* ACE PERK UNLOCKED: " + _plt.name + " (" + _plt.callsign + ") earned 'Overdrive' (+20% DMG when wounded)!");
+                if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("★ ACE PERK: " + _plt.callsign + " unlocked Overdrive!", c_yellow);
+            }
+            return;
+        }
+    }
+};
+
+flagship_is_in_theater = function(_theater_name) {
+    if (!variable_struct_exists(flagship, "current_sphere")) return false;
+    if (flagship.transit_turns_left > 0) return false; // En route, not stationed
+
+    var _cs = string_lower(flagship.current_sphere);
+    var _tn = string_upper(_theater_name);
+
+    if (_tn == "EARTH" && (string_pos("earth", _cs) > 0 || string_pos("lagrange", _cs) > 0)) return true;
+    if (_tn == "SPACE" && (string_pos("space", _cs) > 0 || string_pos("colon", _cs) > 0 || string_pos("asteroid", _cs) > 0 || string_pos("jovian", _cs) > 0 || string_pos("saturn", _cs) > 0)) return true;
+    if (_tn == "MARS" && (string_pos("mars", _cs) > 0 || string_pos("martian", _cs) > 0)) return true;
+
+    return false;
+};       // Escrow withheld for pending operations       // Escrow withheld for pending operations
 
 // 3. Turn-Based Strategic Simulation State
-current_turn = 45;           // Strategic Turn Counter
+current_turn = 1;           // Strategic Turn Counter
 current_cycle_year = 214;    // Standard Galactic Calendar Year
-current_cycle_day = 45;      // Day within current operational cycle
-last_turn_events = [];       // Historical log of transactions and developments from the latest turn
+current_cycle_day = 1;      // Day within current operational cycle
+last_turn_events = [];
+
+    // Advance Strategic R&D Tech Tree Research Slots (HoI4 Engine)
+    scr_research_advance_turn();       // Historical log of transactions and developments from the latest turn
 show_turn_report = false;    // Modal toggle for turn transition summary
 time_speed = 0;              // Preserved as 0 (turn-based architecture)
 
@@ -28,59 +98,326 @@ time_speed = 0;              // Preserved as 0 (turn-based architecture)
 career_summary = undefined;  // Sid Meier's Pirates style retirement dossier struct
 total_sorties_won = 0;       // Total successful PMC sorties and sector conquests
 
-// 3c. Timeline Tech Eras & Progression (docs/27)
-timeline_era = 2; // 1 = Early War (Y214), 2 = Industrial Escalation (Y215-216), 3 = Total War (Y217-219), 4 = Apex Crisis (Y220+)
-timeline_era_name = "ERA II: INDUSTRIAL ESCALATION";
+// 3b-ii. Grand Campaign Victory Paths State (Goal D)
+campaign_won = false;
+campaign_victory_claimed = false;
+campaign_victory_path = "";  // "MONOPOLIST", "WARLORD", "ARCHEOTECH", "CRISIS_SAVIOR"
+campaign_victory_data = undefined;
+crisis_defeated = false;
+
+// 3b-iii. Corporate Espionage & Pilot Poaching State (Goal E)
+pending_poaching_offer = undefined;
+
+// 3c. Timeline Tech Eras & Progression (docs/27 & doc 38 Prometheus Catalyst)
+timeline_era = 0; // 0 = Conventional Steel & Jet Fuel, 1 = First Mover Catalyst, 2 = Industrial Escalation, 3 = Total War, 4 = Apex Crisis
+timeline_era_name = "ERA 0: CONVENTIONAL STEEL & JET FUEL";
+first_mobile_suit_created = true; // Player foundry created the world's first working bipedal humanoid frame
+first_mobile_suit_deployed = false; // Maiden combat deployment triggers global revolution
+reverse_engineering_progress = {
+    corp_vhi: 0.0,   // Vanguard Heavy Industries (Terran)
+    corp_aod: 0.0,   // Astraea Orbital Dynamics (Colonies)
+    corp_rust: 0.0,  // Rustworks Scrap Forge (Syndicates)
+    corp_hats: 0.0   // Hyperion Advanced Tech (Zaibatsu)
+};
+reverse_engineering_unlocked = false;
 timeline_era_year_start = 214;
 
-// 3d. Player Commander Executive Dossier & New Game Intro State (Male / Female / Silhouette)
+// 3d. Player Commander Executive Dossier & Origins (Doc 51 RPG Framework)
+has_completed_dossier = false;
+has_completed_prologue = false;
+prologue_active = false;
 has_completed_intro = false;
+
+commander_backgrounds = {
+    bg_terran_officer: {
+        id: "bg_terran_officer",
+        title: "Ex-Terran Coalition Officer",
+        default_name: "Cmdr. Alexei Kane",
+        default_callsign: "VANGUARD",
+        portrait_asset: spr_portrait_commander_male,
+        faction_standings: { faction_a: 15, faction_b: -10, faction_c: -5 },
+        starting_credits: 100000,
+        starting_materials: { "mat_titanium": 40, "mat_tungsten": 25, "mat_tritium": 10 },
+        starting_trait: "Artillery Spotter",
+        trait_desc: "+10% Kinetic Cannon DMG, Tactical Orbital Shelling Call-in.",
+        starting_mech_id: "bp_ms_ironclad_07",
+        starter_mech_name: "GHA-07 Ironclad",
+        starter_mech_type: "ironclad",
+        starter_mech_sprite: spr_ms_custom_biped_heavy_idle,
+        bio: "Decorated veteran of the Jovian border wars who resigned in protest against unprovoked mineral levies. Brings disciplined federal doctrine, kinetic mastery, and strong initial standing with Terran Command."
+    },
+    bg_colony_guerrilla: {
+        id: "bg_colony_guerrilla",
+        title: "Spacenoid Guerrilla Fighter",
+        default_name: "Cmdr. Morgan Vance",
+        default_callsign: "VALKYRIE",
+        portrait_asset: spr_portrait_commander_female,
+        faction_standings: { faction_b: 15, faction_a: -15, faction_c: 5 },
+        starting_credits: 90000,
+        starting_materials: { "mat_titanium": 30, "mat_tungsten": 15, "mat_tritium": 35 },
+        starting_trait: "Vernier Ace",
+        trait_desc: "+15% Evasion, +10% Beam Weapon DMG, Overboost agility surge.",
+        starting_mech_id: "bp_ms_aerostriker",
+        starter_mech_name: "Aero-Striker Mk-II",
+        starter_mech_type: "aether",
+        starter_mech_sprite: spr_ms_custom_aero_striker_idle,
+        bio: "Former colonial orbital defense pilot who fought during the Lunar Blockade. Dedicated to spacenoid self-determination; master of zero-G vernier maneuvering and high-frequency beam weaponry."
+    },
+    bg_zaibatsu_defector: {
+        id: "bg_zaibatsu_defector",
+        title: "Zaibatsu Cybernetics Defector",
+        default_name: "Cmdr. Renjiro Sato",
+        default_callsign: "NULL-ZERO",
+        portrait_asset: spr_portrait_null07,
+        faction_standings: { faction_d: 10, faction_c: -10, faction_a: 0 },
+        starting_credits: 150000,
+        starting_materials: { "mat_titanium": 25, "mat_tungsten": 20, "mat_tritium": 20 },
+        starting_trait: "Neural Synchronizer",
+        trait_desc: "+15% Critical Hit Chance, ECM Jammer Pulse, +50,000 Bonus Credits.",
+        starting_mech_id: "bp_ms_hoversniper",
+        starter_mech_name: "HS-04 Hover-Sniper",
+        starter_mech_type: "muramasa",
+        starter_mech_sprite: spr_ms_custom_hover_sniper_idle,
+        bio: "Former chief prototype test pilot for Apex Bio-Cybernetics who fled with classified neural interface telemetry. Possesses lethal precision targeting, vast credit reserves, and advanced electronic warfare tools."
+    },
+    bg_scavenger_veteran: {
+        id: "bg_scavenger_veteran",
+        title: "Scavenger Asteroid Veteran",
+        default_name: "Cmdr. 'Rusty' Briggs",
+        default_callsign: "RUST-HOUND",
+        portrait_asset: spr_portrait_cruz,
+        faction_standings: { faction_c: 15, faction_a: -10, faction_b: 0 },
+        starting_credits: 80000,
+        starting_materials: { "mat_titanium": 60, "mat_tungsten": 45, "mat_tritium": 10 },
+        starting_trait: "Scrap Harvester",
+        trait_desc: "+25% Battlefield Alloy Salvage Yield, +15% Mech Armor Durability.",
+        starting_mech_id: "bp_ms_artillery",
+        starter_mech_name: "Tread-Artillery Brawler",
+        starter_mech_type: "hyena",
+        starter_mech_sprite: spr_ms_custom_tread_artillery_idle,
+        bio: "Survived a decade in the lawless asteroid belt scrapyards assembling deadly franken-mechs from military battle wreckage. Boasts unmatched salvage recycling efficiency and indestructible armor hulls."
+    }
+};
+
 player_commander = {
     id: "player_commander_01",
-    callsign: "SHADOW",
-    name: "Commander [CLASSIFIED]",
-    gender: "silhouette", // "silhouette", "male", "female"
-    portrait_asset: spr_portrait_commander_silhouette,
+    background_id: "bg_terran_officer",
+    background_title: "Ex-Terran Coalition Officer",
+    callsign: "VANGUARD",
+    name: "Cmdr. Alexei Kane",
+    portrait_asset: spr_portrait_commander_male,
     rank: "Commander",
     pmc_name: "Iron Ridge Dynamics",
     flagship_name: "Pre-War Dreadnought Hephaestus",
-    background: "Encrypted black-budget mercenary profile operating under an anonymous registry.",
-    doctrine: "Black Ops Logistics (+10% Scrap Salvage, Volatility Dampening)",
+    trait: "Artillery Spotter",
+    trait_desc: "+10% Kinetic Cannon DMG, Tactical Orbital Shelling Call-in.",
+    starter_mech_name: "GHA-07 Ironclad",
+    starter_mech_type: "ironclad",
+    starter_mech_sprite: spr_ms_custom_biped_heavy_idle,
+    background: "Decorated veteran of the Jovian border wars who resigned in protest against unprovoked mineral levies.",
     leadership: 9,
     tactics: 9,
     morale: 100
 };
 
+apply_commander_background = function(_bg_id, _custom_name, _custom_callsign, _custom_portrait) {
+    if (!variable_struct_exists(commander_backgrounds, _bg_id)) _bg_id = "bg_terran_officer";
+    var _bg = variable_struct_get(commander_backgrounds, _bg_id);
+    
+    player_commander.background_id = _bg_id;
+    player_commander.background_title = _bg.title;
+    player_commander.name = (_custom_name != "") ? _custom_name : _bg.default_name;
+    player_commander.callsign = (_custom_callsign != "") ? _custom_callsign : _bg.default_callsign;
+    player_commander.portrait_asset = (_custom_portrait != -1 && sprite_exists(_custom_portrait)) ? _custom_portrait : _bg.portrait_asset;
+    player_commander.trait = _bg.starting_trait;
+    player_commander.trait_desc = _bg.trait_desc;
+    player_commander.background = _bg.bio;
+    player_commander.starter_mech_name = _bg.starter_mech_name;
+    player_commander.starter_mech_type = _bg.starter_mech_type;
+    player_commander.starter_mech_sprite = _bg.starter_mech_sprite;
+    
+    // Set funds & starting raw materials
+    funds = _bg.starting_credits;
+    if (variable_struct_exists(_bg, "starting_materials") && variable_instance_exists(id, "inventory") && variable_struct_exists(inventory, "raw_materials")) {
+        var _mkeys = variable_struct_get_names(_bg.starting_materials);
+        for (var m = 0; m < array_length(_mkeys); m++) {
+            var _mk = _mkeys[m];
+            var _amt = variable_struct_get(_bg.starting_materials, _mk);
+            variable_struct_set(inventory.raw_materials, _mk, _amt);
+        }
+    }
+    
+    // Apply initial Faction Standing Modifiers
+    if (instance_exists(obj_FactionManager) && variable_struct_exists(_bg, "faction_standings")) {
+        var _fkeys = variable_struct_get_names(_bg.faction_standings);
+        for (var f = 0; f < array_length(_fkeys); f++) {
+            var _fid = _fkeys[f];
+            var _mod = variable_struct_get(_bg.faction_standings, _fid);
+            obj_FactionManager.modify_standing(_fid, _mod);
+        }
+    }
+    
+    has_completed_dossier = true;
+    has_completed_intro = false;
+    prologue_active = true;
+    advance_tutorial_step();
+    
+    // Configure Prologue Combat Context
+    active_combat_context = {
+        is_prologue: true,
+        sector_id: "prologue_ambush",
+        sector_name: "Cascadia Outpost SEC-00",
+        region: "EARTH",
+        subregion: "Emergency Relay Bunker",
+        controlling_faction: "faction_c",
+        defense_rating: 25,
+        garrison_unit: "Unmarked Syndicate Raiders",
+        is_invasion: false,
+        origin_base_id: "earth_cascadia_driver",
+        commander_mech_type: _bg.starter_mech_type,
+        commander_mech_name: _bg.starter_mech_name,
+        commander_mech_sprite: _bg.starter_mech_sprite
+    };
+};
+
+apply_salvager_origin = function(_past_idx, _rig_idx, _code_idx, _beacon_idx, _portrait_asset, _callsign) {
+    var _past_titles = [
+        "Void Scrapper // Ex-Terran Mutineer",
+        "Void Scrapper // Escaped Jovian Miner",
+        "Void Scrapper // Cybernetics Fugitive",
+        "Void Scrapper // Born to the Rust"
+    ];
+    
+    // Core Pilot Attributes calculation
+    var _gun = 40;
+    var _eva = 40;
+    var _mel = 40;
+    var _eng = 40;
+    
+    // Past modifier
+    if (_past_idx == 0) { _gun += 15; _eva -= 5; }
+    else if (_past_idx == 1) { _eva += 15; _eng += 5; }
+    else if (_past_idx == 2) { _gun += 10; _eng += 10; }
+    else { _mel += 10; _eng += 15; }
+    
+    // Rig Specialization modifier
+    if (_rig_idx == 0) { _gun += 10; _mel += 10; }
+    else if (_rig_idx == 1) { _eva += 15; _gun += 5; }
+    else if (_rig_idx == 2) { _gun += 20; _mel -= 5; }
+    else { _mel += 15; _eng += 10; }
+    
+    // Signature Perks from Combat Instinct
+    var _perk_ids = ["perk_point_blank", "perk_chaff_decoy", "perk_smuggler", "perk_scrappers_eye"];
+    var _perk_names = ["Point-Blank Specialist", "Chaff Decoy", "Smuggler Contacts", "Scrapper's Eye"];
+    var _perk_descs = [
+        "+20% Close-Range Kinetic DMG and instant Melee Counter-Attack opportunity.",
+        "+25% Evasion vs guided missiles and +1 free thruster dash AP per round.",
+        "+15% Sell Value on salvaged components, Black Market trade unlocked, +15,000 Cr upfront.",
+        "+25% Battlefield Salvage and raw ore recovery from wrecks, -20% Repair costs."
+    ];
+    
+    player_commander.background_id = "salvager_custom";
+    player_commander.background_title = _past_titles[_past_idx];
+    player_commander.name = (_callsign != "") ? ("Scrapper " + _callsign) : "Scrapper Vance";
+    player_commander.callsign = (_callsign != "") ? _callsign : "RUST-1";
+    player_commander.portrait_asset = (_portrait_asset != -1 && sprite_exists(_portrait_asset)) ? _portrait_asset : spr_portrait_commander_male;
+    
+    // Assign stats & signature perk
+    player_commander.stats = {
+        gunnery: _gun,
+        evasion: _eva,
+        melee: _mel,
+        engineering: _eng
+    };
+    player_commander.perk_id = _perk_ids[_code_idx];
+    player_commander.perk_name = _perk_names[_code_idx];
+    player_commander.perk_desc = _perk_descs[_code_idx];
+    player_commander.trait = _perk_names[_code_idx];
+    player_commander.trait_desc = _perk_descs[_code_idx];
+    
+    // The Historic Genesis Prototype (Fixed Frame)
+    player_commander.starter_mech_name = "GHA-00 Genesis Prototype";
+    player_commander.starter_mech_type = "ironclad";
+    player_commander.starter_mech_sprite = spr_ms_custom_biped_heavy_idle;
+    player_commander.background = "Operating from a battered salvage tug on the fringes of the Cascadia asteroid graveyard. Survived on stripped hulls and rusted components before intercepting the dying distress beacon of the USN-X Hephaestus.";
+    
+    // Starting funds & raw materials
+    funds = (_code_idx == 2) ? 65000 : 50000;
+    if (_beacon_idx == 2) funds += 15000;
+    
+    if (variable_instance_exists(id, "inventory") && variable_struct_exists(inventory, "raw_materials")) {
+        inventory.raw_materials.mat_tungsten = (_past_idx == 0 || _beacon_idx == 0) ? 25 : 15;
+        inventory.raw_materials.mat_titanium = (_past_idx == 3 || _beacon_idx == 1) ? 30 : 15;
+        inventory.raw_materials.mat_syn_flux = (_past_idx == 2) ? 12 : 5;
+    }
+    
+    // Faction Standing biases
+    if (instance_exists(obj_FactionManager)) {
+        if (_past_idx == 0) { obj_FactionManager.modify_standing("faction_a", -10); obj_FactionManager.modify_standing("faction_b", 10); }
+        else if (_past_idx == 1) { obj_FactionManager.modify_standing("faction_b", 15); obj_FactionManager.modify_standing("faction_a", -10); }
+        else if (_past_idx == 2) { obj_FactionManager.modify_standing("faction_d", -15); obj_FactionManager.modify_standing("faction_c", 10); }
+        else { obj_FactionManager.modify_standing("faction_c", 15); }
+    }
+    
+    has_completed_dossier = true;
+    has_completed_intro = false;
+    prologue_active = true;
+    advance_tutorial_step();
+    
+    active_combat_context = {
+        is_prologue: true,
+        sector_id: "prologue_ambush",
+        sector_name: "Derelict Dreadnought Hangar Threshold",
+        region: "EARTH",
+        subregion: "Lagrange Point 5 Graveyard",
+        controlling_faction: "faction_c",
+        defense_rating: 25,
+        garrison_unit: "Corsair Raider Squadron",
+        is_invasion: false,
+        origin_base_id: "earth_cascadia_driver",
+        commander_mech_type: "ironclad",
+        commander_mech_name: "GHA-00 Genesis Prototype",
+        commander_mech_sprite: spr_ms_custom_biped_heavy_idle
+    };
+};
+
 select_commander = function(_gender_type) {
-    switch (_gender_type) {
-        case "male":
-            player_commander.gender = "male";
-            player_commander.name = "Commander Alexei Kane";
-            player_commander.callsign = "RAVEN";
-            player_commander.portrait_asset = spr_portrait_commander_male;
-            player_commander.background = "Former Terran Naval Strike Commander. Refused orbital saturation orders; founded an independent tactical design bureau.";
-            player_commander.doctrine = "Heavy Vanguard (+12% Kinetic Armor, +10% Contract Bounty)";
-            break;
-        case "female":
-            player_commander.gender = "female";
-            player_commander.name = "Commander Morgan Vance";
-            player_commander.callsign = "VALKYRIE";
-            player_commander.portrait_asset = spr_portrait_commander_female;
-            player_commander.background = "Former Colony Fleet Tactical Prodigy. Escaped Jovian corporate conscription to pioneer modular mobile suit metallurgy.";
-            player_commander.doctrine = "Vernier Synthesis (+15% Prototyping Stability, +10% Thruster Evasion)";
-            break;
-        case "silhouette":
-        default:
-            player_commander.gender = "silhouette";
-            player_commander.name = "Commander [CLASSIFIED]";
-            player_commander.callsign = "SHADOW";
-            player_commander.portrait_asset = spr_portrait_commander_silhouette;
-            player_commander.background = "Encrypted black-budget mercenary profile operating under an anonymous registry.";
-            player_commander.doctrine = "Black Ops Logistics (+10% Scrap Salvage, Volatility Dampening)";
-            break;
+    if (_gender_type == "female") apply_commander_background("bg_colony_guerrilla", "", "", spr_portrait_commander_female);
+    else if (_gender_type == "silhouette") apply_commander_background("bg_zaibatsu_defector", "", "", spr_portrait_commander_silhouette);
+    else apply_commander_background("bg_terran_officer", "", "", spr_portrait_commander_male);
+};
+
+has_completed_intro = false;
+
+// 3e. Operation Groundwork: 5-Step PMC Onboarding Tutorial Cadre (Doc 50)
+has_completed_tutorial = false;
+tutorial_step = 0; // 0: Briefing/Dossier, 1: Crucible Sintering, 2: Assembly Bay, 3: War Room Logistics, 4: Tactical Combat Sortie, 5: Commission Confirmed
+tutorial_active = true;
+
+advance_tutorial_step = function() {
+    tutorial_step += 1;
+    if (tutorial_step >= 5) {
+        has_completed_tutorial = true;
+        tutorial_active = false;
+        if (instance_exists(obj_HQTerminal)) {
+            obj_HQTerminal.show_toast("★ CADRE COMMISSION CONFIRMED! ALL COMMAND DECKS UNLOCKED ★", make_color_rgb(60, 240, 140));
+        }
+        scr_audio_play_ui("confirm");
+    } else {
+        scr_audio_play_ui("confirm");
     }
 };
 
+skip_tutorial = function() {
+    tutorial_step = 5;
+    has_completed_intro = true;
+    has_completed_tutorial = true;
+    tutorial_active = false;
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("TUTORIAL CADRE BYPASSED // FULL SANDBOX ACTIVE", c_orange);
+    }
+    scr_audio_play_ui("cancel");
+};
 
 // 4c. Procedural Competitor R&D Catalog & Lineages (docs/27)
 competitor_catalog = {};
@@ -236,15 +573,76 @@ init_competitor_catalog = function() {
     update_competitors_for_new_era();
 };
 
+
+// =============================================================================
+// CONVENTIONAL VEHICLES REGISTRY & THE PROMETHEUS PROTOCOL (doc 38)
+// =============================================================================
+conventional_vehicles = [];
+load_conventional_vehicles = function() {
+    var _paths = ["datafiles/conventional_vehicles.json", "conventional_vehicles.json"];
+    for (var p = 0; p < array_length(_paths); p++) {
+        if (file_exists(_paths[p])) {
+            try {
+                var _buf = buffer_load(_paths[p]);
+                var _str = buffer_read(_buf, buffer_string);
+                buffer_delete(_buf);
+                var _data = json_parse(_str);
+                if (is_struct(_data) && variable_struct_exists(_data, "vehicles")) {
+                    conventional_vehicles = _data.vehicles;
+                    show_debug_message("[obj_GameManager] Loaded " + string(array_length(conventional_vehicles)) + " conventional vehicles from " + _paths[p]);
+                    return;
+                }
+            } catch (_ex) {
+                show_debug_message("[obj_GameManager] Error loading conventional vehicles: " + string(_ex));
+            }
+        }
+    }
+};
+load_conventional_vehicles();
+
+get_conventional_vehicle = function(_id) {
+    for (var v = 0; v < array_length(conventional_vehicles); v++) {
+        if (conventional_vehicles[v].id == _id) return conventional_vehicles[v];
+    }
+    return undefined;
+};
+
+trigger_mobile_suit_revolution = function(_mech_struct) {
+    if (first_mobile_suit_deployed) return;
+    first_mobile_suit_deployed = true;
+    timeline_era = 1;
+    timeline_era_name = "ERA I: THE FIRST MOVER CATALYST";
+    reverse_engineering_unlocked = true;
+
+    var _m_call = (is_struct(_mech_struct) && variable_struct_exists(_mech_struct, "callsign")) ? _mech_struct.callsign : "Alpha-01 'WARHAMMER'";
+
+    array_push(last_turn_events, "! THE PROMETHEUS CATALYST: Mobile Suit (" + _m_call + ") publicly deployed in combat!");
+    array_push(last_turn_events, "! DIPLOMATIC EMBARGO LIFTED: All Superpowers halt hostility to bid for player arms contracts!");
+    array_push(last_turn_events, "! 365-DAY ARMS RACE TRIGGERED: Rival defense contractors scramble to reverse-engineer our frame!");
+
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("THE REVOLUTION: First Mobile Suit Deployed!", c_lime);
+    }
+
+    if (instance_exists(obj_FactionManager) && variable_instance_exists(obj_FactionManager, "on_mobile_suit_revolution")) {
+        obj_FactionManager.on_mobile_suit_revolution();
+    }
+};
+
 update_competitors_for_new_era = function() {
     var _era_key = "era_" + string(timeline_era);
     var _corps = ["corp_vhi", "corp_aod", "corp_rust", "corp_hats"];
     for (var c = 0; c < 4; c++) {
-        var _cp = competitor_catalog[$ _corps[c]];
+        var _cp = variable_struct_get(competitor_catalog, _corps[c]);
         if (variable_struct_exists(_cp.suits_by_era, _era_key)) {
-            _cp.active_line_chassis = _cp.suits_by_era[$ _era_key];
+            _cp.active_line_chassis = variable_struct_get(_cp.suits_by_era, _era_key);
             if (variable_struct_exists(rival_corporations, _corps[c])) {
-                rival_corporations[$ _corps[c]].flagship_chassis = _cp.active_line_chassis.name;
+                variable_struct_get(rival_corporations, _corps[c]).flagship_chassis = _cp.active_line_chassis.name;
+            }
+        } else {
+            _cp.active_line_chassis = undefined;
+            if (variable_struct_exists(rival_corporations, _corps[c])) {
+                variable_struct_get(rival_corporations, _corps[c]).flagship_chassis = "None (Reverse-Engineering...)";
             }
         }
     }
@@ -252,6 +650,35 @@ update_competitors_for_new_era = function() {
 
 evaluate_timeline_progression = function() {
     var _old_era = timeline_era;
+
+    // In Era 0, timeline stays conventional until player deploys their Mobile Suit
+    if (!first_mobile_suit_deployed) {
+        timeline_era = 0;
+        timeline_era_name = "ERA 0: CONVENTIONAL STEEL & JET FUEL";
+        return;
+    }
+
+    // 365-Day Reverse-Engineering Tick across 4 Rival Megacorporations (~0.28% per turn)
+    if (reverse_engineering_unlocked) {
+        var _corps = ["corp_vhi", "corp_aod", "corp_rust", "corp_hats"];
+        for (var c = 0; c < 4; c++) {
+            var _cid = _corps[c];
+            var _cur_prog = variable_struct_get(reverse_engineering_progress, _cid);
+            if (_cur_prog < 100.0) {
+                var _delta = 0.28 + random_range(-0.05, 0.08);
+                _cur_prog = min(100.0, _cur_prog + _delta);
+                variable_struct_set(reverse_engineering_progress, _cid, _cur_prog);
+                if (_cur_prog >= 100.0 && variable_struct_exists(rival_corporations, _cid)) {
+                    var _rc = variable_struct_get(rival_corporations, _cid);
+                    array_push(last_turn_events, "! ARMS REPLICATION: " + _rc.name + " rolled out their first reverse-engineered Mobile Suit!");
+                    if (instance_exists(obj_HQTerminal)) {
+                        obj_HQTerminal.show_toast("COMPETITOR MS ROLLOUT: " + _rc.name + "!", c_red);
+                    }
+                }
+            }
+        }
+    }
+
     if (current_turn >= 200 || current_cycle_year >= 220) {
         timeline_era = 4;
         timeline_era_name = "ERA IV: APEX CRISIS & ARCHEOTECH";
@@ -263,7 +690,7 @@ evaluate_timeline_progression = function() {
         timeline_era_name = "ERA II: INDUSTRIAL ESCALATION";
     } else {
         timeline_era = 1;
-        timeline_era_name = "ERA I: EARLY WAR SHAKEDOWN";
+        timeline_era_name = "ERA I: THE FIRST MOVER CATALYST";
     }
 
     if (timeline_era != _old_era) {
@@ -302,7 +729,7 @@ flagship = {
     name: "USN-X Hephaestus",
     class: "Pre-War Foundry Dreadnought",
     origin_lore: "Unearthed from Scrapline debris; equipped with an ancient molecular nanite fabrication core.",
-    current_sphere: "Asteroid Belt",
+    current_sphere: "Earth Sphere",
     destination_sphere: "",
     transit_turns_left: 0,
     hull_hp: 8500,
@@ -411,13 +838,13 @@ sol_monopoly_achieved = false;
 // Corporate Stock Exchange Trading Methods (docs/28)
 calculate_rival_share_price = function(_corp_id) {
     if (!variable_struct_exists(rival_corporations, _corp_id)) return 0;
-    var _rc = rival_corporations[$ _corp_id];
+    var _rc = variable_struct_get(rival_corporations, _corp_id);
     if (_rc.is_acquired) {
         _rc.share_price_cr = 0;
         _rc.dividend_per_turn = 0;
         return 0;
     }
-    var _era_mult = 1.0 + (timeline_era - 1) * 0.35;
+    var _era_mult = 1.0 + max(0, timeline_era - 1) * 0.35;
     var _share_mult = _rc.market_share_pct / 25.0;
     var _scandal_mult = (_rc.hostility_pct > 60) ? 0.75 : 1.0;
     _rc.share_price_cr = clamp(round(_rc.base_share_price * _share_mult * _era_mult * _scandal_mult), 15, 650);
@@ -427,7 +854,7 @@ calculate_rival_share_price = function(_corp_id) {
 
 buy_rival_shares = function(_corp_id, _shares_count) {
     if (!variable_struct_exists(rival_corporations, _corp_id)) return false;
-    var _rc = rival_corporations[$ _corp_id];
+    var _rc = variable_struct_get(rival_corporations, _corp_id);
     if (_rc.is_acquired) {
         if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("COMPANY ACQUIRED: Fully owned subsidiary!", c_yellow);
         return false;
@@ -461,7 +888,7 @@ buy_rival_shares = function(_corp_id, _shares_count) {
 
 sell_rival_shares = function(_corp_id, _shares_count) {
     if (!variable_struct_exists(rival_corporations, _corp_id)) return false;
-    var _rc = rival_corporations[$ _corp_id];
+    var _rc = variable_struct_get(rival_corporations, _corp_id);
     if (_rc.is_acquired || _rc.player_shares <= 0) return false;
     var _to_sell = min(_shares_count, _rc.player_shares);
     calculate_rival_share_price(_corp_id);
@@ -480,7 +907,7 @@ sell_rival_shares = function(_corp_id, _shares_count) {
 
 execute_hostile_takeover = function(_corp_id) {
     if (!variable_struct_exists(rival_corporations, _corp_id)) return false;
-    var _rc = rival_corporations[$ _corp_id];
+    var _rc = variable_struct_get(rival_corporations, _corp_id);
     if (_rc.is_acquired) return false;
 
     // Check if player has >= 51% stake or pays buyout tender offer
@@ -514,7 +941,7 @@ execute_hostile_takeover = function(_corp_id) {
 
     // 3. Absorb Proprietary R&D Lineage & Prototype Blueprints
     if (variable_struct_exists(competitor_catalog, _corp_id)) {
-        var _cat = competitor_catalog[$ _corp_id];
+        var _cat = variable_struct_get(competitor_catalog, _corp_id);
         _cat.is_eliminated = true;
 
         if (!is_undefined(_cat.active_line_chassis)) {
@@ -561,7 +988,7 @@ execute_hostile_takeover = function(_corp_id) {
     var _all_acquired = true;
     var _keys = ["corp_vhi", "corp_aod", "corp_rust", "corp_hats"];
     for (var k = 0; k < 4; k++) {
-        if (!rival_corporations[$ _keys[k]].is_acquired) {
+        if (!variable_struct_get(rival_corporations, _keys[k]).is_acquired) {
             _all_acquired = false;
             break;
         }
@@ -652,30 +1079,6 @@ inventory = {
                 telemetry_bonus: 8.0
             }
         },
-        {
-            id: "unit_ironclad_02",
-            blueprint_id: "bp_ms_ironclad_07",
-            callsign: "IRON-02 'JUGGERNAUT'",
-            name: "GHA-07 Ironclad",
-            class: "Heavy Assault",
-            assigned_pilot: "Unassigned",
-            status: "READY", // Available for sorties
-            current_condition_pct: 1.0,
-            armor_rating: 850,
-            power_output: 12,
-            speed: 45,
-            combat_rating: 480,
-            spec_type: "COMMANDER_CUSTOM",
-            combat_pedigree: {
-                sorties_deployed: 0,
-                sorties_survived: 0,
-                confirmed_kills: 0,
-                ace_kills: 0,
-                damage_mitigated: 0,
-                pedigree_rating: "UNTESTED",
-                telemetry_bonus: 0.0
-            }
-        }
     ]
 };
 
@@ -684,6 +1087,9 @@ facilities = {
     crucible_tier: 1,             // Tier 1: Max 3000°C, 2000 PSI; Tier 2: Max 6000°C, 10,000 PSI
     containment_shielding: false, // Prevents catastrophic lab damage on breach
     assembly_lines: 1,            // Number of concurrent manufacturing bays (up to 4)
+    hangar_bays: 1,               // Hangar capacity bays for mobile suits
+    lab_tier: 1,                  // R&D metallurgy and sensor laboratory tier
+    foundry_crucibles: 1,         // Sintering crucible foundry count
     active_fabrications: [
         {
             mech_blueprint: "bp_ms_ironclad_07",
@@ -693,8 +1099,8 @@ facilities = {
         }
     ],
     roster_pilots: [
-        { id: "pilot_terran_vance_starter", character_id: "pilot_terran_vance_starter", name: "Lt. Marcus Vance", callsign: "VANGUARD-1", combat_stat: 9, tactics_stat: 8, accuracy: 88, reflexes: 75, morale: 95, salary_daily: 220, is_deployed: true, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 3, sorties: 5 },
-        { id: "pilot_terran_cole", character_id: "pilot_terran_cole", name: "Sgt. Sarah Cole", callsign: "DEATHBLOW", combat_stat: 8, tactics_stat: 7, accuracy: 82, reflexes: 79, morale: 88, salary_daily: 190, is_deployed: false, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 1, sorties: 2 }
+        { id: "pilot_terran_vance_starter", character_id: "pilot_terran_vance_starter", name: "Lt. Marcus Vance", callsign: "VANGUARD-1", level: 1, unspent_stat_points: 0, combat_stat: 9, tactics_stat: 8, accuracy: 88, reflexes: 75, morale: 95, salary_daily: 220, is_deployed: true, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 3, sorties: 5, fatigue: 0, xp: 120, rank_perks: ["Quick Draw"], mutated_traits: [] },
+        { id: "pilot_terran_cole", character_id: "pilot_terran_cole", name: "Sgt. Sarah Cole", callsign: "DEATHBLOW", level: 1, unspent_stat_points: 0, combat_stat: 8, tactics_stat: 7, accuracy: 82, reflexes: 79, morale: 88, salary_daily: 190, is_deployed: false, status: "ACTIVE", recovery_days: 0, recovery_days_left: 0, kills: 1, sorties: 2, fatigue: 0, xp: 45, rank_perks: [], mutated_traits: [] }
     ],
     pmc_memorial_wall: [],
     roster_engineers: [
@@ -711,6 +1117,22 @@ facilities = {
         { id: "plt_zaibatsu_01", character_id: "pilot_zaibatsu_null07", name: "Null-07 (Ren)", callsign: "NULL", faction: "faction_zaibatsu", portrait: spr_portrait_null07, accuracy: 96, reflexes: 88, combat_stat: 10, tactics_stat: 9, morale: 50, salary_daily: 320, bonus_hire: 65000, signing_bonus: 65000, background: "Escaped Zaibatsu test subject with spinal neural-jack implants.", traits: "Neural Link (+2 Action in 1st Turn)", bio: "Escaped Zaibatsu test subject with spinal neural-jack implants." },
         { id: "plt_zaibatsu_02", character_id: "pilot_zaibatsu_maya", name: "Maya 'Kestrel' Zhao", callsign: "KESTREL", faction: "faction_zaibatsu", portrait: spr_portrait_renzo, accuracy: 84, reflexes: 75, combat_stat: 8, tactics_stat: 8, morale: 85, salary_daily: 240, bonus_hire: 46000, signing_bonus: 46000, background: "Former corporate security ace who bought out her debt contract.", traits: "Sub-Drone Swarm Support", bio: "Former corporate security ace who bought out her debt contract." }
     ]
+};
+
+// Milestone 55: Squadron Perks & PMC Karma Alignment Engine
+squadron_perks = [];
+pmc_karma_noble = 50;
+pmc_karma_pragmatist = 50;
+pmc_karma_profiteer = 20;
+
+get_pmc_karma_alignment = function() {
+    if (pmc_karma_noble >= pmc_karma_pragmatist && pmc_karma_noble >= pmc_karma_profiteer) {
+        return "NOBLE PEACEKEEPER";
+    } else if (pmc_karma_pragmatist >= pmc_karma_noble && pmc_karma_pragmatist >= pmc_karma_profiteer) {
+        return "CORPORATE PRAGMATIST";
+    } else {
+        return "BLOODHOUND WAR PROFITEER";
+    }
 };
 
 // 7. Strategic Resource Nodes (docs/06_resource_operations.md)
@@ -779,12 +1201,11 @@ active_event_popup = undefined;
 load_narrative_events = function() {
     try {
         if (file_exists("narrative_events.json")) {
-            var _file = file_text_open_read("narrative_events.json");
-            var _str = "";
-            while (!file_text_eof(_file)) _str += file_text_readln(_file);
-            file_text_close(_file);
+            var _buf_ne = buffer_load("narrative_events.json");
+            var _str = buffer_read(_buf_ne, buffer_string);
+            buffer_delete(_buf_ne);
             var _data = json_parse(_str);
-            if (is_struct(_data) && is_array(_data[$ "events"])) {
+            if (is_struct(_data) && is_array(variable_struct_get(_data, "events"))) {
                 narrative_events_list = _data.events;
                 show_debug_message("[obj_GameManager] Loaded " + string(array_length(narrative_events_list)) + " narrative events.");
             }
@@ -831,7 +1252,7 @@ init_master_mobile_suit_catalog = function() {
 
 get_mobile_suit = function(_id) {
     if (is_struct(mobile_suit_catalog) && variable_struct_exists(mobile_suit_catalog, _id)) {
-        return mobile_suit_catalog[$ _id];
+        return variable_struct_get(mobile_suit_catalog, _id);
     }
     return undefined;
 };
@@ -841,8 +1262,8 @@ get_suits_by_faction = function(_faction_id) {
     if (!is_struct(mobile_suit_catalog)) return _res;
     var _names = variable_struct_get_names(mobile_suit_catalog);
     for (var i = 0; i < array_length(_names); i++) {
-        var _suit = mobile_suit_catalog[$ _names[i]];
-        if (is_struct(_suit) && _suit[$ "faction_id"] == _faction_id) {
+        var _suit = variable_struct_get(mobile_suit_catalog, _names[i]);
+        if (is_struct(_suit) && variable_struct_get(_suit, "faction_id") == _faction_id) {
             array_push(_res, _suit);
         }
     }
@@ -854,8 +1275,8 @@ get_mass_production_candidates = function(_faction_id) {
     if (!is_struct(mobile_suit_catalog)) return _res;
     var _names = variable_struct_get_names(mobile_suit_catalog);
     for (var i = 0; i < array_length(_names); i++) {
-        var _suit = mobile_suit_catalog[$ _names[i]];
-        if (is_struct(_suit) && _suit[$ "faction_id"] == _faction_id && (_suit[$ "mass_production_line"] ?? false)) {
+        var _suit = variable_struct_get(mobile_suit_catalog, _names[i]);
+        if (is_struct(_suit) && variable_struct_get(_suit, "faction_id") == _faction_id && (variable_struct_get(_suit, "mass_production_line") ?? false)) {
             array_push(_res, _suit);
         }
     }
@@ -867,8 +1288,8 @@ get_suits_by_era = function(_era) {
     if (!is_struct(mobile_suit_catalog)) return _res;
     var _names = variable_struct_get_names(mobile_suit_catalog);
     for (var i = 0; i < array_length(_names); i++) {
-        var _suit = mobile_suit_catalog[$ _names[i]];
-        if (is_struct(_suit) && _suit[$ "era"] == _era) {
+        var _suit = variable_struct_get(mobile_suit_catalog, _names[i]);
+        if (is_struct(_suit) && variable_struct_get(_suit, "era") == _era) {
             array_push(_res, _suit);
         }
     }
@@ -879,7 +1300,7 @@ init_master_mobile_suit_catalog();
 
 trigger_event_by_id = function(_event_id) {
     for (var e = 0; e < array_length(narrative_events_list); e++) {
-        if (narrative_events_list[e][$ "id"] == _event_id) {
+        if (variable_struct_get(narrative_events_list[e], "id") == _event_id) {
             active_event_popup = narrative_events_list[e];
             time_speed = 0; // Pause simulation for commander decision
             if (instance_exists(obj_HQTerminal)) {
@@ -891,8 +1312,43 @@ trigger_event_by_id = function(_event_id) {
     return false;
 };
 
+// Narrative Story Episodes Seen State (Doc 51)
+story_episodes_seen = {};
+
 // 9. Daily Simulation Advancement Method (docs/01, 04, 06, 07)
 end_turn = function() {
+    // Check Campaign Story Milestone Episodes & Multi-Leader Summits (Doc 51 & Doc 52)
+    if (current_turn == 5 && !variable_struct_exists(story_episodes_seen, "ep_02_shadows_over_mars")) {
+        variable_struct_set(story_episodes_seen, "ep_02_shadows_over_mars", true);
+        scr_vn_start_episode("ep_02_shadows_over_mars");
+    } else if (current_turn == 7 && !variable_struct_exists(story_episodes_seen, "ep_summit_phobos_crisis")) {
+        variable_struct_set(story_episodes_seen, "ep_summit_phobos_crisis", true);
+        scr_vn_start_episode("ep_summit_phobos_crisis");
+    } else if (current_turn == 12 && !variable_struct_exists(story_episodes_seen, "ep_summit_transhumanist_schism")) {
+        variable_struct_set(story_episodes_seen, "ep_summit_transhumanist_schism", true);
+        scr_vn_start_episode("ep_summit_transhumanist_schism");
+    } else if (current_turn == 18 && !variable_struct_exists(story_episodes_seen, "ep_summit_sol_monopoly")) {
+        variable_struct_set(story_episodes_seen, "ep_summit_sol_monopoly", true);
+        scr_vn_start_episode("ep_summit_sol_monopoly");
+    } else if (current_turn == 9 && !variable_struct_exists(story_episodes_seen, "ep_war_terran_vs_colony")) {
+        variable_struct_set(story_episodes_seen, "ep_war_terran_vs_colony", true);
+        scr_vn_start_episode("ep_war_terran_vs_colony");
+    } else if (current_turn == 11 && !variable_struct_exists(story_episodes_seen, "ep_trade_rival_valkyrie_deal")) {
+        variable_struct_set(story_episodes_seen, "ep_trade_rival_valkyrie_deal", true);
+        scr_vn_start_episode("ep_trade_rival_valkyrie_deal");
+    } else if (current_turn == 14 && !variable_struct_exists(story_episodes_seen, "ep_war_zaibatsu_vs_tharsis")) {
+        variable_struct_set(story_episodes_seen, "ep_war_zaibatsu_vs_tharsis", true);
+        scr_vn_start_episode("ep_war_zaibatsu_vs_tharsis");
+    } else if (current_turn == 16 && !variable_struct_exists(story_episodes_seen, "ep_trade_rival_hyperion_arms")) {
+        variable_struct_set(story_episodes_seen, "ep_trade_rival_hyperion_arms", true);
+        scr_vn_start_episode("ep_trade_rival_hyperion_arms");
+    } else if (current_turn == 19 && !variable_struct_exists(story_episodes_seen, "ep_war_syndicate_vs_sidereal")) {
+        variable_struct_set(story_episodes_seen, "ep_war_syndicate_vs_sidereal", true);
+        scr_vn_start_episode("ep_war_syndicate_vs_sidereal");
+    } else if (current_turn == 22 && !variable_struct_exists(story_episodes_seen, "ep_ceasefire_terran_colony")) {
+        variable_struct_set(story_episodes_seen, "ep_ceasefire_terran_colony", true);
+        scr_vn_start_episode("ep_ceasefire_terran_colony");
+    }
     current_turn++;
     current_cycle_day++;
     if (current_cycle_day > 365) {
@@ -912,7 +1368,17 @@ end_turn = function() {
     for (var eg = 0; eg < array_length(facilities.roster_engineers); eg++) {
         _daily_salaries += facilities.roster_engineers[eg].salary_daily;
     }
-    var _daily_maintenance = 150 + (facilities.assembly_lines - 1) * 75;
+    // Fleet Chassis Maintenance & Reactor Tritium Burn (Goal A)
+    var _num_mechs = (variable_struct_exists(inventory, "deployable_mechs") && is_array(inventory.deployable_mechs)) ? array_length(inventory.deployable_mechs) : 0;
+    total_fleet_upkeep_cr = _num_mechs * mech_upkeep_cr_per_unit;
+    total_fleet_tritium_burn = (_num_mechs > 0) ? max(1, ceil(_num_mechs / mech_upkeep_tritium_ratio)) : 0;
+
+    // Deduct Tritium fuel for Tokamak magnetic bottles
+    if (variable_struct_exists(inventory.raw_materials, "mat_tritium")) {
+        inventory.raw_materials.mat_tritium -= total_fleet_tritium_burn;
+    }
+
+    var _daily_maintenance = 150 + (facilities.assembly_lines - 1) * 75 + total_fleet_upkeep_cr;
     var _net_flow = _daily_retainer - _daily_salaries - _daily_maintenance;
     funds += _net_flow;
     array_push(last_turn_events, "* Fiscal Ledger: Net Cashflow " + (_net_flow >= 0 ? "+" : "") + string(_net_flow) + " Cr (Treasury: " + string(funds) + " Cr)");
@@ -924,7 +1390,7 @@ end_turn = function() {
     for (var ci = 0; ci < 4; ci++) {
         var _c_id = _corp_list[ci];
         if (variable_struct_exists(rival_corporations, _c_id)) {
-            var _rcp = rival_corporations[$ _c_id];
+            var _rcp = variable_struct_get(rival_corporations, _c_id);
             if (!_rcp.is_acquired) {
                 calculate_rival_share_price(_c_id);
                 if (_rcp.player_shares > 0) {
@@ -944,11 +1410,41 @@ end_turn = function() {
         funds += (_total_dividends + _total_royalties);
     }
 
-    // Bankruptcy warning
-    if (funds < 0) {
-        array_push(last_turn_events, "! FISCAL CRISIS: Company operational accounts are currently overdrawn!");
+    // Check Supply Starvation & Fuel Reserves (Goal A)
+    var _tritium_cur = variable_struct_exists(inventory.raw_materials, "mat_tritium") ? inventory.raw_materials.mat_tritium : 0;
+    if (funds < 0 || _tritium_cur < 0) {
+        supply_starvation = true;
+        array_push(last_turn_events, "! LOGISTICS DEFICIT: Fleet is suffering from lack of maintenance/fuel! Combat readiness severely degraded (-2 AP, -25% Evasion).");
         if (instance_exists(obj_HQTerminal)) {
-            obj_HQTerminal.show_toast("FINANCIAL CRISIS: TREASURY DEFICIT!", c_red);
+            obj_HQTerminal.show_toast("LOGISTICS CRISIS: SUPPLY STARVATION ACTIVE!", c_red);
+        }
+    } else {
+        supply_starvation = false;
+    }
+
+    // Pilot Convalescence & Fatigue Recovery (Goal B)
+    if (variable_struct_exists(facilities, "roster_pilots") && is_array(facilities.roster_pilots)) {
+        var _heal_rate = 1;
+        if (flagship.upgrades.pilot_suite_tier >= 2) _heal_rate = 2; // Accelerated hospital recovery
+
+        for (var p = 0; p < array_length(facilities.roster_pilots); p++) {
+            var _plt = facilities.roster_pilots[p];
+            if (!variable_struct_exists(_plt, "fatigue")) _plt.fatigue = 0;
+            if (!variable_struct_exists(_plt, "recovery_days_left")) _plt.recovery_days_left = 0;
+
+            if (_plt.status == "HOSPITALIZED") {
+                _plt.recovery_days_left = max(0, _plt.recovery_days_left - _heal_rate);
+                if (_plt.recovery_days_left <= 0) {
+                    _plt.status = "ACTIVE";
+                    _plt.fatigue = 0;
+                    array_push(last_turn_events, "* MEDICAL CLEARANCE: " + _plt.name + " (" + _plt.callsign + ") discharged from hospital and cleared for active duty!");
+                    mutate_pilot_trait(p, "Cybernetic Reflex Augment");
+                    if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("PILOT DISCHARGED: " + _plt.callsign + " is active!", c_lime);
+                }
+            } else if (_plt.status == "ACTIVE") {
+                // Non-deployed resting pilots dissipate fatigue (-25 fatigue per cycle)
+                _plt.fatigue = max(0, _plt.fatigue - 25);
+            }
         }
     }
 
@@ -970,10 +1466,10 @@ end_turn = function() {
             var _yield_s = max(1, floor(_node.yield_rate_secondary * _sphere_mult));
 
             if (_node.primary_yield != "none") {
-                _node.current_storage[$ _node.primary_yield] = (_node.current_storage[$ _node.primary_yield] ?? 0) + _yield_p;
+                var _cy_p = (variable_struct_exists(_node.current_storage, _node.primary_yield) ? variable_struct_get(_node.current_storage, _node.primary_yield) : 0); variable_struct_set(_node.current_storage, _node.primary_yield, _cy_p + _yield_p);
             }
             if (_node.secondary_yield != "none") {
-                _node.current_storage[$ _node.secondary_yield] = (_node.current_storage[$ _node.secondary_yield] ?? 0) + _yield_s;
+                var _cy_s = (variable_struct_exists(_node.current_storage, _node.secondary_yield) ? variable_struct_get(_node.current_storage, _node.secondary_yield) : 0); variable_struct_set(_node.current_storage, _node.secondary_yield, _cy_s + _yield_s);
             }
             var _b_tag = (_sphere_mult > 1.0) ? " [FLAGSHIP REFINED]" : "";
             array_push(last_turn_events, "* Mining Operation: " + _node.name + " mined +" + string(_yield_p) + " " + _node.primary_yield + _b_tag);
@@ -1040,8 +1536,8 @@ end_turn = function() {
             if (variable_struct_exists(_cnt, "days_remaining")) {
                 _cnt.days_remaining--;
                 if (_cnt.days_remaining <= 0) {
-                    funds -= (_cnt[$ "penalty_credits"] ?? 50000);
-                    obj_FactionManager.modify_standing(_cnt.faction, _cnt[$ "reputation_penalty"] ?? -20);
+                    funds -= (variable_struct_get(_cnt, "penalty_credits") ?? 50000);
+                    obj_FactionManager.modify_standing(_cnt.faction, variable_struct_get(_cnt, "reputation_penalty") ?? -20);
                     array_push(last_turn_events, "! CONTRACT BREACH: " + _cnt.title + " expired!");
                     array_delete(obj_FactionManager.active_contracts, c, 1);
                     if (instance_exists(obj_HQTerminal)) {
@@ -1055,12 +1551,12 @@ end_turn = function() {
     // 5. Hospitalized Pilot Recovery Cycle (docs/05, 07)
     for (var p = 0; p < array_length(facilities.roster_pilots); p++) {
         var _plt = facilities.roster_pilots[p];
-        if ((_plt[$ "status"] ?? "ACTIVE") == "HOSPITALIZED") {
-            var _rec = _plt[$ "recovery_days"] ?? (_plt[$ "recovery_days_left"] ?? 3);
+        if ((variable_struct_get(_plt, "status") ?? "ACTIVE") == "HOSPITALIZED") {
+            var _rec = variable_struct_get(_plt, "recovery_days") ?? (variable_struct_get(_plt, "recovery_days_left") ?? 3);
             _rec--;
             _plt.recovery_days = _rec;
             _plt.recovery_days_left = _rec;
-            var _p_name = _plt[$ "name"] ?? "Pilot";
+            var _p_name = variable_struct_get(_plt, "name") ?? "Pilot";
             if (_rec <= 0) {
                 _plt.status = "ACTIVE";
                 _plt.is_deployed = false;
@@ -1074,11 +1570,12 @@ end_turn = function() {
         }
     }
 
-    // 5b. Daily Sovereign Territory Tribute & Mass-Production Royalties (docs/12)
+    // 5b. Daily Sovereign Territory Tribute & Raw Material Logistics (docs/12, docs/39)
     if (instance_exists(obj_FactionManager)) {
         var _fm = obj_FactionManager;
+        scr_territory_process_turn_economy();
         var _pmc_pct = _fm.territory_control.pmc_pct;
-        if (_pmc_pct > 0) {
+        if (_pmc_pct > 0 && !variable_struct_exists(_fm, "territory_database")) {
             var _tribute = _pmc_pct * 3500;
             funds += _tribute;
             array_push(last_turn_events, "* Sovereign Dominion Tribute: +" + string(_tribute) + " Cr from " + string(_pmc_pct) + "% governed territory.");
@@ -1088,11 +1585,11 @@ end_turn = function() {
         for (var fk = 0; fk < 4; fk++) {
             var _fid = _f_keys[fk];
             if (variable_struct_exists(_fm.mass_production_contracts, _fid)) {
-                var _mp = _fm.mass_production_contracts[$ _fid];
+                var _mp = variable_struct_get(_fm.mass_production_contracts, _fid);
                 if (_mp.replaced) {
-                    var _stage = _mp[$ "adoption_stage"] ?? "MATURE";
+                    var _stage = variable_struct_get(_mp, "adoption_stage") ?? "MATURE";
                     if (_stage == "TOOLING") {
-                        _mp.tooling_turns_remaining = max(0, (_mp[$ "tooling_turns_remaining"] ?? 2) - 1);
+                        _mp.tooling_turns_remaining = max(0, (variable_struct_get(_mp, "tooling_turns_remaining") ?? 2) - 1);
                         if (_mp.tooling_turns_remaining == 0) {
                             _mp.adoption_stage = "ROLLOUT";
                             _mp.active_frontline_units = 50;
@@ -1101,11 +1598,11 @@ end_turn = function() {
                             array_push(last_turn_events, "* Factory Tooling (" + _mp.faction_name + "): " + string(_mp.tooling_turns_remaining) + " turn(s) remaining for " + _mp.replacement_name + " lines.");
                         }
                     } else {
-                        _mp.active_frontline_units = min(250, (_mp[$ "active_frontline_units"] ?? 50) + irandom_range(12, 22));
+                        _mp.active_frontline_units = min(250, (variable_struct_get(_mp, "active_frontline_units") ?? 50) + irandom_range(12, 22));
                         var _unit_multiplier = max(1.0, _mp.active_frontline_units / 50.0);
                         var _royalty = round(_mp.royalty_per_turn * _unit_multiplier);
                         funds += _royalty;
-                        _mp.cumulative_royalties_paid = (_mp[$ "cumulative_royalties_paid"] ?? 0) + _royalty;
+                        _mp.cumulative_royalties_paid = (variable_struct_get(_mp, "cumulative_royalties_paid") ?? 0) + _royalty;
                         array_push(last_turn_events, "* Mass-Production Royalty (" + _mp.faction_name + "): +" + string(_royalty) + " Cr (" + string(_mp.active_frontline_units) + " active units in service).");
                     }
                 }
@@ -1131,6 +1628,14 @@ end_turn = function() {
     // 7. Random Corporate & Narrative Events Engine (docs/27)
     evaluate_corporate_random_events();
 
+    // Goal D: 4 Campaign Victory Paths Evaluation
+    evaluate_campaign_victory();
+
+    // Goal E: Corporate Espionage, Shadow Raids & Nemesis Ace Retaliation
+    if (instance_exists(obj_NemesisManager)) {
+        obj_NemesisManager.evaluate_corporate_espionage_turn();
+    }
+
     if (instance_exists(obj_HQTerminal)) {
         obj_HQTerminal.show_toast("ADVANCED TO TURN " + string(current_turn) + " (Y" + string(current_cycle_year) + " D" + string(current_cycle_day) + ")", c_aqua);
     }
@@ -1138,13 +1643,497 @@ end_turn = function() {
 
 step_day = end_turn; // backwards compatible alias
 
+// =========================================================================
+// RPG PILOT CANTINA, MEDICAL & PERK SYSTEM (DOC 51)
+// =========================================================================
+cantina_recruits = [];
+
+refresh_cantina_recruits = function() {
+    cantina_recruits = [
+        {
+            id: "pilot_recruit_greenhorn",
+            name: "Rookie Jax Vance",
+            callsign: "SPARK",
+            rank: "Ensign",
+            combat_stat: 6,
+            tactics_stat: 5,
+            accuracy: 74,
+            reflexes: 70,
+            morale: 90,
+            salary_daily: 120,
+            signing_bonus: 15000,
+            xp: 20,
+            rank_perks: [],
+            affinity: "ironclad",
+            bio: "Fresh graduate from the Lunar Tactical Academy eager to prove his worth in live combat."
+        },
+        {
+            id: "pilot_recruit_veteran",
+            name: "Sgt. Brandon Ruiz",
+            callsign: "BARRICADE",
+            rank: "Master Sergeant",
+            combat_stat: 8,
+            tactics_stat: 7,
+            accuracy: 82,
+            reflexes: 76,
+            morale: 85,
+            salary_daily: 220,
+            signing_bonus: 35000,
+            xp: 75,
+            rank_perks: ["Deadly Aim"],
+            affinity: "ironclad",
+            bio: "Ten-year veteran of the Terran border conflicts. Reliable gunner with heavy cannon specialization."
+        },
+        {
+            id: "pilot_recruit_sniper",
+            name: "Operative Yuna Chen",
+            callsign: "SILVER-EYE",
+            rank: "Lieutenant",
+            combat_stat: 9,
+            tactics_stat: 8,
+            accuracy: 91,
+            reflexes: 84,
+            morale: 95,
+            salary_daily: 340,
+            signing_bonus: 60000,
+            xp: 120,
+            rank_perks: ["Deadly Aim", "Spotter Array"],
+            affinity: "muramasa",
+            bio: "Renegade colony sniper with uncanny optic reflexes and pinpoint precision at extreme range."
+        },
+        {
+            id: "pilot_recruit_ace",
+            name: "Ace Malakor Graves",
+            callsign: "HELLHOUND",
+            rank: "Captain",
+            combat_stat: 9,
+            tactics_stat: 9,
+            accuracy: 88,
+            reflexes: 92,
+            morale: 100,
+            salary_daily: 420,
+            signing_bonus: 85000,
+            xp: 180,
+            rank_perks: ["Vernier Drift", "Heavy Breech", "Counter-Strike"],
+            affinity: "aether",
+            bio: "Notorious former Syndicate ace turned gun-for-hire. Has single-handedly turned the tide of six separate orbital engagements."
+        }
+    ];
+};
+refresh_cantina_recruits();
+
+hire_cantina_pilot = function(_idx) {
+    if (_idx < 0 || _idx >= array_length(cantina_recruits)) return false;
+    var _p = cantina_recruits[_idx];
+    if (funds < _p.signing_bonus) return false;
+    funds -= _p.signing_bonus;
+    
+    var _new_pilot = {
+        id: _p.id + "_" + string(irandom(9999)),
+        character_id: _p.id,
+        name: _p.name,
+        callsign: _p.callsign,
+        rank: _p.rank,
+        combat_stat: _p.combat_stat,
+        tactics_stat: _p.tactics_stat,
+        accuracy: _p.accuracy,
+        reflexes: _p.reflexes,
+        morale: _p.morale,
+        salary_daily: _p.salary_daily,
+        is_deployed: false,
+        status: "ACTIVE",
+        recovery_days: 0,
+        recovery_days_left: 0,
+        kills: 0,
+        sorties: 0,
+        fatigue: 0,
+        level: 1,
+        unspent_stat_points: 0,
+        mutated_traits: [],
+        xp: _p.xp,
+        rank_perks: _p.rank_perks,
+        affinity: _p.affinity,
+        bio: _p.bio
+    };
+    array_push(facilities.roster_pilots, _new_pilot);
+    array_delete(cantina_recruits, _idx, 1);
+    return true;
+};
+
+expedite_pilot_medical = function(_pilot_idx) {
+    if (_pilot_idx < 0 || _pilot_idx >= array_length(facilities.roster_pilots)) return false;
+    var _p = facilities.roster_pilots[_pilot_idx];
+    if (_p.status != "HOSPITALIZED") return false;
+    if (funds < 20000) return false;
+    funds -= 20000;
+    _p.recovery_days_left = max(0, (variable_struct_exists(_p, "recovery_days_left") ? _p.recovery_days_left : 2) - 2);
+    if (_p.recovery_days_left <= 0) {
+        _p.status = "ACTIVE";
+        _p.recovery_days = 0;
+        _p.recovery_days_left = 0;
+    }
+    return true;
+};
+
+unlock_pilot_perk = function(_pilot_idx, _perk_name, _xp_cost) {
+    if (_pilot_idx < 0 || _pilot_idx >= array_length(facilities.roster_pilots)) return false;
+    var _p = facilities.roster_pilots[_pilot_idx];
+    if (!variable_struct_exists(_p, "xp") || _p.xp < _xp_cost) return false;
+    if (!variable_struct_exists(_p, "rank_perks") || !is_array(_p.rank_perks)) _p.rank_perks = [];
+    
+    for (var i = 0; i < array_length(_p.rank_perks); i++) {
+        if (_p.rank_perks[i] == _perk_name) return false;
+    }
+    
+    _p.xp -= _xp_cost;
+    array_push(_p.rank_perks, _perk_name);
+    return true;
+};
+
+allocate_pilot_stat = function(_pilot_idx, _stat_name) {
+    if (!variable_struct_exists(facilities, "roster_pilots")) return false;
+    if (_pilot_idx < 0 || _pilot_idx >= array_length(facilities.roster_pilots)) return false;
+    var _plt = facilities.roster_pilots[_pilot_idx];
+    if (!variable_struct_exists(_plt, "unspent_stat_points") || _plt.unspent_stat_points <= 0) return false;
+
+    if (_stat_name == "accuracy") {
+        if (_plt.accuracy >= 99) return false;
+        _plt.accuracy = min(99, _plt.accuracy + 2);
+        _plt.unspent_stat_points -= 1;
+        array_push(last_turn_events, "* STAT ALLOCATION: " + _plt.name + " (" + _plt.callsign + ") Accuracy increased to " + string(_plt.accuracy) + "%!");
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast(_plt.callsign + " Accuracy -> " + string(_plt.accuracy) + "%", c_aqua);
+        return true;
+    } else if (_stat_name == "reflexes") {
+        if (_plt.reflexes >= 99) return false;
+        _plt.reflexes = min(99, _plt.reflexes + 2);
+        _plt.unspent_stat_points -= 1;
+        array_push(last_turn_events, "* STAT ALLOCATION: " + _plt.name + " (" + _plt.callsign + ") Reflexes increased to " + string(_plt.reflexes) + "%!");
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast(_plt.callsign + " Reflexes -> " + string(_plt.reflexes) + "%", c_aqua);
+        return true;
+    } else if (_stat_name == "combat_stat") {
+        if (_plt.combat_stat >= 10) return false;
+        _plt.combat_stat = min(10, _plt.combat_stat + 1);
+        _plt.unspent_stat_points -= 1;
+        array_push(last_turn_events, "* STAT ALLOCATION: " + _plt.name + " (" + _plt.callsign + ") Combat Stat increased to " + string(_plt.combat_stat) + "/10!");
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast(_plt.callsign + " Combat Stat -> " + string(_plt.combat_stat) + "/10", c_aqua);
+        return true;
+    } else if (_stat_name == "tactics_stat") {
+        if (_plt.tactics_stat >= 10) return false;
+        _plt.tactics_stat = min(10, _plt.tactics_stat + 1);
+        _plt.unspent_stat_points -= 1;
+        array_push(last_turn_events, "* STAT ALLOCATION: " + _plt.name + " (" + _plt.callsign + ") Tactics Stat increased to " + string(_plt.tactics_stat) + "/10!");
+        if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast(_plt.callsign + " Tactics Stat -> " + string(_plt.tactics_stat) + "/10", c_aqua);
+        return true;
+    }
+    return false;
+};
+
+send_pilot_on_rr = function(_pilot_idx) {
+    if (!variable_struct_exists(facilities, "roster_pilots")) return false;
+    if (_pilot_idx < 0 || _pilot_idx >= array_length(facilities.roster_pilots)) return false;
+    var _plt = facilities.roster_pilots[_pilot_idx];
+    if (funds < 5000) return false;
+    funds -= 5000;
+    _plt.fatigue = 0;
+    _plt.morale = min(100, (variable_struct_exists(_plt, "morale") ? _plt.morale : 80) + 10);
+    array_push(last_turn_events, "* R&R LEAVE: " + _plt.name + " (" + _plt.callsign + ") granted shore leave (-5,000 Cr). Fatigue cleared, Morale +10!");
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("R&R LEAVE: " + _plt.callsign + " refreshed! Fatigue cleared, Morale +10.", c_aqua);
+    }
+    return true;
+};
+
+mutate_pilot_trait = function(_pilot_idx, _trait_name) {
+    if (!variable_struct_exists(facilities, "roster_pilots")) return false;
+    if (_pilot_idx < 0 || _pilot_idx >= array_length(facilities.roster_pilots)) return false;
+    var _plt = facilities.roster_pilots[_pilot_idx];
+    if (!variable_struct_exists(_plt, "mutated_traits") || !is_array(_plt.mutated_traits)) {
+        _plt.mutated_traits = [];
+    }
+    if (array_contains(_plt.mutated_traits, _trait_name)) return false;
+    array_push(_plt.mutated_traits, _trait_name);
+
+    if (_trait_name == "Iron Survivor") {
+        _plt.morale = min(100, (variable_struct_exists(_plt, "morale") ? _plt.morale : 80) + 5);
+    } else if (_trait_name == "Cybernetic Reflex Augment") {
+        _plt.accuracy = min(99, _plt.accuracy + 6);
+    }
+
+    array_push(last_turn_events, "! BATTLE SCAR TRAIT MUTATION: " + _plt.name + " (" + _plt.callsign + ") developed '" + _trait_name + "'!");
+    if (instance_exists(obj_HQTerminal)) {
+        obj_HQTerminal.show_toast("TRAIT MUTATION: " + _plt.callsign + " gained " + _trait_name + "!", c_fuchsia);
+    }
+    return true;
+};
+
+// Goal E: Resolve Corporate Pilot Poaching Counter-Offer (docs/28)
+resolve_poaching_offer = function(_action) {
+    if (is_undefined(pending_poaching_offer)) return false;
+    var _po = pending_poaching_offer;
+    var _plt = undefined;
+    if (_po.pilot_index >= 0 && _po.pilot_index < array_length(facilities.roster_pilots)) {
+        _plt = facilities.roster_pilots[_po.pilot_index];
+    }
+
+    if (_action == "counter") {
+        var _cost = _po.counter_cost;
+        funds -= _cost;
+        if (!is_undefined(_plt)) {
+            _plt.fatigue = 0;
+            pilot_add_xp(_plt.id, 150);
+        }
+        array_push(last_turn_events, "* ESPIONAGE RESOLVED: Paid " + string(_cost) + " Cr loyalty bonus to retain " + _po.pilot_name + " (" + _po.callsign + ")!");
+        if (instance_exists(obj_HQTerminal)) {
+            obj_HQTerminal.show_toast("LOYALTY SECURED: " + _po.callsign + " remains in PMC service!", c_lime);
+        }
+        pending_poaching_offer = undefined;
+        return true;
+    } else if (_action == "sigint_sweep") {
+        var _sig_tier = variable_struct_exists(flagship.upgrades, "sigint_tier") ? flagship.upgrades.sigint_tier : 1;
+        var _success_chance = 60 + (_sig_tier * 10);
+        if (flagship.specialization_protocol == "shadow_panopticon") _success_chance = 100;
+        var _roll = random(100);
+
+        if (_roll < _success_chance) {
+            // Arrest spy into brig
+            if (instance_exists(obj_NemesisManager)) {
+                obj_NemesisManager.add_prisoner("spy_" + _po.corp_id + "_" + string(current_turn), "Corporate Infiltrator", _po.corp_id);
+            }
+            // Grant corporate equity or cash
+            if (variable_struct_exists(rival_corporations, _po.corp_id)) {
+                var _rc = variable_struct_get(rival_corporations, _po.corp_id);
+                if (!_rc.is_acquired) {
+                    _rc.player_shares = min(100000, _rc.player_shares + 1500);
+                    _rc.player_equity_pct = (_rc.player_shares / 100000.0) * 100.0;
+                }
+            }
+            funds += 45000;
+            if (!is_undefined(_plt)) _plt.fatigue = max(0, _plt.fatigue - 1);
+            array_push(last_turn_events, "* SIGINT COUNTER-ESPIONAGE: Flagship intercepted " + _po.corp_name + " handler! Extracted +1,500 shares & +45,000 Cr!");
+            if (instance_exists(obj_HQTerminal)) {
+                obj_HQTerminal.show_toast("SIGINT SWEEP SUCCESS: " + _po.corp_name + " handler arrested! (+1,500 shares)", c_lime);
+            }
+        } else {
+            array_push(last_turn_events, "* SIGINT SWEEP: Corporate headhunter slipped away, but recruitment conduit was terminated.");
+            if (instance_exists(obj_HQTerminal)) {
+                obj_HQTerminal.show_toast("SIGINT NOTICE: Handler escaped, but leak plugged.", c_yellow);
+            }
+        }
+        pending_poaching_offer = undefined;
+        return true;
+    } else if (_action == "refuse") {
+        var _defect_roll = random(100);
+        if (_defect_roll < 50 && !is_undefined(_plt)) {
+            array_push(last_turn_events, "! PILOT DEFECTION: " + _po.pilot_name + " (" + _po.callsign + ") accepted " + _po.corp_name + " contract and deserted the PMC!");
+            if (instance_exists(obj_HQTerminal)) {
+                obj_HQTerminal.show_toast("DEFECTION! " + _po.callsign + " deserted to " + _po.corp_name + "!", c_red);
+            }
+            array_delete(facilities.roster_pilots, _po.pilot_index, 1);
+        } else {
+            array_push(last_turn_events, "* PILOT REMAINED: " + _po.pilot_name + " (" + _po.callsign + ") refused rival offer out of mercenary honor.");
+            if (instance_exists(obj_HQTerminal)) {
+                obj_HQTerminal.show_toast("PILOT STAYED: " + _po.callsign + " rejected " + _po.corp_name + " offer!", c_yellow);
+            }
+        }
+        pending_poaching_offer = undefined;
+        return true;
+    }
+    return false;
+};
+
+// Goal D: 4 Grand Campaign Victory Paths Evaluator (docs/12, docs/24, docs/39)
+evaluate_campaign_victory = function() {
+    if (campaign_victory_claimed) return campaign_victory_data;
+
+    var _won_path = "";
+    var _v_title = "";
+    var _v_subtitle = "";
+    var _v_badge = "";
+    var _v_quote = "";
+    var _v_chronicle = "";
+    var _v_highlights = [];
+
+    var _fm = instance_exists(obj_FactionManager) ? obj_FactionManager : undefined;
+    var _bm = instance_exists(obj_BlueprintManager) ? obj_BlueprintManager : undefined;
+
+    // -------------------------------------------------------------------------
+    // PATH 1: CORPORATE MONOPOLIST (Market Hegemony)
+    // -------------------------------------------------------------------------
+    var _factions_replaced = 0;
+    var _total_royalties = 0;
+    if (!is_undefined(_fm)) {
+        var _f_keys = ["faction_a", "faction_b", "faction_c", "faction_d"];
+        for (var fk = 0; fk < 4; fk++) {
+            var _fid = _f_keys[fk];
+            if (variable_struct_exists(_fm.mass_production_contracts, _fid)) {
+                var _mp = variable_struct_get(_fm.mass_production_contracts, _fid);
+                if (_mp.replaced) {
+                    _factions_replaced++;
+                    _total_royalties += variable_struct_get(_mp, "cumulative_royalties_paid") ?? 0;
+                }
+            }
+        }
+    }
+    var _majority_corps = 0;
+    var _corp_keys = ["corp_vhi", "corp_aod", "corp_rust", "corp_hats"];
+    for (var ck = 0; ck < 4; ck++) {
+        var _cid = _corp_keys[ck];
+        if (variable_struct_exists(rival_corporations, _cid)) {
+            var _rc = variable_struct_get(rival_corporations, _cid);
+            if ((variable_struct_get(_rc, "player_equity_pct") ?? 0) >= 51.0) _majority_corps++;
+        }
+    }
+
+    if (_factions_replaced >= 3 || _majority_corps >= 3) {
+        _won_path = "MONOPOLIST";
+        _v_title = "THE CORPORATE MONOPOLIST";
+        _v_subtitle = "SUPREME MARKET HEGEMON & SHADOW SOVEREIGN";
+        _v_badge = "★ SOL MONOPOLY CHARTER RATIFIED ★";
+        _v_quote = "Governments declare wars; accountants and armament syndicates determine who survives them.";
+        _v_chronicle = "By ratifying mass-production replacement contracts across the solar system's rival superpowers, your private enterprise has monopolized the entire interplanetary arms trade. Terran legions, Jovian aerospace squadrons, and Martian trench garrisons now rely exclusively on warframes forged in your assembly bays. As their national treasuries pour into your coffers, you pull the strings of civilization without ever having to wear a crown.";
+        _v_highlights = [
+            "Superpower Contracts Ratified: " + string(_factions_replaced) + " / 4 Superpowers",
+            "Cumulative Royalties Collected: " + string(_total_royalties) + " Credits",
+            "Majority Megacorp Stakes: " + string(_majority_corps) + " Corporations Controlled",
+            "Total PMC Treasury Reserves: " + string(funds) + " Credits"
+        ];
+    }
+
+    // -------------------------------------------------------------------------
+    // PATH 2: WARLORD HEGEMON (Military Dominion)
+    // -------------------------------------------------------------------------
+    if (_won_path == "" && !is_undefined(_fm)) {
+        var _pmc_pct = _fm.territory_control.pmc_pct;
+        var _holds_earth_cap = false;
+        var _holds_space_cap = false;
+        var _holds_mars_cap = false;
+
+        if (variable_struct_exists(_fm, "territory_database") && is_struct(_fm.territory_database)) {
+            var _td = _fm.territory_database;
+            if ((variable_struct_exists(_td, "earth_granite_redoubt") && _td.earth_granite_redoubt.controlling_faction == "pmc") ||
+                (variable_struct_exists(_td, "earth_cascadia_driver") && _td.earth_cascadia_driver.controlling_faction == "pmc") ||
+                (variable_struct_exists(_td, "earth_gibraltar_redoubt") && _td.earth_gibraltar_redoubt.controlling_faction == "pmc")) {
+                _holds_earth_cap = true;
+            }
+            if ((variable_struct_exists(_td, "space_selene_zenith") && _td.space_selene_zenith.controlling_faction == "pmc") ||
+                (variable_struct_exists(_td, "space_kepler_haven") && _td.space_kepler_haven.controlling_faction == "pmc") ||
+                (variable_struct_exists(_td, "space_tartarus_citadel") && _td.space_tartarus_citadel.controlling_faction == "pmc")) {
+                _holds_space_cap = true;
+            }
+            if ((variable_struct_exists(_td, "mars_olympus_caldera") && _td.mars_olympus_caldera.controlling_faction == "pmc") ||
+                (variable_struct_exists(_td, "mars_tharsis_foundry") && _td.mars_tharsis_foundry.controlling_faction == "pmc") ||
+                (variable_struct_exists(_td, "mars_marineris_rift") && _td.mars_marineris_rift.controlling_faction == "pmc")) {
+                _holds_mars_cap = true;
+            }
+        }
+
+        var _holds_all_capitals = (_holds_earth_cap && _holds_space_cap && _holds_mars_cap);
+
+        if (_pmc_pct >= 60 || _holds_all_capitals) {
+            _won_path = "WARLORD";
+            _v_title = "THE SUPREME WARLORD HEGEMON";
+            _v_subtitle = "ABSOLUTE MILITARY DOMINION ACROSS SOL";
+            _v_badge = "★ PAX HEGEMONIA: SOVEREIGN EMPIRE ★";
+            _v_quote = "Peace is not the absence of conflict; it is the absolute certainty of defeat for anyone who defies us.";
+            _v_chronicle = "The great planetary armadas and colonial fleets have shattered against your veteran vanguard squadrons. From the orbital sky-hooks of Earth to the deep terraformed trenches of Olympus Mons, the sovereign banner of your Private Military Corporation flies unopposed. You have dismantled the old geopolitical order through steel, blood, and sheer tactical supremacy, establishing an ironclad era of Mercenary Pax Hegemonia.";
+            _v_highlights = [
+                "Sovereign Territory Governed: " + string(_pmc_pct) + "% of Sol System",
+                "Theater Capitals Garrisoned: " + (_holds_all_capitals ? "3 / 3 (Earth, Lunar, Mars)" : "Regional Hegemon"),
+                "Sorties Won in Conquest: " + string(total_sorties_won) + " Combat Victories",
+                "Superpower Regimes Annexed: " + string(array_length(_fm.factions_overthrown)) + " Factions"
+            ];
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // PATH 3: ARCHEOTECH TRANSCENDENT (Technological Singularity)
+    // -------------------------------------------------------------------------
+    if (_won_path == "") {
+        var _t5_count = 0;
+        var _tracks = ["fabrication_tier", "mining_tier", "defense_tier", "weapons_tier", "propulsion_tier", "pilot_suite_tier", "sigint_tier", "command_tier"];
+        for (var t = 0; t < array_length(_tracks); t++) {
+            if ((variable_struct_get(flagship.upgrades, _tracks[t]) ?? 1) >= 5) _t5_count++;
+        }
+        var _techs_unlocked = (variable_struct_exists(self, "research_unlocked_techs") && is_array(research_unlocked_techs)) ? array_length(research_unlocked_techs) : 0;
+
+        if (_t5_count >= 8 || _techs_unlocked >= 30) {
+            _won_path = "ARCHEOTECH";
+            _v_title = "THE ARCHEOTECH TRANSCENDENT";
+            _v_subtitle = "SINGULARITY AWAKENED // ZERO-POINT DOMINION";
+            _v_badge = "★ TACHYON TRANSCENDENCE UNLOCKED ★";
+            _v_quote = "We no longer merely adapt to physics; we rewrite the baseline equations of combat.";
+            _v_chronicle = "Through relentless metallurgical synthesis, crucible breakthroughs, and ancient Pre-War archeotech unsealing, your engineers have breached the threshold of conventional science. The USN-X Hephaestus has awakened its true form as a self-sustaining stellar forge, harnessing zero-point vacuum energy and instantaneous tachyon fold transit. Humanity's warlords gaze upward in terror and awe at a power that has rendered conventional weaponry obsolete.";
+            _v_highlights = [
+                "Flagship Divisions at Tier 5: " + string(_t5_count) + " / 8 Maxed",
+                "R&D Technologies Unlocked: " + string(_techs_unlocked) + " / 30 Technologies",
+                "Masterwork Prototypes Forged: " + string(!is_undefined(_bm) ? array_length(_bm.masterwork_inventory) : 0) + " Units",
+                "Flagship Specialization: " + string_upper(flagship.specialization_protocol)
+            ];
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // PATH 4: CRISIS SAVIOR (Sol Guardian / Apex Repulsion)
+    // -------------------------------------------------------------------------
+    if (_won_path == "") {
+        var _in_crisis_era = (timeline_era >= 4 || current_turn >= 150 || current_cycle_year >= 218);
+        var _repelled = (crisis_defeated || total_sorties_won >= 15);
+        if (_in_crisis_era && _repelled) {
+            _won_path = "CRISIS_SAVIOR";
+            _v_title = "THE APEX CRISIS SAVIOR";
+            _v_subtitle = "GUARDIAN OF SOL // EXISTENTIAL SHIELD";
+            _v_badge = "★ SOL CRISIS VANQUISHED ★";
+            _v_quote = "When the machines turned and the sky caught fire, only the mercenaries stood between humanity and the abyss.";
+            _v_chronicle = "When the automated planetary defense networks malfunctioned and unsealed rogue biomechanical superweapons in Era IV, planetary high commands abandoned their populations to chaos. Your PMC ace squadrons stood alone against the encroaching existential terror, launching daring sorties into the heart of the anomaly. Through unbreakable tactical discipline and masterwork firepower, you severed the crisis core, rescuing the Sol System from total extinction.";
+            _v_highlights = [
+                "Crisis Status: ANOMALY CORE DESTROYED",
+                "Campaign Sorties Survived: " + string(total_sorties_won) + " Operations",
+                "Timeline Era: " + timeline_era_name,
+                "Veteran Aces in Active Service: " + string(array_length(facilities.roster_pilots)) + " Pilots"
+            ];
+        }
+    }
+
+    // If victory achieved:
+    if (_won_path != "") {
+        campaign_won = true;
+        campaign_victory_claimed = true;
+        campaign_victory_path = _won_path;
+        campaign_victory_data = {
+            victory_path: _won_path,
+            title: _v_title,
+            subtitle: _v_subtitle,
+            badge: _v_badge,
+            quote: _v_quote,
+            chronicle: _v_chronicle,
+            stat_highlights: _v_highlights,
+            turn: current_turn,
+            year: current_cycle_year,
+            day: current_cycle_day
+        };
+
+        array_push(last_turn_events, "★★ GRAND CAMPAIGN VICTORY ACHIEVED: " + _v_title + " ★★");
+        if (instance_exists(obj_HQTerminal)) {
+            obj_HQTerminal.showing_victory_modal = true;
+            obj_HQTerminal.show_toast("GRAND CAMPAIGN VICTORY: " + _v_title + "!", c_yellow);
+        }
+        scr_audio_play_ui("confirm");
+        return campaign_victory_data;
+    }
+
+    return undefined;
+};
+
 // 9c. Sid Meier's Pirates-Style Career Retirement & Legacy Assessment (docs/12)
 retire_career = function() {
     var _mat_val = (inventory.raw_materials.mat_tungsten * 400) + 
                    (inventory.raw_materials.mat_silica_carb * 150) + 
                    (inventory.raw_materials.mat_tritium * 1200) + 
                    (inventory.raw_materials.mat_syn_flux * 800);
-    var _facility_val = (facilities.hangar_bays * 250000) + (facilities.lab_tier * 400000) + (facilities.foundry_crucibles * 300000);
+    var _hb = variable_struct_exists(facilities, "hangar_bays") ? facilities.hangar_bays : (variable_struct_exists(facilities, "assembly_lines") ? facilities.assembly_lines : 1);
+    var _lt = variable_struct_exists(facilities, "lab_tier") ? facilities.lab_tier : ((variable_struct_exists(facilities, "containment_shielding") && facilities.containment_shielding) ? 2 : 1);
+    var _fc = variable_struct_exists(facilities, "foundry_crucibles") ? facilities.foundry_crucibles : (variable_struct_exists(facilities, "crucible_tier") ? facilities.crucible_tier : 1);
+    var _facility_val = (_hb * 250000) + (_lt * 400000) + (_fc * 300000);
     var _net_worth = funds + _facility_val + _mat_val;
 
     // 1. Wealth Score (Max 2,500)
@@ -1162,7 +2151,7 @@ retire_career = function() {
         for (var fk = 0; fk < 4; fk++) {
             var _fid = _f_keys[fk];
             if (variable_struct_exists(obj_FactionManager.mass_production_contracts, _fid)) {
-                var _mp = obj_FactionManager.mass_production_contracts[$ _fid];
+                var _mp = variable_struct_get(obj_FactionManager.mass_production_contracts, _fid);
                 if (_mp.replaced) {
                     _factions_replaced++;
                     _total_royalties += _mp.cumulative_royalties_paid;
@@ -1185,11 +2174,12 @@ retire_career = function() {
     var _overthrown_count = (instance_exists(obj_FactionManager)) ? array_length(obj_FactionManager.factions_overthrown) : 0;
     var _score_conquest = min(1000, _overthrown_count * 250);
 
-    var _total_score = _score_wealth + _score_territory + _score_monopoly + _score_guild + _score_tech + _score_conquest;
+    var _score_victory = (campaign_won && !is_undefined(campaign_victory_data)) ? 2000 : 0;
+    var _total_score = _score_wealth + _score_territory + _score_monopoly + _score_guild + _score_tech + _score_conquest + _score_victory;
 
     // Determine Dynamic Title & Historical Epilogue Chronicle (docs/12)
-    var _title = "Hardened Mercenary Commander";
-    var _epilogue = "You served through the crucible of the mecha wars with distinction, forging an enduring mercenary name across the stars.";
+    var _title = (campaign_won && !is_undefined(campaign_victory_data)) ? campaign_victory_data.title : "Hardened Mercenary Commander";
+    var _epilogue = (campaign_won && !is_undefined(campaign_victory_data)) ? campaign_victory_data.chronicle : "You served through the crucible of the mecha wars with distinction, forging an enduring mercenary name across the stars.";
 
     if (_pmc_pct >= 70) {
         _title = "Supreme Solar Hegemon & Galactic Warlord";
@@ -1270,16 +2260,16 @@ fabricate_mech_advanced = function(_blueprint_id, _name, _days, _cost_cr, _alloy
         if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT FUNDS! Requires " + string(_cost_cr) + " Cr", c_red);
         return false;
     }
-    var _cur_alloy = inventory.alloys[$ "alloy_vanguard_comp"] ?? 0;
-    var _cur_tungsten = inventory.raw_materials[$ "mat_tungsten"] ?? 0;
+    var _cur_alloy = variable_struct_get(inventory.alloys, "alloy_vanguard_comp") ?? 0;
+    var _cur_tungsten = variable_struct_get(inventory.raw_materials, "mat_tungsten") ?? 0;
     if (_cur_alloy < _alloys_req || _cur_tungsten < _tungsten_req) {
         if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("INSUFFICIENT MATERIALS! Requires " + string(_alloys_req) + " Vanguard Alloys & " + string(_tungsten_req) + " Tungsten", c_red);
         return false;
     }
     // Deduct
     spend_funds(_cost_cr);
-    inventory.alloys[$ "alloy_vanguard_comp"] = _cur_alloy - _alloys_req;
-    inventory.raw_materials[$ "mat_tungsten"] = _cur_tungsten - _tungsten_req;
+    variable_struct_set(inventory.alloys, "alloy_vanguard_comp", _cur_alloy - _alloys_req);
+    variable_struct_set(inventory.raw_materials, "mat_tungsten", _cur_tungsten - _tungsten_req);
     array_push(facilities.active_fabrications, {
         mech_blueprint: _blueprint_id,
         name: _name,
@@ -1334,10 +2324,10 @@ extract_node_storage = function(_node_idx) {
         var _keys = variable_struct_get_names(_node.current_storage);
         for (var k = 0; k < array_length(_keys); k++) {
             var _key = _keys[k];
-            var _amt = _node.current_storage[$ _key] ?? 0;
+            var _amt = (variable_struct_exists(_node.current_storage, _key) ? variable_struct_get(_node.current_storage, _key) : 0);
             if (_amt > 0) {
                 add_raw_material(_key, _amt);
-                _node.current_storage[$ _key] = 0;
+                variable_struct_set(_node.current_storage, _key, 0);
             }
         }
         return true;
@@ -1349,31 +2339,31 @@ extract_node_storage = function(_node_idx) {
 add_funds = function(_amount) { if (_amount > 0) { funds += _amount; return true; } return false; };
 spend_funds = function(_amount) { if (_amount > 0 && funds >= _amount) { funds -= _amount; return true; } return false; };
 
-get_raw_material = function(_mat_id) { return inventory.raw_materials[$ _mat_id] ?? 0; };
+get_raw_material = function(_mat_id) { return (variable_struct_exists(inventory.raw_materials, _mat_id) ? variable_struct_get(inventory.raw_materials, _mat_id) : 0); };
 add_raw_material = function(_mat_id, _quantity) {
-    if (!variable_struct_exists(inventory.raw_materials, _mat_id)) inventory.raw_materials[$ _mat_id] = 0;
-    inventory.raw_materials[$ _mat_id] += _quantity;
-    return inventory.raw_materials[$ _mat_id];
+    if (!variable_struct_exists(inventory.raw_materials, _mat_id)) variable_struct_set(inventory.raw_materials, _mat_id, 0);
+    variable_struct_set(inventory.raw_materials, _mat_id, variable_struct_get(inventory.raw_materials, _mat_id) + _quantity);
+    return variable_struct_get(inventory.raw_materials, _mat_id);
 };
 spend_raw_material = function(_mat_id, _quantity) {
     var _cur = get_raw_material(_mat_id);
     if (_cur >= _quantity) {
-        inventory.raw_materials[$ _mat_id] -= _quantity;
+        variable_struct_set(inventory.raw_materials, _mat_id, variable_struct_get(inventory.raw_materials, _mat_id) - _quantity);
         return true;
     }
     return false;
 };
 
 add_alloy = function(_alloy_key, _quantity) {
-    if (!variable_struct_exists(inventory.alloys, _alloy_key)) inventory.alloys[$ _alloy_key] = 0;
-    inventory.alloys[$ _alloy_key] += _quantity;
-    return inventory.alloys[$ _alloy_key];
+    if (!variable_struct_exists(inventory.alloys, _alloy_key)) variable_struct_set(inventory.alloys, _alloy_key, 0);
+    variable_struct_set(inventory.alloys, _alloy_key, variable_struct_get(inventory.alloys, _alloy_key) + _quantity);
+    return variable_struct_get(inventory.alloys, _alloy_key);
 };
-get_alloy = function(_alloy_key) { return inventory.alloys[$ _alloy_key] ?? 0; };
+get_alloy = function(_alloy_key) { return (variable_struct_exists(inventory.alloys, _alloy_key) ? variable_struct_get(inventory.alloys, _alloy_key) : 0); };
 spend_alloy = function(_alloy_key, _quantity) {
     var _cur = get_alloy(_alloy_key);
     if (_cur >= _quantity) {
-        inventory.alloys[$ _alloy_key] -= _quantity;
+        variable_struct_set(inventory.alloys, _alloy_key, variable_struct_get(inventory.alloys, _alloy_key) - _quantity);
         return true;
     }
     return false;
@@ -1394,9 +2384,9 @@ craft_modular_part = function(_part_data, _alloy_key, _alloy_cost, _cr_cost) {
 
     var _slot_key = _part_data.slot;
     if (!variable_struct_exists(inventory.parts, _slot_key)) {
-        inventory.parts[$ _slot_key] = [];
+        variable_struct_set(inventory.parts, _slot_key, []);
     }
-    array_push(inventory.parts[$ _slot_key], _part_data);
+    array_push(variable_struct_get(inventory.parts, _slot_key), _part_data);
 
     if (instance_exists(obj_HQTerminal)) {
         obj_HQTerminal.show_toast("PART FORGED: " + _part_data.name + " added to inventory!", c_lime);
@@ -1406,17 +2396,17 @@ craft_modular_part = function(_part_data, _alloy_key, _alloy_cost, _cr_cost) {
 
 add_part_to_inventory = function(_part_data) {
     if (!is_struct(_part_data)) return false;
-    var _slot_key = _part_data[$ "slot"] ?? "heads";
+    var _slot_key = variable_struct_get(_part_data, "slot") ?? "heads";
     if (!variable_struct_exists(inventory.parts, _slot_key)) {
-        inventory.parts[$ _slot_key] = [];
+        variable_struct_set(inventory.parts, _slot_key, []);
     }
-    array_push(inventory.parts[$ _slot_key], _part_data);
+    array_push(variable_struct_get(inventory.parts, _slot_key), _part_data);
     return true;
 };
 
 remove_part_from_inventory = function(_slot_key, _index) {
     if (variable_struct_exists(inventory.parts, _slot_key)) {
-        var _arr = inventory.parts[$ _slot_key];
+        var _arr = variable_struct_get(inventory.parts, _slot_key);
         if (_index >= 0 && _index < array_length(_arr)) {
             array_delete(_arr, _index, 1);
             return true;
@@ -1560,13 +2550,13 @@ accumulate_combat_pedigree = function(_mech_id, _kills, _aces, _dmg_taken, _surv
 
 blueprint_weakness_bonuses = {};
 register_exported_blueprint_weakness = function(_bp_id, _mech_name) {
-    blueprint_weakness_bonuses[$ _bp_id] = {
+    variable_struct_set(blueprint_weakness_bonuses, _bp_id, {
         blueprint_id: _bp_id,
         name: _mech_name,
         crit_bonus_pct: 15,
         armor_pierce_pct: 20,
         registered_turn: current_turn
-    };
+    });
     show_debug_message("[BlueprintWeakness] Arms Dealer Paradox: PMC pilots gain +15% Crit / +20% AP vs " + _mech_name + " (" + _bp_id + ")!");
 };
 
@@ -1588,19 +2578,16 @@ for (var p1 = 0; p1 < array_length(_cand_pt); p1++) {
 }
 if (_res_pt != "") {
     try {
-        var _f_pt = file_text_open_read(_res_pt);
-        var _json_pt = "";
-        while (!file_text_eof(_f_pt)) {
-            _json_pt += file_text_readln(_f_pt);
-        }
-        file_text_close(_f_pt);
+        var _buf_pt = buffer_load(_res_pt);
+        var _json_pt = buffer_read(_buf_pt, buffer_string);
+        buffer_delete(_buf_pt);
         var _pt_parsed = json_parse(_json_pt);
         if (variable_struct_exists(_pt_parsed, "materials")) {
             periodic_table_materials = _pt_parsed.materials;
             for (var m = 0; m < array_length(periodic_table_materials); m++) {
                 var _mat = periodic_table_materials[m];
-                periodic_table_dict[$ _mat.id] = _mat;
-                periodic_table_dict[$ _mat.symbol] = _mat;
+                variable_struct_set(periodic_table_dict, _mat.id, _mat);
+                variable_struct_set(periodic_table_dict, _mat.symbol, _mat);
             }
             show_debug_message("[obj_GameManager] Loaded " + string(array_length(periodic_table_materials)) + " elements into Periodic Table Database.");
         }
@@ -1621,12 +2608,9 @@ for (var p2 = 0; p2 < array_length(_cand_sn); p2++) {
 }
 if (_res_sn != "") {
     try {
-        var _f_sn = file_text_open_read(_res_sn);
-        var _json_sn = "";
-        while (!file_text_eof(_f_sn)) {
-            _json_sn += file_text_readln(_f_sn);
-        }
-        file_text_close(_f_sn);
+        var _buf_sn = buffer_load(_res_sn);
+        var _json_sn = buffer_read(_buf_sn, buffer_string);
+        buffer_delete(_buf_sn);
         var _sn_parsed = json_parse(_json_sn);
         if (variable_struct_exists(_sn_parsed, "mining_nodes")) {
             var _sn_arr = _sn_parsed.mining_nodes;
@@ -1655,7 +2639,7 @@ if (_res_sn != "") {
 
 get_material_data = function(_mat_id) {
     if (variable_struct_exists(periodic_table_dict, _mat_id)) {
-        return periodic_table_dict[$ _mat_id];
+        return (variable_struct_exists(periodic_table_dict, _mat_id) ? variable_struct_get(periodic_table_dict, _mat_id) : undefined);
     }
     return undefined;
 };
@@ -1720,7 +2704,7 @@ flagship_set_specialization = function(_protocol) {
     var _t3_count = 0;
     var _tracks = ["fabrication_tier", "mining_tier", "defense_tier", "weapons_tier", "propulsion_tier", "pilot_suite_tier", "sigint_tier", "command_tier"];
     for (var t = 0; t < array_length(_tracks); t++) {
-        if ((flagship.upgrades[$ _tracks[t]] ?? 1) >= 3) _t3_count++;
+        if ((variable_struct_get(flagship.upgrades, _tracks[t]) ?? 1) >= 3) _t3_count++;
     }
     if (_t3_count < 4) {
         if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("LOCKED: Requires at least 4 Flagship Divisions at Tier 3+ (Current: " + string(_t3_count) + "/4)!", c_yellow);
@@ -1744,7 +2728,7 @@ flagship_set_specialization = function(_protocol) {
 };
 
 flagship_upgrade = function(_track) {
-    var _cur_tier = flagship.upgrades[$ _track] ?? 1;
+    var _cur_tier = variable_struct_get(flagship.upgrades, _track) ?? 1;
     if (_cur_tier >= 5) {
         if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("DIVISION AT MAXIMUM APEX ARCHEOTECH TIER (TIER 5)!", c_yellow);
         return false;
@@ -1809,7 +2793,7 @@ flagship_upgrade = function(_track) {
     funds -= _cost_cr;
     if (_req_alloy != "") spend_alloy(_req_alloy, _req_qty);
 
-    flagship.upgrades[$ _track] = _next_tier;
+    variable_struct_set(flagship.upgrades, _track, _next_tier);
 
     if (_track == "defense_tier") {
         var _hulls = [8500, 12000, 18000, 26000, 40000];
@@ -1836,7 +2820,7 @@ flagship_upgrade = function(_track) {
 
 launch_corporate_sabotage = function(_corp_id) {
     if (!variable_struct_exists(rival_corporations, _corp_id)) return false;
-    var _corp = rival_corporations[$ _corp_id];
+    var _corp = variable_struct_get(rival_corporations, _corp_id);
     var _cost = 50000;
 
     if (funds < _cost) {
@@ -2008,4 +2992,14 @@ if (instance_exists(obj_NemesisManager)) {
     if (_nem_chk != noone && variable_instance_exists(_nem_chk, "get_faction_pilots")) {
         populate_market_from_nemesis();
     }
+}
+
+
+// Initialize Hearts of Iron IV style Technology Research Tree
+scr_research_init();
+
+// Transition from initialization room to the main HQ Command Deck
+if (room == rm_init) {
+    show_debug_message("[obj_GameManager] Core initialization complete in rm_init. Transitioning to rm_hq_terminal...");
+    room_goto(rm_hq_terminal);
 }

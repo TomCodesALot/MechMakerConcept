@@ -65,7 +65,9 @@ function scr_load_blueprint(_file_name) {
         }
 
         _blueprint = _parsed;
-        show_debug_message("[scr_load_blueprint] SUCCESS: Loaded blueprint [" + string(_blueprint[$ "blueprint_id"] ?? "unknown") + "] (" + string(_blueprint[$ "name"] ?? "unnamed") + ")");
+        var _b_id = variable_struct_exists(_blueprint, "blueprint_id") ? variable_struct_get(_blueprint, "blueprint_id") : "unknown";
+        var _b_name = variable_struct_exists(_blueprint, "name") ? variable_struct_get(_blueprint, "name") : "unnamed";
+        show_debug_message("[scr_load_blueprint] SUCCESS: Loaded blueprint [" + string(_b_id) + "] (" + string(_b_name) + ")");
     }
     catch (_ex) {
         show_debug_message("[scr_load_blueprint] JSON PARSE ERROR: " + string(_ex.message));

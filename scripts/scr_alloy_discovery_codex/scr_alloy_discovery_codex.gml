@@ -33,7 +33,7 @@ function scr_alloy_discovery_analyze(_input_struct, _opt_temp = 2500, _opt_press
     // Element Totals & Dominance Scan
     for (var k = 0; k < array_length(_keys); k++) {
         var _kname = _keys[k];
-        var _q = _input_struct[$ _kname];
+        var _q = variable_struct_get(_input_struct, _kname);
         if (!is_numeric(_q) || _q <= 0) continue;
 
         _tot_parts += _q;
@@ -77,7 +77,7 @@ function scr_alloy_discovery_analyze(_input_struct, _opt_temp = 2500, _opt_press
 
     for (var k = 0; k < array_length(_keys); k++) {
         var _kname = _keys[k];
-        var _qty = _input_struct[$ _kname];
+        var _qty = variable_struct_get(_input_struct, _kname);
         if (!is_numeric(_qty) || _qty <= 0) continue;
         var _fraction = _qty / _tot_parts;
 
@@ -162,7 +162,7 @@ function scr_alloy_discovery_analyze(_input_struct, _opt_temp = 2500, _opt_press
     var _form_str = "";
     for (var sk = 0; sk < array_length(_keys); sk++) {
         var _k = _keys[sk];
-        var _amt = _input_struct[$ _k];
+        var _amt = variable_struct_get(_input_struct, _k);
         if (is_numeric(_amt) && _amt > 0) {
             _form_str += string(_amt) + "x " + string_upper(_k) + " ";
         }
