@@ -34,7 +34,7 @@ category_names = ["ALL CATEGORIES", "Mobile Suits", "Custom Sockets", "Vehicles"
 // 3. Populate Comprehensive Unit Catalog Roster
 master_roster = [];
 
-var _add_unit = function(_id, _name, _fac, _cat, _chassis, _alloy, _spr, _weapon, _hp, _armor) {
+var _add_unit = function(_id, _name, _fac, _cat, _chassis, _alloy, _spr, _weapon, _hp, _armor, _wpn_prim = "", _wpn_sec = "", _era = 2, _doctrine = "") {
     array_push(master_roster, {
         id: _id,
         name: _name,
@@ -45,7 +45,11 @@ var _add_unit = function(_id, _name, _fac, _cat, _chassis, _alloy, _spr, _weapon
         sprite_asset: _spr,
         weapon_name: _weapon,
         hp: _hp,
-        armor: _armor
+        armor: _armor,
+        weapon_overlay_primary: _wpn_prim,
+        weapon_overlay_secondary: _wpn_sec,
+        era: _era,
+        doctrine: _doctrine
     });
 };
 
@@ -67,7 +71,11 @@ if (instance_exists(obj_GameManager) && is_struct(obj_GameManager.mobile_suit_ca
                     variable_struct_get(_s, "sprite_asset") ?? "spr_ms_ironclad_idle",
                     variable_struct_get(_s, "primary_weapon") ?? "120mm Solid Kinetic Cannon",
                     650,
-                    30
+                    30,
+                    variable_struct_get(_s, "weapon_overlay_primary") ?? "",
+                    variable_struct_get(_s, "weapon_overlay_secondary") ?? "",
+                    variable_struct_get(_s, "era") ?? 2,
+                    variable_struct_get(_s, "doctrine") ?? ""
                 );
             }
         }
@@ -120,23 +128,29 @@ _add_unit("custom_hover", "PMC Ghost Hover Sniper (Modular Socket)", "pmc_player
 _add_unit("custom_tread", "PMC Scrapper Tread Artillery (Modular Socket)", "pmc_player", "CUSTOM_MECH", "tread", "alloy_adamantine_carbide", "spr_ms_custom_tread_artillery_idle", "Type-77 120mm Heavy Cannon", 750, 40);
 _add_unit("custom_aero", "PMC Stratos Aero Striker (Modular Socket)", "pmc_player", "CUSTOM_MECH", "aero", "alloy_aerosteel_flux", "spr_ms_custom_aero_striker_idle", "Ares Swarm-16 Missiles", 450, 22);
 
-// 3c. Conventional Vehicles (Doc 38)
-_add_unit("veh_terran_mammoth", "Mammoth Heavy Siege Tank", "faction_a", "VEHICLE", "tread", "alloy_vanguard_comp", "spr_veh_terran_mammoth_idle", "Dual 150mm Siege Cannons", 520, 35);
-_add_unit("veh_terran_skyhammer", "Skyhammer Combat Gunship", "faction_a", "VEHICLE", "aero", "alloy_vanguard_comp", "spr_veh_terran_skyhammer_idle", "Rotary Vulcan Pod", 380, 18);
-_add_unit("veh_colony_stiletto", "Stiletto Attack Skimmer", "faction_b", "VEHICLE", "hover", "alloy_aerosteel_flux", "spr_veh_colony_stiletto_idle", "Coherent Beam Carbine", 310, 15);
-_add_unit("veh_colony_dart", "Dart Interceptor Craft", "faction_b", "VEHICLE", "aero", "alloy_aerosteel_flux", "spr_veh_colony_dart_idle", "Micro-Missile Pod", 290, 14);
-_add_unit("veh_colony_gunship", "Vespine Assault Gunship", "faction_b", "VEHICLE", "aero", "alloy_aerosteel_flux", "spr_veh_colony_gunship_idle", "Thermal Beam Cannon", 360, 18);
-_add_unit("veh_syndicate_technical", "Reaver Flak Technical Truck", "faction_c", "VEHICLE", "wheeled", "alloy_adamantine_carbide", "spr_veh_syndicate_technical_idle", "Heavy Twin Flak Cannon", 280, 12);
-_add_unit("veh_syndicate_bomber", "Corsair Low-Altitude Bomber", "faction_c", "VEHICLE", "aero", "alloy_adamantine_carbide", "spr_veh_syndicate_bomber_idle", "Thermite Bomb Bay", 420, 20);
-_add_unit("veh_zaibatsu_kurogane", "Kurogane Heavy Hover Carrier", "faction_d", "VEHICLE", "hover", "alloy_tachyon_superalloy", "spr_veh_zaibatsu_kurogane_idle", "Railgun Point Defense", 580, 28);
-_add_unit("veh_zaibatsu_drone_jet", "Kamaitachi Drone Jet", "faction_d", "VEHICLE", "aero", "alloy_tachyon_superalloy", "spr_veh_zaibatsu_drone_jet_idle", "Plasma Beam Emitter", 260, 14);
+// 3c. Conventional Force Vehicles - 4 Factions x 3 Vehicle Archetypes (Tank, Gunship, Fighter)
+// Terran Confederation (faction_a)
+_add_unit("veh_terran_mammoth", "T-720 Mammoth Heavy Battle Tank", "faction_a", "VEHICLE", "tread", "alloy_vanguard_comp", "spr_veh_terran_mammoth_idle", "Dual 150mm Siege Cannons", 520, 35, "", "", 1, "HEAVY_BALLISTIC");
+_add_unit("veh_terran_skyhammer", "UH-44 Skyhammer Heavy Gunship", "faction_a", "VEHICLE", "aero", "alloy_vanguard_comp", "spr_veh_terran_skyhammer_idle", "GAU-88 30mm Rotary Vulcan", 380, 18, "", "", 1, "CLOSE_AIR_SUPPORT");
+_add_unit("veh_terran_sabre", "A-14 Sabre Heavy Strike Jet", "faction_a", "VEHICLE", "aero", "alloy_vanguard_comp", "spr_veh_terran_sabre_idle", "AGM-88 Swarm Strike Missiles", 340, 16, "", "", 1, "AIR_SUPERIORITY");
+// Outer Colony League (faction_b)
+_add_unit("veh_colony_stiletto", "K-4 Stiletto Rapid Attack Skimmer", "faction_b", "VEHICLE", "hover", "alloy_aerosteel_flux", "spr_veh_colony_stiletto_idle", "Coherent Beam Carbine", 310, 15, "", "", 1, "ENERGY_SKIRMISHER");
+_add_unit("veh_colony_gunship", "V-88 Valkyrie Heavy Tilt-Rotor", "faction_b", "VEHICLE", "aero", "alloy_aerosteel_flux", "spr_veh_colony_gunship_idle", "Thermal Beam Cannon", 380, 20, "", "", 1, "AEROSPACE_GUNSHIP");
+_add_unit("veh_colony_dart", "S-10 Dart Hypersonic Interceptor", "faction_b", "VEHICLE", "aero", "alloy_aerosteel_flux", "spr_veh_colony_dart_idle", "Micro-Missile Salvo", 290, 14, "", "", 1, "INTERCEPTOR");
+// Rogue Syndicate (faction_c)
+_add_unit("veh_syndicate_technical", "SCR-T01 Rustfang Flak Technical", "faction_c", "VEHICLE", "wheeled", "alloy_adamantine_carbide", "spr_veh_syndicate_technical_idle", "Heavy Twin Flak Cannon", 300, 14, "", "", 1, "FLAK_SUPPORT");
+_add_unit("veh_syndicate_chopper", "H-09 Buzzsaw Scrap Chopper", "faction_c", "VEHICLE", "aero", "alloy_adamantine_carbide", "spr_veh_syndicate_chopper_idle", "Twin 23mm Rotary Autocannon", 320, 14, "", "", 1, "RAID_CHOPPER");
+_add_unit("veh_syndicate_bomber", "SCR-B03 Buzzard Light Bomber", "faction_c", "VEHICLE", "aero", "alloy_adamantine_carbide", "spr_veh_syndicate_bomber_idle", "Incendiary Slag Cluster", 300, 16, "", "", 1, "TACTICAL_BOMBER");
+// Omni-Corp Zaibatsu (faction_d)
+_add_unit("veh_zaibatsu_kurogane", "Type-94 Kurogane Drone Tank", "faction_d", "VEHICLE", "hover", "alloy_tachyon_superalloy", "spr_veh_zaibatsu_kurogane_idle", "Railgun Point Defense", 580, 28, "", "", 1, "AUTOMATED_DEFENSE");
+_add_unit("veh_zaibatsu_rotor", "Type-07 Shinobi Ducted VTOL", "faction_d", "VEHICLE", "aero", "alloy_tachyon_superalloy", "spr_veh_zaibatsu_rotor_idle", "Twin Pulse Laser Emitters", 350, 18, "", "", 1, "STEALTH_INFILTRATION");
+_add_unit("veh_zaibatsu_drone_jet", "Type-02 Kamaitachi Stealth Drone", "faction_d", "VEHICLE", "aero", "alloy_tachyon_superalloy", "spr_veh_zaibatsu_drone_jet_idle", "Plasma Beam Emitter", 270, 14, "", "", 1, "STEALTH_STRIKE");
 
-// 3d. Conventional Infantry Squads (Doc 38)
-_add_unit("inf_terran_squad", "Terran Grenadier Platoon", "faction_a", "INFANTRY", "infantry", "alloy_vanguard_comp", "spr_inf_terran_squad_idle", "Anti-Armor Rocket Volley", 180, 8);
-_add_unit("inf_colony_squad", "Colony Guerrilla Cell", "faction_b", "INFANTRY", "infantry", "alloy_aerosteel_flux", "spr_inf_colony_squad_idle", "Plasma Rifle Saturation", 150, 6);
-_add_unit("inf_syndicate_squad", "Rust Syndicate Marauder Squad", "faction_c", "INFANTRY", "infantry", "alloy_adamantine_carbide", "spr_inf_syndicate_squad_idle", "Magnetic Harpoon & Charges", 160, 7);
-_add_unit("inf_zaibatsu_squad", "Zaibatsu Spec-Ops Operatives", "faction_d", "INFANTRY", "infantry", "alloy_tachyon_superalloy", "spr_inf_zaibatsu_squad_idle", "Monoblades & Flechettes", 170, 10);
-
+// 3d. Conventional Infantry Squads - 4 Factions x 1 Bespoke Squad (Doc 38)
+_add_unit("inf_terran_squad", "Terran 88th Grenadier Platoon", "faction_a", "INFANTRY", "infantry", "alloy_vanguard_comp", "spr_inf_terran_squad_idle", "Anti-Armor Rocket Volley", 180, 8, "", "", 1, "URBAN_GRENADIERS");
+_add_unit("inf_colony_squad", "Colony Void Jump Skirmishers", "faction_b", "INFANTRY", "infantry", "alloy_aerosteel_flux", "spr_inf_colony_squad_idle", "Plasma Rifle Saturation", 150, 6, "", "", 1, "VOID_SKIRMISHERS");
+_add_unit("inf_syndicate_squad", "Rust Syndicate Marauder Squad", "faction_c", "INFANTRY", "infantry", "alloy_adamantine_carbide", "spr_inf_syndicate_squad_idle", "Magnetic Harpoon & Charges", 160, 7, "", "", 1, "SCRAP_MARAUDERS");
+_add_unit("inf_zaibatsu_squad", "Zaibatsu Spec-Ops Androids", "faction_d", "INFANTRY", "infantry", "alloy_tachyon_superalloy", "spr_inf_zaibatsu_squad_idle", "Monoblades & Flechettes", 170, 10, "", "", 1, "CYBERNETIC_SPEC_OPS");
 show_debug_message("[obj_DebugManager] Master unit catalog indexed: " + string(array_length(master_roster)) + " total units.");
 
 // 4. Filtering & Selection Logic

@@ -250,32 +250,25 @@ function scr_draw_custom_mobile_suit(_suit_data, _x, _y, _scale = 1.0, _facing =
         // Intentionally clean: front perspective displays crisp pixel-art without dust/glow blobs
     }
 
-    // 10. Pass 4: Weapon Firing Recoil & Muzzle Flare
+    // 10. Pass 4: Weapon Firing Recoil & Muzzle Flare (Pixel Art Geometry)
     if (_r_arm_intact && _state == "fire" && !_is_back) {
         var _muzzle_x = _draw_x + ((_sockets.r_arm.x + 36) * _facing * _scale) - (_recoil_kick * _facing);
         var _muzzle_y = _top_y + (_sockets.r_arm.y * _scale) + (14 * _scale);
 
         if (_weapon_type == "BEAM_PULSE" || _weapon_type == "TACHYON_BEAM") {
-            // Cyan energy discharge ring
             draw_set_color(make_color_rgb(0, 240, 255));
-            draw_set_alpha(0.85);
-            draw_circle(_muzzle_x, _muzzle_y, 18 * _scale, false);
+            draw_line_width(_muzzle_x - 8 * _scale, _muzzle_y, _muzzle_x + 18 * _facing * _scale, _muzzle_y, 3 * _scale);
             draw_set_color(c_white);
-            draw_circle(_muzzle_x, _muzzle_y, 9 * _scale, false);
+            draw_line_width(_muzzle_x - 3 * _scale, _muzzle_y, _muzzle_x + 10 * _facing * _scale, _muzzle_y, 1.5 * _scale);
         } else if (_weapon_type == "MICRO_MISSILE") {
-            // White smoke cloud burst
-            draw_set_color(make_color_rgb(220, 225, 235));
-            draw_set_alpha(0.70);
-            draw_circle(_muzzle_x - (10 * _facing * _scale), _muzzle_y, 14 * _scale, false);
+            draw_set_color(make_color_rgb(255, 140, 30));
+            draw_triangle(_muzzle_x, _muzzle_y - 5 * _scale, _muzzle_x + 14 * _facing * _scale, _muzzle_y, _muzzle_x, _muzzle_y + 5 * _scale, false);
         } else {
-            // Kinetic / Vulcan fiery flash
-            draw_set_color(make_color_rgb(255, 220, 90));
-            draw_set_alpha(0.90);
-            draw_circle(_muzzle_x, _muzzle_y, 16 * _scale, false);
-            draw_set_color(c_white);
-            draw_circle(_muzzle_x, _muzzle_y, 8 * _scale, false);
+            draw_set_color(make_color_rgb(255, 185, 45));
+            draw_triangle(_muzzle_x, _muzzle_y - 7 * _scale, _muzzle_x + 18 * _facing * _scale, _muzzle_y, _muzzle_x, _muzzle_y + 7 * _scale, false);
+            draw_set_color(make_color_rgb(255, 245, 170));
+            draw_triangle(_muzzle_x, _muzzle_y - 3 * _scale, _muzzle_x + 10 * _facing * _scale, _muzzle_y, _muzzle_x, _muzzle_y + 3 * _scale, false);
         }
-        draw_set_alpha(1.0);
     }
 }
 
@@ -387,15 +380,27 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
             _spr = spr_ms_zephyr_idle;
         } else if (string_pos("kepler", _lower_id) > 0 || string_pos("helios", _lower_id) > 0 || string_pos("nebula", _lower_id) > 0 || string_pos("selene", _lower_id) > 0) {
             _spr = spr_ms_kepler_idle;
+        } else if (string_pos("cassian", _lower_id) > 0) {
+            _spr = spr_ms_cassian_custom_idle;
+        } else if (string_pos("chronos", _lower_id) > 0) {
+            _spr = spr_ms_chronos_idle;
+        } else if (string_pos("marauder", _lower_id) > 0) {
+            _spr = spr_ms_marauder_idle;
+        } else if (string_pos("iron_reaver", _lower_id) > 0 || string_pos("reaver", _lower_id) > 0) {
+            _spr = spr_ms_iron_reaver_idle;
+        } else if (string_pos("takahashi", _lower_id) > 0) {
+            _spr = spr_ms_takahashi_custom_idle;
+        } else if (string_pos("kamaitachi", _lower_id) > 0) {
+            _spr = spr_ms_kamaitachi_idle;
         } else if (string_pos("oberon", _lower_id) > 0 || string_pos("archangel", _lower_id) > 0 || string_pos("typhon", _lower_id) > 0 || string_pos("seraphim", _lower_id) > 0 || string_pos("sentry", _lower_id) > 0) {
             _spr = spr_ms_oberon_idle;
-        } else if (string_pos("aether", _lower_id) > 0 || string_pos("astraea", _lower_id) > 0 || string_pos("cassian", _lower_id) > 0) {
+        } else if (string_pos("aether", _lower_id) > 0 || string_pos("astraea", _lower_id) > 0) {
             _spr = spr_ms_aether_idle;
         } else if (string_pos("bloodhound", _lower_id) > 0 || string_pos("ripper", _lower_id) > 0 || string_pos("jackal", _lower_id) > 0 || string_pos("scythe", _lower_id) > 0) {
             _spr = spr_ms_bloodhound_idle;
-        } else if (string_pos("vandal", _lower_id) > 0 || string_pos("hellhound", _lower_id) > 0 || string_pos("marauder", _lower_id) > 0 || string_pos("chimera", _lower_id) > 0 || string_pos("partisan", _lower_id) > 0) {
+        } else if (string_pos("vandal", _lower_id) > 0 || string_pos("hellhound", _lower_id) > 0 || string_pos("chimera", _lower_id) > 0 || string_pos("partisan", _lower_id) > 0) {
             _spr = spr_ms_vandal_idle;
-        } else if (string_pos("gorgon", _lower_id) > 0 || string_pos("warthog", _lower_id) > 0 || string_pos("slag", _lower_id) > 0 || string_pos("cerberus", _lower_id) > 0 || string_pos("reaver", _lower_id) > 0 || string_pos("devil", _lower_id) > 0) {
+        } else if (string_pos("gorgon", _lower_id) > 0 || string_pos("warthog", _lower_id) > 0 || string_pos("slag", _lower_id) > 0 || string_pos("cerberus", _lower_id) > 0 || string_pos("devil", _lower_id) > 0) {
             _spr = spr_ms_gorgon_idle;
         } else if (string_pos("hyena", _lower_id) > 0 || string_pos("scrapper", _lower_id) > 0 || string_pos("cruz", _lower_id) > 0) {
             _spr = spr_ms_hyena_idle;
@@ -403,21 +408,34 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
             _spr = spr_ms_kage_idle;
         } else if (string_pos("ronin", _lower_id) > 0 || string_pos("oni", _lower_id) > 0 || string_pos("fudo", _lower_id) > 0 || string_pos("bushido", _lower_id) > 0) {
             _spr = spr_ms_ronin_idle;
-        } else if (string_pos("tessen", _lower_id) > 0 || string_pos("shuriken", _lower_id) > 0 || string_pos("kamaitachi", _lower_id) > 0 || string_pos("raiden", _lower_id) > 0) {
+        } else if (string_pos("tessen", _lower_id) > 0 || string_pos("shuriken", _lower_id) > 0 || string_pos("raiden", _lower_id) > 0) {
             _spr = spr_ms_tessen_idle;
-        } else if (string_pos("muramasa", _lower_id) > 0 || string_pos("takahashi", _lower_id) > 0 || string_pos("susanoo", _lower_id) > 0 || string_pos("yamato", _lower_id) > 0 || string_pos("kusanagi", _lower_id) > 0 || string_pos("amaterasu", _lower_id) > 0) {
+        } else if (string_pos("muramasa", _lower_id) > 0 || string_pos("susanoo", _lower_id) > 0 || string_pos("yamato", _lower_id) > 0 || string_pos("kusanagi", _lower_id) > 0 || string_pos("amaterasu", _lower_id) > 0) {
             _spr = spr_ms_muramasa_idle;
         } else if (string_pos("hephaestus", _lower_id) > 0 || string_pos("prewar", _lower_id) > 0) {
             _spr = spr_ms_hephaestus_avatar;
         } else if (string_pos("seeker", _lower_id) > 0 || string_pos("martian", _lower_id) > 0) {
             _spr = spr_ms_martian_seeker_idle;
         } else {
-            _spr = spr_ms_ironclad_idle;
+            _spr = -1;
         }
     }
 
-    // Safety fallback
-    if (!sprite_exists(_spr)) _spr = spr_ms_ironclad_idle;
+    // Explicit Diagnostic Wireframe Fallback (NEVER silently masquerade as Ironclad)
+    if (!sprite_exists(_spr)) {
+        draw_set_color(c_fuchsia);
+        draw_rectangle(_x - 32 * _scale, _y - 96 * _scale, _x + 32 * _scale, _y, true);
+        draw_line(_x - 32 * _scale, _y - 96 * _scale, _x + 32 * _scale, _y);
+        draw_line(_x + 32 * _scale, _y - 96 * _scale, _x - 32 * _scale, _y);
+        draw_set_color(c_yellow);
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_bottom);
+        draw_text_transformed(_x, _y - 100 * _scale, "[MISSING SPRITE]: " + string(_suit_id_str), 0.75, 0.75, 0);
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+        draw_set_color(c_white);
+        return;
+    }
 
     // 4. Perspective Resolution (Back View)
     var _spr_name = sprite_get_name(_spr);
@@ -496,6 +514,16 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
             var _dest_cand = asset_get_index(_prefix + "_destroyed");
             if (_dest_cand == -1 || !sprite_exists(_dest_cand)) _dest_cand = asset_get_index(_prefix + "_defeat");
             if (_dest_cand == -1 || !sprite_exists(_dest_cand)) _dest_cand = asset_get_index(_prefix + "_crippled");
+            // If conventional vehicle without bespoke defeat sprite, fall back to authentic vehicle wreckage
+            if (_dest_cand == -1 || !sprite_exists(_dest_cand)) {
+                if (string_pos("veh_", _lower_id) > 0) {
+                    if (string_pos("skyhammer", _lower_id) > 0 || string_pos("sabre", _lower_id) > 0 || string_pos("dart", _lower_id) > 0 || string_pos("gunship", _lower_id) > 0 || string_pos("chopper", _lower_id) > 0 || string_pos("bomber", _lower_id) > 0 || string_pos("rotor", _lower_id) > 0 || string_pos("drone_jet", _lower_id) > 0) {
+                        _dest_cand = spr_veh_wreckage_plane;
+                    } else {
+                        _dest_cand = spr_veh_wreckage_tank;
+                    }
+                }
+            }
             if (_dest_cand != -1 && sprite_exists(_dest_cand)) _action_spr = _dest_cand;
         }
 
@@ -516,37 +544,105 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
     var _num_frames = sprite_exists(_spr) ? sprite_get_number(_spr) : 1;
     var _sub = 0;
 
+    var _seed = abs(string_byte_at(_suit_id_str, 1) * 31 + string_byte_at(_suit_id_str, max(1, string_length(_suit_id_str))) * 19);
     if (_subimg_override >= 0) {
         _sub = floor(_subimg_override) % _num_frames;
     } else {
-        var _seed = abs(string_byte_at(_suit_id_str, 1) * 31 + string_byte_at(_suit_id_str, max(1, string_length(_suit_id_str))) * 19);
         var _frame_interval = (string_pos("fire", _state) > 0 || _state == "melee" || _state == "boost") ? 90 : 130;
         _sub = floor((current_time + _seed) / _frame_interval) % _num_frames;
     }
 
-    // 8. Kinematic Displacements (Recoil, Hit Stagger)
+    // 8. Dynamic Kinematic Displacements (Recoil Kickback, Stagger, Melee Lunge)
     var _orig_yo = sprite_exists(_spr) ? sprite_get_yoffset(_spr) : 145;
     var _draw_x = _x;
     var _draw_y = (_orig_yo > 0) ? _y : (_y - (145 * _scale));
     var _top_y = (_orig_yo > 0) ? (_y - (_orig_yo * _scale)) : (_y - (145 * _scale));
     var _draw_angle = 0;
 
+    // Resolve primary weapon name for authentic doctrine action VFX
+    var _wpn_name_str = "";
+    if (is_struct(_suit_id)) {
+        _wpn_name_str = variable_struct_get(_suit_id, "primary_weapon") ?? "";
+    }
+    if (_wpn_name_str == "" && instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "get_mobile_suit")) {
+        var _cat_entry_w = obj_GameManager.get_mobile_suit(_suit_id_str);
+        if (is_struct(_cat_entry_w)) _wpn_name_str = variable_struct_get(_cat_entry_w, "primary_weapon") ?? "";
+    }
+    var _lower_wpn = string_lower(_wpn_name_str);
+
     if (_state == "damaged" || _state == "hit") {
+        _draw_x -= (6 * _facing) * _scale;
         _draw_x += random_range(-3, 3) * _scale;
         _draw_y += random_range(-2, 2) * _scale;
         _draw_angle = -5 * _facing;
-        _tint = merge_color(_tint, c_red, 0.4);
+        _tint = merge_color(_tint, c_red, 0.45);
+    } else if (_state == "destroyed" || _state == "defeat") {
+        if (_action_spr == -1) {
+            // Procedural charred collapse posture for suits without dedicated destroyed frame
+            _draw_angle = -20 * _facing;
+            _draw_y += 12 * _scale;
+            _draw_x -= (8 * _facing) * _scale;
+            _tint = merge_color(_tint, make_color_rgb(45, 45, 48), 0.75);
+        }
     } else if (string_pos("fire", _state) > 0) {
-        _draw_x -= (4 * _facing) * _scale; // Barrel blowback
-        _draw_angle = 2 * _facing;
+        // Dynamic procedural weapon recoil (pulsing kickback matching animation timer)
+        var _kick = (sin((_subimg_override >= 0 ? _subimg_override : current_time * 0.015) * pi * 2.0) * 0.5 + 0.5) * 6.0 * _scale;
+        _draw_x -= (_kick * _facing);
+        _draw_angle = (1.5 * _scale) * _facing;
     } else if (_state == "melee") {
-        _draw_x += (12 * _facing) * _scale; // Forward lunge
-        _draw_angle = 3 * _facing;
+        // Forward lunge dash
+        var _lunge = (sin((_subimg_override >= 0 ? _subimg_override : current_time * 0.012) * pi * 2.0) * 0.5 + 0.5) * 14.0 * _scale;
+        _draw_x += (_lunge * _facing);
+        _draw_angle = -4 * _facing;
+    } else if (_state == "boost" || _state == "walk") {
+        _draw_y += sin(current_time * 0.008) * 3 * _scale;
     }
 
-    // 9. Render Main 2D Sprite
+    // 8b. Resolve Modular Weapon Overlays (Gundam Doctrine System)
+    var _wpn_prim_spr = -1;
+    var _wpn_sec_spr = -1;
+    var _wpn_prim_str = "";
+    var _wpn_sec_str = "";
+
+    if (is_struct(_suit_id)) {
+        _wpn_prim_str = variable_struct_get(_suit_id, "weapon_overlay_primary") ?? "";
+        _wpn_sec_str = variable_struct_get(_suit_id, "weapon_overlay_secondary") ?? "";
+    }
+    if (_wpn_prim_str == "" && instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "get_mobile_suit")) {
+        var _c_entry = obj_GameManager.get_mobile_suit(_suit_id_str);
+        if (is_struct(_c_entry)) {
+            _wpn_prim_str = variable_struct_get(_c_entry, "weapon_overlay_primary") ?? "";
+            _wpn_sec_str = variable_struct_get(_c_entry, "weapon_overlay_secondary") ?? "";
+        }
+    }
+
+    if (_wpn_prim_str != "") {
+        var _p_idx = asset_get_index(_wpn_prim_str);
+        if (_p_idx != -1 && sprite_exists(_p_idx)) _wpn_prim_spr = _p_idx;
+    }
+    if (_wpn_sec_str != "") {
+        var _s_idx = asset_get_index(_wpn_sec_str);
+        if (_s_idx != -1 && sprite_exists(_s_idx)) _wpn_sec_spr = _s_idx;
+    }
+
+    // Pass 1: Background Secondary Weapon / Shield (Only on CUSTOM_MECH to prevent double-weapons on military suits)
+    if (!_is_back && _is_custom && _wpn_sec_spr != -1) {
+        var _sec_sub = _sub % sprite_get_number(_wpn_sec_spr);
+        draw_sprite_ext(_wpn_sec_spr, _sec_sub, _draw_x, _draw_y, _scale * _facing, _scale, _draw_angle, c_white, 1.0);
+    }
+
+    // 9. Render Main 2D Base Chassis Frame
     if (sprite_exists(_spr)) {
         draw_sprite_ext(_spr, _sub, _draw_x, _draw_y, _scale * _facing, _scale, _draw_angle, _tint, 1.0);
+    }
+
+    // Pass 3: Foreground Primary Weapon (Only on CUSTOM_MECH to prevent double-weapons on military suits)
+    if (!_is_back && _is_custom && _wpn_prim_spr != -1) {
+        var _prim_sub = _sub % sprite_get_number(_wpn_prim_spr);
+        if (string_pos("fire", _state) > 0 || _state == "melee") {
+            _prim_sub = 3 % sprite_get_number(_wpn_prim_spr);
+        }
+        draw_sprite_ext(_wpn_prim_spr, _prim_sub, _draw_x, _draw_y, _scale * _facing, _scale, _draw_angle, c_white, 1.0);
     }
 
     // 10. Backpack Thruster Vernier Plumes (ONLY on REAR perspective)
@@ -562,17 +658,39 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
         draw_circle(_draw_x + (14 * _facing * _scale), _top_y + (76 * _scale), 3 * _scale, false);
         draw_set_alpha(1.0);
     }
-    // NOTICE: Front core vent glow circle is intentionally removed to keep sprites clean and crisp!
 
-    // 11. Weapon Muzzle Flash Rendering (during firing actions)
-    if (string_pos("fire", _state) > 0 && !_is_back) {
-        draw_set_color(make_color_rgb(255, 230, 100));
-        draw_set_alpha(0.85);
-        var _muzzle_x = _draw_x + (45 * _facing * _scale);
-        var _muzzle_y = _top_y + (65 * _scale);
-        draw_circle(_muzzle_x, _muzzle_y, 16 * _scale, false);
-        draw_set_color(c_white);
-        draw_circle(_muzzle_x, _muzzle_y, 8 * _scale, false);
-        draw_set_alpha(1.0);
+    // 11. UNIFIED PROCEDURAL COMBAT ACTION VFX (State Visual Effects: Damage Smoke & Destruction)
+    if (!_is_back) {
+        if (_state == "destroyed" || _state == "defeat") {
+            // Catastrophic destruction VFX: Rising black smoke & burning reactor flame core
+            var _wreck_t = current_time * 0.003;
+            for (var k = 0; k < 4; k++) {
+                var _smk_off = (k * 20);
+                var _smk_prog = fmod(_wreck_t * 50 + _smk_off, 55);
+                var _smk_y = _top_y + (55 * _scale) - (_smk_prog * _scale);
+                var _smk_x = _draw_x + (sin(_wreck_t * 1.5 + k) * 10 * _scale);
+                var _smk_r = (6 + k * 3.5) * _scale;
+                draw_set_color(make_color_rgb(25, 25, 30));
+                draw_set_alpha(0.65 - (_smk_prog / 65));
+                draw_circle(_smk_x, _smk_y, _smk_r, false);
+            }
+            // Burning reactor flame core
+            var _flame_pulse = 0.6 + 0.4 * sin(current_time * 0.02);
+            draw_set_color(make_color_rgb(255, 120, 20));
+            draw_set_alpha(_flame_pulse * 0.85);
+            draw_circle(_draw_x, _top_y + (75 * _scale), 9 * _scale, false);
+            draw_set_color(make_color_rgb(255, 230, 80));
+            draw_set_alpha(_flame_pulse * 0.65);
+            draw_circle(_draw_x, _top_y + (75 * _scale), 4 * _scale, false);
+            draw_set_alpha(1.0);
+        } else if (_state == "damaged" || _state == "hit") {
+            // Shorting electrical blue sparks
+            if (fmod(current_time, 200) < 100) {
+                draw_set_color(make_color_rgb(120, 220, 255));
+                var _spk_x = _draw_x + random_range(-14, 14) * _scale;
+                var _spk_y = _top_y + (60 + random_range(-18, 18)) * _scale;
+                draw_line_width(_spk_x, _spk_y, _spk_x + random_range(-5, 5) * _scale, _spk_y + random_range(-5, 5) * _scale, 1.5 * _scale);
+            }
+        }
     }
 }

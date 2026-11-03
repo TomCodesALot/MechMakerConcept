@@ -247,6 +247,21 @@ if (active_debug_tab == 0) {
     var _atk_list = get_filtered_units(atk_faction_idx, atk_cat_idx);
     atk_filtered_idx = clamp(atk_filtered_idx, 0, max(0, array_length(_atk_list) - 1));
     var _cur_atk = _atk_list[atk_filtered_idx];
+    // Automatically synchronize weapon choreography to canonical doctrine weapon for military units
+    if (_cur_atk.category != "CUSTOM_MECH") {
+        var _w_name_low = string_lower(_cur_atk.weapon_name);
+        if (string_pos("vulcan", _w_name_low) > 0 || string_pos("chain", _w_name_low) > 0 || string_pos("flak", _w_name_low) > 0) {
+            weapon_idx = 1; // ROTARY_VULCAN
+        } else if (string_pos("beam", _w_name_low) > 0 || string_pos("particle", _w_name_low) > 0 || string_pos("plasma", _w_name_low) > 0 || string_pos("pulse", _w_name_low) > 0 || string_pos("lance", _w_name_low) > 0 || string_pos("spray", _w_name_low) > 0) {
+            weapon_idx = 2; // BEAM_PULSE
+        } else if (string_pos("missile", _w_name_low) > 0 || string_pos("rocket", _w_name_low) > 0 || string_pos("swarm", _w_name_low) > 0) {
+            weapon_idx = 3; // MICRO_MISSILE
+        } else if (string_pos("katana", _w_name_low) > 0 || string_pos("blade", _w_name_low) > 0 || string_pos("saber", _w_name_low) > 0 || string_pos("claw", _w_name_low) > 0 || string_pos("saw", _w_name_low) > 0 || string_pos("fan", _w_name_low) > 0 || string_pos("pincer", _w_name_low) > 0 || string_pos("tanto", _w_name_low) > 0) {
+            weapon_idx = 4; // MELEE
+        } else {
+            weapon_idx = 0; // SOLID_CANNON
+        }
+    }
 
     // Faction Filter Selector
     draw_set_color(make_color_rgb(140, 180, 220));
@@ -299,9 +314,11 @@ if (active_debug_tab == 0) {
 
     draw_set_color(make_color_rgb(140, 170, 200));
     draw_text(_col1_x + 22, _col1_y + 226, "ID: " + _cur_atk.id);
-    draw_text(_col1_x + 22, _col1_y + 250, "FACTION: " + _cur_atk.faction_id);
+    var _atk_era_str = variable_struct_exists(_cur_atk, "era") ? (" [GEN " + string(_cur_atk.era) + "]") : "";
+    draw_text(_col1_x + 22, _col1_y + 250, "FACTION: " + _cur_atk.faction_id + _atk_era_str);
     draw_text(_col1_x + 22, _col1_y + 274, "CATEGORY: " + _cur_atk.category);
-    draw_text(_col1_x + 22, _col1_y + 298, "CHASSIS: " + string_upper(_cur_atk.chassis));
+    var _atk_doc_str = (variable_struct_exists(_cur_atk, "doctrine") && _cur_atk.doctrine != "") ? string_copy(_cur_atk.doctrine, 1, 24) : string_upper(_cur_atk.chassis);
+    draw_text(_col1_x + 22, _col1_y + 298, "DOCTRINE: " + _atk_doc_str);
     draw_text(_col1_x + 22, _col1_y + 322, "ALLOY: " + _cur_atk.alloy);
     draw_text(_col1_x + 22, _col1_y + 346, "WEAPON: " + _cur_atk.weapon_name);
     draw_text(_col1_x + 22, _col1_y + 370, "HULL: " + string(_cur_atk.hp) + " HP");
@@ -385,9 +402,11 @@ if (active_debug_tab == 0) {
 
     draw_set_color(make_color_rgb(200, 170, 160));
     draw_text(_col3_x + 22, _col3_y + 226, "ID: " + _cur_def.id);
-    draw_text(_col3_x + 22, _col3_y + 250, "FACTION: " + _cur_def.faction_id);
+    var _def_era_str = variable_struct_exists(_cur_def, "era") ? (" [GEN " + string(_cur_def.era) + "]") : "";
+    draw_text(_col3_x + 22, _col3_y + 250, "FACTION: " + _cur_def.faction_id + _def_era_str);
     draw_text(_col3_x + 22, _col3_y + 274, "CATEGORY: " + _cur_def.category);
-    draw_text(_col3_x + 22, _col3_y + 298, "CHASSIS: " + string_upper(_cur_def.chassis));
+    var _def_doc_str = (variable_struct_exists(_cur_def, "doctrine") && _cur_def.doctrine != "") ? string_copy(_cur_def.doctrine, 1, 24) : string_upper(_cur_def.chassis);
+    draw_text(_col3_x + 22, _col3_y + 298, "DOCTRINE: " + _def_doc_str);
     draw_text(_col3_x + 22, _col3_y + 322, "ALLOY: " + _cur_def.alloy);
     draw_text(_col3_x + 22, _col3_y + 346, "WEAPON: " + _cur_def.weapon_name);
     draw_text(_col3_x + 22, _col3_y + 370, "HULL: " + string(_cur_def.hp) + " HP");
@@ -566,11 +585,15 @@ if (active_debug_tab == 0) {
 
     var _w_btn_w = _col2_w - 28;
     var _wpn_hov = (_mx >= _col2_x + 14 && _mx <= _col2_x + 14 + _w_btn_w && _my >= _wpn_y + 18 && _my <= _wpn_y + 44);
-    if (_wpn_hov && _click) {
-        weapon_idx = (weapon_idx + 1) % array_length(weapon_classes);
-        scr_audio_play_ui("click");
+    if (_cur_atk.category == "CUSTOM_MECH") {
+        if (_wpn_hov && _click) {
+            weapon_idx = (weapon_idx + 1) % array_length(weapon_classes);
+            scr_audio_play_ui("click");
+        }
+        scr_draw_snes_button(_col2_x + 14, _wpn_y + 18, _w_btn_w, 26, "< WEAPON: " + weapon_names[weapon_idx] + " (" + weapon_classes[weapon_idx] + ") >", _wpn_hov, false, make_color_rgb(255, 200, 60));
+    } else {
+        scr_draw_snes_button(_col2_x + 14, _wpn_y + 18, _w_btn_w, 26, "[ DOCTRINE WEAPON: " + _cur_atk.weapon_name + " (" + weapon_classes[weapon_idx] + ") ]", _wpn_hov, false, make_color_rgb(100, 240, 255));
     }
-    scr_draw_snes_button(_col2_x + 14, _wpn_y + 18, _w_btn_w, 26, "< WEAPON: " + weapon_names[weapon_idx] + " (" + weapon_classes[weapon_idx] + ") >", _wpn_hov, false, make_color_rgb(255, 200, 60));
 
     // 3. Huge Tactile Cinematic Clash Launcher Button
     var _lch_y = _wpn_y + 56;

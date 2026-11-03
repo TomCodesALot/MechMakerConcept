@@ -1,0 +1,999 @@
+{
+  "version": "2.0.0",
+  "era": "2",
+  "description": "Master 4x4 Conventional Force Matrix across all 4 galactic factions (Tank, Gunship, Fighter, Infantry).",
+  "vehicles": [
+    {
+      "id": "veh_terran_mammoth",
+      "name": "T-720 'Mammoth' Heavy Battle Tank",
+      "short_name": "MAMMOTH TANK",
+      "faction_id": "faction_a",
+      "type": "tank",
+      "propulsion": "TREAD",
+      "sprite_asset": "spr_veh_terran_mammoth_idle",
+      "back_sprite_asset": "spr_veh_terran_mammoth_back_idle",
+      "is_ground_vehicle": true,
+      "ap": 4,
+      "accuracy": 80,
+      "evasion": 15,
+      "armor": 35,
+      "components": {
+        "torso": {
+          "name": "Heavy Cast Steel Hull",
+          "hp": 520,
+          "armor": 35
+        },
+        "head": {
+          "name": "Ballistic Fire-Control Cupola",
+          "hp": 180,
+          "armor": 25
+        },
+        "arm_left": {
+          "name": "Dual 150mm Smoothbore Left",
+          "hp": 240,
+          "armor": 30
+        },
+        "arm_right": {
+          "name": "Dual 150mm Smoothbore Right",
+          "hp": 240,
+          "armor": 30
+        },
+        "legs": {
+          "name": "Reinforced Caterpillar Treads",
+          "hp": 320,
+          "armor": 28
+        },
+        "backpack": {
+          "name": "Supercharged V12 Diesel Engine",
+          "hp": 200,
+          "armor": 22
+        }
+      },
+      "weapons": [
+        {
+          "name": "Dual 150mm Heavy Cannons",
+          "short_name": "DUAL 150MM",
+          "proj_type": "BALLISTIC",
+          "ap_cost": 3,
+          "heat_cost": 0,
+          "range_min": 2,
+          "range_max": 6,
+          "damage": 190,
+          "anim_state": "fire_rifle",
+          "desc": "High-velocity armor-piercing kinetic shells."
+        }
+      ],
+      "description": "Mainline heavy battle tank of the Terran Confederation, trading agility for impenetrable frontal armor and twin siege cannons."
+    },
+    {
+      "id": "veh_terran_skyhammer",
+      "name": "UH-44 'Skyhammer' Twin-Rotor Heavy Gunship",
+      "short_name": "SKYHAMMER GUNSHIP",
+      "faction_id": "faction_a",
+      "type": "gunship",
+      "propulsion": "ROTARY_FLIGHT",
+      "sprite_asset": "spr_veh_terran_skyhammer_idle",
+      "back_sprite_asset": "spr_veh_terran_skyhammer_back_idle",
+      "is_aircraft": true,
+      "ap": 6,
+      "accuracy": 82,
+      "evasion": 45,
+      "armor": 18,
+      "components": {
+        "torso": {
+          "name": "Armored Cockpit Fuselage",
+          "hp": 380,
+          "armor": 18
+        },
+        "head": {
+          "name": "Targeting FLIR Turret",
+          "hp": 140,
+          "armor": 14
+        },
+        "arm_left": {
+          "name": "Port Heavy Hydra Rocket Pod",
+          "hp": 190,
+          "armor": 14
+        },
+        "arm_right": {
+          "name": "Starboard Heavy Hydra Pod",
+          "hp": 190,
+          "armor": 14
+        },
+        "legs": {
+          "name": "Tandem Counter-Rotating Rotors",
+          "hp": 240,
+          "armor": 16
+        },
+        "backpack": {
+          "name": "Twin Turboshaft Engines",
+          "hp": 180,
+          "armor": 14
+        }
+      },
+      "weapons": [
+        {
+          "name": "GAU-88 30mm Rotary Vulcan",
+          "short_name": "30MM VULCAN",
+          "proj_type": "ROTARY_VULCAN",
+          "ap_cost": 2,
+          "heat_cost": 0,
+          "range_min": 1,
+          "range_max": 5,
+          "damage": 120,
+          "anim_state": "fire_chaingun",
+          "desc": "Nose-mounted anti-armor rotary autocannon."
+        }
+      ],
+      "description": "Terran Confederation twin-rotor gunship providing relentless air-to-ground suppression and forward fire support."
+    },
+    {
+      "id": "veh_terran_sabre",
+      "name": "A-14 'Sabre' Heavy Strike Jet",
+      "short_name": "SABRE JET",
+      "faction_id": "faction_a",
+      "type": "fighter",
+      "propulsion": "SUPERSONIC_FLIGHT",
+      "sprite_asset": "spr_veh_terran_sabre_idle",
+      "back_sprite_asset": "spr_veh_terran_sabre_back_idle",
+      "is_aircraft": true,
+      "ap": 7,
+      "accuracy": 86,
+      "evasion": 62,
+      "armor": 16,
+      "components": {
+        "torso": {
+          "name": "Swept-Wing Titanium Fuselage",
+          "hp": 340,
+          "armor": 16
+        },
+        "head": {
+          "name": "Avionics Radar Dome",
+          "hp": 130,
+          "armor": 14
+        },
+        "arm_left": {
+          "name": "Port AGM Missile Pylons",
+          "hp": 170,
+          "armor": 12
+        },
+        "arm_right": {
+          "name": "Starboard AGM Missile Pylons",
+          "hp": 170,
+          "armor": 12
+        },
+        "legs": {
+          "name": "Twin Afterburning Turbojets",
+          "hp": 260,
+          "armor": 14
+        },
+        "backpack": {
+          "name": "Chaff / Flare Countermeasures",
+          "hp": 140,
+          "armor": 12
+        }
+      },
+      "weapons": [
+        {
+          "name": "AGM-88 Swarm Strike Missiles",
+          "short_name": "AGM MISSILES",
+          "proj_type": "MICRO_MISSILE",
+          "ap_cost": 3,
+          "heat_cost": 0,
+          "range_min": 2,
+          "range_max": 7,
+          "damage": 165,
+          "anim_state": "fire_missiles",
+          "desc": "Heavy cluster torpedo salvo designed to shatter armored columns."
+        }
+      ],
+      "description": "Terran dedicated strike fighter capable of high-speed bombing runs and close air defense."
+    },
+    {
+      "id": "inf_terran_squad",
+      "name": "Terran 88th Grenadier Platoon",
+      "short_name": "GRENADIER PLATOON",
+      "faction_id": "faction_a",
+      "type": "infantry",
+      "propulsion": "FOOT_SOLDIER",
+      "sprite_asset": "spr_inf_terran_squad_idle",
+      "back_sprite_asset": "spr_inf_terran_squad_back_idle",
+      "is_infantry": true,
+      "ap": 4,
+      "accuracy": 78,
+      "evasion": 35,
+      "armor": 8,
+      "components": {
+        "torso": {
+          "name": "Heavy Flak Vests & Webbing",
+          "hp": 180,
+          "armor": 8
+        },
+        "head": {
+          "name": "Ballistic Visor Helmets",
+          "hp": 80,
+          "armor": 8
+        },
+        "arm_left": {
+          "name": "Anti-Armor RPG Launchers",
+          "hp": 110,
+          "armor": 6
+        },
+        "arm_right": {
+          "name": "Assault Carbines",
+          "hp": 110,
+          "armor": 6
+        },
+        "legs": {
+          "name": "Combat Boots & Knee Pads",
+          "hp": 130,
+          "armor": 6
+        },
+        "backpack": {
+          "name": "Munitions Pack",
+          "hp": 90,
+          "armor": 6
+        }
+      },
+      "weapons": [
+        {
+          "name": "Anti-Armor Rocket Volley",
+          "short_name": "RPG VOLLEY",
+          "proj_type": "BALLISTIC",
+          "ap_cost": 2,
+          "heat_cost": 0,
+          "range_min": 1,
+          "range_max": 4,
+          "damage": 110,
+          "anim_state": "fire_rifle",
+          "desc": "Synchronized heavy RPG salvo."
+        }
+      ],
+      "description": "Veteran infantry platoon equipped with man-portable anti-mech weaponry to hold urban ruins."
+    },
+    {
+      "id": "veh_colony_stiletto",
+      "name": "K-4 'Stiletto' Rapid Attack Skimmer",
+      "short_name": "STILETTO SKIMMER",
+      "faction_id": "faction_b",
+      "type": "tank",
+      "propulsion": "HOVER",
+      "sprite_asset": "spr_veh_colony_stiletto_idle",
+      "back_sprite_asset": "spr_veh_colony_stiletto_back_idle",
+      "is_ground_vehicle": true,
+      "ap": 6,
+      "accuracy": 85,
+      "evasion": 48,
+      "armor": 15,
+      "components": {
+        "torso": {
+          "name": "Aerosteel Skimmer Chassis",
+          "hp": 310,
+          "armor": 15
+        },
+        "head": {
+          "name": "Targeting Optic Sensor",
+          "hp": 120,
+          "armor": 12
+        },
+        "arm_left": {
+          "name": "Coherent Beam Emitter L",
+          "hp": 160,
+          "armor": 12
+        },
+        "arm_right": {
+          "name": "Coherent Beam Emitter R",
+          "hp": 160,
+          "armor": 12
+        },
+        "legs": {
+          "name": "Repulsor Lift Skirts",
+          "hp": 220,
+          "armor": 14
+        },
+        "backpack": {
+          "name": "Plasma Battery Generator",
+          "hp": 150,
+          "armor": 12
+        }
+      },
+      "weapons": [
+        {
+          "name": "Coherent Beam Carbine",
+          "short_name": "BEAM CARBINE",
+          "proj_type": "BEAM_PULSE",
+          "ap_cost": 2,
+          "heat_cost": 0,
+          "range_min": 1,
+          "range_max": 5,
+          "damage": 130,
+          "anim_state": "fire_beam",
+          "desc": "Rapid-fire coherent plasma beams."
+        }
+      ],
+      "description": "High-speed colonial repulsor skimmer designed to flank heavy armor across rough terrain and slag."
+    },
+    {
+      "id": "veh_colony_gunship",
+      "name": "V-88 'Valkyrie' Heavy Tilt-Rotor",
+      "short_name": "VALKYRIE TILT-ROTOR",
+      "faction_id": "faction_b",
+      "type": "gunship",
+      "propulsion": "TILT_ROTOR",
+      "sprite_asset": "spr_veh_colony_gunship_idle",
+      "back_sprite_asset": "spr_veh_colony_gunship_back_idle",
+      "is_aircraft": true,
+      "ap": 7,
+      "accuracy": 84,
+      "evasion": 58,
+      "armor": 20,
+      "components": {
+        "torso": {
+          "name": "Aerospace Fuselage Frame",
+          "hp": 380,
+          "armor": 20
+        },
+        "head": {
+          "name": "Chin Sensor & Cockpit",
+          "hp": 150,
+          "armor": 16
+        },
+        "arm_left": {
+          "name": "Port Wing Tilt Nacelle",
+          "hp": 210,
+          "armor": 16
+        },
+        "arm_right": {
+          "name": "Starboard Tilt Nacelle",
+          "hp": 210,
+          "armor": 16
+        },
+        "legs": {
+          "name": "Twin Lift Turbines",
+          "hp": 280,
+          "armor": 18
+        },
+        "backpack": {
+          "name": "Thermal Venting Manifold",
+          "hp": 160,
+          "armor": 14
+        }
+      },
+      "weapons": [
+        {
+          "name": "Thermal Beam Cannon",
+          "short_name": "THERMAL BEAM",
+          "proj_type": "BEAM_PULSE",
+          "ap_cost": 3,
+          "heat_cost": 0,
+          "range_min": 2,
+          "range_max": 6,
+          "damage": 155,
+          "anim_state": "fire_beam",
+          "desc": "Coherent thermal beam piercing vehicle armor."
+        }
+      ],
+      "description": "Advanced Outer Colony tilt-rotor combining VTOL agility with relentless beam weapon saturation."
+    },
+    {
+      "id": "veh_colony_dart",
+      "name": "S-10 'Dart' Hypersonic Interceptor",
+      "short_name": "DART INTERCEPTOR",
+      "faction_id": "faction_b",
+      "type": "fighter",
+      "propulsion": "SUPERSONIC_FLIGHT",
+      "sprite_asset": "spr_veh_colony_dart_idle",
+      "back_sprite_asset": "spr_veh_colony_dart_back_idle",
+      "is_aircraft": true,
+      "ap": 8,
+      "accuracy": 88,
+      "evasion": 72,
+      "armor": 14,
+      "components": {
+        "torso": {
+          "name": "Delta-Wing Composite Monocoque",
+          "hp": 290,
+          "armor": 14
+        },
+        "head": {
+          "name": "Quantum Navigation Core",
+          "hp": 110,
+          "armor": 12
+        },
+        "arm_left": {
+          "name": "Port Micro-Missile Bay",
+          "hp": 150,
+          "armor": 10
+        },
+        "arm_right": {
+          "name": "Starboard Micro-Missile Bay",
+          "hp": 150,
+          "armor": 10
+        },
+        "legs": {
+          "name": "Dual Scramjet Engines",
+          "hp": 230,
+          "armor": 12
+        },
+        "backpack": {
+          "name": "Heat Radiator Shroud",
+          "hp": 130,
+          "armor": 10
+        }
+      },
+      "weapons": [
+        {
+          "name": "Micro-Missile Salvo",
+          "short_name": "MICRO MISSILES",
+          "proj_type": "MICRO_MISSILE",
+          "ap_cost": 2,
+          "heat_cost": 0,
+          "range_min": 2,
+          "range_max": 7,
+          "damage": 140,
+          "anim_state": "fire_missiles",
+          "desc": "Hypersonic multi-warhead swarm."
+        }
+      ],
+      "description": "Lightweight Colonial interceptor designed to establish aerospace dominance over drop zones."
+    },
+    {
+      "id": "inf_colony_squad",
+      "name": "Colony Void Jump Skirmishers",
+      "short_name": "VOID SKIRMISHERS",
+      "faction_id": "faction_b",
+      "type": "infantry",
+      "propulsion": "FOOT_SOLDIER",
+      "sprite_asset": "spr_inf_colony_squad_idle",
+      "back_sprite_asset": "spr_inf_colony_squad_back_idle",
+      "is_infantry": true,
+      "ap": 5,
+      "accuracy": 82,
+      "evasion": 48,
+      "armor": 6,
+      "components": {
+        "torso": {
+          "name": "Light EVA Vacuum Suit",
+          "hp": 150,
+          "armor": 6
+        },
+        "head": {
+          "name": "Panoramic HUD Visor",
+          "hp": 70,
+          "armor": 6
+        },
+        "arm_left": {
+          "name": "Plasma Rifle Emitter",
+          "hp": 90,
+          "armor": 5
+        },
+        "arm_right": {
+          "name": "Sidearm Pulse Blaster",
+          "hp": 90,
+          "armor": 5
+        },
+        "legs": {
+          "name": "Mag-Clamp Jump Boots",
+          "hp": 110,
+          "armor": 5
+        },
+        "backpack": {
+          "name": "Mono-Propellant Jump Pack",
+          "hp": 80,
+          "armor": 5
+        }
+      },
+      "weapons": [
+        {
+          "name": "Plasma Rifle Saturation",
+          "short_name": "PLASMA RIFLE",
+          "proj_type": "BEAM_PULSE",
+          "ap_cost": 2,
+          "heat_cost": 0,
+          "range_min": 1,
+          "range_max": 4,
+          "damage": 95,
+          "anim_state": "fire_beam",
+          "desc": "Rapid ionized plasma fire."
+        }
+      ],
+      "description": "High-mobility colonial skirmishers equipped with thruster packs for rapid flanking across low-gravity theaters."
+    },
+    {
+      "id": "veh_syndicate_technical",
+      "name": "SCR-T01 'Rustfang' Flak Technical",
+      "short_name": "FLAK TECHNICAL",
+      "faction_id": "faction_c",
+      "type": "tank",
+      "propulsion": "WHEELED",
+      "sprite_asset": "spr_veh_syndicate_technical_idle",
+      "back_sprite_asset": "spr_veh_syndicate_technical_back_idle",
+      "is_ground_vehicle": true,
+      "ap": 5,
+      "accuracy": 74,
+      "evasion": 32,
+      "armor": 14,
+      "components": {
+        "torso": {
+          "name": "Welded Scrap Chassis 6x6",
+          "hp": 300,
+          "armor": 14
+        },
+        "head": {
+          "name": "Armored Gunner Shield",
+          "hp": 110,
+          "armor": 12
+        },
+        "arm_left": {
+          "name": "Twin Flak Cannon Port",
+          "hp": 160,
+          "armor": 12
+        },
+        "arm_right": {
+          "name": "Twin Flak Cannon Stbd",
+          "hp": 160,
+          "armor": 12
+        },
+        "legs": {
+          "name": "All-Terrain Solid Rubber Tires",
+          "hp": 200,
+          "armor": 10
+        },
+        "backpack": {
+          "name": "Nitro Booster Tank",
+          "hp": 120,
+          "armor": 8
+        }
+      },
+      "weapons": [
+        {
+          "name": "Heavy Twin Flak Cannon",
+          "short_name": "TWIN FLAK",
+          "proj_type": "BALLISTIC",
+          "ap_cost": 2,
+          "heat_cost": 0,
+          "range_min": 1,
+          "range_max": 5,
+          "damage": 140,
+          "anim_state": "fire_rifle",
+          "desc": "Proximity-fused shrapnel flak."
+        }
+      ],
+      "description": "Scrap-welded technical truck packing dual anti-air autocannons that shred light mechs and infantry alike."
+    },
+    {
+      "id": "veh_syndicate_chopper",
+      "name": "H-09 'Buzzsaw' Scrap Chopper",
+      "short_name": "BUZZSAW CHOPPER",
+      "faction_id": "faction_c",
+      "type": "gunship",
+      "propulsion": "ROTARY_FLIGHT",
+      "sprite_asset": "spr_veh_syndicate_chopper_idle",
+      "back_sprite_asset": "spr_veh_syndicate_chopper_back_idle",
+      "is_aircraft": true,
+      "ap": 6,
+      "accuracy": 72,
+      "evasion": 46,
+      "armor": 14,
+      "components": {
+        "torso": {
+          "name": "Welded Steel Roll Cage",
+          "hp": 320,
+          "armor": 14
+        },
+        "head": {
+          "name": "Mesh Cockpit Screen",
+          "hp": 120,
+          "armor": 10
+        },
+        "arm_left": {
+          "name": "Port Heavy Autocannon",
+          "hp": 170,
+          "armor": 12
+        },
+        "arm_right": {
+          "name": "Starboard Harpoon Winch",
+          "hp": 170,
+          "armor": 12
+        },
+        "legs": {
+          "name": "Exposed Overhead Rotor Hub",
+          "hp": 210,
+          "armor": 12
+        },
+        "backpack": {
+          "name": "Exposed V8 Radial Engine",
+          "hp": 150,
+          "armor": 10
+        }
+      },
+      "weapons": [
+        {
+          "name": "Twin 23mm Rotary Autocannon",
+          "short_name": "23MM ROTARY",
+          "proj_type": "ROTARY_VULCAN",
+          "ap_cost": 2,
+          "heat_cost": 0,
+          "range_min": 1,
+          "range_max": 5,
+          "damage": 125,
+          "anim_state": "fire_chaingun",
+          "desc": "High-velocity improvised rotary cannon."
+        }
+      ],
+      "description": "Jury-rigged assault helicopter built from downed industrial transports, armed with high-cadence autocannons."
+    },
+    {
+      "id": "veh_syndicate_bomber",
+      "name": "SCR-B03 'Buzzard' Light Bomber",
+      "short_name": "BUZZARD BOMBER",
+      "faction_id": "faction_c",
+      "type": "fighter",
+      "propulsion": "PROP_FLIGHT",
+      "sprite_asset": "spr_veh_syndicate_bomber_idle",
+      "back_sprite_asset": "spr_veh_syndicate_bomber_back_idle",
+      "is_aircraft": true,
+      "ap": 6,
+      "accuracy": 72,
+      "evasion": 50,
+      "armor": 16,
+      "components": {
+        "torso": {
+          "name": "Welded Twin-Boom Hull",
+          "hp": 300,
+          "armor": 16
+        },
+        "head": {
+          "name": "Exposed Radial Cockpit",
+          "hp": 120,
+          "armor": 12
+        },
+        "arm_left": {
+          "name": "Port Bomb Pylon",
+          "hp": 160,
+          "armor": 12
+        },
+        "arm_right": {
+          "name": "Starboard Bomb Pylon",
+          "hp": 160,
+          "armor": 12
+        },
+        "legs": {
+          "name": "Piston Radial Engine",
+          "hp": 240,
+          "armor": 14
+        },
+        "backpack": {
+          "name": "Aux Fuel Drums",
+          "hp": 130,
+          "armor": 10
+        }
+      },
+      "weapons": [
+        {
+          "name": "Incendiary Slag Cluster",
+          "short_name": "SLAG BOMBS",
+          "proj_type": "BALLISTIC",
+          "ap_cost": 3,
+          "heat_cost": 0,
+          "range_min": 2,
+          "range_max": 6,
+          "damage": 155,
+          "anim_state": "fire_rifle",
+          "desc": "Improvised incendiary fuel drums."
+        }
+      ],
+      "description": "Twin-boom light bomber rigged with demolition charges to saturate battlefield strongholds."
+    },
+    {
+      "id": "inf_syndicate_squad",
+      "name": "Rust Syndicate Marauder Squad",
+      "short_name": "SCRAP MARAUDERS",
+      "faction_id": "faction_c",
+      "type": "infantry",
+      "propulsion": "FOOT_SOLDIER",
+      "sprite_asset": "spr_inf_syndicate_squad_idle",
+      "back_sprite_asset": "spr_inf_syndicate_squad_back_idle",
+      "is_infantry": true,
+      "ap": 4,
+      "accuracy": 72,
+      "evasion": 38,
+      "armor": 7,
+      "components": {
+        "torso": {
+          "name": "Jury-Rigged Scavenger Armor",
+          "hp": 160,
+          "armor": 7
+        },
+        "head": {
+          "name": "Welding Masks & Respirators",
+          "hp": 75,
+          "armor": 6
+        },
+        "arm_left": {
+          "name": "Heavy Flechette Shotguns",
+          "hp": 95,
+          "armor": 6
+        },
+        "arm_right": {
+          "name": "Magnetic Harpoons",
+          "hp": 95,
+          "armor": 6
+        },
+        "legs": {
+          "name": "Work Boots & Shin Guards",
+          "hp": 115,
+          "armor": 6
+        },
+        "backpack": {
+          "name": "Salvage Bag & Detonators",
+          "hp": 85,
+          "armor": 5
+        }
+      },
+      "weapons": [
+        {
+          "name": "Magnetic Harpoon & Charges",
+          "short_name": "HARPOON & CHG",
+          "proj_type": "MELEE",
+          "ap_cost": 2,
+          "heat_cost": 0,
+          "range_min": 1,
+          "range_max": 2,
+          "damage": 120,
+          "anim_state": "melee",
+          "desc": "Magnetic cable harpoon with thermite charge."
+        }
+      ],
+      "description": "Hardened salvage marauders specialized in swarming damaged mobile suits to rip out reactor cores."
+    },
+    {
+      "id": "veh_zaibatsu_kurogane",
+      "name": "Type-94 'Kurogane' Drone Tank",
+      "short_name": "KUROGANE TANK",
+      "faction_id": "faction_d",
+      "type": "tank",
+      "propulsion": "HOVER",
+      "sprite_asset": "spr_veh_zaibatsu_kurogane_idle",
+      "back_sprite_asset": "spr_veh_zaibatsu_kurogane_back_idle",
+      "is_ground_vehicle": true,
+      "ap": 5,
+      "accuracy": 88,
+      "evasion": 35,
+      "armor": 28,
+      "components": {
+        "torso": {
+          "name": "Carbon Monocoque Hull",
+          "hp": 580,
+          "armor": 28
+        },
+        "head": {
+          "name": "Automated Targeting Array",
+          "hp": 190,
+          "armor": 22
+        },
+        "arm_left": {
+          "name": "Railgun Turret Port",
+          "hp": 250,
+          "armor": 24
+        },
+        "arm_right": {
+          "name": "Railgun Turret Stbd",
+          "hp": 250,
+          "armor": 24
+        },
+        "legs": {
+          "name": "Faceted Antigrav Skirts",
+          "hp": 340,
+          "armor": 26
+        },
+        "backpack": {
+          "name": "Superconducting Capacitor Bank",
+          "hp": 210,
+          "armor": 20
+        }
+      },
+      "weapons": [
+        {
+          "name": "Railgun Point Defense",
+          "short_name": "RAILGUN PD",
+          "proj_type": "BALLISTIC",
+          "ap_cost": 3,
+          "heat_cost": 0,
+          "range_min": 2,
+          "range_max": 7,
+          "damage": 175,
+          "anim_state": "fire_rifle",
+          "desc": "High-velocity electromagnetic slug driver."
+        }
+      ],
+      "description": "Autonomous drone battle tank engineered by Omni-Corp Zaibatsu with advanced neural target tracking."
+    },
+    {
+      "id": "veh_zaibatsu_rotor",
+      "name": "Type-07 'Shinobi' Ducted VTOL",
+      "short_name": "SHINOBI VTOL",
+      "faction_id": "faction_d",
+      "type": "gunship",
+      "propulsion": "DUCTED_FAN",
+      "sprite_asset": "spr_veh_zaibatsu_rotor_idle",
+      "back_sprite_asset": "spr_veh_zaibatsu_rotor_back_idle",
+      "is_aircraft": true,
+      "ap": 7,
+      "accuracy": 88,
+      "evasion": 64,
+      "armor": 18,
+      "components": {
+        "torso": {
+          "name": "Faceted Carbon Stealth Body",
+          "hp": 350,
+          "armor": 18
+        },
+        "head": {
+          "name": "Infrared Visor Gimbal",
+          "hp": 130,
+          "armor": 14
+        },
+        "arm_left": {
+          "name": "Port Ducted Fan Shroud",
+          "hp": 200,
+          "armor": 16
+        },
+        "arm_right": {
+          "name": "Starboard Ducted Fan Shroud",
+          "hp": 200,
+          "armor": 16
+        },
+        "legs": {
+          "name": "Vectoring Thrust Nozzles",
+          "hp": 250,
+          "armor": 16
+        },
+        "backpack": {
+          "name": "Antigrav Stabilizer Pod",
+          "hp": 150,
+          "armor": 14
+        }
+      },
+      "weapons": [
+        {
+          "name": "Twin Pulse Laser Emitters",
+          "short_name": "PULSE LASERS",
+          "proj_type": "BEAM_PULSE",
+          "ap_cost": 2,
+          "heat_cost": 0,
+          "range_min": 1,
+          "range_max": 6,
+          "damage": 135,
+          "anim_state": "fire_beam",
+          "desc": "Coherent pulse laser discharge."
+        }
+      ],
+      "description": "Stealth ducted-fan VTOL optimized for silent infiltration, VIP extraction, and pinpoint laser strikes."
+    },
+    {
+      "id": "veh_zaibatsu_drone_jet",
+      "name": "Type-02 'Kamaitachi' Stealth Drone Jet",
+      "short_name": "KAMAITACHI DRONE",
+      "faction_id": "faction_d",
+      "type": "fighter",
+      "propulsion": "STEALTH_FLIGHT",
+      "sprite_asset": "spr_veh_zaibatsu_drone_jet_idle",
+      "back_sprite_asset": "spr_veh_zaibatsu_drone_jet_back_idle",
+      "is_aircraft": true,
+      "ap": 8,
+      "accuracy": 90,
+      "evasion": 75,
+      "armor": 14,
+      "components": {
+        "torso": {
+          "name": "Diamond Carbon Flying Wing",
+          "hp": 270,
+          "armor": 14
+        },
+        "head": {
+          "name": "AI Flight Neural Core",
+          "hp": 110,
+          "armor": 12
+        },
+        "arm_left": {
+          "name": "Internal Torpedo Bay L",
+          "hp": 150,
+          "armor": 12
+        },
+        "arm_right": {
+          "name": "Internal Torpedo Bay R",
+          "hp": 150,
+          "armor": 12
+        },
+        "legs": {
+          "name": "Ion Vector Thrusters",
+          "hp": 230,
+          "armor": 12
+        },
+        "backpack": {
+          "name": "Optical Cloak Emitter",
+          "hp": 140,
+          "armor": 10
+        }
+      },
+      "weapons": [
+        {
+          "name": "Plasma Beam Emitter",
+          "short_name": "PLASMA BEAM",
+          "proj_type": "BEAM_PULSE",
+          "ap_cost": 3,
+          "heat_cost": 0,
+          "range_min": 2,
+          "range_max": 7,
+          "damage": 150,
+          "anim_state": "fire_beam",
+          "desc": "Focused plasma lance cutting through armor."
+        }
+      ],
+      "description": "Unmanned diamond-wing stealth combat drone designed for precision strikes and high-altitude electronic warfare."
+    },
+    {
+      "id": "inf_zaibatsu_squad",
+      "name": "Zaibatsu Spec-Ops Operatives",
+      "short_name": "SPEC-OPS ANDROIDS",
+      "faction_id": "faction_d",
+      "type": "infantry",
+      "propulsion": "FOOT_SOLDIER",
+      "sprite_asset": "spr_inf_zaibatsu_squad_idle",
+      "back_sprite_asset": "spr_inf_zaibatsu_squad_back_idle",
+      "is_infantry": true,
+      "ap": 5,
+      "accuracy": 88,
+      "evasion": 58,
+      "armor": 10,
+      "components": {
+        "torso": {
+          "name": "Carbon Monocoque Frame",
+          "hp": 240,
+          "armor": 10
+        },
+        "head": {
+          "name": "Optic Neural Sensor",
+          "hp": 100,
+          "armor": 10
+        },
+        "arm_left": {
+          "name": "High-Frequency Monoblade",
+          "hp": 120,
+          "armor": 8
+        },
+        "arm_right": {
+          "name": "Hypersonic Flechette Gun",
+          "hp": 120,
+          "armor": 8
+        },
+        "legs": {
+          "name": "Hydraulic Bipod Limbs",
+          "hp": 190,
+          "armor": 8
+        },
+        "backpack": {
+          "name": "Capacitor Battery Pack",
+          "hp": 120,
+          "armor": 8
+        }
+      },
+      "weapons": [
+        {
+          "name": "Monoblades & Flechettes",
+          "short_name": "MONOBLADES",
+          "proj_type": "MELEE",
+          "ap_cost": 2,
+          "heat_cost": 0,
+          "range_min": 1,
+          "range_max": 2,
+          "damage": 130,
+          "anim_state": "melee",
+          "desc": "Molecularly sharp monoblade strikes."
+        }
+      ],
+      "description": "Autonomous cybernetic android squad operating on encrypted quantum hivemind links with surgical lethality."
+    }
+  ]
+}
