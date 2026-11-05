@@ -1150,9 +1150,7 @@ array_push(units, {
     components: _create_components(680, 420, 620, 180, 240, 32),
     weapons: [
         { name: "Type-77 120mm Cannon", short_name: "120MM CANNON", proj_type: "KINETIC_CANNON", ap_cost: 3, heat_cost: 15, range_min: 1, range_max: 6, damage: 165, anim_state: "fire_rifle", desc: "Kinetic solid-slug with high penetration arc." },
-        { name: "GAU-88 Heavy Vulcan", short_name: "GAU-88 VULCAN", proj_type: "ROTARY_VULCAN", ap_cost: 2, heat_cost: 10, range_min: 1, range_max: 4, damage: 85, anim_state: "fire_chaingun", desc: "Rapid tracer bullet stream." },
-        { name: "Ares Swarm-16 Missiles", short_name: "SWARM-16", proj_type: "MICRO_MISSILE", ap_cost: 4, heat_cost: 22, range_min: 2, range_max: 7, damage: 195, anim_state: "fire_missiles", desc: "Parabolic micro-missile saturation volley." },
-        { name: "Gun-Club Strike", short_name: "MELEE BASH", proj_type: "MELEE", ap_cost: 3, heat_cost: 8, range_min: 1, range_max: 1, damage: 210, anim_state: "melee", desc: "Heavy hydraulic smash in close combat." }
+        { name: "Cybernetic Demolition Mace & Shield", short_name: "CYBER MACE", proj_type: "MELEE", ap_cost: 3, heat_cost: 8, range_min: 1, range_max: 1, damage: 220, anim_state: "melee", desc: "High-voltage kinetic demolition mace and shield bash in close combat." }
     ],
     anim_state: "idle", anim_timer: 0, anim_frame: 0.0, anim_speed: 0.15,
     recoil_x: 0, recoil_y: 0, recoil_shake: 0,

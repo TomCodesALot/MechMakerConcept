@@ -281,6 +281,7 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
 
     var _suit_id_str = "";
     var _spr = -1;
+    var _action_spr = -1;
     var _tint = _custom_blend;
     var _sig_glow = make_color_rgb(255, 120, 40);
     var _is_custom = false;
@@ -298,7 +299,8 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
             }
         }
         var _cat = variable_struct_get(_suit_id, "category") ?? "";
-        if (_cat == "CUSTOM_MECH" && _spr == -1) {
+        var _is_modular_socket_only = (_cat == "CUSTOM_MECH" && _spr == -1);
+        if (_cat == "CUSTOM_MECH" || string_pos("custom_", _suit_id_str) > 0) {
             _is_custom = true;
         }
         // Faction glow tint
@@ -312,6 +314,7 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
         _suit_id_str = sprite_get_name(_suit_id);
     } else if (is_string(_suit_id)) {
         _suit_id_str = _suit_id;
+        if (string_pos("custom_", _suit_id) > 0) _is_custom = true;
         // Check if string is directly a sprite asset name
         var _direct_spr = asset_get_index(_suit_id);
         if (_direct_spr != -1 && sprite_exists(_direct_spr)) {
@@ -320,13 +323,21 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
     }
 
     // Modular Custom Mechs routing if designated without a static sprite asset
-    if (_is_custom) {
+    if (_is_modular_socket_only) {
         scr_draw_custom_mobile_suit(_suit_id, _x, _y, _scale, _facing, _state, _subimg_override, _custom_blend, _perspective);
         return;
     }
 
-    // 2. Resolve sprite from Game Manager or Catalog if not already resolved
-    if (_spr == -1) {
+    // 2. Authoritative Central Database Sprite Resolution (Primary & Exact)
+    var _db_spr = scr_ms_db_get_unit_sprite(_suit_id, _state, _perspective);
+    var _from_db = false;
+    if (_db_spr != -1 && sprite_exists(_db_spr)) {
+        _spr = _db_spr;
+        _from_db = true;
+    }
+
+    // 2b. Fallback: Resolve sprite from Game Manager or Catalog if not in DB
+    if (!_from_db && _spr == -1) {
         if (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "get_mobile_suit")) {
             var _cat_entry = obj_GameManager.get_mobile_suit(_suit_id_str);
             if (!is_undefined(_cat_entry) && is_struct(_cat_entry)) {
@@ -343,8 +354,8 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
         }
     }
 
-    // 3. Fallback resolution via ID inspection
-    if (_spr == -1) {
+    // 3. Fallback resolution via ID inspection (Legacy)
+    if (!_from_db && _spr == -1) {
         var _lower_id = string_lower(_suit_id_str);
 
         // Vehicles & Infantry squads (check FIRST to avoid faction name collisions)
@@ -437,98 +448,100 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
         return;
     }
 
-    // 4. Perspective Resolution (Back View)
+    // 4. Perspective Resolution (Back View - Only needed for non-DB fallback)
     var _spr_name = sprite_get_name(_spr);
-    if (_is_back) {
-        var _back_name = "";
-        if (string_pos("_idle", _spr_name) > 0) {
-            _back_name = string_replace(_spr_name, "_idle", "_back_idle");
-        } else {
-            _back_name = _spr_name + "_back_idle";
-        }
-        var _b_cand = asset_get_index(_back_name);
-        if (_b_cand != -1 && sprite_exists(_b_cand)) {
-            _spr = _b_cand;
-            _spr_name = _back_name;
-        }
-    }
-
-    // 5. Action State Resolution (fire, melee, boost, damaged, destroyed)
-    if (_state != "idle") {
-        var _action_spr = -1;
-        var _prefix = string_replace(string_replace(_spr_name, "_back_idle", ""), "_idle", "");
-
-        // Firing actions
-        if (string_pos("fire", _state) > 0) {
-            if (_state == "fire_chaingun") {
-                var _fc = asset_get_index(_prefix + "_fire_chaingun");
-                if (_fc != -1 && sprite_exists(_fc)) _action_spr = _fc;
-            } else if (_state == "fire_beam") {
-                var _fb = asset_get_index(_prefix + "_fire_beam");
-                if (_fb == -1 || !sprite_exists(_fb)) _fb = asset_get_index(_prefix + "_fire_plasma");
-                if (_fb != -1 && sprite_exists(_fb)) _action_spr = _fb;
-            } else if (_state == "fire_missiles") {
-                var _fm = asset_get_index(_prefix + "_fire_missiles");
-                if (_fm != -1 && sprite_exists(_fm)) _action_spr = _fm;
-            } else if (_state == "fire_rifle") {
-                var _fr = asset_get_index(_prefix + "_fire_rifle");
-                if (_fr != -1 && sprite_exists(_fr)) _action_spr = _fr;
+    if (!_from_db) {
+        if (_is_back) {
+            var _back_name = "";
+            if (string_pos("_idle", _spr_name) > 0) {
+                _back_name = string_replace(_spr_name, "_idle", "_back_idle");
+            } else {
+                _back_name = _spr_name + "_back_idle";
             }
-
-            // Universal _fire suffix fallback (e.g. spr_ms_siegebreaker_fire, vehicles, infantry)
-            if (_action_spr == -1) {
-                var _gen_fire = asset_get_index(_prefix + "_fire");
-                if (_gen_fire != -1 && sprite_exists(_gen_fire)) _action_spr = _gen_fire;
-            }
-            if (_action_spr == -1) {
-                var _gen_rifle = asset_get_index(_prefix + "_fire_rifle");
-                if (_gen_rifle != -1 && sprite_exists(_gen_rifle)) _action_spr = _gen_rifle;
+            var _b_cand = asset_get_index(_back_name);
+            if (_b_cand != -1 && sprite_exists(_b_cand)) {
+                _spr = _b_cand;
+                _spr_name = _back_name;
             }
         }
-        // Melee actions
-        else if (_state == "melee") {
-            var _m_cand = asset_get_index(_prefix + "_attack_melee");
-            if (_m_cand == -1 || !sprite_exists(_m_cand)) _m_cand = asset_get_index(_prefix + "_attack_blade");
-            if (_m_cand == -1 || !sprite_exists(_m_cand)) _m_cand = asset_get_index(_prefix + "_attack_saber");
-            if (_m_cand == -1 || !sprite_exists(_m_cand)) _m_cand = asset_get_index(_prefix + "_attack_claw");
-            if (_m_cand != -1 && sprite_exists(_m_cand)) _action_spr = _m_cand;
-        }
-        // Boost / Walk / Sprint
-        else if (_state == "boost" || _state == "walk") {
-            var _b_cand = asset_get_index(_prefix + "_boost");
-            if (_b_cand == -1 || !sprite_exists(_b_cand)) _b_cand = asset_get_index(_prefix + "_sprint");
-            if (_b_cand == -1 || !sprite_exists(_b_cand)) _b_cand = asset_get_index(_prefix + "_walk");
-            if (_b_cand != -1 && sprite_exists(_b_cand)) _action_spr = _b_cand;
-        }
-        // Damaged / Hit
-        else if (_state == "damaged" || _state == "hit") {
-            var _d_cand = asset_get_index(_prefix + "_idle_damaged");
-            if (_d_cand == -1 || !sprite_exists(_d_cand)) _d_cand = asset_get_index(_prefix + "_crippled_idle");
-            if (_d_cand == -1 || !sprite_exists(_d_cand)) _d_cand = asset_get_index(_prefix + "_hit_kinetic");
-            if (_d_cand == -1 || !sprite_exists(_d_cand)) _d_cand = asset_get_index(_prefix + "_damage_kinetic");
-            if (_d_cand == -1 || !sprite_exists(_d_cand)) _d_cand = asset_get_index(_prefix + "_defeat");
-            if (_d_cand != -1 && sprite_exists(_d_cand)) _action_spr = _d_cand;
-        }
-        // Destroyed
-        else if (_state == "destroyed" || _state == "defeat") {
-            var _dest_cand = asset_get_index(_prefix + "_destroyed");
-            if (_dest_cand == -1 || !sprite_exists(_dest_cand)) _dest_cand = asset_get_index(_prefix + "_defeat");
-            if (_dest_cand == -1 || !sprite_exists(_dest_cand)) _dest_cand = asset_get_index(_prefix + "_crippled");
-            // If conventional vehicle without bespoke defeat sprite, fall back to authentic vehicle wreckage
-            if (_dest_cand == -1 || !sprite_exists(_dest_cand)) {
-                if (string_pos("veh_", _lower_id) > 0) {
-                    if (string_pos("skyhammer", _lower_id) > 0 || string_pos("sabre", _lower_id) > 0 || string_pos("dart", _lower_id) > 0 || string_pos("gunship", _lower_id) > 0 || string_pos("chopper", _lower_id) > 0 || string_pos("bomber", _lower_id) > 0 || string_pos("rotor", _lower_id) > 0 || string_pos("drone_jet", _lower_id) > 0) {
-                        _dest_cand = spr_veh_wreckage_plane;
-                    } else {
-                        _dest_cand = spr_veh_wreckage_tank;
-                    }
+
+        // 5. Action State Resolution (fire, melee, boost, damaged, destroyed)
+        if (_state != "idle") {
+            _action_spr = -1;
+            var _prefix = string_replace(string_replace(_spr_name, "_back_idle", ""), "_idle", "");
+
+            // Firing actions
+            if (string_pos("fire", _state) > 0) {
+                if (_state == "fire_chaingun") {
+                    var _fc = asset_get_index(_prefix + "_fire_chaingun");
+                    if (_fc != -1 && sprite_exists(_fc)) _action_spr = _fc;
+                } else if (_state == "fire_beam") {
+                    var _fb = asset_get_index(_prefix + "_fire_beam");
+                    if (_fb == -1 || !sprite_exists(_fb)) _fb = asset_get_index(_prefix + "_fire_plasma");
+                    if (_fb != -1 && sprite_exists(_fb)) _action_spr = _fb;
+                } else if (_state == "fire_missiles") {
+                    var _fm = asset_get_index(_prefix + "_fire_missiles");
+                    if (_fm != -1 && sprite_exists(_fm)) _action_spr = _fm;
+                } else if (_state == "fire_rifle") {
+                    var _fr = asset_get_index(_prefix + "_fire_rifle");
+                    if (_fr != -1 && sprite_exists(_fr)) _action_spr = _fr;
+                }
+
+                // Universal _fire suffix fallback (e.g. spr_ms_siegebreaker_fire, vehicles, infantry)
+                if (_action_spr == -1) {
+                    var _gen_fire = asset_get_index(_prefix + "_fire");
+                    if (_gen_fire != -1 && sprite_exists(_gen_fire)) _action_spr = _gen_fire;
+                }
+                if (_action_spr == -1) {
+                    var _gen_rifle = asset_get_index(_prefix + "_fire_rifle");
+                    if (_gen_rifle != -1 && sprite_exists(_gen_rifle)) _action_spr = _gen_rifle;
                 }
             }
-            if (_dest_cand != -1 && sprite_exists(_dest_cand)) _action_spr = _dest_cand;
-        }
+            // Melee actions
+            else if (_state == "melee") {
+                var _m_cand = asset_get_index(_prefix + "_attack_melee");
+                if (_m_cand == -1 || !sprite_exists(_m_cand)) _m_cand = asset_get_index(_prefix + "_attack_blade");
+                if (_m_cand == -1 || !sprite_exists(_m_cand)) _m_cand = asset_get_index(_prefix + "_attack_saber");
+                if (_m_cand == -1 || !sprite_exists(_m_cand)) _m_cand = asset_get_index(_prefix + "_attack_claw");
+                if (_m_cand != -1 && sprite_exists(_m_cand)) _action_spr = _m_cand;
+            }
+            // Boost / Walk / Sprint
+            else if (_state == "boost" || _state == "walk") {
+                var _b_cand = asset_get_index(_prefix + "_boost");
+                if (_b_cand == -1 || !sprite_exists(_b_cand)) _b_cand = asset_get_index(_prefix + "_sprint");
+                if (_b_cand == -1 || !sprite_exists(_b_cand)) _b_cand = asset_get_index(_prefix + "_walk");
+                if (_b_cand != -1 && sprite_exists(_b_cand)) _action_spr = _b_cand;
+            }
+            // Damaged / Hit
+            else if (_state == "damaged" || _state == "hit") {
+                var _d_cand = asset_get_index(_prefix + "_idle_damaged");
+                if (_d_cand == -1 || !sprite_exists(_d_cand)) _d_cand = asset_get_index(_prefix + "_crippled_idle");
+                if (_d_cand == -1 || !sprite_exists(_d_cand)) _d_cand = asset_get_index(_prefix + "_hit_kinetic");
+                if (_d_cand == -1 || !sprite_exists(_d_cand)) _d_cand = asset_get_index(_prefix + "_damage_kinetic");
+                if (_d_cand == -1 || !sprite_exists(_d_cand)) _d_cand = asset_get_index(_prefix + "_defeat");
+                if (_d_cand != -1 && sprite_exists(_d_cand)) _action_spr = _d_cand;
+            }
+            // Destroyed
+            else if (_state == "destroyed" || _state == "defeat") {
+                var _dest_cand = asset_get_index(_prefix + "_destroyed");
+                if (_dest_cand == -1 || !sprite_exists(_dest_cand)) _dest_cand = asset_get_index(_prefix + "_defeat");
+                if (_dest_cand == -1 || !sprite_exists(_dest_cand)) _dest_cand = asset_get_index(_prefix + "_crippled");
+                // If conventional vehicle without bespoke defeat sprite, fall back to authentic vehicle wreckage
+                if (_dest_cand == -1 || !sprite_exists(_dest_cand)) {
+                    if (string_pos("veh_", _lower_id) > 0) {
+                        if (string_pos("skyhammer", _lower_id) > 0 || string_pos("sabre", _lower_id) > 0 || string_pos("dart", _lower_id) > 0 || string_pos("gunship", _lower_id) > 0 || string_pos("chopper", _lower_id) > 0 || string_pos("bomber", _lower_id) > 0 || string_pos("rotor", _lower_id) > 0 || string_pos("drone_jet", _lower_id) > 0) {
+                            _dest_cand = spr_veh_wreckage_plane;
+                        } else {
+                            _dest_cand = spr_veh_wreckage_tank;
+                        }
+                    }
+                }
+                if (_dest_cand != -1 && sprite_exists(_dest_cand)) _action_spr = _dest_cand;
+            }
 
-        if (_action_spr != -1 && sprite_exists(_action_spr)) {
-            _spr = _action_spr;
+            if (_action_spr != -1 && sprite_exists(_action_spr)) {
+                _spr = _action_spr;
+            }
         }
     }
 
@@ -636,6 +649,33 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
         draw_sprite_ext(_spr, _sub, _draw_x, _draw_y, _scale * _facing, _scale, _draw_angle, _tint, 1.0);
     }
 
+    // Radiant Plasma Energy Sheen on Lance / Blade during Melee Thrust
+    if (_state == "melee" && !_is_back) {
+        if (string_pos("lance", _lower_wpn) > 0 || string_pos("kamaitachi", string_lower(_suit_id_str)) > 0) {
+            draw_set_color(make_color_rgb(0, 240, 255));
+            draw_set_alpha(0.75 + 0.25 * sin(current_time * 0.04));
+            var _tip_bx = _draw_x + (44 * _facing * _scale);
+            var _tip_by = _top_y + (70 * _scale);
+            draw_line_width(_tip_bx - 14 * _facing * _scale, _tip_by - 6 * _scale, _tip_bx + 18 * _facing * _scale, _tip_by, 3.0 * _scale);
+            draw_set_color(c_white);
+            draw_line_width(_tip_bx - 8 * _facing * _scale, _tip_by - 3 * _scale, _tip_bx + 12 * _facing * _scale, _tip_by, 1.5 * _scale);
+            draw_circle(_tip_bx + 16 * _facing * _scale, _tip_by, 4 * _scale, false);
+            draw_set_alpha(1.0);
+        }
+    }
+
+    // High-Velocity Vernier Thruster Plume during Forward Boost Dash
+    if ((_state == "boost" || _state == "sprint") && !_is_back) {
+        draw_set_color(make_color_rgb(0, 240, 255));
+        draw_set_alpha(0.85);
+        var _v_bx = _draw_x - (26 * _facing * _scale);
+        var _v_by = _top_y + (64 * _scale);
+        draw_triangle(_v_bx, _v_by - 7 * _scale, _v_bx, _v_by + 7 * _scale, _v_bx - (28 + random(10)) * _facing * _scale, _v_by, false);
+        draw_set_color(c_white);
+        draw_triangle(_v_bx, _v_by - 3 * _scale, _v_bx, _v_by + 3 * _scale, _v_bx - (16 + random(6)) * _facing * _scale, _v_by, false);
+        draw_set_alpha(1.0);
+    }
+
     // Pass 3: Foreground Primary Weapon (Only on CUSTOM_MECH to prevent double-weapons on military suits)
     if (!_is_back && _is_custom && _wpn_prim_spr != -1) {
         var _prim_sub = _sub % sprite_get_number(_wpn_prim_spr);
@@ -666,7 +706,7 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
             var _wreck_t = current_time * 0.003;
             for (var k = 0; k < 4; k++) {
                 var _smk_off = (k * 20);
-                var _smk_prog = fmod(_wreck_t * 50 + _smk_off, 55);
+                var _smk_prog = (_wreck_t * 50 + _smk_off) mod 55;
                 var _smk_y = _top_y + (55 * _scale) - (_smk_prog * _scale);
                 var _smk_x = _draw_x + (sin(_wreck_t * 1.5 + k) * 10 * _scale);
                 var _smk_r = (6 + k * 3.5) * _scale;
@@ -685,7 +725,7 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
             draw_set_alpha(1.0);
         } else if (_state == "damaged" || _state == "hit") {
             // Shorting electrical blue sparks
-            if (fmod(current_time, 200) < 100) {
+            if ((current_time mod 200) < 100) {
                 draw_set_color(make_color_rgb(120, 220, 255));
                 var _spk_x = _draw_x + random_range(-14, 14) * _scale;
                 var _spk_y = _top_y + (60 + random_range(-18, 18)) * _scale;

@@ -49,7 +49,7 @@
     "chassis_class": "biped",
     "doctrine": "Main Battle Line Standard Mobile Suit",
     "primary_weapon": "Type-77 120mm Solid Kinetic Cannon",
-    "secondary_weapon": "Ablative High-Tensile Steel Shield",
+    "secondary_weapon": "Cybernetic Demolition Mace & Shield",
     "signature_feature": "Modular Reinforced Hardpoints",
     "armor": 45,
     "power": 58,
@@ -69,7 +69,7 @@
     "chassis_class": "biped",
     "doctrine": "Shock Assault & Frontal Breach",
     "primary_weapon": "Twin-Linked 35mm Heavy Chain Vulcan",
-    "secondary_weapon": "Solid Spiked Ramming Prow",
+    "secondary_weapon": "High-Frequency Thermal Gladius",
     "signature_feature": "Overclocked Hydraulic Piston Servos",
     "armor": 50,
     "power": 62,
@@ -97,7 +97,7 @@
     "combat": 82,
     "hp": 1150,
     "alloy_type": "alloy_adamantine_carbide",
-    "sprite_asset": "spr_ms_siegebreaker_fire"
+    "sprite_asset": "spr_ms_siegebreaker_anchor"
   },
   "ms_terran_titan_04": {
     "id": "ms_terran_titan_04",

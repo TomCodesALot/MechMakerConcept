@@ -83,12 +83,59 @@ if (clash_cinematic.active) {
     // Attacker Unit (Facing Right)
     var _ax = 360 + clash_cinematic.atk_recoil_x + _shake_x + clash_cinematic.atk_dash_x;
     var _ay = _base_ground_y + clash_cinematic.atk_recoil_y + _shake_y;
-    scr_draw_animated_mobile_suit(_atk, _ax, _ay, 1.30, 1, clash_cinematic.atk_anim_state, -1, c_white, "front");
+    scr_draw_animated_mobile_suit(_atk, _ax, _ay, 1.30, 1, clash_cinematic.atk_anim_state, clash_cinematic.atk_subimg, c_white, "front");
 
     // Defender Unit (Facing Left)
     var _dx = 1010 + clash_cinematic.def_recoil_x + _shake_x;
     var _dy = _base_ground_y + clash_cinematic.def_recoil_y + _shake_y;
-    scr_draw_animated_mobile_suit(_def, _dx, _dy, 1.30, -1, clash_cinematic.def_anim_state, -1, c_white, "front");
+    scr_draw_animated_mobile_suit(_def, _dx, _dy, 1.30, -1, clash_cinematic.def_anim_state, clash_cinematic.def_subimg, c_white, "front");
+
+    // Dedicated Beam Lance Visual Effects
+    if (clash_cinematic.weapon_class == "BEAM_LANCE") {
+        var _t_cl = clash_cinematic.timer;
+        // 1. Charging Vernier Thrust Trail (during high-speed charge)
+        if (_t_cl >= 40 && _t_cl < 73) {
+            draw_set_color(make_color_rgb(0, 240, 255));
+            draw_set_alpha(0.65);
+            draw_triangle(_ax - 28, _ay - 72, _ax - 28, _ay - 54, _ax - 85 - random(25), _ay - 63, false);
+            draw_set_color(c_white);
+            draw_set_alpha(0.85);
+            draw_triangle(_ax - 28, _ay - 68, _ax - 28, _ay - 58, _ax - 55 - random(15), _ay - 63, false);
+            draw_set_alpha(1.0);
+        }
+        // 2. Piercing Plasma Lance Core (during impale / stab)
+        if (_t_cl >= 73 && _t_cl < 103) {
+            var _tip_x = _dx - 15;
+            var _tip_y = _dy - 55;
+            var _base_x = _ax + 45;
+            var _base_y = _ay - 58;
+            draw_set_color(make_color_rgb(0, 240, 255));
+            draw_line_width(_base_x, _base_y, _tip_x, _tip_y, 7.0);
+            draw_set_color(c_white);
+            draw_line_width(_base_x + 8, _base_y, _tip_x, _tip_y, 2.5);
+            draw_set_color(make_color_rgb(180, 255, 255));
+            draw_circle(_tip_x, _tip_y, 10 + random(6), true);
+            draw_circle(_tip_x, _tip_y, 5 + random(3), false);
+        }
+        // 3. Point-Blank Plasma Burst Detonation & Shockwave (during blast & knockback)
+        if (_t_cl >= 103 && _t_cl < 130) {
+            var _b_prog = (_t_cl - 103);
+            var _b_rad = _b_prog * 6.5;
+            var _b_alpha = max(0, 1.0 - (_b_prog / 27.0));
+            var _bx = _dx - 15;
+            var _by = _dy - 55;
+            draw_set_alpha(_b_alpha * 0.7);
+            draw_set_color(make_color_rgb(0, 240, 255));
+            draw_circle(_bx, _by, _b_rad, false);
+            draw_set_alpha(_b_alpha * 0.9);
+            draw_set_color(c_white);
+            draw_circle(_bx, _by, _b_rad * 0.45, false);
+            draw_set_color(make_color_rgb(140, 255, 255));
+            draw_circle(_bx, _by, _b_rad * 1.35, true);
+            draw_line_width(_bx - _b_rad, _by, _bx + _b_rad, _by, 3.0);
+            draw_set_alpha(1.0);
+        }
+    }
 
     // Spent brass casings
     for (var i = 0; i < array_length(clash_cinematic.casings); i++) {
@@ -247,21 +294,39 @@ if (active_debug_tab == 0) {
     var _atk_list = get_filtered_units(atk_faction_idx, atk_cat_idx);
     atk_filtered_idx = clamp(atk_filtered_idx, 0, max(0, array_length(_atk_list) - 1));
     var _cur_atk = _atk_list[atk_filtered_idx];
-    // Automatically synchronize weapon choreography to canonical doctrine weapon for military units
-    if (_cur_atk.category != "CUSTOM_MECH") {
-        var _w_name_low = string_lower(_cur_atk.weapon_name);
-        if (string_pos("vulcan", _w_name_low) > 0 || string_pos("chain", _w_name_low) > 0 || string_pos("flak", _w_name_low) > 0) {
-            weapon_idx = 1; // ROTARY_VULCAN
-        } else if (string_pos("beam", _w_name_low) > 0 || string_pos("particle", _w_name_low) > 0 || string_pos("plasma", _w_name_low) > 0 || string_pos("pulse", _w_name_low) > 0 || string_pos("lance", _w_name_low) > 0 || string_pos("spray", _w_name_low) > 0) {
-            weapon_idx = 2; // BEAM_PULSE
-        } else if (string_pos("missile", _w_name_low) > 0 || string_pos("rocket", _w_name_low) > 0 || string_pos("swarm", _w_name_low) > 0) {
-            weapon_idx = 3; // MICRO_MISSILE
-        } else if (string_pos("katana", _w_name_low) > 0 || string_pos("blade", _w_name_low) > 0 || string_pos("saber", _w_name_low) > 0 || string_pos("claw", _w_name_low) > 0 || string_pos("saw", _w_name_low) > 0 || string_pos("fan", _w_name_low) > 0 || string_pos("pincer", _w_name_low) > 0 || string_pos("tanto", _w_name_low) > 0) {
-            weapon_idx = 4; // MELEE
-        } else {
-            weapon_idx = 0; // SOLID_CANNON
+    // Automatically synchronize weapon choreography when switching units
+    if (!variable_instance_exists(id, "atk_prev_unit_id") || atk_prev_unit_id != _cur_atk.id) {
+        atk_prev_unit_id = _cur_atk.id;
+        anim_state_idx = 0;
+        if (variable_struct_exists(_cur_atk, "weapon_class") && _cur_atk.weapon_class != "") {
+            for (var wi = 0; wi < array_length(weapon_classes); wi++) {
+                if (weapon_classes[wi] == _cur_atk.weapon_class) {
+                    weapon_idx = wi;
+                    break;
+                }
+            }
         }
     }
+
+    // Resolve applicable animation states for the selected attacker
+    var _active_anim_states = ["idle"];
+    if (_cur_atk.category != "CUSTOM_MECH") {
+        if (_cur_atk.weapon_class == "BALLISTIC") array_push(_active_anim_states, "fire_rifle");
+        else if (_cur_atk.weapon_class == "ROTARY_VULCAN") array_push(_active_anim_states, "fire_chaingun");
+        else if (_cur_atk.weapon_class == "BEAM_PULSE") array_push(_active_anim_states, "fire_beam");
+        else if (_cur_atk.weapon_class == "MICRO_MISSILE") array_push(_active_anim_states, "fire_missiles");
+        else array_push(_active_anim_states, "fire_rifle");
+
+        if (variable_struct_exists(_cur_atk, "sprites") && is_struct(_cur_atk.sprites)) {
+            if (variable_struct_exists(_cur_atk.sprites, "melee") && _cur_atk.sprites.melee != -1) array_push(_active_anim_states, "melee");
+            if (variable_struct_exists(_cur_atk.sprites, "boost") && _cur_atk.sprites.boost != -1) array_push(_active_anim_states, "boost");
+            if (variable_struct_exists(_cur_atk.sprites, "damaged") && _cur_atk.sprites.damaged != -1) array_push(_active_anim_states, "damaged");
+            if (variable_struct_exists(_cur_atk.sprites, "destroyed") && _cur_atk.sprites.destroyed != -1) array_push(_active_anim_states, "destroyed");
+        }
+    } else {
+        _active_anim_states = ["idle", "fire_rifle", "fire_chaingun", "fire_beam", "fire_missiles", "melee", "boost", "damaged", "destroyed"];
+    }
+    anim_state_idx = clamp(anim_state_idx, 0, array_length(_active_anim_states) - 1);
 
     // Faction Filter Selector
     draw_set_color(make_color_rgb(140, 180, 220));
@@ -470,7 +535,7 @@ if (active_debug_tab == 0) {
     // Draw Live Attacker (Left)
     var _live_ax = _stg_x + 160;
     var _live_ay = _stg_y + 205;
-    var _atk_st = anim_states[anim_state_idx];
+    var _atk_st = _active_anim_states[anim_state_idx];
     scr_draw_animated_mobile_suit(_cur_atk, _live_ax, _live_ay, 1.25, 1, _atk_st, subimg_atk, c_white, anim_perspective);
 
     // Draw Live Defender (Right)
@@ -514,12 +579,12 @@ if (active_debug_tab == 0) {
 
     var _ap_hov = (_mx >= _col2_x + 14 && _mx <= _col2_x + 90 && _my >= _ast_y + 18 && _my <= _ast_y + 46);
     if (_ap_hov && _click) {
-        anim_state_idx = (anim_state_idx - 1 + array_length(anim_states)) % array_length(anim_states);
+        anim_state_idx = (anim_state_idx - 1 + array_length(_active_anim_states)) % array_length(_active_anim_states);
         scr_audio_play_ui("click");
     }
     scr_draw_snes_button(_col2_x + 14, _ast_y + 18, 76, 28, "< PREV", _ap_hov, false, c_white);
 
-    var _cur_st_name = "[ " + string_upper(anim_states[anim_state_idx]) + " ]";
+    var _cur_st_name = "[ " + string_upper(_active_anim_states[anim_state_idx]) + " ]";
     var _mid_w = _col2_w - 28 - 164;
     draw_set_color(make_color_rgb(20, 32, 48));
     draw_rectangle(_col2_x + 96, _ast_y + 18, _col2_x + 96 + _mid_w, _ast_y + 46, false);
@@ -530,7 +595,7 @@ if (active_debug_tab == 0) {
 
     var _an_hov = (_mx >= _col2_x + _col2_w - 90 && _mx <= _col2_x + _col2_w - 14 && _my >= _ast_y + 18 && _my <= _ast_y + 46);
     if (_an_hov && _click) {
-        anim_state_idx = (anim_state_idx + 1) % array_length(anim_states);
+        anim_state_idx = (anim_state_idx + 1) % array_length(_active_anim_states);
         scr_audio_play_ui("click");
     }
     scr_draw_snes_button(_col2_x + _col2_w - 90, _ast_y + 18, 76, 28, "NEXT >", _an_hov, false, c_white);
@@ -578,22 +643,52 @@ if (active_debug_tab == 0) {
     }
     scr_draw_snes_button(_sfx_x, _ply_y + 18, 127, 26, "TEST SFX", _sfx_hov, false, make_color_rgb(255, 200, 60));
 
-    // Weapon Class Selector
+    // Weapon Class Selector (Filtered strictly to options that apply for this mobile suit)
     var _wpn_y = _ply_y + 54;
     draw_set_color(make_color_rgb(140, 180, 220));
     draw_text(_col2_x + 14, _wpn_y, "WEAPON CLASS CHOREOGRAPHY:");
 
+    var _applicable_w_classes = [];
+    if (_cur_atk.category != "CUSTOM_MECH") {
+        array_push(_applicable_w_classes, _cur_atk.weapon_class);
+        if (variable_struct_exists(_cur_atk, "sprites") && is_struct(_cur_atk.sprites) && variable_struct_exists(_cur_atk.sprites, "melee") && _cur_atk.sprites.melee != -1) {
+            array_push(_applicable_w_classes, "MELEE");
+        }
+    } else {
+        _applicable_w_classes = weapon_classes;
+    }
+
     var _w_btn_w = _col2_w - 28;
     var _wpn_hov = (_mx >= _col2_x + 14 && _mx <= _col2_x + 14 + _w_btn_w && _my >= _wpn_y + 18 && _my <= _wpn_y + 44);
-    if (_cur_atk.category == "CUSTOM_MECH") {
-        if (_wpn_hov && _click) {
-            weapon_idx = (weapon_idx + 1) % array_length(weapon_classes);
-            scr_audio_play_ui("click");
+    if (_wpn_hov && _click) {
+        var _cur_cls = weapon_classes[weapon_idx];
+        var _app_idx = 0;
+        for (var ai = 0; ai < array_length(_applicable_w_classes); ai++) {
+            if (_applicable_w_classes[ai] == _cur_cls) { _app_idx = ai; break; }
         }
-        scr_draw_snes_button(_col2_x + 14, _wpn_y + 18, _w_btn_w, 26, "< WEAPON: " + weapon_names[weapon_idx] + " (" + weapon_classes[weapon_idx] + ") >", _wpn_hov, false, make_color_rgb(255, 200, 60));
-    } else {
-        scr_draw_snes_button(_col2_x + 14, _wpn_y + 18, _w_btn_w, 26, "[ DOCTRINE WEAPON: " + _cur_atk.weapon_name + " (" + weapon_classes[weapon_idx] + ") ]", _wpn_hov, false, make_color_rgb(100, 240, 255));
+        var _next_app_idx = (_app_idx + 1) % array_length(_applicable_w_classes);
+        var _target_cls = _applicable_w_classes[_next_app_idx];
+        for (var wi = 0; wi < array_length(weapon_classes); wi++) {
+            if (weapon_classes[wi] == _target_cls) { weapon_idx = wi; break; }
+        }
+        scr_audio_play_ui("click");
     }
+
+    var _btn_label = "";
+    var _btn_col = make_color_rgb(255, 200, 60);
+    if (_cur_atk.category != "CUSTOM_MECH") {
+        if (weapon_classes[weapon_idx] == _cur_atk.weapon_class) {
+            _btn_label = "< [PRIMARY DOCTRINE]: " + _cur_atk.weapon_name + " (" + weapon_classes[weapon_idx] + ") >";
+            _btn_col = make_color_rgb(100, 240, 255);
+        } else if (weapon_classes[weapon_idx] == "MELEE") {
+            var _m_name = (variable_struct_exists(_cur_atk, "weapon_overlay_secondary") && _cur_atk.weapon_overlay_secondary != "") ? _cur_atk.weapon_overlay_secondary : "Cybernetic Demolition Mace & Shield";
+            _btn_label = "< [MELEE COMBAT]: " + _m_name + " (MELEE) >";
+            _btn_col = make_color_rgb(0, 240, 255);
+        }
+    } else {
+        _btn_label = "< WEAPON: " + weapon_names[weapon_idx] + " (" + weapon_classes[weapon_idx] + ") >";
+    }
+    scr_draw_snes_button(_col2_x + 14, _wpn_y + 18, _w_btn_w, 26, _btn_label, _wpn_hov, false, _btn_col);
 
     // 3. Huge Tactile Cinematic Clash Launcher Button
     var _lch_y = _wpn_y + 56;

@@ -12,7 +12,7 @@ depth = -9999;
 show_debug_message("[obj_DebugManager] Initializing Universal Debug & Battle Demonstration Engine...");
 
 // 1. Activation State
-is_open = false;
+is_open = true;
 active_debug_tab = 0; // 0 = Battle & Animation Lab, 1 = PMC Campaign Cheats
 debug_toast = "";
 debug_toast_timer = 0;
@@ -31,127 +31,9 @@ faction_names = ["ALL FACTIONS", "Terran Coalition", "Outer Colonies", "Rust Syn
 categories = ["ALL", "MOBILE_SUIT", "CUSTOM_MECH", "VEHICLE", "INFANTRY"];
 category_names = ["ALL CATEGORIES", "Mobile Suits", "Custom Sockets", "Vehicles", "Infantry Squads"];
 
-// 3. Populate Comprehensive Unit Catalog Roster
-master_roster = [];
-
-var _add_unit = function(_id, _name, _fac, _cat, _chassis, _alloy, _spr, _weapon, _hp, _armor, _wpn_prim = "", _wpn_sec = "", _era = 2, _doctrine = "") {
-    array_push(master_roster, {
-        id: _id,
-        name: _name,
-        faction_id: _fac,
-        category: _cat,
-        chassis: _chassis,
-        alloy: _alloy,
-        sprite_asset: _spr,
-        weapon_name: _weapon,
-        hp: _hp,
-        armor: _armor,
-        weapon_overlay_primary: _wpn_prim,
-        weapon_overlay_secondary: _wpn_sec,
-        era: _era,
-        doctrine: _doctrine
-    });
-};
-
-// 3a. Mobile Suits from obj_GameManager / JSON catalog
-var _loaded_from_catalog = false;
-if (instance_exists(obj_GameManager) && is_struct(obj_GameManager.mobile_suit_catalog)) {
-    var _names = variable_struct_get_names(obj_GameManager.mobile_suit_catalog);
-    if (array_length(_names) > 0) {
-        for (var i = 0; i < array_length(_names); i++) {
-            var _s = variable_struct_get(obj_GameManager.mobile_suit_catalog, _names[i]);
-            if (is_struct(_s)) {
-                _add_unit(
-                    _s.id,
-                    _s.name,
-                    variable_struct_get(_s, "faction_id") ?? "faction_a",
-                    "MOBILE_SUIT",
-                    variable_struct_get(_s, "chassis_class") ?? "biped",
-                    variable_struct_get(_s, "alloy_type") ?? "alloy_vanguard_comp",
-                    variable_struct_get(_s, "sprite_asset") ?? "spr_ms_ironclad_idle",
-                    variable_struct_get(_s, "primary_weapon") ?? "120mm Solid Kinetic Cannon",
-                    650,
-                    30,
-                    variable_struct_get(_s, "weapon_overlay_primary") ?? "",
-                    variable_struct_get(_s, "weapon_overlay_secondary") ?? "",
-                    variable_struct_get(_s, "era") ?? 2,
-                    variable_struct_get(_s, "doctrine") ?? ""
-                );
-            }
-        }
-        _loaded_from_catalog = true;
-    }
-}
-
-if (!_loaded_from_catalog) {
-    var _cat_paths = ["mobile_suit_catalog.json", "datafiles/mobile_suit_catalog.json"];
-    for (var p = 0; p < array_length(_cat_paths); p++) {
-        var _fp = _cat_paths[p];
-        if (file_exists(_fp)) {
-            try {
-                var _buf = buffer_load(_fp);
-                var _str = buffer_read(_buf, buffer_string);
-                buffer_delete(_buf);
-                var _parsed = json_parse(_str);
-                if (is_struct(_parsed)) {
-                    var _p_names = variable_struct_get_names(_parsed);
-                    for (var i = 0; i < array_length(_p_names); i++) {
-                        var _s = variable_struct_get(_parsed, _p_names[i]);
-                        if (is_struct(_s)) {
-                            _add_unit(
-                                _s.id,
-                                _s.name,
-                                variable_struct_get(_s, "faction_id") ?? "faction_a",
-                                "MOBILE_SUIT",
-                                variable_struct_get(_s, "chassis_class") ?? "biped",
-                                variable_struct_get(_s, "alloy_type") ?? "alloy_vanguard_comp",
-                                variable_struct_get(_s, "sprite_asset") ?? "spr_ms_ironclad_idle",
-                                variable_struct_get(_s, "primary_weapon") ?? "120mm Solid Kinetic Cannon",
-                                650,
-                                30
-                            );
-                        }
-                    }
-                    _loaded_from_catalog = true;
-                    break;
-                }
-            } catch (_ex) {
-                show_debug_message("[obj_DebugManager] Catalog load fallback error: " + string(_ex));
-            }
-        }
-    }
-}
-
-// 3b. Custom Modular Socket Mechs (4 Mobility Archetypes)
-_add_unit("custom_biped", "PMC Vanguard Heavy (Modular Socket)", "pmc_player", "CUSTOM_MECH", "biped", "alloy_vanguard_comp", "spr_ms_custom_biped_heavy_idle", "GAU-88 Rotary Heavy Vulcan", 680, 32);
-_add_unit("custom_hover", "PMC Ghost Hover Sniper (Modular Socket)", "pmc_player", "CUSTOM_MECH", "hover", "alloy_hyperion_matrix", "spr_ms_custom_hover_sniper_idle", "Coherent Beam Pulse Rifle", 480, 20);
-_add_unit("custom_tread", "PMC Scrapper Tread Artillery (Modular Socket)", "pmc_player", "CUSTOM_MECH", "tread", "alloy_adamantine_carbide", "spr_ms_custom_tread_artillery_idle", "Type-77 120mm Heavy Cannon", 750, 40);
-_add_unit("custom_aero", "PMC Stratos Aero Striker (Modular Socket)", "pmc_player", "CUSTOM_MECH", "aero", "alloy_aerosteel_flux", "spr_ms_custom_aero_striker_idle", "Ares Swarm-16 Missiles", 450, 22);
-
-// 3c. Conventional Force Vehicles - 4 Factions x 3 Vehicle Archetypes (Tank, Gunship, Fighter)
-// Terran Confederation (faction_a)
-_add_unit("veh_terran_mammoth", "T-720 Mammoth Heavy Battle Tank", "faction_a", "VEHICLE", "tread", "alloy_vanguard_comp", "spr_veh_terran_mammoth_idle", "Dual 150mm Siege Cannons", 520, 35, "", "", 1, "HEAVY_BALLISTIC");
-_add_unit("veh_terran_skyhammer", "UH-44 Skyhammer Heavy Gunship", "faction_a", "VEHICLE", "aero", "alloy_vanguard_comp", "spr_veh_terran_skyhammer_idle", "GAU-88 30mm Rotary Vulcan", 380, 18, "", "", 1, "CLOSE_AIR_SUPPORT");
-_add_unit("veh_terran_sabre", "A-14 Sabre Heavy Strike Jet", "faction_a", "VEHICLE", "aero", "alloy_vanguard_comp", "spr_veh_terran_sabre_idle", "AGM-88 Swarm Strike Missiles", 340, 16, "", "", 1, "AIR_SUPERIORITY");
-// Outer Colony League (faction_b)
-_add_unit("veh_colony_stiletto", "K-4 Stiletto Rapid Attack Skimmer", "faction_b", "VEHICLE", "hover", "alloy_aerosteel_flux", "spr_veh_colony_stiletto_idle", "Coherent Beam Carbine", 310, 15, "", "", 1, "ENERGY_SKIRMISHER");
-_add_unit("veh_colony_gunship", "V-88 Valkyrie Heavy Tilt-Rotor", "faction_b", "VEHICLE", "aero", "alloy_aerosteel_flux", "spr_veh_colony_gunship_idle", "Thermal Beam Cannon", 380, 20, "", "", 1, "AEROSPACE_GUNSHIP");
-_add_unit("veh_colony_dart", "S-10 Dart Hypersonic Interceptor", "faction_b", "VEHICLE", "aero", "alloy_aerosteel_flux", "spr_veh_colony_dart_idle", "Micro-Missile Salvo", 290, 14, "", "", 1, "INTERCEPTOR");
-// Rogue Syndicate (faction_c)
-_add_unit("veh_syndicate_technical", "SCR-T01 Rustfang Flak Technical", "faction_c", "VEHICLE", "wheeled", "alloy_adamantine_carbide", "spr_veh_syndicate_technical_idle", "Heavy Twin Flak Cannon", 300, 14, "", "", 1, "FLAK_SUPPORT");
-_add_unit("veh_syndicate_chopper", "H-09 Buzzsaw Scrap Chopper", "faction_c", "VEHICLE", "aero", "alloy_adamantine_carbide", "spr_veh_syndicate_chopper_idle", "Twin 23mm Rotary Autocannon", 320, 14, "", "", 1, "RAID_CHOPPER");
-_add_unit("veh_syndicate_bomber", "SCR-B03 Buzzard Light Bomber", "faction_c", "VEHICLE", "aero", "alloy_adamantine_carbide", "spr_veh_syndicate_bomber_idle", "Incendiary Slag Cluster", 300, 16, "", "", 1, "TACTICAL_BOMBER");
-// Omni-Corp Zaibatsu (faction_d)
-_add_unit("veh_zaibatsu_kurogane", "Type-94 Kurogane Drone Tank", "faction_d", "VEHICLE", "hover", "alloy_tachyon_superalloy", "spr_veh_zaibatsu_kurogane_idle", "Railgun Point Defense", 580, 28, "", "", 1, "AUTOMATED_DEFENSE");
-_add_unit("veh_zaibatsu_rotor", "Type-07 Shinobi Ducted VTOL", "faction_d", "VEHICLE", "aero", "alloy_tachyon_superalloy", "spr_veh_zaibatsu_rotor_idle", "Twin Pulse Laser Emitters", 350, 18, "", "", 1, "STEALTH_INFILTRATION");
-_add_unit("veh_zaibatsu_drone_jet", "Type-02 Kamaitachi Stealth Drone", "faction_d", "VEHICLE", "aero", "alloy_tachyon_superalloy", "spr_veh_zaibatsu_drone_jet_idle", "Plasma Beam Emitter", 270, 14, "", "", 1, "STEALTH_STRIKE");
-
-// 3d. Conventional Infantry Squads - 4 Factions x 1 Bespoke Squad (Doc 38)
-_add_unit("inf_terran_squad", "Terran 88th Grenadier Platoon", "faction_a", "INFANTRY", "infantry", "alloy_vanguard_comp", "spr_inf_terran_squad_idle", "Anti-Armor Rocket Volley", 180, 8, "", "", 1, "URBAN_GRENADIERS");
-_add_unit("inf_colony_squad", "Colony Void Jump Skirmishers", "faction_b", "INFANTRY", "infantry", "alloy_aerosteel_flux", "spr_inf_colony_squad_idle", "Plasma Rifle Saturation", 150, 6, "", "", 1, "VOID_SKIRMISHERS");
-_add_unit("inf_syndicate_squad", "Rust Syndicate Marauder Squad", "faction_c", "INFANTRY", "infantry", "alloy_adamantine_carbide", "spr_inf_syndicate_squad_idle", "Magnetic Harpoon & Charges", 160, 7, "", "", 1, "SCRAP_MARAUDERS");
-_add_unit("inf_zaibatsu_squad", "Zaibatsu Spec-Ops Androids", "faction_d", "INFANTRY", "infantry", "alloy_tachyon_superalloy", "spr_inf_zaibatsu_squad_idle", "Monoblades & Flechettes", 170, 10, "", "", 1, "CYBERNETIC_SPEC_OPS");
-show_debug_message("[obj_DebugManager] Master unit catalog indexed: " + string(array_length(master_roster)) + " total units.");
+// 3. Populate Comprehensive Unit Catalog Roster from Authoritative Central Database
+master_roster = scr_ms_db_get_roster();
+show_debug_message("[obj_DebugManager] Master unit catalog indexed from Central Database: " + string(array_length(master_roster)) + " total units.");
 
 // 4. Filtering & Selection Logic
 atk_faction_idx = 0;
@@ -196,9 +78,10 @@ theaters = ["EARTH", "SPACE", "WATER", "SLAG"];
 theater_names = ["Terran Badlands", "Orbital Space Void", "Harbor Water Canal", "Slag Foundry Caldera"];
 theater_idx = 0;
 
-weapon_classes = ["BALLISTIC", "ROTARY_VULCAN", "BEAM_PULSE", "MICRO_MISSILE", "MELEE"];
-weapon_names = ["Type-77 120mm Solid Cannon", "GAU-88 Rotary Heavy Vulcan", "Coherent Beam Pulse Rifle", "Ares Swarm-16 Micro-Missiles", "Hydraulic Gun-Club Strike"];
+weapon_classes = ["BALLISTIC", "ROTARY_VULCAN", "BEAM_PULSE", "MICRO_MISSILE", "MELEE", "BEAM_LANCE"];
+weapon_names = ["Type-77 120mm Solid Cannon", "GAU-88 Rotary Heavy Vulcan", "Coherent Beam Pulse Rifle", "Ares Swarm-16 Micro-Missiles", "Hydraulic Gun-Club Strike", "Twin Forearm Plasma Lances"];
 weapon_idx = 0;
+atk_prev_unit_id = "";
 
 live_stage_particles = [];
 live_stage_casings = [];
@@ -224,6 +107,8 @@ clash_cinematic = {
     counter_part: "arm_left",
     atk_anim_state: "idle",
     def_anim_state: "idle",
+    atk_subimg: -1,
+    def_subimg: -1,
     atk_dash_x: 0,
     atk_recoil_x: 0,
     atk_recoil_y: 0,
@@ -248,6 +133,13 @@ launch_full_cinematic_clash = function() {
 
     var _w_class = weapon_classes[weapon_idx];
     var _w_name = weapon_names[weapon_idx];
+    if (_atk_u.category != "CUSTOM_MECH") {
+        if (_w_class == _atk_u.weapon_class) {
+            _w_name = _atk_u.weapon_name;
+        } else if (_w_class == "MELEE") {
+            _w_name = (variable_struct_exists(_atk_u, "weapon_overlay_secondary") && _atk_u.weapon_overlay_secondary != "") ? _atk_u.weapon_overlay_secondary : "Hydraulic Shoulder Tackle & Strike";
+        }
+    }
 
     clash_cinematic.active = true;
     clash_cinematic.phase = 0;
@@ -266,6 +158,8 @@ launch_full_cinematic_clash = function() {
     clash_cinematic.counter_damage = irandom_range(60, 110);
     clash_cinematic.atk_anim_state = "idle";
     clash_cinematic.def_anim_state = "idle";
+    clash_cinematic.atk_subimg = -1;
+    clash_cinematic.def_subimg = -1;
     clash_cinematic.atk_dash_x = 0;
     clash_cinematic.atk_recoil_x = 0;
     clash_cinematic.atk_recoil_y = 0;
