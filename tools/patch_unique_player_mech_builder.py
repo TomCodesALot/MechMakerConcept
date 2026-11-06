@@ -366,3 +366,4 @@ draw_src = draw_src.replace(old_presets, new_presets)
 with open(draw_path, "w") as f:
     f.write(draw_src)
 print("Draw_64.gml successfully patched with safe alloy reads, platform line toggle, and bespoke PMC presets.")
+
