@@ -183,13 +183,13 @@ launch_full_cinematic_clash = function() {
 // Front Mission / Gundam Hangar Deck with Weapons from R&D Tech Tree
 builder_subtab = 0; // 0=Chassis & Role, 1=Alloy Plating, 2=Researched Weapons, 3=Telemetry & Rollout
 builder_chassis_line = 0; // 0=Player PMC Proprietary Chassis, 1=Reverse-Engineered Foreign Factions
-builder_lineage_idx = 0; // 0=Aegis Visor (Wanzer Mil-Spec), 1=Colossus Forge (Industrial Dreadnought), 2=Chimera Archeotech (Singularity Duelist)
+builder_lineage_idx = 0; // 0=Aegis Visor (Wanzer Mil-Spec), 1=Colossus Forge (Industrial Dreadnought), 2=Stratos Vector (Agile Recon Skirmisher)
 builder_lineage_names = [
     "AEGIS VISOR DOCTRINE (Mil-Spec Wanzer / Panoramic Tactical Visor)",
     "COLOSSUS FORGE DOCTRINE (Industrial Dreadnought / Dual Exhaust Blast-Hood)",
-    "CHIMERA DOCTRINE (Pre-War Singularity / Faceted Composite & Dual Slits)"
+    "STRATOS VECTOR DOCTRINE (Agile Recon Skirmisher / Swept Cowlings & Twin Optics)"
 ];
-builder_lineage_badges = ["[LINEAGE: AEGIS VISOR]", "[LINEAGE: COLOSSUS FORGE]", "[LINEAGE: CHIMERA ARCHEOTECH]"];
+builder_lineage_badges = ["[LINEAGE: AEGIS VISOR]", "[LINEAGE: COLOSSUS FORGE]", "[LINEAGE: STRATOS VECTOR]"];
 builder_quality_idx = 1; // 0=C-Standard, 1=B-MilSpec, 2=A-AceCustom, 3=S-SingularityMasterwork
 builder_quality_names = [
     "C-TIER: INDUSTRIAL STANDARD (Baseline Yield)",
@@ -251,7 +251,7 @@ builder_alloy_deltas = [
 // Master Weapons & Equipment R&D Tech Tree Catalog
 builder_weapons_db = {
     primary: [
-        { id: "wp_autocannon_105", name: "Type-77 105mm Heavy Autocannon", tech_id: "tech_wpn_heavy_autocannon", damage: 180, class: "BALLISTIC", sprite: spr_ms_ironclad_fire_rifle, power_draw: 2, mass: 8, lore: "Gas-operated cyclic cannon firing AP sabots." },
+        { id: "wp_starter_mg_90", name: "Type-90 90mm Kinetic Machine Gun", tech_id: "tech_wpn_heavy_autocannon", damage: 180, class: "BALLISTIC", sprite: spr_ms_ironclad_fire_rifle, power_draw: 2, mass: 8, lore: "Standard issue gas-operated kinetic machine gun firing AP sabots." },
         { id: "wp_smoothbore_120", name: "120mm Smoothbore Heavy Rifle", tech_id: "tech_wpn_hyper_velocity_rifle", damage: 230, class: "BALLISTIC", sprite: spr_ms_ironclad_fire_rifle, power_draw: 4, mass: 12, lore: "High-pressure smoothbore firing depleted uranium darts." },
         { id: "wp_spartan_chaingun", name: "GAU-88 35mm Spartan Rotary Vulcan", tech_id: "tech_wpn_heavy_autocannon", damage: 215, class: "ROTARY_VULCAN", sprite: spr_ms_centurion_fire_chaingun, power_draw: 4, mass: 10, lore: "Rotating multi-barrel vulcan with cooling dissipation." },
         { id: "wp_beam_rifle_type6a", name: "Type-6A High-Output Beam Rifle", tech_id: "tech_wpn_beam_carbine", damage: 260, class: "BEAM_PULSE", sprite: spr_ms_aether_fire_beam, power_draw: 8, mass: 8, lore: "Coherent Cherenkov cyan beam lance accelerator." },
@@ -265,13 +265,13 @@ builder_weapons_db = {
         { id: "wp_chaff_flare", name: "Thermal Chaff & ECM Flare Dispenser", tech_id: "tech_wpn_hydra_rockets", damage: 0, class: "COUNTERMEASURE", sprite: -1, power_draw: 1, mass: 3, lore: "Radar-scattering chaff providing +20% Evasion." }
     ],
     melee: [
+        { id: "wp_heat_hawk", name: "Type-1 Tactical Combat Heat Axe", tech_id: "tech_wpn_plasma_heat_blade", damage: 235, class: "MELEE", sprite: spr_ms_ironclad_attack_melee, power_draw: 3, mass: 8, lore: "Standard issue 3000°C thermal edge combat axe cleaving armor." },
         { id: "wp_vibro_blade", name: "Titanium Vibro-Blade", tech_id: "tech_wpn_vibro_blade", damage: 160, class: "MELEE", sprite: spr_ms_aether_attack_saber, power_draw: 1, mass: 3, lore: "Solid titanium blade with ultrasonic oscillation." },
-        { id: "wp_heat_hawk", name: "High-Frequency Thermal Heat Hawk / Mace", tech_id: "tech_wpn_plasma_heat_blade", damage: 235, class: "MELEE", sprite: spr_ms_ironclad_attack_melee, power_draw: 3, mass: 8, lore: "Superheated 3000°C thermal edge melting armor plate." },
         { id: "wp_thermal_gladius", name: "Spartan High-Frequency Gladius", tech_id: "tech_wpn_vibro_blade", damage: 250, class: "MELEE", sprite: spr_ms_centurion_attack_melee, power_draw: 4, mass: 6, lore: "Bespoke shock assault thermal blade." },
         { id: "wp_beam_saber_cherenkov", name: "High-Energy Thermal Plasma Saber", tech_id: "tech_wpn_beam_saber", damage: 285, class: "MELEE", sprite: spr_ms_aether_attack_saber, power_draw: 6, mass: 4, lore: "Cherenkov cyan plasma blade with pure white core." }
     ],
     shield: [
-        { id: "sld_ballistic_buckler", name: "Ballistic Titanium Buckler", tech_id: "tech_sld_ballistic_buckler", armor_hp: 90, mass: 4, power_draw: 0, lore: "Lightweight deflector plate." },
+        { id: "sld_ballistic_buckler", name: "Type-1 Ballistic Deflector Buckler", tech_id: "tech_sld_ballistic_buckler", armor_hp: 90, mass: 4, power_draw: 0, lore: "Standard issue lightweight composite deflector buckler." },
         { id: "sld_composite_tower", name: "Aegis Composite Tower Scutum", tech_id: "tech_sld_ballistic_buckler", armor_hp: 210, mass: 9, power_draw: 0, lore: "Heavy frontline blast barrier." },
         { id: "sld_em_deflector", name: "Aerosteel Deflector Shield", tech_id: "tech_sld_ballistic_buckler", armor_hp: 150, mass: 5, power_draw: 3, lore: "Angled aerosteel with electromagnetic dispersion." },
         { id: "sld_fortress_barrier", name: "Fortress Reactive Energy Barrier", tech_id: "tech_sld_ballistic_buckler", armor_hp: 300, mass: 14, power_draw: 6, lore: "Superheavy fortress barrier absorbing kinetic/beam salvos." }

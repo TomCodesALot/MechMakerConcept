@@ -52,8 +52,8 @@ def run_tests():
     assert "builder_lineage_names" in c_code, "Missing builder_lineage_names in Create_0.gml"
     assert "AEGIS VISOR DOCTRINE" in c_code, "Missing Aegis Visor Doctrine in Create_0.gml"
     assert "COLOSSUS FORGE DOCTRINE" in c_code, "Missing Colossus Forge Doctrine in Create_0.gml"
-    assert "CHIMERA DOCTRINE" in c_code, "Missing Chimera Doctrine in Create_0.gml"
-    print("  ✓ 3 Foundry Lineages Registered (Aegis Visor, Colossus Forge, Chimera Archeotech).")
+    assert "STRATOS VECTOR DOCTRINE" in c_code, "Missing Stratos Vector Doctrine in Create_0.gml"
+    print("  ✓ 3 Grounded Foundry Lineages Registered (Aegis Visor, Colossus Forge, Stratos Vector).")
 
     # 2. Verify obj_DebugManager/Draw_64.gml
     draw_path = os.path.join(PROJECT_ROOT, "objects", "obj_DebugManager", "Draw_64.gml")

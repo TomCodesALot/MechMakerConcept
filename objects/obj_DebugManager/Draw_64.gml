@@ -871,7 +871,7 @@ else if (active_debug_tab == 1) {
         var _lin_titles = [
             "[FOUNDRY LINEAGE 1: AEGIS VISOR (Wanzer Mil-Spec)]",
             "[FOUNDRY LINEAGE 2: COLOSSUS FORGE (Industrial Dreadnought)]",
-            "[FOUNDRY LINEAGE 3: CHIMERA ARCHEOTECH (Singularity Duelist)]"
+            "[FOUNDRY LINEAGE 3: STRATOS VECTOR (Agile Recon Skirmisher)]"
         ];
         var _lin_col = _lin_cols[builder_lineage_idx % 3];
         var _lin_str = _lin_titles[builder_lineage_idx % 3] + " [L]";
