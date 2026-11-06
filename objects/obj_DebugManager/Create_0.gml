@@ -183,6 +183,15 @@ launch_full_cinematic_clash = function() {
 // Front Mission / Gundam Hangar Deck with Weapons from R&D Tech Tree
 builder_subtab = 0; // 0=Chassis & Role, 1=Alloy Plating, 2=Researched Weapons, 3=Telemetry & Rollout
 builder_chassis_line = 0; // 0=Player PMC Proprietary Chassis, 1=Reverse-Engineered Foreign Factions
+builder_quality_idx = 1; // 0=C-Standard, 1=B-MilSpec, 2=A-AceCustom, 3=S-SingularityMasterwork
+builder_quality_names = [
+    "C-TIER: INDUSTRIAL STANDARD (Baseline Yield)",
+    "B-TIER: REFINED MIL-SPEC (+10% Stats, Combat Hardened)",
+    "A-TIER: ACE CUSTOM PROTOTYPE (+20% Stats, Vernier Tuning)",
+    "S-TIER: SINGULARITY MASTERWORK (+35% Stats, Radiant Sheen)"
+];
+builder_quality_badges = ["[C: INDUSTRIAL]", "[B: MIL-SPEC]", "[A: ACE PROTOTYPE]", "[S: MASTERWORK]"];
+builder_quality_mults = [1.0, 1.10, 1.20, 1.35];
 builder_chassis_idx = 0;
 builder_alloy_idx = 0;
 builder_primary_wpn_idx = 0;
@@ -212,12 +221,12 @@ builder_alloy_names = [
     "Tachyon Superalloy (Singularity Spec, +25% All Stats)"
 ];
 builder_alloy_deltas = [
-    { armor_mult: 1.0, mass_mult: 1.0, speed_bonus: 0, desc: "Standard military baseline plating." },
-    { armor_mult: 0.9, mass_mult: 0.85, speed_bonus: 15, desc: "Plasma-stabilized superconducting matrix." },
-    { armor_mult: 0.8, mass_mult: 0.75, speed_bonus: 30, desc: "Ultralight vacuum-sintered vernier alloy." },
-    { armor_mult: 1.45, mass_mult: 1.35, speed_bonus: -15, desc: "Super-dense impact-resistant adamantine slab." },
-    { armor_mult: 1.2, mass_mult: 1.1, speed_bonus: -5, desc: "Composite tiles defeating kinetic shaped-charges." },
-    { armor_mult: 1.35, mass_mult: 0.85, speed_bonus: 25, desc: "Self-healing pre-war molecular 3D lattice." }
+    { armor_mult: 1.0, mass_mult: 1.0, speed_bonus: 0, desc: "Matte gunmetal olive-drab with carbon ballistic trim.", tint_color: make_color_rgb(230, 240, 230), glow_color: make_color_rgb(255, 255, 255) },
+    { armor_mult: 0.9, mass_mult: 0.85, speed_bonus: 15, desc: "Deep cobalt navy with pulsing cyan superconducting lines.", tint_color: make_color_rgb(180, 220, 255), glow_color: make_color_rgb(0, 240, 255) },
+    { armor_mult: 0.8, mass_mult: 0.75, speed_bonus: 30, desc: "Polished aerospace satin-white with gold vernier cowlings.", tint_color: make_color_rgb(255, 250, 240), glow_color: make_color_rgb(255, 220, 80) },
+    { armor_mult: 1.45, mass_mult: 1.35, speed_bonus: -15, desc: "Blackened charred tungsten slab with industrial bronze joints.", tint_color: make_color_rgb(165, 165, 175), glow_color: make_color_rgb(255, 140, 40) },
+    { armor_mult: 1.2, mass_mult: 1.1, speed_bonus: -5, desc: "Desert sand composite tiles absorbing shaped charges.", tint_color: make_color_rgb(240, 225, 195), glow_color: make_color_rgb(255, 200, 100) },
+    { armor_mult: 1.35, mass_mult: 0.85, speed_bonus: 25, desc: "Midnight violet lattice with pulsating Cherenkov radiation.", tint_color: make_color_rgb(225, 195, 255), glow_color: make_color_rgb(200, 100, 255) }
 ];
 
 // Master Weapons & Equipment R&D Tech Tree Catalog
@@ -490,12 +499,13 @@ apply_smart_default_loadout = function(_chassis) {
     builder_custom_name = _chassis.name + " [PMC SPEC]";
 };
 
-// Calculate Full Telemetry based on Chassis + Sintered Alloy + Researched Loadout
+// Calculate Full Telemetry based on Chassis + Sintered Alloy + Quality Tier + Researched Loadout
 calculate_builder_telemetry = function() {
     var _chassis_list = get_canonical_chassis_list();
     var _c = _chassis_list[clamp(builder_chassis_idx, 0, array_length(_chassis_list) - 1)];
 
     var _alloy_d = builder_alloy_deltas[clamp(builder_alloy_idx, 0, array_length(builder_alloy_deltas) - 1)];
+    var _q_mult = builder_quality_mults[clamp(builder_quality_idx, 0, array_length(builder_quality_mults) - 1)];
     var _wpn_p = builder_weapons_db.primary[clamp(builder_primary_wpn_idx, 0, array_length(builder_weapons_db.primary) - 1)];
     var _wpn_s = builder_weapons_db.secondary[clamp(builder_secondary_wpn_idx, 0, array_length(builder_weapons_db.secondary) - 1)];
     var _wpn_m = builder_weapons_db.melee[clamp(builder_melee_wpn_idx, 0, array_length(builder_weapons_db.melee) - 1)];
@@ -506,19 +516,20 @@ calculate_builder_telemetry = function() {
     var _base_spd = variable_struct_exists(_c, "speed") ? _c.speed : 55;
     var _core_mw = variable_struct_exists(_c, "power_output") ? _c.power_output : 35;
 
-    // Apply Sintered Alloy Scaling
-    var _tot_armor = floor((_base_hp * _alloy_d.armor_mult) + _sld.armor_hp);
+    // Apply Sintered Alloy & Quality Tier Scaling
+    var _tot_armor = floor(((_base_hp * _alloy_d.armor_mult) + _sld.armor_hp) * _q_mult);
     var _tot_mass = floor((_base_mass * _alloy_d.mass_mult) + _wpn_p.mass + _wpn_s.mass + _wpn_m.mass + _sld.mass);
     var _max_capacity = floor(_base_mass * 1.55);
     var _mass_overloaded = (_tot_mass > _max_capacity);
 
     var _tot_draw = _wpn_p.power_draw + _wpn_s.power_draw + _wpn_m.power_draw + _sld.power_draw;
-    var _net_power = _core_mw - _tot_draw;
+    var _scaled_core = floor(_core_mw * _q_mult);
+    var _net_power = _scaled_core - _tot_draw;
     var _reactor_overloaded = (_net_power < 0);
 
-    var _final_spd = max(20, floor((_base_spd + _alloy_d.speed_bonus) * (1.0 - (_tot_mass / 250.0))));
+    var _final_spd = max(20, floor(((_base_spd + _alloy_d.speed_bonus) * (1.0 - (_tot_mass / 250.0))) * (1.0 + ((_q_mult - 1.0) * 0.5))));
     var _boost_spd = _final_spd + 45;
-    var _oss = floor((_tot_armor / 5) + _wpn_p.damage + (_wpn_m.damage / 2) + (_final_spd / 2) + max(0, _net_power * 3));
+    var _oss = floor(((_tot_armor / 5) + _wpn_p.damage + (_wpn_m.damage / 2) + (_final_spd / 2) + max(0, _net_power * 3)) * _q_mult);
 
     var _w_class = "MEDIUM MAINSTAY";
     if (_tot_mass < 55) _w_class = "LIGHT SKIRMISHER";
@@ -527,14 +538,16 @@ calculate_builder_telemetry = function() {
     else _w_class = "SUPERHEAVY SIEGEBREAKER";
 
     return {
-        chassis: _c, alloy_delta: _alloy_d,
+        chassis: _c, alloy_delta: _alloy_d, quality_mult: _q_mult, quality_idx: builder_quality_idx,
         primary_wpn: _wpn_p, secondary_wpn: _wpn_s, melee_wpn: _wpn_m, shield: _sld,
         total_armor: _tot_armor, total_mass: _tot_mass, max_capacity: _max_capacity,
-        mass_overloaded: _mass_overloaded, power_output: _core_mw, total_draw: _tot_draw,
+        mass_overloaded: _mass_overloaded, power_output: _scaled_core, total_draw: _tot_draw,
         net_power: _net_power, reactor_overloaded: _reactor_overloaded,
         walk_speed: _final_spd, boost_speed: _boost_spd, combat_rating: _oss,
         weight_class: _w_class, preview_sprite: _c.sprite_asset,
-        sprites: _c.sprites
+        sprites: _c.sprites,
+        tint: _alloy_d.tint_color,
+        glow: _alloy_d.glow_color
     };
 };
 

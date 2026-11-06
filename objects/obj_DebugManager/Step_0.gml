@@ -115,6 +115,13 @@ if (!clash_cinematic.active && is_open && active_debug_tab == 1) {
         }
     } else if (builder_subtab == 3) {
         // Rollout shortcuts
+        if (keyboard_check_pressed(vk_left) || keyboard_check_pressed(vk_up)) {
+            builder_quality_idx = (builder_quality_idx - 1 + 4) % 4;
+            scr_audio_play_ui("click");
+        } else if (keyboard_check_pressed(vk_right) || keyboard_check_pressed(vk_down)) {
+            builder_quality_idx = (builder_quality_idx + 1) % 4;
+            scr_audio_play_ui("click");
+        }
         if (keyboard_check_pressed(vk_enter)) {
             deploy_builder_mech_to_combat();
         }

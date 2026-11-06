@@ -770,7 +770,15 @@ else if (active_debug_tab == 1) {
 
     if (sprite_exists(_draw_spr)) {
         var _sub = floor(builder_subimg) % sprite_get_number(_draw_spr);
-        draw_sprite_ext(_draw_spr, _sub, _gcx, _gcy + 45, builder_preview_scale, builder_preview_scale, 0, c_white, 1.0);
+        // Base Sprite with Sintered Material Alloy Tint
+        draw_sprite_ext(_draw_spr, _sub, _gcx, _gcy + 45, builder_preview_scale, builder_preview_scale, 0, _t.tint, 1.0);
+
+        // Radiant Singularity Masterwork Sheen (S-Tier or Tachyon)
+        if (builder_quality_idx == 3 || builder_alloy_idx == 5) {
+            gpu_set_blendmode(bm_add);
+            draw_sprite_ext(_draw_spr, _sub, _gcx, _gcy + 45, builder_preview_scale, builder_preview_scale, 0, _t.glow, 0.22 + 0.14 * sin(current_time * 0.005));
+            gpu_set_blendmode(bm_normal);
+        }
     }
 
     // Reticle Scan Line
@@ -798,17 +806,23 @@ else if (active_debug_tab == 1) {
         scr_draw_snes_button(_stx, _st_y + 20, 150, 32, _st_names[st], _st_hov || _st_act, _st_act, _st_act ? make_color_rgb(0, 240, 255) : c_white);
     }
 
-    // Callsign Banner & Auto-Tune Button
-    var _ban_y = _hng_y + 550;
+    // Callsign Banner & Quality Tier Badge
+    var _ban_y = _hng_y + 540;
     draw_set_color(make_color_rgb(140, 170, 200));
     draw_text(_hng_x + 20, _ban_y, "CUSTOM CALLSIGN:");
     draw_set_color(make_color_rgb(255, 220, 80));
     draw_text(_hng_x + 165, _ban_y, builder_custom_name);
 
     draw_set_color(make_color_rgb(140, 170, 200));
-    draw_text(_hng_x + 360, _ban_y, "DOCTRINE ROLE:");
-    draw_set_color(c_white);
-    draw_text(_hng_x + 480, _ban_y, string_copy(_t.chassis.doctrine, 1, 24));
+    draw_text(_hng_x + 360, _ban_y, "QUALITY TIER:");
+    var _q_col = (builder_quality_idx == 3) ? make_color_rgb(255, 100, 255) : ((builder_quality_idx == 2) ? make_color_rgb(255, 220, 80) : ((builder_quality_idx == 1) ? c_aqua : c_white));
+    draw_set_color(_q_col);
+    draw_text(_hng_x + 470, _ban_y, builder_quality_badges[builder_quality_idx]);
+
+    draw_set_color(make_color_rgb(140, 170, 200));
+    draw_text(_hng_x + 20, _ban_y + 24, "FINISH:");
+    draw_set_color(_t.glow);
+    draw_text(_hng_x + 85, _ban_y + 24, string_copy(_t.alloy_delta.desc, 1, 55));
 
     var _tune_btn_y = _ban_y + 30;
     var _at_hov = (_mx >= _hng_x + 20 && _mx <= _hng_x + _hng_w - 20 && _my >= _tune_btn_y && _my <= _tune_btn_y + 44);
@@ -1109,8 +1123,26 @@ else if (active_debug_tab == 1) {
         draw_set_color(c_white);
         draw_text(_eng_x + 280, _ty, _t.weight_class);
 
+        // Quality Tier Selector
+        _ty += 30;
+        draw_set_color(make_color_rgb(0, 240, 255));
+        draw_text(_eng_x + 28, _ty, "SELECT FORGE CRUCIBLE PURITY / QUALITY TIER:");
+        _ty += 22;
+        var _qw = (_eng_w - 56 - 18) / 4;
+        for (var q = 0; q < 4; q++) {
+            var _qx = _eng_x + 28 + (q * (_qw + 6));
+            var _q_hov = (_mx >= _qx && _mx <= _qx + _qw && _my >= _ty && _my <= _ty + 30);
+            var _q_act = (builder_quality_idx == q);
+            if (_q_hov && _click) {
+                builder_quality_idx = q;
+                scr_audio_play_ui("click");
+            }
+            var _q_btn_col = (q == 3) ? make_color_rgb(255, 100, 255) : ((q == 2) ? make_color_rgb(255, 220, 80) : ((q == 1) ? c_aqua : c_white));
+            scr_draw_snes_button(_qx, _ty, _qw, 30, builder_quality_badges[q], _q_hov || _q_act, _q_act, _q_btn_col);
+        }
+        _ty += 40;
+
         // Overload Safety Alert Box
-        _ty += 38;
         if (_t.reactor_overloaded) {
             draw_set_color(c_red);
             draw_rectangle(_eng_x + 28, _ty, _eng_x + _eng_w - 28, _ty + 34, false);
