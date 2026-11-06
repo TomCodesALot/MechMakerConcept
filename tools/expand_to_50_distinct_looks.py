@@ -187,3 +187,4 @@ draw_src = draw_src.replace(old_subtab1_draw, new_subtab1_draw)
 with open(draw_path, "w") as f:
     f.write(draw_src)
 print("Draw_64.gml updated with 2x5 grid for 10 Sintered Material Alloys.")
+

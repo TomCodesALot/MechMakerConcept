@@ -183,6 +183,13 @@ launch_full_cinematic_clash = function() {
 // Front Mission / Gundam Hangar Deck with Weapons from R&D Tech Tree
 builder_subtab = 0; // 0=Chassis & Role, 1=Alloy Plating, 2=Researched Weapons, 3=Telemetry & Rollout
 builder_chassis_line = 0; // 0=Player PMC Proprietary Chassis, 1=Reverse-Engineered Foreign Factions
+builder_lineage_idx = 0; // 0=Aegis Visor (Wanzer Mil-Spec), 1=Colossus Forge (Industrial Dreadnought), 2=Chimera Archeotech (Singularity Duelist)
+builder_lineage_names = [
+    "AEGIS VISOR DOCTRINE (Mil-Spec Wanzer / Panoramic Tactical Visor)",
+    "COLOSSUS FORGE DOCTRINE (Industrial Dreadnought / Dual Exhaust Blast-Hood)",
+    "CHIMERA DOCTRINE (Pre-War Singularity / Faceted Composite & Dual Slits)"
+];
+builder_lineage_badges = ["[LINEAGE: AEGIS VISOR]", "[LINEAGE: COLOSSUS FORGE]", "[LINEAGE: CHIMERA ARCHEOTECH]"];
 builder_quality_idx = 1; // 0=C-Standard, 1=B-MilSpec, 2=A-AceCustom, 3=S-SingularityMasterwork
 builder_quality_names = [
     "C-TIER: INDUSTRIAL STANDARD (Baseline Yield)",

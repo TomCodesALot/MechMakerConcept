@@ -866,10 +866,28 @@ else if (active_debug_tab == 1) {
         var _clist = get_canonical_chassis_list();
         var _c = _t.chassis;
 
+        // Lineage Selector (Active Foundry Lineage Doctrine)
+        var _lin_cols = [make_color_rgb(0, 240, 255), make_color_rgb(255, 180, 50), make_color_rgb(200, 80, 255)];
+        var _lin_titles = [
+            "[FOUNDRY LINEAGE 1: AEGIS VISOR (Wanzer Mil-Spec)]",
+            "[FOUNDRY LINEAGE 2: COLOSSUS FORGE (Industrial Dreadnought)]",
+            "[FOUNDRY LINEAGE 3: CHIMERA ARCHEOTECH (Singularity Duelist)]"
+        ];
+        var _lin_col = _lin_cols[builder_lineage_idx % 3];
+        var _lin_str = _lin_titles[builder_lineage_idx % 3] + " [L]";
+        var _lin_hov = (_mx >= _eng_x + 18 && _mx <= _eng_x + _eng_w - 18 && _my >= _deck_y && _my <= _deck_y + 24);
+        if (_lin_hov && _click) {
+            builder_lineage_idx = (builder_lineage_idx + 1) % 3;
+            scr_audio_play_ui("click");
+            show_toast("FOUNDRY LINEAGE: " + builder_lineage_badges[builder_lineage_idx], _lin_col);
+        }
+        scr_draw_snes_button(_eng_x + 18, _deck_y, _eng_w - 36, 24, _lin_str, _lin_hov, true, _lin_col);
+
         // Platform Line Selector (Player PMC Proprietary vs Reverse-Engineered Factions)
-        var _line_str = (builder_chassis_line == 0) ? "[CATALOG: PMC PROPRIETARY FOUNDRY CHASSIS]" : "[CATALOG: REVERSE-ENGINEERED FACTIONS]";
+        var _pline_y = _deck_y + 28;
+        var _line_str = (builder_chassis_line == 0) ? "[CATALOG: PMC PROPRIETARY FOUNDRY CHASSIS] [T]" : "[CATALOG: REVERSE-ENGINEERED FACTIONS] [T]";
         var _line_col = (builder_chassis_line == 0) ? make_color_rgb(0, 240, 255) : make_color_rgb(255, 180, 50);
-        var _line_hov = (_mx >= _eng_x + 18 && _mx <= _eng_x + _eng_w - 18 && _my >= _deck_y && _my <= _deck_y + 26);
+        var _line_hov = (_mx >= _eng_x + 18 && _mx <= _eng_x + _eng_w - 18 && _my >= _pline_y && _my <= _pline_y + 24);
         if (_line_hov && _click) {
             builder_chassis_line = (builder_chassis_line == 0) ? 1 : 0;
             builder_chassis_idx = 0;
@@ -877,10 +895,10 @@ else if (active_debug_tab == 1) {
             apply_smart_default_loadout(_new_list[0]);
             scr_audio_play_ui("tab");
         }
-        scr_draw_snes_button(_eng_x + 18, _deck_y, _eng_w - 36, 26, _line_str, _line_hov, true, _line_col);
+        scr_draw_snes_button(_eng_x + 18, _pline_y, _eng_w - 36, 24, _line_str, _line_hov, false, _line_col);
 
         // Chassis Card
-        var _cc_y = _deck_y + 32;
+        var _cc_y = _pline_y + 28;
         draw_set_color(make_color_rgb(14, 26, 44));
         draw_rectangle(_eng_x + 18, _cc_y, _eng_x + _eng_w - 18, _cc_y + 160, false);
         draw_set_color(make_color_rgb(0, 240, 255));

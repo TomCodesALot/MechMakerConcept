@@ -61,6 +61,13 @@ if (!clash_cinematic.active && is_open && active_debug_tab == 1) {
 
     // Contextual Navigation
     if (builder_subtab == 0) {
+        // Toggle Foundry Lineage (L key)
+        if (keyboard_check_pressed(ord("L"))) {
+            builder_lineage_idx = (builder_lineage_idx + 1) % 3;
+            scr_audio_play_ui("click");
+            show_toast("FOUNDRY LINEAGE: " + builder_lineage_badges[builder_lineage_idx], c_aqua);
+        }
+
         // Toggle Platform Catalog (T key)
         if (keyboard_check_pressed(ord("T"))) {
             builder_chassis_line = (builder_chassis_line == 0) ? 1 : 0;
