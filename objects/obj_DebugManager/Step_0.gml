@@ -61,6 +61,15 @@ if (!clash_cinematic.active && is_open && active_debug_tab == 1) {
 
     // Contextual Navigation
     if (builder_subtab == 0) {
+        // Toggle Platform Catalog (T key)
+        if (keyboard_check_pressed(ord("T"))) {
+            builder_chassis_line = (builder_chassis_line == 0) ? 1 : 0;
+            builder_chassis_idx = 0;
+            var _new_list = get_canonical_chassis_list();
+            apply_smart_default_loadout(_new_list[0]);
+            scr_audio_play_ui("tab");
+        }
+
         // Chassis selection
         if (keyboard_check_pressed(vk_left)) {
             builder_chassis_idx = (builder_chassis_idx - 1 + array_length(_clist)) % array_length(_clist);

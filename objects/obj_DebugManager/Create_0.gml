@@ -182,6 +182,7 @@ launch_full_cinematic_clash = function() {
 // 8. MODULAR MECH BUILDER & FORGE STATE (TAB 1)
 // Front Mission / Gundam Hangar Deck with Weapons from R&D Tech Tree
 builder_subtab = 0; // 0=Chassis & Role, 1=Alloy Plating, 2=Researched Weapons, 3=Telemetry & Rollout
+builder_chassis_line = 0; // 0=Player PMC Proprietary Chassis, 1=Reverse-Engineered Foreign Factions
 builder_chassis_idx = 0;
 builder_alloy_idx = 0;
 builder_primary_wpn_idx = 0;
@@ -249,19 +250,180 @@ builder_weapons_db = {
     ]
 };
 
-// Retrieve Canonical Chassis Catalog
+// Player PMC Bespoke Foundry Chassis Catalog (Completely Unique Player Mobile Suits)
+get_player_custom_chassis_catalog = function() {
+    return [
+        {
+            id: "bp_player_vanguard_heavy",
+            model_code: "PMC-01",
+            name: "PMC-01 Vanguard Breaker",
+            faction_id: "pmc_player",
+            category: "PLAYER_PMC_CHASSIS",
+            chassis: "Heavy Bipedal Walker",
+            move_type: "biped",
+            alloy: "alloy_vanguard_comp",
+            sprite_asset: spr_ms_custom_biped_heavy_idle,
+            sprite_back_asset: spr_ms_custom_biped_heavy_back_idle,
+            sprites: {
+                idle: spr_ms_custom_biped_heavy_idle,
+                back_idle: spr_ms_custom_biped_heavy_back_idle,
+                boost: spr_ms_ironclad_boost,
+                melee: spr_ms_ironclad_attack_melee,
+                fire: spr_ms_ironclad_fire_rifle,
+                damaged: spr_ms_ironclad_idle_damaged,
+                destroyed: spr_ms_ironclad_destroyed
+            },
+            weapon_name: "Type-77 120mm Solid Kinetic Cannon",
+            weapon_class: "BALLISTIC",
+            hp: 880,
+            armor: 38,
+            weight_tonnes: 60,
+            power_output: 42,
+            speed: 55,
+            era: 2,
+            doctrine: "Heavy Frontline Vanguard Linebreaker",
+            lore: "Proprietary heavy assault frame engineered with reinforced modular hardpoints and high-impact kinetic hydraulics."
+        },
+        {
+            id: "bp_player_stratos_interceptor",
+            model_code: "PMC-02",
+            name: "PMC-02 Stratos Interceptor",
+            faction_id: "pmc_player",
+            category: "PLAYER_PMC_CHASSIS",
+            chassis: "High-G Vector Aero Frame",
+            move_type: "aero",
+            alloy: "alloy_aerosteel_flux",
+            sprite_asset: spr_ms_custom_aero_striker_idle,
+            sprite_back_asset: spr_ms_custom_aero_striker_back_idle,
+            sprites: {
+                idle: spr_ms_custom_aero_striker_idle,
+                back_idle: spr_ms_custom_aero_striker_back_idle,
+                boost: spr_ms_aether_boost,
+                melee: spr_ms_aether_attack_saber,
+                fire: spr_ms_aether_fire_beam,
+                damaged: -1,
+                destroyed: -1
+            },
+            weapon_name: "Type-6A Thermal Beam Rifle",
+            weapon_class: "BEAM_PULSE",
+            hp: 620,
+            armor: 22,
+            weight_tonnes: 42,
+            power_output: 48,
+            speed: 95,
+            era: 2,
+            doctrine: "Ultra-Agile Vector Vernier Skirmisher",
+            lore: "High-mobility aerospace duelist chassis forged with Cherenkov thrusters for extreme evasive space interception."
+        },
+        {
+            id: "bp_player_scrapper_brawler",
+            model_code: "PMC-03",
+            name: "PMC-03 Scrapper Brawler",
+            faction_id: "pmc_player",
+            category: "PLAYER_PMC_CHASSIS",
+            chassis: "Continuous Sintered Track Assembly",
+            move_type: "tread",
+            alloy: "alloy_adamantine_carbide",
+            sprite_asset: spr_ms_custom_tread_artillery_idle,
+            sprite_back_asset: spr_ms_custom_tread_artillery_back_idle,
+            sprites: {
+                idle: spr_ms_custom_tread_artillery_idle,
+                back_idle: spr_ms_custom_tread_artillery_back_idle,
+                boost: spr_ms_custom_tread_artillery_idle,
+                melee: spr_ms_hyena_attack_claw,
+                fire: spr_ms_hyena_fire_flak,
+                damaged: -1,
+                destroyed: -1
+            },
+            weapon_name: "Heavy Recoil-Dampened Flak Howitzer",
+            weapon_class: "EXPLOSIVE",
+            hp: 980,
+            armor: 42,
+            weight_tonnes: 78,
+            power_output: 36,
+            speed: 35,
+            era: 2,
+            doctrine: "Continuous-Track Heavy Demolition Artillery",
+            lore: "Heavily armored tracked chassis designed to withstand point-blank kinetic impacts and anchor heavy siege howitzers."
+        },
+        {
+            id: "bp_player_ghost_sniper",
+            model_code: "PMC-04",
+            name: "PMC-04 Ghost Recon Sniper",
+            faction_id: "pmc_player",
+            category: "PLAYER_PMC_CHASSIS",
+            chassis: "Anti-Grav Hover Repulsor",
+            move_type: "hover",
+            alloy: "alloy_hyperion_matrix",
+            sprite_asset: spr_ms_custom_hover_sniper_idle,
+            sprite_back_asset: spr_ms_custom_hover_sniper_back_idle,
+            sprites: {
+                idle: spr_ms_custom_hover_sniper_idle,
+                back_idle: spr_ms_custom_hover_sniper_back_idle,
+                boost: spr_ms_custom_hover_sniper_idle,
+                melee: spr_ms_muramasa_attack_blade,
+                fire: spr_ms_muramasa_fire_plasma,
+                damaged: -1,
+                destroyed: -1
+            },
+            weapon_name: "Electromagnetic Interdictor Railgun",
+            weapon_class: "RAILGUN",
+            hp: 560,
+            armor: 24,
+            weight_tonnes: 38,
+            power_output: 52,
+            speed: 80,
+            era: 2,
+            doctrine: "Low-Radar Gyroscopic Hover Interdictor",
+            lore: "Stealth-coated hover frame equipped with gyroscopic stabilization and optical scattering matrices for long-range interdiction."
+        },
+        {
+            id: "bp_player_hephaestus_avatar",
+            model_code: "PMC-00",
+            name: "PMC-00 Hephaestus Prime",
+            faction_id: "pmc_player",
+            category: "PLAYER_PMC_CHASSIS",
+            chassis: "Archeotech Singularity Dreadnought",
+            move_type: "biped",
+            alloy: "alloy_tachyon_superalloy",
+            sprite_asset: spr_ms_hephaestus_avatar,
+            sprite_back_asset: spr_ms_hephaestus_avatar_back_idle,
+            sprites: {
+                idle: spr_ms_hephaestus_avatar,
+                back_idle: spr_ms_hephaestus_avatar_back_idle,
+                boost: spr_ms_titan_proto,
+                melee: spr_ms_muramasa_attack_blade,
+                fire: spr_ms_aether_fire_beam,
+                damaged: -1,
+                destroyed: -1
+            },
+            weapon_name: "Archeotech Singularity Tachyon Lance",
+            weapon_class: "BEAM_PULSE",
+            hp: 1450,
+            armor: 55,
+            weight_tonnes: 95,
+            power_output: 75,
+            speed: 65,
+            era: 3,
+            doctrine: "Foundry Ship Sovereign War Avatar",
+            lore: "The personal war avatar of the USN-X Hephaestus, harnessing the vessel's miniature Singularity crucible."
+        }
+    ];
+};
+
+// Retrieve Canonical Chassis Catalog (Player Bespoke Foundry Platforms by Default)
 get_canonical_chassis_list = function() {
+    if (builder_chassis_line == 0) {
+        return get_player_custom_chassis_catalog();
+    }
+    // builder_chassis_line == 1: Foreign Reverse-Engineered Factions
     var _list = [];
     for (var i = 0; i < array_length(master_roster); i++) {
         var _u = master_roster[i];
-        if (_u.category == "MOBILE_SUIT") {
+        if (_u.category == "MOBILE_SUIT" && _u.faction_id != "pmc_player") {
             var _hp_val = variable_struct_exists(_u, "hp") ? _u.hp : 680;
-            if (!variable_struct_exists(_u, "power_output")) {
-                _u.power_output = floor(28 + (_hp_val / 30));
-            }
-            if (!variable_struct_exists(_u, "weight_tonnes")) {
-                _u.weight_tonnes = floor(38 + (_hp_val / 22));
-            }
+            if (!variable_struct_exists(_u, "power_output")) _u.power_output = floor(28 + (_hp_val / 30));
+            if (!variable_struct_exists(_u, "weight_tonnes")) _u.weight_tonnes = floor(38 + (_hp_val / 22));
             if (!variable_struct_exists(_u, "speed")) {
                 var _ch = variable_struct_exists(_u, "chassis") ? _u.chassis : "biped";
                 _u.speed = (string_pos("hover", _ch) > 0) ? 80 : ((string_pos("tread", _ch) > 0) ? 35 : 55);
@@ -269,13 +431,7 @@ get_canonical_chassis_list = function() {
             array_push(_list, _u);
         }
     }
-    if (array_length(_list) == 0 && array_length(master_roster) > 0) {
-        var _first = master_roster[0];
-        if (!variable_struct_exists(_first, "power_output")) _first.power_output = 35;
-        if (!variable_struct_exists(_first, "weight_tonnes")) _first.weight_tonnes = 65;
-        if (!variable_struct_exists(_first, "speed")) _first.speed = 55;
-        array_push(_list, _first);
-    }
+    if (array_length(_list) == 0) return get_player_custom_chassis_catalog();
     return _list;
 };
 
@@ -396,7 +552,10 @@ deploy_builder_mech_to_combat = function() {
         faction_id: "pmc_player",
         category: "CUSTOM_MECH",
         move_type: variable_struct_exists(_t.chassis, "move_type") ? _t.chassis.move_type : "biped",
+        chassis: variable_struct_exists(_t.chassis, "chassis") ? _t.chassis.chassis : "biped",
         alloy_id: builder_alloys[builder_alloy_idx],
+        alloy: builder_alloys[builder_alloy_idx],
+        era: 2,
         sprite_asset: _t.chassis.sprite_asset,
         sprite_back_asset: _t.chassis.sprite_back_asset,
         weapon_name: _t.primary_wpn.name,

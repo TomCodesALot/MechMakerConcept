@@ -393,7 +393,8 @@ if (active_debug_tab == 0) {
     draw_text(_col1_x + 22, _col1_y + 274, "CATEGORY: " + _cur_atk.category);
     var _atk_doc_str = (variable_struct_exists(_cur_atk, "doctrine") && _cur_atk.doctrine != "") ? string_copy(_cur_atk.doctrine, 1, 24) : string_upper(_cur_atk.chassis);
     draw_text(_col1_x + 22, _col1_y + 298, "DOCTRINE: " + _atk_doc_str);
-    draw_text(_col1_x + 22, _col1_y + 322, "ALLOY: " + _cur_atk.alloy);
+    var _atk_alloy_str = variable_struct_exists(_cur_atk, "alloy") ? _cur_atk.alloy : (variable_struct_exists(_cur_atk, "alloy_id") ? _cur_atk.alloy_id : "Vanguard Composite");
+    draw_text(_col1_x + 22, _col1_y + 322, "ALLOY: " + string(_atk_alloy_str));
     draw_text(_col1_x + 22, _col1_y + 346, "WEAPON: " + _cur_atk.weapon_name);
     draw_text(_col1_x + 22, _col1_y + 370, "HULL: " + string(_cur_atk.hp) + " HP");
     draw_text(_col1_x + 22, _col1_y + 394, "ARMOR: " + string(_cur_atk.armor) + " RATING");
@@ -481,7 +482,8 @@ if (active_debug_tab == 0) {
     draw_text(_col3_x + 22, _col3_y + 274, "CATEGORY: " + _cur_def.category);
     var _def_doc_str = (variable_struct_exists(_cur_def, "doctrine") && _cur_def.doctrine != "") ? string_copy(_cur_def.doctrine, 1, 24) : string_upper(_cur_def.chassis);
     draw_text(_col3_x + 22, _col3_y + 298, "DOCTRINE: " + _def_doc_str);
-    draw_text(_col3_x + 22, _col3_y + 322, "ALLOY: " + _cur_def.alloy);
+    var _def_alloy_str = variable_struct_exists(_cur_def, "alloy") ? _cur_def.alloy : (variable_struct_exists(_cur_def, "alloy_id") ? _cur_def.alloy_id : "Vanguard Composite");
+    draw_text(_col3_x + 22, _col3_y + 322, "ALLOY: " + string(_def_alloy_str));
     draw_text(_col3_x + 22, _col3_y + 346, "WEAPON: " + _cur_def.weapon_name);
     draw_text(_col3_x + 22, _col3_y + 370, "HULL: " + string(_cur_def.hp) + " HP");
     draw_text(_col3_x + 22, _col3_y + 394, "ARMOR: " + string(_cur_def.armor) + " RATING");
@@ -850,11 +852,21 @@ else if (active_debug_tab == 1) {
         var _clist = get_canonical_chassis_list();
         var _c = _t.chassis;
 
-        draw_set_color(make_color_rgb(0, 240, 255));
-        draw_text(_eng_x + 20, _deck_y, "BASE MOBILE SUIT CHASSIS PLATFORM:");
+        // Platform Line Selector (Player PMC Proprietary vs Reverse-Engineered Factions)
+        var _line_str = (builder_chassis_line == 0) ? "[CATALOG: PMC PROPRIETARY FOUNDRY CHASSIS]" : "[CATALOG: REVERSE-ENGINEERED FACTIONS]";
+        var _line_col = (builder_chassis_line == 0) ? make_color_rgb(0, 240, 255) : make_color_rgb(255, 180, 50);
+        var _line_hov = (_mx >= _eng_x + 18 && _mx <= _eng_x + _eng_w - 18 && _my >= _deck_y && _my <= _deck_y + 26);
+        if (_line_hov && _click) {
+            builder_chassis_line = (builder_chassis_line == 0) ? 1 : 0;
+            builder_chassis_idx = 0;
+            var _new_list = get_canonical_chassis_list();
+            apply_smart_default_loadout(_new_list[0]);
+            scr_audio_play_ui("tab");
+        }
+        scr_draw_snes_button(_eng_x + 18, _deck_y, _eng_w - 36, 26, _line_str, _line_hov, true, _line_col);
 
         // Chassis Card
-        var _cc_y = _deck_y + 24;
+        var _cc_y = _deck_y + 32;
         draw_set_color(make_color_rgb(14, 26, 44));
         draw_rectangle(_eng_x + 18, _cc_y, _eng_x + _eng_w - 18, _cc_y + 160, false);
         draw_set_color(make_color_rgb(0, 240, 255));
@@ -901,10 +913,13 @@ else if (active_debug_tab == 1) {
         // Quick Preset Hot-Select Row
         var _qp_y = _pbtn_y + 65;
         draw_set_color(make_color_rgb(0, 240, 255));
-        draw_text(_eng_x + 20, _qp_y, "QUICK DOCTRINAL PRESETS:");
+        draw_text(_eng_x + 20, _qp_y, (builder_chassis_line == 0) ? "BESPOKE PMC PLATFORMS:" : "CAPTURED FACTION SCHEMATICS:");
 
-        var _qnames = ["IRONCLAD (TC)", "AETHER (OCL)", "CENTURION (TC)", "KEPLER (OCL)", "HYENA (RS)"];
-        var _qindices = [0, 6, 1, 7, 12];
+        var _qnames = (builder_chassis_line == 0) ?
+            ["PMC-01: VANGUARD (HEAVY BIPED)", "PMC-02: STRATOS (AERO FIGHTER)", "PMC-03: SCRAPPER (TRACKED SIEGE)", "PMC-04: GHOST (HOVER RECON)", "PMC-00: HEPHAESTUS (FLAGSHIP AVATAR)"] :
+            ["IRONCLAD (TERRAN GHA-07)", "AETHER (COLONY STRIKER)", "CENTURION (TERRAN TH-C02)", "KEPLER (COLONY SNIPER)", "HYENA (SYNDICATE RAIDER)"];
+        var _qindices = (builder_chassis_line == 0) ? [0, 1, 2, 3, 4] : [0, 6, 1, 7, 12];
+
         for (var q = 0; q < min(5, array_length(_qnames)); q++) {
             var _qy_pos = _qp_y + 24 + (q * 44);
             var _qhov = (_mx >= _eng_x + 18 && _mx <= _eng_x + _eng_w - 18 && _my >= _qy_pos && _my <= _qy_pos + 36);
@@ -913,7 +928,7 @@ else if (active_debug_tab == 1) {
                 apply_smart_default_loadout(_clist[builder_chassis_idx]);
                 scr_audio_play_ui("click");
             }
-            scr_draw_snes_button(_eng_x + 18, _qy_pos, _eng_w - 36, 36, "[PRESET: " + _qnames[q] + "]", _qhov, false, make_color_rgb(100, 220, 255));
+            scr_draw_snes_button(_eng_x + 18, _qy_pos, _eng_w - 36, 36, _qnames[q], _qhov, false, (builder_chassis_line == 0) ? make_color_rgb(0, 240, 255) : make_color_rgb(255, 180, 50));
         }
     }
 

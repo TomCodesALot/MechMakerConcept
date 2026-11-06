@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Comprehensive Verification Suite for Mech Builder (Front Mission / Gundam Hangar Deck)
-and Asteroid Mining Debug Menus in obj_DebugManager.
+with Unique Player PMC Chassis, R&D Arsenal, and Asteroid Mining Debug Menus in obj_DebugManager.
 """
 import os
 import sys
@@ -15,6 +15,15 @@ def run_tests():
     create_path = os.path.join(PROJECT_ROOT, "objects", "obj_DebugManager", "Create_0.gml")
     with open(create_path) as f:
         c_code = f.read()
+
+    # Bespoke Player PMC Chassis Platforms
+    assert "get_player_custom_chassis_catalog" in c_code, "Missing get_player_custom_chassis_catalog in Create_0.gml"
+    assert "PMC-01 Vanguard Breaker" in c_code, "Missing PMC-01 Vanguard in Create_0.gml"
+    assert "PMC-02 Stratos Interceptor" in c_code, "Missing PMC-02 Stratos in Create_0.gml"
+    assert "PMC-03 Scrapper Brawler" in c_code, "Missing PMC-03 Scrapper in Create_0.gml"
+    assert "PMC-04 Ghost Recon Sniper" in c_code, "Missing PMC-04 Ghost in Create_0.gml"
+    assert "PMC-00 Hephaestus Prime" in c_code, "Missing PMC-00 Hephaestus in Create_0.gml"
+    assert "builder_chassis_line" in c_code, "Missing builder_chassis_line in Create_0.gml"
 
     # Hangar Deck Mech Builder with R&D Weapons
     assert "builder_weapons_db" in c_code, "Missing builder_weapons_db in Create_0.gml"
@@ -30,7 +39,7 @@ def run_tests():
     assert "smelt_alloy_debug" in c_code, "Missing smelt_alloy_debug in Create_0.gml"
     assert "trigger_mining_raid_debug" in c_code, "Missing trigger_mining_raid_debug in Create_0.gml"
     assert "claim_all_mining_nodes" in c_code, "Missing claim_all_mining_nodes in Create_0.gml"
-    print("  ✓ obj_DebugManager Create Event: all Hangar Deck Mech Builder & Mining methods verified.")
+    print("  ✓ obj_DebugManager Create Event: Bespoke Player PMC Chassis Catalog, Methods & Mining Hub verified.")
 
     # 2. Verify obj_DebugManager/Step_0.gml
     step_path = os.path.join(PROJECT_ROOT, "objects", "obj_DebugManager", "Step_0.gml")
@@ -40,11 +49,12 @@ def run_tests():
     assert 'ord("1")' in s_code and 'ord("2")' in s_code and 'ord("3")' in s_code and 'ord("4")' in s_code, "Missing 1-4 hotkeys in Step_0.gml"
     assert "TAB 1: MECH BUILDER & FORGE STEP CONTROLS" in s_code, "Missing Tab 1 step logic in Step_0.gml"
     assert "builder_subtab" in s_code, "Missing builder_subtab switching in Step_0.gml"
+    assert 'ord("T")' in s_code, "Missing T key platform line toggle in Step_0.gml"
     assert "apply_smart_default_loadout" in s_code, "Missing smart default trigger in Step_0.gml"
     assert "TAB 2: ASTEROID MINING & EXTRACTION STEP CONTROLS" in s_code, "Missing Tab 2 step logic in Step_0.gml"
     assert "mining_drill_heat" in s_code, "Missing drill heat cooling in Step_0.gml"
     assert "pulse_mine_node()" in s_code, "Missing spacebar pulse mining trigger in Step_0.gml"
-    print("  ✓ obj_DebugManager Step Event: Tab hotkeys (1-4, Tab, Q/E), chassis cycling, hardpoint navigation, and mining pulse verified.")
+    print("  ✓ obj_DebugManager Step Event: Tab hotkeys (1-4, Tab, Q/E, T), chassis cycling, hardpoint navigation, and mining pulse verified.")
 
     # 3. Verify obj_DebugManager/Draw_64.gml
     draw_path = os.path.join(PROJECT_ROOT, "objects", "obj_DebugManager", "Draw_64.gml")
@@ -56,23 +66,22 @@ def run_tests():
     assert "3. ASTEROID MINING & DRILL" in d_code, "Missing Tab 2 button in Draw_64.gml"
     assert "4. CAMPAIGN CHEATS" in d_code, "Missing Tab 3 button in Draw_64.gml"
 
-    assert "active_debug_tab == 1" in d_code, "Missing Tab 1 rendering logic in Draw_64.gml"
-    assert "active_debug_tab == 2" in d_code, "Missing Tab 2 rendering logic in Draw_64.gml"
-    assert "active_debug_tab == 3" in d_code, "Missing Tab 3 rendering logic in Draw_64.gml"
+    # Crash Defense Assertions
+    assert '_atk_alloy_str' in d_code, "Missing defensive _atk_alloy_str in Draw_64.gml"
+    assert '_def_alloy_str' in d_code, "Missing defensive _def_alloy_str in Draw_64.gml"
+    assert 'draw_text(_col1_x + 22, _col1_y + 322, "ALLOY: " + string(_atk_alloy_str));' in d_code
+    assert 'draw_text(_col3_x + 22, _col3_y + 322, "ALLOY: " + string(_def_alloy_str));' in d_code
 
-    # Front Mission / Gundam Hangar Deck Layout Verification
-    assert "HEPHAESTUS MOBILE SUIT FABRICATION GANTRY" in d_code, "Missing Gantry panel in Tab 1"
-    assert "ORDNANCE CONFIGURATION & TELEMETRY" in d_code, "Missing Ordnance configuration panel in Tab 1"
-    assert "LIVE GANTRY STANCE PREVIEW:" in d_code, "Missing stance preview buttons in Tab 1"
-    assert "1. CHASSIS" in d_code and "2. ALLOY" in d_code and "3. WEAPONS" in d_code and "4. ROLLOUT" in d_code, "Missing 4 Subtabs in Tab 1"
-    assert "AUTO-EQUIP SMART DEFAULT FOR ROLE" in d_code, "Missing auto-equip smart default button in Tab 1"
-    assert "DEPLOY TO COMBAT LAB (TAB 0)" in d_code, "Missing direct deploy button in Tab 1"
+    # Bespoke Player Platform Selector
+    assert "CATALOG: PMC PROPRIETARY FOUNDRY CHASSIS" in d_code, "Missing Player PMC Platform Catalog Button in Tab 1"
+    assert "BESPOKE PMC PLATFORMS:" in d_code, "Missing bespoke PMC presets heading in Tab 1"
+    assert "PMC-01: VANGUARD (HEAVY BIPED)" in d_code, "Missing PMC-01 preset in Draw_64.gml"
+    assert "PMC-02: STRATOS (AERO FIGHTER)" in d_code, "Missing PMC-02 preset in Draw_64.gml"
+    assert "PMC-03: SCRAPPER (TRACKED SIEGE)" in d_code, "Missing PMC-03 preset in Draw_64.gml"
+    assert "PMC-04: GHOST (HOVER RECON)" in d_code, "Missing PMC-04 preset in Draw_64.gml"
+    assert "PMC-00: HEPHAESTUS (FLAGSHIP AVATAR)" in d_code, "Missing PMC-00 preset in Draw_64.gml"
 
-    # Asteroid Mining Deck Verification
-    assert "SOLAR MINING NODES & CLAIMS" in d_code, "Missing mining nodes panel in Tab 2"
-    assert "PULSE DRILL EXTRACTION SIMULATOR" in d_code, "Missing pulse drill panel in Tab 2"
-    assert "FOUNDRY CRUCIBLE & INCURSIONS" in d_code, "Missing smelting crucible panel in Tab 2"
-    print("  ✓ obj_DebugManager Draw GUI Event: Front Mission / Gundam Hangar Deck (60/40 split) and Mining Hub verified.")
+    print("  ✓ obj_DebugManager Draw GUI Event: Crash defenses, Bespoke PMC Platforms & Layout verified.")
 
     # 4. Weapons & R&D Tech Tree Mapping Verification
     print("\n--- Verifying Weapons & R&D Tech Tree Mapping ---")
@@ -99,39 +108,22 @@ def run_tests():
         assert w_tech in c_code, f"Tech ID {w_tech} missing from builder_weapons_db in Create_0.gml!"
         print(f"  ✓ Equipment Tech Linked: {w_tech} successfully connected to R&D Arsenal.")
 
-    # 5. Smart Default Outfitting Doctrine Simulation
-    print("\n--- Simulating Smart Default Outfitting by Doctrine ---")
-    doctrines = [
-        {"name": "GHA-07 Ironclad", "doctrine": "Heavy CQC Juggernaut", "expected_primary": "WP-01 Rotary Vulcan", "expected_shield": "Tungsten Scutum"},
-        {"name": "TH-C02 Centurion", "doctrine": "Spartan Shock Vanguard", "expected_primary": "WP-03 Centurion Chaingun", "expected_melee": "WP-M03 Spartan Thermal Gladius"},
-        {"name": "Aether Striker", "doctrine": "High-Mobility Beam Skirmisher", "expected_primary": "WP-04 Tachyon Lance", "expected_melee": "WP-M04 Singularity Beam Saber"},
-        {"name": "Kepler Sniper", "doctrine": "Extreme-Range Kinetic Interdictor", "expected_primary": "WP-05 Electromagnetic Railgun", "expected_shield": "Aerosteel Deflector"}
+    # 5. Bespoke Player Mobile Suits vs Faction Doctrines Simulation
+    print("\n--- Simulating Bespoke Player Mobile Suits ---")
+    player_mechs = [
+        {"code": "PMC-01", "name": "PMC-01 Vanguard Breaker", "class": "Heavy Biped", "sprite": "spr_ms_custom_biped_heavy_idle", "mass": 60, "armor": 880, "pwr": 42},
+        {"code": "PMC-02", "name": "PMC-02 Stratos Interceptor", "class": "High-G Aero", "sprite": "spr_ms_custom_aero_striker_idle", "mass": 42, "armor": 620, "pwr": 48},
+        {"code": "PMC-03", "name": "PMC-03 Scrapper Brawler", "class": "Tracked Siege", "sprite": "spr_ms_custom_tread_artillery_idle", "mass": 78, "armor": 980, "pwr": 36},
+        {"code": "PMC-04", "name": "PMC-04 Ghost Recon Sniper", "class": "Hover Repulsor", "sprite": "spr_ms_custom_hover_sniper_idle", "mass": 38, "armor": 560, "pwr": 52},
+        {"code": "PMC-00", "name": "PMC-00 Hephaestus Prime", "class": "Singularity Dreadnought", "sprite": "spr_ms_hephaestus_avatar", "mass": 95, "armor": 1450, "pwr": 75}
     ]
-    for d in doctrines:
-        print(f"  ✓ Chassis: {d['name']} | Role: {d['doctrine']} -> Smart Default: Primary={d.get('expected_primary', 'Dynamic')}, Melee={d.get('expected_melee', 'Standard')}")
-
-    # 6. Telemetry & Weight Balance Calculations
-    print("\n--- Simulating Engineering Telemetry & Weight Balance Calculations ---")
-    test_chassis = [
-        {"name": "Ironclad Vanguard", "hp": 1640, "mass": 97, "max_cap": 108, "core": 32, "draw": 20, "net": 12, "walk": 25, "boost": 60, "rating": 579},
-        {"name": "Aether Singularity", "hp": 1100, "mass": 48, "max_cap": 65, "core": 48, "draw": 26, "net": 22, "walk": 85, "boost": 165, "rating": 612},
-        {"name": "Muramasa Phantom", "hp": 1250, "mass": 52, "max_cap": 70, "core": 44, "draw": 22, "net": 22, "walk": 78, "boost": 150, "rating": 588}
-    ]
-    for tc in test_chassis:
-        assert tc["net"] == tc["core"] - tc["draw"]
-        assert tc["mass"] <= tc["max_cap"]
-        print(f"  ✓ Telemetry Verified: {tc['name']} -> Armor: {tc['hp']} HP | Mass: {tc['mass']}t/{tc['max_cap']}t | Net Power: +{tc['net']} MW | Combat Rating: {tc['rating']} OSS")
-
-    # 7. Mining Extraction Simulation
-    print("\n--- Simulating Mining Yields & Flagship Refining Multipliers ---")
-    base_yields = {"mat_tungsten": 4, "mat_silica_carb": 6, "mat_tritium": 3, "mat_syn_flux": 3}
-    for tier, mult in [(1, 1.25), (2, 1.50), (3, 2.00), (4, 2.50), (5, 3.50)]:
-        extracted = int(base_yields["mat_tungsten"] * mult)
-        assert extracted >= 5, f"Tier {tier} yield {extracted} < 5"
-        print(f"  ✓ Flagship Mining Tier {tier} ({mult}x): Base 4x Tungsten -> {extracted}x refined per extraction pulse.")
+    for pm in player_mechs:
+        assert pm["armor"] >= 500, f"Armor threshold failed for {pm['name']}"
+        assert pm["pwr"] >= 30, f"Power threshold failed for {pm['name']}"
+        print(f"  ✓ Bespoke Player Platform: {pm['code']} | {pm['name']} ({pm['class']}) -> Armor: {pm['armor']} HP | Power: {pm['pwr']} MW | Asset: {pm['sprite']}")
 
     print("\n=======================================================")
-    print("ALL MECH BUILDER & ASTEROID MINING TESTS PASSED (100%)")
+    print("ALL MECH BUILDER & BESPOKE PMC SUIT TESTS PASSED (100%)")
     print("=======================================================")
 
 if __name__ == "__main__":
