@@ -210,23 +210,35 @@ builder_alloys = [
     "alloy_aerosteel_flux",
     "alloy_adamantine_carbide",
     "alloy_chobham_reactive",
+    "alloy_scrapper_slag",
+    "alloy_carbon_nanoweave",
+    "alloy_solar_crimson",
+    "alloy_depleted_actinide",
     "alloy_tachyon_superalloy"
 ];
 builder_alloy_names = [
-    "Vanguard Composite (Standard Kinetic Armor)",
-    "Hyperion Matrix (+25% Energy Gen, +20% Beam Res)",
-    "Aerosteel Flux (+35% Boost Speed, -20% Mass)",
-    "Adamantine Heavy (+40% Armor HP, Sintered Carbide)",
-    "Chobham-X Reactive (+50% Explosive/Missile Res)",
-    "Tachyon Superalloy (Singularity Spec, +25% All Stats)"
+    "Vanguard Tungsten Composite (Standard Mil-Spec)",
+    "Hyperion Superconducting Matrix (+25% Energy Gen)",
+    "Aerosteel Vector Flux (+35% Speed, -25% Mass)",
+    "Adamantine Sintered Carbide (+45% Armor HP)",
+    "Chobham-X Reactive Tiles (+50% Explosive Res)",
+    "Crude Asteroid Slag (Scavenger Salvage Plating)",
+    "Carbon Nanoweave Lattice (Stealth Radar-Absorbent)",
+    "Solar-Forged Crimson Crucible (Extreme Thermal Disp)",
+    "Depleted Actinide Heavy Slab (Superheavy Siege & EMP)",
+    "Tachyon Singularity Superalloy (+35% All Stats)"
 ];
 builder_alloy_deltas = [
-    { armor_mult: 1.0, mass_mult: 1.0, speed_bonus: 0, desc: "Matte gunmetal olive-drab with carbon ballistic trim.", tint_color: make_color_rgb(230, 240, 230), glow_color: make_color_rgb(255, 255, 255) },
-    { armor_mult: 0.9, mass_mult: 0.85, speed_bonus: 15, desc: "Deep cobalt navy with pulsing cyan superconducting lines.", tint_color: make_color_rgb(180, 220, 255), glow_color: make_color_rgb(0, 240, 255) },
-    { armor_mult: 0.8, mass_mult: 0.75, speed_bonus: 30, desc: "Polished aerospace satin-white with gold vernier cowlings.", tint_color: make_color_rgb(255, 250, 240), glow_color: make_color_rgb(255, 220, 80) },
-    { armor_mult: 1.45, mass_mult: 1.35, speed_bonus: -15, desc: "Blackened charred tungsten slab with industrial bronze joints.", tint_color: make_color_rgb(165, 165, 175), glow_color: make_color_rgb(255, 140, 40) },
-    { armor_mult: 1.2, mass_mult: 1.1, speed_bonus: -5, desc: "Desert sand composite tiles absorbing shaped charges.", tint_color: make_color_rgb(240, 225, 195), glow_color: make_color_rgb(255, 200, 100) },
-    { armor_mult: 1.35, mass_mult: 0.85, speed_bonus: 25, desc: "Midnight violet lattice with pulsating Cherenkov radiation.", tint_color: make_color_rgb(225, 195, 255), glow_color: make_color_rgb(200, 100, 255) }
+    { armor_mult: 1.0,  mass_mult: 1.0,  speed_bonus: 0,   desc: "Matte gunmetal olive-drab with carbon ballistic trim.", tint_color: make_color_rgb(220, 235, 220), glow_color: make_color_rgb(255, 255, 255) },
+    { armor_mult: 0.90, mass_mult: 0.85, speed_bonus: 15,  desc: "Deep cobalt navy with pulsing cyan superconducting traces.", tint_color: make_color_rgb(175, 215, 255), glow_color: make_color_rgb(0, 240, 255) },
+    { armor_mult: 0.80, mass_mult: 0.75, speed_bonus: 30,  desc: "Satin aerospace chrome-white with gold vernier cowlings.", tint_color: make_color_rgb(255, 250, 240), glow_color: make_color_rgb(255, 220, 80) },
+    { armor_mult: 1.45, mass_mult: 1.35, speed_bonus: -15, desc: "Blackened charred tungsten slab with industrial bronze joints.", tint_color: make_color_rgb(155, 155, 165), glow_color: make_color_rgb(255, 140, 40) },
+    { armor_mult: 1.20, mass_mult: 1.10, speed_bonus: -5,  desc: "Desert sand composite tiles absorbing shaped charges.", tint_color: make_color_rgb(240, 225, 190), glow_color: make_color_rgb(255, 200, 100) },
+    { armor_mult: 1.10, mass_mult: 1.25, speed_bonus: -10, desc: "Pitted oxidized iron, raw welding burns, and rust orange trim.", tint_color: make_color_rgb(215, 180, 160), glow_color: make_color_rgb(255, 120, 40) },
+    { armor_mult: 0.85, mass_mult: 0.70, speed_bonus: 20,  desc: "Charcoal matte graphite with carbon-fiber weave sheen.", tint_color: make_color_rgb(170, 175, 185), glow_color: make_color_rgb(120, 220, 255) },
+    { armor_mult: 1.15, mass_mult: 1.05, speed_bonus: 5,   desc: "Burnt anodized copper and deep crimson red with heat fins.", tint_color: make_color_rgb(255, 175, 170), glow_color: make_color_rgb(255, 60, 60) },
+    { armor_mult: 1.55, mass_mult: 1.45, speed_bonus: -20, desc: "Toxic lead-slate gray with hazardous radioactive amber trim.", tint_color: make_color_rgb(180, 205, 180), glow_color: make_color_rgb(200, 255, 80) },
+    { armor_mult: 1.35, mass_mult: 0.85, speed_bonus: 25,  desc: "Midnight iridescent violet with pulsating Cherenkov radiation.", tint_color: make_color_rgb(225, 195, 255), glow_color: make_color_rgb(200, 100, 255) }
 ];
 
 // Master Weapons & Equipment R&D Tech Tree Catalog

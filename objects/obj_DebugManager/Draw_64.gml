@@ -947,39 +947,59 @@ else if (active_debug_tab == 1) {
     }
 
     // =====================================================================
-    // SUBTAB 1: SINTERED ALLOY METALLURGY
+    // SUBTAB 1: SINTERED ALLOY METALLURGY (10 RECIPES / 50 LOOKS)
     // =====================================================================
     else if (builder_subtab == 1) {
         draw_set_color(make_color_rgb(0, 240, 255));
-        draw_text(_eng_x + 20, _deck_y, "SINTERED ALLOY PLATING (MOLECULAR CRUCIBLE):");
+        draw_text(_eng_x + 20, _deck_y, "SINTERED ALLOY METALLURGY & VISUAL FINISH (10 RECIPES):");
 
-        var _al_y = _deck_y + 24;
+        var _grid_w = 264;
+        var _card_h = 100;
+        var _start_y = _deck_y + 24;
+
         for (var a = 0; a < array_length(builder_alloys); a++) {
-            var _ay_pos = _al_y + (a * 76);
+            var _col = floor(a / 5);
+            var _row = a % 5;
+            var _ax = _eng_x + 16 + (_col * (_grid_w + 8));
+            var _ay = _start_y + (_row * (_card_h + 8));
+
             var _is_cur_al = (builder_alloy_idx == a);
-            var _al_hov = (_mx >= _eng_x + 18 && _mx <= _eng_x + _eng_w - 18 && _my >= _ay_pos && _my <= _ay_pos + 70);
+            var _al_hov = (_mx >= _ax && _mx <= _ax + _grid_w && _my >= _ay && _my <= _ay + _card_h);
 
             if (_al_hov && _click) {
                 builder_alloy_idx = a;
                 scr_audio_play_ui("click");
             }
 
-            draw_set_color(_is_cur_al ? make_color_rgb(24, 44, 70) : (_al_hov ? make_color_rgb(18, 30, 48) : make_color_rgb(12, 18, 28)));
-            draw_rectangle(_eng_x + 18, _ay_pos, _eng_x + _eng_w - 18, _ay_pos + 68, false);
-            draw_set_color(_is_cur_al ? make_color_rgb(0, 240, 255) : make_color_rgb(40, 65, 95));
-            draw_rectangle(_eng_x + 18, _ay_pos, _eng_x + _eng_w - 18, _ay_pos + 68, true);
+            var _ad = builder_alloy_deltas[a];
+
+            // Card Background & Border
+            draw_set_color(_is_cur_al ? make_color_rgb(26, 48, 76) : (_al_hov ? make_color_rgb(18, 30, 48) : make_color_rgb(12, 18, 28)));
+            draw_rectangle(_ax, _ay, _ax + _grid_w, _ay + _card_h, false);
+            draw_set_color(_is_cur_al ? make_color_rgb(0, 240, 255) : make_color_rgb(45, 68, 98));
+            draw_rectangle(_ax, _ay, _ax + _grid_w, _ay + _card_h, true);
+
+            // Color Swatch Indicator (14x14)
+            draw_set_color(_ad.tint_color);
+            draw_rectangle(_ax + _grid_w - 22, _ay + 8, _ax + _grid_w - 8, _ay + 22, false);
+            draw_set_color(_ad.glow_color);
+            draw_rectangle(_ax + _grid_w - 22, _ay + 8, _ax + _grid_w - 8, _ay + 22, true);
 
             // Alloy Name
             draw_set_color(_is_cur_al ? make_color_rgb(255, 220, 80) : c_white);
-            draw_text(_eng_x + 28, _ay_pos + 8, (_is_cur_al ? "> " : "") + builder_alloy_names[a]);
+            var _short_name = string_copy(builder_alloy_names[a], 1, 26);
+            draw_text(_ax + 8, _ay + 8, (_is_cur_al ? "> " : "") + _short_name);
 
-            // Alloy Deltas
-            var _ad = builder_alloy_deltas[a];
-            draw_set_color(make_color_rgb(160, 190, 220));
-            draw_text(_eng_x + 28, _ay_pos + 28, "Armor: " + string(floor(_ad.armor_mult * 100)) + "% | Mass: " + string(floor(_ad.mass_mult * 100)) + "% | Speed: " + (_ad.speed_bonus >= 0 ? "+" : "") + string(_ad.speed_bonus) + " km/h");
+            // Stat Multipliers
+            draw_set_color(make_color_rgb(150, 190, 230));
+            draw_text(_ax + 8, _ay + 28, "Arm: " + string(floor(_ad.armor_mult * 100)) + "% | Mass: " + string(floor(_ad.mass_mult * 100)) + "% | Spd: " + (_ad.speed_bonus >= 0 ? "+" : "") + string(_ad.speed_bonus));
 
-            draw_set_color(make_color_rgb(255, 180, 80));
-            draw_text(_eng_x + 28, _ay_pos + 46, _ad.desc);
+            // Surface Finish Lore
+            draw_set_color(_is_cur_al ? _ad.glow_color : make_color_rgb(220, 180, 120));
+            var _desc_line1 = string_copy(_ad.desc, 1, 30);
+            var _desc_line2 = string_copy(_ad.desc, 31, 32);
+            draw_text(_ax + 8, _ay + 50, _desc_line1);
+            if (_desc_line2 != "") draw_text(_ax + 8, _ay + 68, _desc_line2);
         }
     }
 

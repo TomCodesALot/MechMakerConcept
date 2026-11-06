@@ -309,3 +309,4 @@ step_src = step_src.replace(old_step_subtab3, new_step_subtab3)
 with open(step_path, "w") as f:
     f.write(step_src)
 print("Step_0.gml updated with Quality Hotkeys.")
+
