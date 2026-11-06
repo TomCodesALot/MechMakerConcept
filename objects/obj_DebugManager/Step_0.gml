@@ -35,6 +35,94 @@ if (keyboard_check_pressed(vk_escape)) {
     keyboard_clear(vk_escape);
 }
 
+// Global Tab Switching Hotkeys (1-4 & Tab)
+if (!clash_cinematic.active && is_open) {
+    if (keyboard_check_pressed(ord("1"))) { active_debug_tab = 0; scr_audio_play_ui("tab"); }
+    else if (keyboard_check_pressed(ord("2"))) { active_debug_tab = 1; scr_audio_play_ui("tab"); }
+    else if (keyboard_check_pressed(ord("3"))) { active_debug_tab = 2; scr_audio_play_ui("tab"); }
+    else if (keyboard_check_pressed(ord("4"))) { active_debug_tab = 3; scr_audio_play_ui("tab"); }
+    else if (keyboard_check_pressed(vk_tab)) { active_debug_tab = (active_debug_tab + 1) % 4; scr_audio_play_ui("tab"); }
+}
+
+// TAB 1: MECH BUILDER & FORGE STEP CONTROLS
+if (!clash_cinematic.active && is_open && active_debug_tab == 1) {
+    builder_subimg += 0.15;
+
+    // Slot navigation
+    if (keyboard_check_pressed(vk_down)) {
+        builder_selected_slot = (builder_selected_slot + 1) % 7;
+        scr_audio_play_ui("click");
+    } else if (keyboard_check_pressed(vk_up)) {
+        builder_selected_slot = (builder_selected_slot - 1 + 7) % 7;
+        scr_audio_play_ui("click");
+    }
+
+    // Part cycle in selected slot
+    if (keyboard_check_pressed(vk_right)) {
+        if (builder_selected_slot == 0) builder_head_idx = (builder_head_idx + 1) % array_length(builder_parts_catalog.heads);
+        else if (builder_selected_slot == 1) builder_torso_idx = (builder_torso_idx + 1) % array_length(builder_parts_catalog.torsos);
+        else if (builder_selected_slot == 2) builder_arms_idx = (builder_arms_idx + 1) % array_length(builder_parts_catalog.arms);
+        else if (builder_selected_slot == 3) builder_legs_idx = (builder_legs_idx + 1) % array_length(builder_parts_catalog.legs);
+        else if (builder_selected_slot == 4) builder_bp_idx = (builder_bp_idx + 1) % array_length(builder_parts_catalog.backpacks);
+        else if (builder_selected_slot == 5) builder_wp_idx = (builder_wp_idx + 1) % array_length(builder_parts_catalog.weapons);
+        else if (builder_selected_slot == 6) builder_alloy_idx = (builder_alloy_idx + 1) % array_length(builder_alloys);
+        scr_audio_play_ui("click");
+    } else if (keyboard_check_pressed(vk_left)) {
+        if (builder_selected_slot == 0) builder_head_idx = (builder_head_idx - 1 + array_length(builder_parts_catalog.heads)) % array_length(builder_parts_catalog.heads);
+        else if (builder_selected_slot == 1) builder_torso_idx = (builder_torso_idx - 1 + array_length(builder_parts_catalog.torsos)) % array_length(builder_parts_catalog.torsos);
+        else if (builder_selected_slot == 2) builder_arms_idx = (builder_arms_idx - 1 + array_length(builder_parts_catalog.arms)) % array_length(builder_parts_catalog.arms);
+        else if (builder_selected_slot == 3) builder_legs_idx = (builder_legs_idx - 1 + array_length(builder_parts_catalog.legs)) % array_length(builder_parts_catalog.legs);
+        else if (builder_selected_slot == 4) builder_bp_idx = (builder_bp_idx - 1 + array_length(builder_parts_catalog.backpacks)) % array_length(builder_parts_catalog.backpacks);
+        else if (builder_selected_slot == 5) builder_wp_idx = (builder_wp_idx - 1 + array_length(builder_parts_catalog.weapons)) % array_length(builder_parts_catalog.weapons);
+        else if (builder_selected_slot == 6) builder_alloy_idx = (builder_alloy_idx - 1 + array_length(builder_alloys)) % array_length(builder_alloys);
+        scr_audio_play_ui("click");
+    }
+
+    // Space/Enter cycles preview pose
+    if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter)) {
+        var _poses = ["idle", "boost", "fire", "melee"];
+        var _cur_p_idx = 0;
+        for (var p = 0; p < array_length(_poses); p++) {
+            if (builder_anim_state == _poses[p]) { _cur_p_idx = p; break; }
+        }
+        builder_anim_state = _poses[(_cur_p_idx + 1) % array_length(_poses)];
+        scr_audio_play_ui("click");
+    }
+}
+
+// TAB 2: ASTEROID MINING & EXTRACTION STEP CONTROLS
+if (!clash_cinematic.active && is_open && active_debug_tab == 2) {
+    // Cool drill heat
+    mining_drill_heat = max(0.0, mining_drill_heat - 0.35);
+    if (mining_drill_timer > 0) mining_drill_timer--;
+    else mining_drill_active = false;
+
+    // Update floating particles
+    for (var p = array_length(mining_particles) - 1; p >= 0; p--) {
+        var _pt = mining_particles[p];
+        _pt.y += _pt.vy;
+        _pt.life -= 1;
+        if (_pt.life <= 0) array_delete(mining_particles, p, 1);
+    }
+
+    // Up/Down changes selected node
+    var _m_nodes = get_debug_mining_nodes();
+    if (array_length(_m_nodes) > 0) {
+        if (keyboard_check_pressed(vk_down)) {
+            mining_selected_idx = (mining_selected_idx + 1) % array_length(_m_nodes);
+            scr_audio_play_ui("click");
+        } else if (keyboard_check_pressed(vk_up)) {
+            mining_selected_idx = (mining_selected_idx - 1 + array_length(_m_nodes)) % array_length(_m_nodes);
+            scr_audio_play_ui("click");
+        }
+    }
+
+    // Space or Enter fires mining pulse
+    if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter)) {
+        pulse_mine_node();
+    }
+}
+
 // Keyboard Navigation & Hotkeys for Proving Ground
 if (!clash_cinematic.active && is_open && active_debug_tab == 0) {
     var _atk_list = get_filtered_units(atk_faction_idx, atk_cat_idx);
