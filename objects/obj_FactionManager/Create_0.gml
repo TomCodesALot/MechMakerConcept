@@ -1058,6 +1058,41 @@ evaluate_faction_ai_turn = function() {
     }
 };
 
+// 7i-2. Flagship Fleet Siege Evaluator (Doc 64 - Hostile Faction Full Fleet Assault)
+evaluate_flagship_siege_assault = function() {
+    var _f_keys = ["faction_a", "faction_b", "faction_c", "faction_d"];
+    for (var i = 0; i < array_length(_f_keys); i++) {
+        var _fid = _f_keys[i];
+        var _std = get_standing(_fid);
+        var _f = variable_struct_exists(factions, _fid) ? variable_struct_get(factions, _fid) : undefined;
+        if (!is_undefined(_f) && is_struct(_f)) {
+            if (variable_struct_exists(_f, "siege_cooldown") && _f.siege_cooldown > 0) {
+                _f.siege_cooldown--;
+            }
+            if (_std <= -80 && (!variable_struct_exists(_f, "siege_cooldown") || _f.siege_cooldown <= 0)) {
+                _f.siege_cooldown = 15; // 15 turns between full armada assault incursions
+                var _f_name = variable_struct_exists(_f, "name") ? _f.name : "Hostile Superpower";
+                
+                add_diplomatic_cable(_f_name, "PMC Hephaestus", "TOTAL WAR: OPERATION FORGE BREACH", 
+                    _f_name + " high command drops all restraint. An armada task force has been dispatched to execute [OPERATION FORGE BREACH] and storm the Hephaestus foundry ship directly!", 
+                    "URGENT", "WAR");
+                    
+                if (instance_exists(obj_HQTerminal)) {
+                    obj_HQTerminal.show_toast("RED ALERT: " + _f_name + " ARMADA INTERCEPTING FLAGSHIP!", c_red);
+                }
+                
+                return {
+                    active: true,
+                    faction_id: _fid,
+                    faction_name: _f_name,
+                    title: "OPERATION FORGE BREACH: FLAGSHIP UNDER SIEGE"
+                };
+            }
+        }
+    }
+    return { active: false };
+};
+
 // 7i. Player Mercenary Diplomatic Actions (docs/21)
 player_broker_ceasefire = function(_pair_id) {
     if (!instance_exists(obj_GameManager)) return false;

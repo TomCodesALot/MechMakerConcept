@@ -746,7 +746,10 @@ flagship = {
     },
     specialization_protocol: "", // "", "forge_titan", "siege_fortress", "shadow_panopticon"
     orbital_strike_available: false,
-    orbital_strike_cooldown: 0
+    orbital_strike_cooldown: 0,
+    under_siege: false,
+    siege_attacker: "",
+    siege_attacker_name: ""
 };
 
 // 4c. Rival Corporate Mobile Suit Manufacturers & Stock Exchange (docs/23, docs/28)
@@ -1610,9 +1613,16 @@ end_turn = function() {
         }
     }
 
-    // 6. Dynamic War Map & Faction AI Turn Evaluation (docs/04, docs/21)
+    // 6. Dynamic War Map & Faction AI Turn Evaluation (docs/04, docs/21, docs/64)
     if (instance_exists(obj_FactionManager)) {
         obj_FactionManager.evaluate_faction_ai_turn();
+        var _siege = obj_FactionManager.evaluate_flagship_siege_assault();
+        if (is_struct(_siege) && variable_struct_exists(_siege, "active") && _siege.active) {
+            flagship.under_siege = true;
+            flagship.siege_attacker = _siege.faction_id;
+            flagship.siege_attacker_name = _siege.faction_name;
+            array_push(last_turn_events, "! RED ALERT: " + _siege.faction_name + " launched [OPERATION FORGE BREACH]! Flagship under direct fleet assault!");
+        }
         if (current_turn % 7 == 0) {
             obj_FactionManager.simulate_war_turn();
             array_push(last_turn_events, "* WAR SHIFT: " + obj_FactionManager.territory_control.last_shift_report);

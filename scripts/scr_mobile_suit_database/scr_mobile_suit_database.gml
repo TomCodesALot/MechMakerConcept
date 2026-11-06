@@ -46,85 +46,85 @@ function scr_ms_db_get_roster() {
     // 1. TERRAN CONFEDERATION (faction_a) - 6 CANONICAL MOBILE SUITS
     // =========================================================================
     _add("ms_terran_ironclad_07", "GHA-07 Ironclad", "faction_a", "MOBILE_SUIT", "biped", "alloy_vanguard_comp",
-         spr_ms_ironclad_idle, spr_ms_ironclad_back_idle, "120mm Solid Kinetic Cannon", "BALLISTIC", 680, 32, 2, "Earth Defense Heavy Battleline", "", "Cybernetic Demolition Mace & Shield", spr_ms_ironclad_boost, spr_ms_ironclad_attack_melee, spr_ms_ironclad_fire_rifle, spr_ms_ironclad_destroyed, spr_ms_ironclad_idle_damaged);
+         spr_ms_ironclad_idle, spr_ms_ironclad_back_idle, "Type-77 120mm Solid Kinetic Cannon", "BALLISTIC", 680, 32, 2, "Earth Defense Heavy Battleline", "", "Cybernetic Demolition Mace & Scutum Shield", spr_ms_ironclad_boost, spr_ms_ironclad_attack_melee, spr_ms_ironclad_fire_rifle, spr_ms_ironclad_destroyed, spr_ms_ironclad_idle_damaged);
 
     _add("ms_terran_centurion_02", "TH-C02 Centurion", "faction_a", "MOBILE_SUIT", "biped", "alloy_adamantine_carbide",
-         spr_ms_centurion_idle, spr_ms_centurion_back_idle, "Twin-Linked 35mm Heavy Chain Vulcan", "ROTARY_VULCAN", 650, 30, 2, "Shock Assault & Frontal Breach", "", "Spartan Shield Slam & High-Frequency Thermal Gladius", spr_ms_centurion_boost, spr_ms_centurion_attack_melee, spr_ms_centurion_fire_chaingun, spr_ms_centurion_destroyed, spr_ms_centurion_idle_damaged);
+         spr_ms_centurion_idle, spr_ms_centurion_back_idle, "Twin-Linked 35mm Heavy Chain Vulcan", "ROTARY_VULCAN", 650, 30, 2, "Shock Assault & Frontal Breach", "", "High-Frequency Thermal Gladius & Tower Shield", spr_ms_centurion_boost, spr_ms_centurion_attack_melee, spr_ms_centurion_fire_chaingun, spr_ms_centurion_destroyed, spr_ms_centurion_idle_damaged);
 
     _add("ms_terran_ballista_04", "TH-M04 Ballista", "faction_a", "MOBILE_SUIT", "tread", "alloy_vanguard_comp",
-         spr_ms_ballista_idle, spr_ms_ballista_back_idle, "Dual 180mm Long-Range Siege Howitzers", "BALLISTIC", 620, 28, 2, "Saturated Over-the-Horizon Bombardment");
+         spr_ms_ballista_idle, spr_ms_ballista_back_idle, "Dual 180mm Long-Range Recoil Howitzers", "BALLISTIC", 620, 28, 2, "Saturated Over-the-Horizon Bombardment", "", "Twin 40mm Bofors & Ground Anchor Spades");
 
     _add("ms_terran_trenchcoat_09", "TH-T09 Trenchcoat", "faction_a", "MOBILE_SUIT", "biped", "alloy_vanguard_comp",
-         spr_ms_trenchcoat_idle, spr_ms_trenchcoat_back_idle, "Type-9 Solid Combat Shotgun", "BALLISTIC", 600, 26, 2, "Close-Quarters Domed City Brawler");
+         spr_ms_trenchcoat_idle, spr_ms_trenchcoat_back_idle, "Type-9 12-Gauge Solid Combat Shotgun", "BALLISTIC", 600, 26, 2, "Close-Quarters Domed City Brawler", "", "Pneumatic Breaching Mattock & Mantlet");
 
     _add("ms_terran_siegebreaker_01", "TH-S01 Siegebreaker", "faction_a", "MOBILE_SUIT", "tread", "alloy_adamantine_carbide",
-         spr_ms_siegebreaker_anchor, spr_ms_siegebreaker_anchor, "Twin 280mm Heavy Siege Cannons", "BALLISTIC", 1150, 65, 3, "Planetary Bombardment & Anti-Warship", "", "", -1, -1, spr_ms_siegebreaker_fire);
+         spr_ms_siegebreaker_anchor, spr_ms_siegebreaker_anchor, "Twin 280mm Heavy Siege Cannons", "BALLISTIC", 1150, 65, 3, "Planetary Bombardment & Anti-Warship", "", "Coaxial 30mm Vulcan & Hydraulic Bulldozer Prow", -1, -1, spr_ms_siegebreaker_fire);
 
     _add("ms_terran_titan_04", "TH-X04 Titan Prime", "faction_a", "MOBILE_SUIT", "biped", "alloy_adamantine_carbide",
-         spr_ms_titan_proto, spr_ms_titan_proto_back_idle, "Quad Chest Autocannons & Siege Bipod", "BALLISTIC", 980, 55, 3, "Super-Heavy Pre-War Dreadnought Prototype");
+         spr_ms_titan_proto, spr_ms_titan_proto_back_idle, "320mm Hyper-Kinetic Shoulder Railcannon", "BALLISTIC", 980, 55, 3, "Super-Heavy Pre-War Dreadnought Prototype", "", "Thermal Breaker Maul & Fortress Barrier");
 
     // =========================================================================
     // 3. OUTER COLONY LEAGUE (faction_b) - 6 CANONICAL MOBILE SUITS
     // =========================================================================
     _add("ms_colony_aether_01", "OC-A01 Aether Striker", "faction_b", "MOBILE_SUIT", "aero", "alloy_aerosteel_flux",
-         spr_ms_aether_idle, spr_ms_aether_back_idle, "High-Output Thermal Beam Rifle", "BEAM_PULSE", 580, 22, 2, "High-Mobility Space Vernier Skirmisher", "", "", spr_ms_aether_boost, spr_ms_aether_attack_saber, spr_ms_aether_fire_beam);
+         spr_ms_aether_idle, spr_ms_aether_back_idle, "Type-6A High-Output Thermal Beam Rifle", "BEAM_PULSE", 580, 22, 2, "High-Mobility Space Vernier Skirmisher", "", "High-Energy Thermal Plasma Saber & Deflector", spr_ms_aether_boost, spr_ms_aether_attack_saber, spr_ms_aether_fire_beam);
 
     _add("ms_colony_kepler_02", "OC-K02 Kepler", "faction_b", "MOBILE_SUIT", "hover", "alloy_hyperion_matrix",
-         spr_ms_kepler_idle, spr_ms_kepler_back_idle, "Linear Magnetic Long-Rifle", "BEAM_PULSE", 520, 18, 2, "Extreme Range Precision Rail-Sniper");
+         spr_ms_kepler_idle, spr_ms_kepler_back_idle, "Linear Coherent Particle Sniper Rifle", "BEAM_PULSE", 520, 18, 2, "Extreme Range Precision Rail-Sniper", "", "Rapid Beam Pistol & Monofilament Bayonet");
 
     _add("ms_colony_sylph_01", "AOD-01 Sylph Interceptor", "faction_b", "MOBILE_SUIT", "aero", "alloy_aerosteel_flux",
-         spr_ms_zephyr_idle, spr_ms_zephyr_back_idle, "Twin Rapid Pulse Laser Carbines", "BEAM_PULSE", 490, 16, 2, "Fleet Interceptor & Sensor Escort");
+         spr_ms_zephyr_idle, spr_ms_zephyr_back_idle, "Focused Pulse Beam Spray Gun", "BEAM_PULSE", 490, 16, 2, "Fleet Interceptor & Sensor Escort", "", "Thermal Beam Dagger & Chaff Disperser");
 
     _add("ms_colony_oberon_08", "OC-O08 Oberon", "faction_b", "MOBILE_SUIT", "biped", "alloy_aerosteel_flux",
-         spr_ms_oberon_idle, spr_ms_oberon_back_idle, "Thermal Beam Lance & Deflector", "BEAM_LANCE", 640, 26, 2, "Convoy Escort & Beam Defense");
+         spr_ms_oberon_idle, spr_ms_oberon_back_idle, "Heavy Dual-Phase Beam Lance", "BEAM_LANCE", 640, 26, 2, "Convoy Escort & Beam Defense", "", "High-Yield Thermal Estoc & Deflector Tower Shield");
 
     _add("ms_colony_chronos_01", "OC-X04 Chronos Sovereign", "faction_b", "MOBILE_SUIT", "aero", "alloy_tachyon_superalloy",
-         spr_ms_chronos_idle, spr_ms_chronos_back_idle, "Tachyon Pulse Lance Array", "BEAM_LANCE", 820, 36, 4, "Flagship Vanguard Sovereign");
+         spr_ms_chronos_idle, spr_ms_chronos_back_idle, "Heavy Tachyon Beam Burst Cannon", "BEAM_LANCE", 820, 36, 4, "Flagship Vanguard Sovereign", "", "Twin Heavy Tachyon Beam Claymores & Halos");
 
     _add("ms_colony_cassian_custom", "Aether Commander (Cassian Custom)", "faction_b", "MOBILE_SUIT", "aero", "alloy_aerosteel_flux",
-         spr_ms_cassian_custom_idle, spr_ms_cassian_custom_back_idle, "Twin Accelerated Beam Carbines", "BEAM_PULSE", 740, 28, 3, "Colony Ace Custom Interceptor");
+         spr_ms_cassian_custom_idle, spr_ms_cassian_custom_back_idle, "Custom Accelerated Long-Beam Carbine", "BEAM_PULSE", 740, 28, 3, "Colony Ace Custom Interceptor", "", "Twin Overclocked Thermal Plasma Sabers");
 
     // =========================================================================
     // 4. RUST SYNDICATE (faction_c) - 6 CANONICAL MOBILE SUITS
     // =========================================================================
     _add("ms_syndicate_hyena_12", "RS-H12 Hyena", "faction_c", "MOBILE_SUIT", "biped", "alloy_adamantine_carbide",
-         spr_ms_hyena_idle, spr_ms_hyena_back_idle, "Heavy Scrap Autocannon", "BALLISTIC", 590, 24, 2, "Guerilla Ambush & Scrap Salvo");
+         spr_ms_hyena_idle, spr_ms_hyena_back_idle, "Salvaged 90mm Assault Machine Gun", "BALLISTIC", 590, 24, 2, "Guerilla Ambush & Scrap Salvo", "", "Serrated Manganese Heat Chopper & Flak Autocannon");
 
     _add("ms_syndicate_gorgon_04", "RS-G04 Gorgon", "faction_c", "MOBILE_SUIT", "biped", "alloy_adamantine_carbide",
-         spr_ms_gorgon_idle, spr_ms_gorgon_back_idle, "Hydraulic Plasma Pile-Driver & Slag Cutter", "MELEE", 720, 38, 2, "Armor-Crushing Point Blank Breacher");
+         spr_ms_gorgon_idle, spr_ms_gorgon_back_idle, "Forearm Armor-Piercing Spike Launcher", "BALLISTIC", 720, 38, 2, "Armor-Crushing Point Blank Breacher", "", "Heavy Hydraulic Crush Vices & Steam Nozzles");
 
     _add("ms_syndicate_bloodhound_06", "RS-B06 Bloodhound", "faction_c", "MOBILE_SUIT", "tread", "alloy_adamantine_carbide",
-         spr_ms_bloodhound_idle, spr_ms_bloodhound_back_idle, "Dual Swivel Quad-Rocket Pods", "MICRO_MISSILE", 540, 20, 2, "Low-Profile Ambush Hound");
+         spr_ms_bloodhound_idle, spr_ms_bloodhound_back_idle, "Magnetic Harpoon Winch Cannon", "MICRO_MISSILE", 540, 20, 2, "Low-Profile Ambush Hound", "", "Manganese Heavy Breaching Claw & Slag Mortar");
 
     _add("ms_syndicate_scrapper_01", "RS-V03 Vandal Scrapper", "faction_c", "MOBILE_SUIT", "biped", "alloy_adamantine_carbide",
-         spr_ms_vandal_idle, spr_ms_vandal_back_idle, "High-Capacity Flechette Drum Autogun", "ROTARY_VULCAN", 560, 22, 2, "Perimeter Raider & Boarding Shock");
+         spr_ms_vandal_idle, spr_ms_vandal_back_idle, "105mm Drum-Fed Scrap Flechette Gun", "ROTARY_VULCAN", 560, 22, 2, "Perimeter Raider & Boarding Shock", "", "Pneumatic High-Torque Rock-Breaker Saw & Mantlet");
 
     _add("ms_syndicate_marauder_02", "RS-M02 Marauder Brawler", "faction_c", "MOBILE_SUIT", "biped", "alloy_adamantine_carbide",
-         spr_ms_marauder_idle, spr_ms_marauder_back_idle, "Twin Reinforced Scrap Piles", "MELEE", 710, 36, 3, "Close-In Heavy Scrap Grappler");
+         spr_ms_marauder_idle, spr_ms_marauder_back_idle, "Torso Molten Slag Lobber Mortar", "BALLISTIC", 710, 36, 3, "Close-In Heavy Scrap Grappler", "", "Twin Hydraulic Demolition Pincers & Rocket Rack");
 
     _add("ms_syndicate_iron_reaver_09", "RS-R09 Iron Reaver", "faction_c", "MOBILE_SUIT", "tread", "alloy_adamantine_carbide",
-         spr_ms_iron_reaver_idle, spr_ms_iron_reaver_back_idle, "Super-Heavy Slag Sledge Cannon", "BALLISTIC", 850, 48, 3, "Frontline Fortress Buster");
+         spr_ms_iron_reaver_idle, spr_ms_iron_reaver_back_idle, "Salvaged 210mm Warship Broadside Cannon", "BALLISTIC", 850, 48, 3, "Frontline Fortress Buster", "", "Spiked Battering Ram Shield & Heavy Manganese Cleaver");
 
     // =========================================================================
     // 5. APEX ZAIBATSU (faction_d) - 6 CANONICAL MOBILE SUITS
     // =========================================================================
     _add("ms_zaibatsu_kamaitachi_03", "ZX-K03 Kamaitachi", "faction_d", "MOBILE_SUIT", "biped", "alloy_tachyon_superalloy",
-         spr_ms_kamaitachi_idle, spr_ms_kamaitachi_back_idle, "Twin High-Frequency Forearm Plasma Lances", "BEAM_LANCE", 860, 38, 3, "Aerodynamic High-Speed Plasma Skirmisher", "", "", spr_ms_kamaitachi_boost, spr_ms_kamaitachi_attack_blade, spr_ms_kamaitachi_fire_plasma);
+         spr_ms_kamaitachi_idle, spr_ms_kamaitachi_back_idle, "Dual Forearm High-Frequency Plasma Lances", "BEAM_LANCE", 860, 38, 3, "Aerodynamic High-Speed Plasma Skirmisher", "", "Dual Curved Scythe Vernier Blades & Micro-Missiles", spr_ms_kamaitachi_boost, spr_ms_kamaitachi_attack_blade, spr_ms_kamaitachi_fire_plasma);
 
     _add("ms_zaibatsu_ronin_04", "ZX-R04 Ronin Master", "faction_d", "MOBILE_SUIT", "biped", "alloy_tachyon_superalloy",
-         spr_ms_ronin_idle, spr_ms_ronin_back_idle, "Dual Monomolecular Execution Katanas", "MELEE", 820, 36, 4, "Apex Master Assassin & Electronic Warfare");
+         spr_ms_ronin_idle, spr_ms_ronin_back_idle, "Shoulder-Mounted High-Output Plasma Cannons", "BALLISTIC", 820, 36, 4, "Apex Master Assassin & Electronic Warfare", "", "Dual Monomolecular Executioner Nodachi");
 
     _add("ms_zaibatsu_kage_07", "ZX-K07 Kage", "faction_d", "MOBILE_SUIT", "biped", "alloy_tachyon_superalloy",
-         spr_ms_kage_idle, spr_ms_kage_back_idle, "Hyper-Velocity Needle Rifle", "BALLISTIC", 510, 18, 2, "Carbon-Weave Electronic Infiltrator");
+         spr_ms_kage_idle, spr_ms_kage_back_idle, "Silenced 40mm Pneumatic Needle Dart Pistol", "BALLISTIC", 510, 18, 2, "Carbon-Weave Electronic Infiltrator", "", "Monomolecular High-Frequency Vibro-Tanto & Decoys");
 
     _add("ms_zaibatsu_tessen_09", "ZX-T09 Tessen", "faction_d", "MOBILE_SUIT", "biped", "alloy_tachyon_superalloy",
-         spr_ms_tessen_idle, spr_ms_tessen_back_idle, "Dual EMP War-Fans & Arcs", "MELEE", 620, 24, 2, "Disruptive Close-Range Counter-Unit");
+         spr_ms_tessen_idle, spr_ms_tessen_back_idle, "Arm-Mounted EMP Disruptor Emitter", "BEAM_PULSE", 620, 24, 2, "Disruptive Close-Range Counter-Unit", "", "Razor-Edged Monofilament War-Fan [Tessen]");
 
     _add("ms_zaibatsu_muramasa_03", "ZX-M03 Muramasa", "faction_d", "MOBILE_SUIT", "biped", "alloy_tachyon_superalloy",
-         spr_ms_muramasa_idle, spr_ms_muramasa_back_idle, "Monomolecular High-Frequency Katana", "MELEE", 670, 28, 3, "Precision Cybernetic Duelist");
+         spr_ms_muramasa_idle, spr_ms_muramasa_back_idle, "Wrist-Mounted High-Cycle Plasma Needle Gun", "BEAM_PULSE", 670, 28, 3, "Precision Cybernetic Duelist", "", "Masterwork Monomolecular Tachyon Katana");
 
     _add("ms_zaibatsu_takahashi_custom", "Muramasa Shadow (Takahashi Custom)", "faction_d", "MOBILE_SUIT", "biped", "alloy_tachyon_superalloy",
-         spr_ms_takahashi_custom_idle, spr_ms_takahashi_custom_back_idle, "Twin Black Tachyon Katanas", "MELEE", 880, 40, 4, "Executive Assassin Custom");
+         spr_ms_takahashi_custom_idle, spr_ms_takahashi_custom_back_idle, "High-Output Magnetic Needle Rifle", "BEAM_PULSE", 880, 40, 4, "Executive Assassin Custom", "", "Twin Monomolecular Tachyon Daisho & Sashimono");
 
     // =========================================================================
     // 5. PMC VANGUARD - 4 MODULAR CUSTOM SOCKET CHASSIS (Suits 25-28)
