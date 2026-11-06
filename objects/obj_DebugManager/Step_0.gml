@@ -48,38 +48,71 @@ if (!clash_cinematic.active && is_open) {
 if (!clash_cinematic.active && is_open && active_debug_tab == 1) {
     builder_subimg += 0.15;
 
-    // Slot navigation
-    if (keyboard_check_pressed(vk_down)) {
-        builder_selected_slot = (builder_selected_slot + 1) % 7;
-        scr_audio_play_ui("click");
-    } else if (keyboard_check_pressed(vk_up)) {
-        builder_selected_slot = (builder_selected_slot - 1 + 7) % 7;
-        scr_audio_play_ui("click");
+    // Subtab switching via Q/E
+    if (keyboard_check_pressed(ord("Q"))) {
+        builder_subtab = (builder_subtab - 1 + 4) % 4;
+        scr_audio_play_ui("tab");
+    } else if (keyboard_check_pressed(ord("E"))) {
+        builder_subtab = (builder_subtab + 1) % 4;
+        scr_audio_play_ui("tab");
     }
 
-    // Part cycle in selected slot
-    if (keyboard_check_pressed(vk_right)) {
-        if (builder_selected_slot == 0) builder_head_idx = (builder_head_idx + 1) % array_length(builder_parts_catalog.heads);
-        else if (builder_selected_slot == 1) builder_torso_idx = (builder_torso_idx + 1) % array_length(builder_parts_catalog.torsos);
-        else if (builder_selected_slot == 2) builder_arms_idx = (builder_arms_idx + 1) % array_length(builder_parts_catalog.arms);
-        else if (builder_selected_slot == 3) builder_legs_idx = (builder_legs_idx + 1) % array_length(builder_parts_catalog.legs);
-        else if (builder_selected_slot == 4) builder_bp_idx = (builder_bp_idx + 1) % array_length(builder_parts_catalog.backpacks);
-        else if (builder_selected_slot == 5) builder_wp_idx = (builder_wp_idx + 1) % array_length(builder_parts_catalog.weapons);
-        else if (builder_selected_slot == 6) builder_alloy_idx = (builder_alloy_idx + 1) % array_length(builder_alloys);
-        scr_audio_play_ui("click");
-    } else if (keyboard_check_pressed(vk_left)) {
-        if (builder_selected_slot == 0) builder_head_idx = (builder_head_idx - 1 + array_length(builder_parts_catalog.heads)) % array_length(builder_parts_catalog.heads);
-        else if (builder_selected_slot == 1) builder_torso_idx = (builder_torso_idx - 1 + array_length(builder_parts_catalog.torsos)) % array_length(builder_parts_catalog.torsos);
-        else if (builder_selected_slot == 2) builder_arms_idx = (builder_arms_idx - 1 + array_length(builder_parts_catalog.arms)) % array_length(builder_parts_catalog.arms);
-        else if (builder_selected_slot == 3) builder_legs_idx = (builder_legs_idx - 1 + array_length(builder_parts_catalog.legs)) % array_length(builder_parts_catalog.legs);
-        else if (builder_selected_slot == 4) builder_bp_idx = (builder_bp_idx - 1 + array_length(builder_parts_catalog.backpacks)) % array_length(builder_parts_catalog.backpacks);
-        else if (builder_selected_slot == 5) builder_wp_idx = (builder_wp_idx - 1 + array_length(builder_parts_catalog.weapons)) % array_length(builder_parts_catalog.weapons);
-        else if (builder_selected_slot == 6) builder_alloy_idx = (builder_alloy_idx - 1 + array_length(builder_alloys)) % array_length(builder_alloys);
-        scr_audio_play_ui("click");
+    var _clist = get_canonical_chassis_list();
+
+    // Contextual Navigation
+    if (builder_subtab == 0) {
+        // Chassis selection
+        if (keyboard_check_pressed(vk_left)) {
+            builder_chassis_idx = (builder_chassis_idx - 1 + array_length(_clist)) % array_length(_clist);
+            apply_smart_default_loadout(_clist[builder_chassis_idx]);
+            scr_audio_play_ui("click");
+        } else if (keyboard_check_pressed(vk_right)) {
+            builder_chassis_idx = (builder_chassis_idx + 1) % array_length(_clist);
+            apply_smart_default_loadout(_clist[builder_chassis_idx]);
+            scr_audio_play_ui("click");
+        }
+    } else if (builder_subtab == 1) {
+        // Alloy selection
+        if (keyboard_check_pressed(vk_left) || keyboard_check_pressed(vk_up)) {
+            builder_alloy_idx = (builder_alloy_idx - 1 + array_length(builder_alloys)) % array_length(builder_alloys);
+            scr_audio_play_ui("click");
+        } else if (keyboard_check_pressed(vk_right) || keyboard_check_pressed(vk_down)) {
+            builder_alloy_idx = (builder_alloy_idx + 1) % array_length(builder_alloys);
+            scr_audio_play_ui("click");
+        }
+    } else if (builder_subtab == 2) {
+        // Weapon hardpoint navigation
+        if (keyboard_check_pressed(vk_up)) {
+            builder_hardpoint_nav_idx = (builder_hardpoint_nav_idx - 1 + 4) % 4;
+            scr_audio_play_ui("click");
+        } else if (keyboard_check_pressed(vk_down)) {
+            builder_hardpoint_nav_idx = (builder_hardpoint_nav_idx + 1) % 4;
+            scr_audio_play_ui("click");
+        }
+
+        // Weapon cycle in selected hardpoint
+        if (keyboard_check_pressed(vk_left)) {
+            if (builder_hardpoint_nav_idx == 0) builder_primary_wpn_idx = (builder_primary_wpn_idx - 1 + array_length(builder_weapons_db.primary)) % array_length(builder_weapons_db.primary);
+            else if (builder_hardpoint_nav_idx == 1) builder_secondary_wpn_idx = (builder_secondary_wpn_idx - 1 + array_length(builder_weapons_db.secondary)) % array_length(builder_weapons_db.secondary);
+            else if (builder_hardpoint_nav_idx == 2) builder_melee_wpn_idx = (builder_melee_wpn_idx - 1 + array_length(builder_weapons_db.melee)) % array_length(builder_weapons_db.melee);
+            else if (builder_hardpoint_nav_idx == 3) builder_shield_idx = (builder_shield_idx - 1 + array_length(builder_weapons_db.shield)) % array_length(builder_weapons_db.shield);
+            scr_audio_play_ui("click");
+        } else if (keyboard_check_pressed(vk_right)) {
+            if (builder_hardpoint_nav_idx == 0) builder_primary_wpn_idx = (builder_primary_wpn_idx + 1) % array_length(builder_weapons_db.primary);
+            else if (builder_hardpoint_nav_idx == 1) builder_secondary_wpn_idx = (builder_secondary_wpn_idx + 1) % array_length(builder_weapons_db.secondary);
+            else if (builder_hardpoint_nav_idx == 2) builder_melee_wpn_idx = (builder_melee_wpn_idx + 1) % array_length(builder_weapons_db.melee);
+            else if (builder_hardpoint_nav_idx == 3) builder_shield_idx = (builder_shield_idx + 1) % array_length(builder_weapons_db.shield);
+            scr_audio_play_ui("click");
+        }
+    } else if (builder_subtab == 3) {
+        // Rollout shortcuts
+        if (keyboard_check_pressed(vk_enter)) {
+            deploy_builder_mech_to_combat();
+        }
     }
 
-    // Space/Enter cycles preview pose
-    if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter)) {
+    // Space cycles preview pose
+    if (keyboard_check_pressed(vk_space)) {
         var _poses = ["idle", "boost", "fire", "melee"];
         var _cur_p_idx = 0;
         for (var p = 0; p < array_length(_poses); p++) {
