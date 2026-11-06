@@ -867,8 +867,12 @@ else if (active_debug_tab == 1) {
         draw_set_color(make_color_rgb(140, 180, 220));
         draw_text(_eng_x + 30, _cc_y + 40, "Faction: " + _c.faction_id + " | Movement Locomotion: " + string_upper(_c.chassis));
 
+        var _c_pwr = variable_struct_exists(_c, "power_output") ? _c.power_output : _t.power_output;
+        var _c_mass = variable_struct_exists(_c, "weight_tonnes") ? _c.weight_tonnes : floor(38 + (_c.hp / 22));
+        var _c_spd = variable_struct_exists(_c, "speed") ? _c.speed : 55;
+
         draw_set_color(c_white);
-        draw_text(_eng_x + 30, _cc_y + 64, "Core Power: " + string(_c.power_output) + " MW | Mass: " + string(_c.weight_tonnes) + " tonnes | Speed: " + string(_c.speed) + " km/h");
+        draw_text(_eng_x + 30, _cc_y + 64, "Core Power: " + string(_c_pwr) + " MW | Mass: " + string(_c_mass) + " tonnes | Speed: " + string(_c_spd) + " km/h");
 
         draw_set_color(make_color_rgb(180, 220, 255));
         draw_text(_eng_x + 30, _cc_y + 90, "Standard Issue Doctrine: " + _c.doctrine);

@@ -254,9 +254,28 @@ get_canonical_chassis_list = function() {
     var _list = [];
     for (var i = 0; i < array_length(master_roster); i++) {
         var _u = master_roster[i];
-        if (_u.category == "MOBILE_SUIT") array_push(_list, _u);
+        if (_u.category == "MOBILE_SUIT") {
+            var _hp_val = variable_struct_exists(_u, "hp") ? _u.hp : 680;
+            if (!variable_struct_exists(_u, "power_output")) {
+                _u.power_output = floor(28 + (_hp_val / 30));
+            }
+            if (!variable_struct_exists(_u, "weight_tonnes")) {
+                _u.weight_tonnes = floor(38 + (_hp_val / 22));
+            }
+            if (!variable_struct_exists(_u, "speed")) {
+                var _ch = variable_struct_exists(_u, "chassis") ? _u.chassis : "biped";
+                _u.speed = (string_pos("hover", _ch) > 0) ? 80 : ((string_pos("tread", _ch) > 0) ? 35 : 55);
+            }
+            array_push(_list, _u);
+        }
     }
-    if (array_length(_list) == 0 && array_length(master_roster) > 0) array_push(_list, master_roster[0]);
+    if (array_length(_list) == 0 && array_length(master_roster) > 0) {
+        var _first = master_roster[0];
+        if (!variable_struct_exists(_first, "power_output")) _first.power_output = 35;
+        if (!variable_struct_exists(_first, "weight_tonnes")) _first.weight_tonnes = 65;
+        if (!variable_struct_exists(_first, "speed")) _first.speed = 55;
+        array_push(_list, _first);
+    }
     return _list;
 };
 
