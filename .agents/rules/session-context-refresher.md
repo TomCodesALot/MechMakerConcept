@@ -23,3 +23,4 @@
    * Engine-ready 160x160 pixel art on pure transparent background, origin at (80, 145), attackers facing 3/4 front-right (`xscale = 1`), defenders facing left (`xscale = -1`).
 5. **Testing**:
    * Always verify changes using `python3 tools/test_debug_mech_builder_and_mining.py`.
+
