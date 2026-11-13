@@ -2085,6 +2085,61 @@ function scr_vn_init() {
         ]
     };
 
+    // =========================================================================
+    // FOUNDRY ACTIVATION PROLOGUE: USN-X HEPHAESTUS LINEAGE CALIBRATION
+    // =========================================================================
+    global.vn_state.episodes[$ "ep_foundry_calibration"] = {
+        title: "FOUNDRY ACTIVATION // USN-X HEPHAESTUS CRUCIBLE CALIBRATION",
+        bg_scene: spr_loc_hangar_bay,
+        nodes: [
+            {
+                speaker: "Chief Engineer Jessica Vance",
+                title: "Chief Foundry Architect // USN-X Hephaestus",
+                faction: "PMC Vanguard Engineering",
+                faction_badge: "[HEPHAESTUS FOUNDRY]",
+                portrait: spr_portrait_vance,
+                text: "Commander, the pre-war automated crucible aboard the Hephaestus is finally holding a stable plasma containment arc. Before we stamp our first mass-production frame, I need you to lock in our foundational chassis doctrine."
+            },
+            {
+                speaker: "Chief Engineer Jessica Vance",
+                title: "Chief Foundry Architect // USN-X Hephaestus",
+                faction: "PMC Vanguard Engineering",
+                faction_badge: "[HEPHAESTUS FOUNDRY]",
+                portrait: spr_portrait_vance,
+                text: "All three base frames roll off the gantry unarmed with standard modular hardpoint rails, then receive our Type-90 90mm Machine Gun, Type-1 Heat Axe, and Deflector Buckler. Which foundry lineage should we calibrate for the Vanguard?",
+                choices: [
+                    {
+                        text: "Aegis Visor Doctrine (Medium Balanced Wanzer — 880 HP | 60T | 55 km/h)",
+                        pillar: "LINEAGE 1 // AEGIS VISOR",
+                        impact_label: "Sets Foundry Lineage: Aegis Visor + Starter Trio Kit",
+                        action: function() {
+                            if (instance_exists(obj_GameManager)) obj_GameManager.set_foundry_lineage(0);
+                            if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("FOUNDRY CALIBRATED: [AEGIS VISOR DOCTRINE] + Starter Kit Ready!", c_aqua);
+                        }
+                    },
+                    {
+                        text: "Colossus Heavy Forge Doctrine (Industrial Dreadnought — 980 HP | 78T | 40 km/h)",
+                        pillar: "LINEAGE 2 // COLOSSUS FORGE",
+                        impact_label: "Sets Foundry Lineage: Colossus Heavy Forge + Starter Trio Kit",
+                        action: function() {
+                            if (instance_exists(obj_GameManager)) obj_GameManager.set_foundry_lineage(1);
+                            if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("FOUNDRY CALIBRATED: [COLOSSUS HEAVY FORGE] + Starter Kit Ready!", make_color_rgb(255, 165, 40));
+                        }
+                    },
+                    {
+                        text: "Stratos Vector Doctrine (Light Agile Recon — 650 HP | 42T | 90 km/h)",
+                        pillar: "LINEAGE 3 // STRATOS VECTOR",
+                        impact_label: "Sets Foundry Lineage: Stratos Vector + Starter Trio Kit",
+                        action: function() {
+                            if (instance_exists(obj_GameManager)) obj_GameManager.set_foundry_lineage(2);
+                            if (instance_exists(obj_HQTerminal)) obj_HQTerminal.show_toast("FOUNDRY CALIBRATED: [STRATOS VECTOR DOCTRINE] + Starter Kit Ready!", c_lime);
+                        }
+                    }
+                ]
+            }
+        ]
+    };
+
 }
 
 function scr_vn_is_active() {

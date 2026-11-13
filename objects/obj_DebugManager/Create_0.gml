@@ -12,7 +12,7 @@ depth = -9999;
 show_debug_message("[obj_DebugManager] Initializing Universal Debug & Battle Demonstration Engine...");
 
 // 1. Activation State
-is_open = true;
+is_open = false;
 active_debug_tab = 0; // 0 = Battle & Animation Lab, 1 = PMC Campaign Cheats
 debug_toast = "";
 debug_toast_timer = 0;
@@ -183,13 +183,15 @@ launch_full_cinematic_clash = function() {
 // Front Mission / Gundam Hangar Deck with Weapons from R&D Tech Tree
 builder_subtab = 0; // 0=Chassis & Role, 1=Alloy Plating, 2=Researched Weapons, 3=Telemetry & Rollout
 builder_chassis_line = 0; // 0=Player PMC Proprietary Chassis, 1=Reverse-Engineered Foreign Factions
-builder_lineage_idx = 0; // 0=Aegis Visor (Wanzer Mil-Spec), 1=Colossus Forge (Industrial Dreadnought), 2=Stratos Vector (Agile Recon Skirmisher)
+builder_lineage_idx = (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "foundry_lineage")) ? obj_GameManager.foundry_lineage : 0; // 0=Aegis Visor (Wanzer Mil-Spec), 1=Colossus Forge (Industrial Dreadnought), 2=Stratos Vector (Agile Recon Skirmisher)
 builder_lineage_names = [
     "AEGIS VISOR DOCTRINE (Mil-Spec Wanzer / Panoramic Tactical Visor)",
     "COLOSSUS FORGE DOCTRINE (Industrial Dreadnought / Dual Exhaust Blast-Hood)",
     "STRATOS VECTOR DOCTRINE (Agile Recon Skirmisher / Swept Cowlings & Twin Optics)"
 ];
 builder_lineage_badges = ["[LINEAGE: AEGIS VISOR]", "[LINEAGE: COLOSSUS FORGE]", "[LINEAGE: STRATOS VECTOR]"];
+builder_lineage_sprites = [spr_ms_pmc_aegis_visor, spr_ms_pmc_colossus_forge, spr_ms_pmc_stratos_vector];
+builder_lineage_back_sprites = [spr_ms_pmc_aegis_visor_back_idle, spr_ms_pmc_colossus_forge_back_idle, spr_ms_pmc_stratos_vector_back_idle];
 builder_quality_idx = 1; // 0=C-Standard, 1=B-MilSpec, 2=A-AceCustom, 3=S-SingularityMasterwork
 builder_quality_names = [
     "C-TIER: INDUSTRIAL STANDARD (Baseline Yield)",
@@ -201,15 +203,28 @@ builder_quality_badges = ["[C: INDUSTRIAL]", "[B: MIL-SPEC]", "[A: ACE PROTOTYPE
 builder_quality_mults = [1.0, 1.10, 1.20, 1.35];
 builder_chassis_idx = 0;
 builder_alloy_idx = 0;
+builder_propulsion_kits = ["Standard Bipedal", "Vernier Thrusters", "Hydro-Jet Pack", "Hover Skirt"];
+builder_propulsion_idx = 0;
 builder_primary_wpn_idx = 0;
 builder_secondary_wpn_idx = 0;
 builder_melee_wpn_idx = 0;
 builder_shield_idx = 0;
 builder_hardpoint_nav_idx = 0;
 builder_custom_name = "HEPHAESTUS-X1";
+builder_editing_callsign = false;
+builder_callsign_pool = [
+    "HEPHAESTUS-X1", "AEGIS VANGUARD", "IRON BASTION", "STRATOS LANCE",
+    "VALKYRIE-07", "SOLARIS PRIME", "TITAN FORGE", "APEX DRAGOON"
+];
 builder_anim_state = "idle";
 builder_subimg = 0.0;
 builder_preview_scale = 2.0;
+builder_perspective = "front"; // "front" or "rear"
+builder_qa_bbox = false;
+builder_socket_mode = 0; // 0=OFF, 1=PRIMARY WPN, 2=SHIELD
+builder_overlay_primary_off = { x: -22, y: -48 };
+builder_overlay_shield_off = { x: 28, y: -54 };
+builder_baseline_telemetry = undefined;
 
 builder_alloys = [
     "alloy_vanguard_comp",
@@ -251,7 +266,7 @@ builder_alloy_deltas = [
 // Master Weapons & Equipment R&D Tech Tree Catalog
 builder_weapons_db = {
     primary: [
-        { id: "wp_starter_mg_90", name: "Type-90 90mm Kinetic Machine Gun", tech_id: "tech_wpn_heavy_autocannon", damage: 180, class: "BALLISTIC", sprite: spr_ms_ironclad_fire_rifle, power_draw: 2, mass: 8, lore: "Standard issue gas-operated kinetic machine gun firing AP sabots." },
+        { id: "wp_starter_mg_90", name: "Type-90 90mm Kinetic Machine Gun", tech_id: "tech_wpn_heavy_autocannon", damage: 180, class: "BALLISTIC", sprite: spr_ms_ironclad_fire_rifle, overlay_sprite: spr_wpn_starter_mg_90, power_draw: 2, mass: 8, lore: "Standard issue gas-operated kinetic machine gun firing AP sabots." },
         { id: "wp_smoothbore_120", name: "120mm Smoothbore Heavy Rifle", tech_id: "tech_wpn_hyper_velocity_rifle", damage: 230, class: "BALLISTIC", sprite: spr_ms_ironclad_fire_rifle, power_draw: 4, mass: 12, lore: "High-pressure smoothbore firing depleted uranium darts." },
         { id: "wp_spartan_chaingun", name: "GAU-88 35mm Spartan Rotary Vulcan", tech_id: "tech_wpn_heavy_autocannon", damage: 215, class: "ROTARY_VULCAN", sprite: spr_ms_centurion_fire_chaingun, power_draw: 4, mass: 10, lore: "Rotating multi-barrel vulcan with cooling dissipation." },
         { id: "wp_beam_rifle_type6a", name: "Type-6A High-Output Beam Rifle", tech_id: "tech_wpn_beam_carbine", damage: 260, class: "BEAM_PULSE", sprite: spr_ms_aether_fire_beam, power_draw: 8, mass: 8, lore: "Coherent Cherenkov cyan beam lance accelerator." },
@@ -265,13 +280,13 @@ builder_weapons_db = {
         { id: "wp_chaff_flare", name: "Thermal Chaff & ECM Flare Dispenser", tech_id: "tech_wpn_hydra_rockets", damage: 0, class: "COUNTERMEASURE", sprite: -1, power_draw: 1, mass: 3, lore: "Radar-scattering chaff providing +20% Evasion." }
     ],
     melee: [
-        { id: "wp_heat_hawk", name: "Type-1 Tactical Combat Heat Axe", tech_id: "tech_wpn_plasma_heat_blade", damage: 235, class: "MELEE", sprite: spr_ms_ironclad_attack_melee, power_draw: 3, mass: 8, lore: "Standard issue 3000°C thermal edge combat axe cleaving armor." },
+        { id: "wp_heat_hawk", name: "Type-1 Tactical Combat Heat Axe", tech_id: "tech_wpn_plasma_heat_blade", damage: 235, class: "MELEE", sprite: spr_ms_ironclad_attack_melee, overlay_sprite: spr_wpn_heat_hawk, power_draw: 3, mass: 8, lore: "Standard issue 3000°C thermal edge combat axe cleaving armor." },
         { id: "wp_vibro_blade", name: "Titanium Vibro-Blade", tech_id: "tech_wpn_vibro_blade", damage: 160, class: "MELEE", sprite: spr_ms_aether_attack_saber, power_draw: 1, mass: 3, lore: "Solid titanium blade with ultrasonic oscillation." },
         { id: "wp_thermal_gladius", name: "Spartan High-Frequency Gladius", tech_id: "tech_wpn_vibro_blade", damage: 250, class: "MELEE", sprite: spr_ms_centurion_attack_melee, power_draw: 4, mass: 6, lore: "Bespoke shock assault thermal blade." },
         { id: "wp_beam_saber_cherenkov", name: "High-Energy Thermal Plasma Saber", tech_id: "tech_wpn_beam_saber", damage: 285, class: "MELEE", sprite: spr_ms_aether_attack_saber, power_draw: 6, mass: 4, lore: "Cherenkov cyan plasma blade with pure white core." }
     ],
     shield: [
-        { id: "sld_ballistic_buckler", name: "Type-1 Ballistic Deflector Buckler", tech_id: "tech_sld_ballistic_buckler", armor_hp: 90, mass: 4, power_draw: 0, lore: "Standard issue lightweight composite deflector buckler." },
+        { id: "sld_ballistic_buckler", name: "Type-1 Ballistic Deflector Buckler", tech_id: "tech_sld_ballistic_buckler", armor_hp: 90, mass: 4, power_draw: 0, overlay_sprite: spr_wpn_ballistic_buckler, lore: "Standard issue lightweight composite deflector buckler." },
         { id: "sld_composite_tower", name: "Aegis Composite Tower Scutum", tech_id: "tech_sld_ballistic_buckler", armor_hp: 210, mass: 9, power_draw: 0, lore: "Heavy frontline blast barrier." },
         { id: "sld_em_deflector", name: "Aerosteel Deflector Shield", tech_id: "tech_sld_ballistic_buckler", armor_hp: 150, mass: 5, power_draw: 3, lore: "Angled aerosteel with electromagnetic dispersion." },
         { id: "sld_fortress_barrier", name: "Fortress Reactive Energy Barrier", tech_id: "tech_sld_ballistic_buckler", armor_hp: 300, mass: 14, power_draw: 6, lore: "Superheavy fortress barrier absorbing kinetic/beam salvos." }
@@ -556,6 +571,38 @@ calculate_builder_telemetry = function() {
     else if (_tot_mass >= 82 && _tot_mass < 105) _w_class = "HEAVY ASSAULT";
     else _w_class = "SUPERHEAVY SIEGEBREAKER";
 
+    var _preview_spr = _c.sprite_asset;
+    var _preview_back_spr = _c.sprite_back_asset;
+    if (builder_chassis_line == 0 && builder_chassis_idx == 0) {
+        var _lin_idx = builder_lineage_idx % array_length(builder_lineage_sprites);
+        _preview_spr = builder_lineage_sprites[_lin_idx];
+        _preview_back_spr = builder_lineage_back_sprites[_lin_idx];
+    }
+
+    var _ov_prim = variable_struct_exists(_wpn_p, "overlay_sprite") ? _wpn_p.overlay_sprite : -1;
+    var _ov_melee = variable_struct_exists(_wpn_m, "overlay_sprite") ? _wpn_m.overlay_sprite : -1;
+    var _ov_shield = variable_struct_exists(_sld, "overlay_sprite") ? _sld.overlay_sprite : -1;
+
+    var _aid_t = builder_alloys[clamp(builder_alloy_idx, 0, array_length(builder_alloys) - 1)];
+    var _cid_t = string_lower(_c.id);
+    var _ter = { land: "A", mountain: "B", water: "C", air: "B", space: "B", ground: "A", urban: "A", trench: "B" };
+    if (string_pos("colossus", _cid_t) > 0 || string_pos("behemoth", _cid_t) > 0 || string_pos("ironclad", _cid_t) > 0) {
+        _ter = { land: "S", mountain: "A", water: "D", air: "D", space: "C", ground: "S", urban: "A", trench: "A" };
+    } else if (string_pos("stratos", _cid_t) > 0 || string_pos("aether", _cid_t) > 0 || string_pos("kamaitachi", _cid_t) > 0) {
+        _ter = { land: "A", mountain: "B", water: "C", air: "S", space: "S", ground: "A", urban: "B", trench: "C" };
+    }
+    if (_aid_t == "alloy_aerosteel_flux" || _aid_t == "alloy_tachyon_superalloy") {
+        _ter.air = "S"; _ter.space = "S";
+    } else if (_aid_t == "alloy_adamantine_carbide" || _aid_t == "alloy_chobham_reactive") {
+        _ter.land = "S"; _ter.mountain = "S";
+    } else if (_aid_t == "alloy_carbon_nanoweave") {
+        _ter.water = "A"; _ter.mountain = "A";
+    }
+    var _pkit_idx = clamp(builder_propulsion_idx, 0, array_length(builder_propulsion_kits) - 1);
+    if (_pkit_idx == 1) { _ter.air = "S"; _ter.space = "S"; }
+    else if (_pkit_idx == 2) { _ter.water = "S"; _ter.land = "B"; }
+    else if (_pkit_idx == 3) { _ter.land = "S"; _ter.water = "A"; }
+
     return {
         chassis: _c, alloy_delta: _alloy_d, quality_mult: _q_mult, quality_idx: builder_quality_idx,
         primary_wpn: _wpn_p, secondary_wpn: _wpn_s, melee_wpn: _wpn_m, shield: _sld,
@@ -563,7 +610,9 @@ calculate_builder_telemetry = function() {
         mass_overloaded: _mass_overloaded, power_output: _scaled_core, total_draw: _tot_draw,
         net_power: _net_power, reactor_overloaded: _reactor_overloaded,
         walk_speed: _final_spd, boost_speed: _boost_spd, combat_rating: _oss,
-        weight_class: _w_class, preview_sprite: _c.sprite_asset,
+        weight_class: _w_class, preview_sprite: _preview_spr, preview_back_sprite: _preview_back_spr,
+        overlay_primary: _ov_prim, overlay_melee: _ov_melee, overlay_shield: _ov_shield,
+        terrain: _ter, propulsion_kit: builder_propulsion_kits[_pkit_idx],
         sprites: _c.sprites,
         tint: _alloy_d.tint_color,
         glow: _alloy_d.glow_color
@@ -588,8 +637,13 @@ deploy_builder_mech_to_combat = function() {
         alloy_id: builder_alloys[builder_alloy_idx],
         alloy: builder_alloys[builder_alloy_idx],
         era: 2,
-        sprite_asset: _t.chassis.sprite_asset,
-        sprite_back_asset: _t.chassis.sprite_back_asset,
+        sprite_asset: _t.preview_sprite,
+        sprite_back_asset: _t.preview_back_sprite,
+        image_blend: _t.tint,
+        weapon_overlay_primary: (_t.overlay_primary != -1) ? sprite_get_name(_t.overlay_primary) : "",
+        weapon_overlay_secondary: (_t.overlay_shield != -1) ? sprite_get_name(_t.overlay_shield) : "",
+        overlay_primary_offset: { x: builder_overlay_primary_off.x, y: builder_overlay_primary_off.y },
+        overlay_shield_offset: { x: builder_overlay_shield_off.x, y: builder_overlay_shield_off.y },
         weapon_name: _t.primary_wpn.name,
         weapon_class: _t.primary_wpn.class,
         hp: _t.total_armor,
@@ -602,13 +656,14 @@ deploy_builder_mech_to_combat = function() {
         doctrine: "PMC Hephaestus Custom Masterwork",
         aux_system: _t.secondary_wpn.name + " // " + _t.melee_wpn.name + " // " + _t.shield.name,
         sprites: {
-            idle: _t.chassis.sprite_asset,
-            walk: (variable_struct_exists(_t.sprites, "boost") && _t.sprites.boost != -1) ? _t.sprites.boost : _t.chassis.sprite_asset,
+            idle: _t.preview_sprite,
+            back_idle: _t.preview_back_sprite,
+            walk: (variable_struct_exists(_t.sprites, "boost") && _t.sprites.boost != -1) ? _t.sprites.boost : _t.preview_sprite,
             fire: _t.primary_wpn.sprite,
             melee: _t.melee_wpn.sprite,
-            boost: (variable_struct_exists(_t.sprites, "boost") && _t.sprites.boost != -1) ? _t.sprites.boost : _t.chassis.sprite_asset,
-            damaged: (variable_struct_exists(_t.sprites, "damaged") && _t.sprites.damaged != -1) ? _t.sprites.damaged : _t.chassis.sprite_asset,
-            destroyed: (variable_struct_exists(_t.sprites, "destroyed") && _t.sprites.destroyed != -1) ? _t.sprites.destroyed : _t.chassis.sprite_asset
+            boost: (variable_struct_exists(_t.sprites, "boost") && _t.sprites.boost != -1) ? _t.sprites.boost : _t.preview_sprite,
+            damaged: (variable_struct_exists(_t.sprites, "damaged") && _t.sprites.damaged != -1) ? _t.sprites.damaged : _t.preview_sprite,
+            destroyed: (variable_struct_exists(_t.sprites, "destroyed") && _t.sprites.destroyed != -1) ? _t.sprites.destroyed : _t.preview_sprite
         }
     };
 
@@ -617,6 +672,16 @@ deploy_builder_mech_to_combat = function() {
     atk_cat_idx = 0;
     atk_filtered_idx = 0;
     active_debug_tab = 0;
+
+    // Update comparison baseline to this newly created mobile suit
+    builder_baseline_telemetry = {
+        label: builder_custom_name,
+        total_armor: _t.total_armor,
+        total_mass: _t.total_mass,
+        net_power: _t.net_power,
+        boost_speed: _t.boost_speed,
+        combat_rating: _t.combat_rating
+    };
 
     scr_audio_play_ui("boot");
     show_toast("DEPLOYED TO COMBAT LAB: " + builder_custom_name + " ready for live action testing!", c_lime);
@@ -631,9 +696,14 @@ commission_builder_mech_to_hangar = function() {
     }
     if (instance_exists(obj_GameManager)) {
         var _gm = obj_GameManager;
+        var _aid = builder_alloys[builder_alloy_idx];
         var _new_mech = {
             id: "custom_mech_" + string(_gm.current_turn) + "_" + string(irandom(9999)),
             blueprint_id: _t.chassis.id,
+            alloy_id: _aid,
+            propulsion_kit: _t.propulsion_kit,
+            is_masterwork: (builder_quality_idx == 3),
+            terrain: _t.terrain,
             callsign: builder_custom_name,
             name: builder_custom_name,
             class: _t.weight_class,
@@ -651,9 +721,110 @@ commission_builder_mech_to_hangar = function() {
             combat_pedigree: { sorties_deployed: 0, sorties_survived: 0, confirmed_kills: 0, ace_kills: 0, damage_mitigated: 0, pedigree_rating: "FACTORY_FRESH", telemetry_bonus: 0.0 }
         };
         array_push(_gm.inventory.deployable_mechs, _new_mech);
+        builder_baseline_telemetry = {
+            label: builder_custom_name,
+            total_armor: _t.total_armor,
+            total_mass: _t.total_mass,
+            net_power: _t.net_power,
+            boost_speed: _t.boost_speed,
+            combat_rating: _t.combat_rating
+        };
         show_toast("COMMISSIONED TO FLEET HANGAR: " + builder_custom_name + " added to Hangar!", c_lime);
         scr_audio_play_ui("boot");
     }
+};
+
+compute_stock_baseline_telemetry = function() {
+    var _sv_a = builder_alloy_idx;
+    var _sv_q = builder_quality_idx;
+    var _sv_p = builder_primary_wpn_idx;
+    var _sv_s = builder_secondary_wpn_idx;
+    var _sv_m = builder_melee_wpn_idx;
+    var _sv_sh = builder_shield_idx;
+
+    builder_alloy_idx = 0;
+    builder_quality_idx = 0;
+    builder_primary_wpn_idx = 0;
+    builder_secondary_wpn_idx = 0;
+    builder_melee_wpn_idx = 0;
+    builder_shield_idx = 0;
+
+    var _base_t = calculate_builder_telemetry();
+
+    builder_alloy_idx = _sv_a;
+    builder_quality_idx = _sv_q;
+    builder_primary_wpn_idx = _sv_p;
+    builder_secondary_wpn_idx = _sv_s;
+    builder_melee_wpn_idx = _sv_m;
+    builder_shield_idx = _sv_sh;
+
+    builder_baseline_telemetry = {
+        label: "STOCK BASE",
+        total_armor: _base_t.total_armor,
+        total_mass: _base_t.total_mass,
+        net_power: _base_t.net_power,
+        boost_speed: _base_t.boost_speed,
+        combat_rating: _base_t.combat_rating
+    };
+    return builder_baseline_telemetry;
+};
+
+apply_builder_preset = function(_preset_idx) {
+    builder_chassis_line = 0;
+    builder_chassis_idx = 0;
+    var _np = array_length(builder_weapons_db.primary);
+    var _ns = array_length(builder_weapons_db.secondary);
+    var _nm = array_length(builder_weapons_db.melee);
+    var _nsh = array_length(builder_weapons_db.shield);
+    var _na = array_length(builder_alloys);
+
+    if (_preset_idx == 0) {
+        // BRAWLER: Colossus Forge + Heavy Armor + Assault/Melee
+        builder_lineage_idx = 1;
+        builder_alloy_idx = min(3, _na - 1); // Adamantine Carbide
+        builder_quality_idx = 2;
+        builder_primary_wpn_idx = min(1, _np - 1);
+        builder_secondary_wpn_idx = 0;
+        builder_melee_wpn_idx = min(1, _nm - 1);
+        builder_shield_idx = min(1, _nsh - 1);
+        builder_custom_name = "IRON BASTION";
+        show_toast("PRESET LOADED: HEAVY BRAWLER", make_color_rgb(255, 180, 50));
+    } else if (_preset_idx == 1) {
+        // SKIRMISHER: Stratos Vector + Aerosteel + High Mobility
+        builder_lineage_idx = 2;
+        builder_alloy_idx = min(2, _na - 1); // Aerosteel Flux
+        builder_quality_idx = 2;
+        builder_primary_wpn_idx = 0;
+        builder_secondary_wpn_idx = min(1, _ns - 1);
+        builder_melee_wpn_idx = 0;
+        builder_shield_idx = 0;
+        builder_custom_name = "STRATOS LANCE";
+        show_toast("PRESET LOADED: RECON SKIRMISHER", make_color_rgb(200, 120, 255));
+    } else if (_preset_idx == 2) {
+        // FIRE SUPPORT: Aegis Visor + Hyperion Matrix + Heavy Ordnance
+        builder_lineage_idx = 0;
+        builder_alloy_idx = min(1, _na - 1); // Hyperion Matrix
+        builder_quality_idx = 2;
+        builder_primary_wpn_idx = min(2, _np - 1);
+        builder_secondary_wpn_idx = min(2, _ns - 1);
+        builder_melee_wpn_idx = 0;
+        builder_shield_idx = 0;
+        builder_custom_name = "AEGIS VANGUARD";
+        show_toast("PRESET LOADED: FIRE SUPPORT", c_aqua);
+    } else {
+        // RANDOMIZE
+        builder_lineage_idx = irandom(2);
+        builder_alloy_idx = irandom(_na - 1);
+        builder_quality_idx = irandom(3);
+        builder_primary_wpn_idx = irandom(_np - 1);
+        builder_secondary_wpn_idx = irandom(_ns - 1);
+        builder_melee_wpn_idx = irandom(_nm - 1);
+        builder_shield_idx = irandom(_nsh - 1);
+        builder_custom_name = builder_callsign_pool[irandom(array_length(builder_callsign_pool) - 1)];
+        show_toast("RANDOMIZED BUILD: " + builder_custom_name, c_yellow);
+    }
+    if (instance_exists(obj_GameManager)) obj_GameManager.set_foundry_lineage(builder_lineage_idx);
+    scr_audio_play_ui("boot");
 };
 
 unlock_all_research_cheats = function() {

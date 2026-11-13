@@ -127,6 +127,8 @@ has_completed_dossier = false;
 has_completed_prologue = false;
 prologue_active = false;
 has_completed_intro = false;
+foundry_lineage = 0; // 0=Aegis Visor, 1=Colossus Forge, 2=Stratos Vector
+has_calibrated_foundry = false;
 
 commander_backgrounds = {
     bg_terran_officer: {
@@ -385,6 +387,34 @@ select_commander = function(_gender_type) {
     if (_gender_type == "female") apply_commander_background("bg_colony_guerrilla", "", "", spr_portrait_commander_female);
     else if (_gender_type == "silhouette") apply_commander_background("bg_zaibatsu_defector", "", "", spr_portrait_commander_silhouette);
     else apply_commander_background("bg_terran_officer", "", "", spr_portrait_commander_male);
+};
+
+set_foundry_lineage = function(_lineage_idx) {
+    foundry_lineage = clamp(_lineage_idx, 0, 2);
+    has_calibrated_foundry = true;
+
+    var _lin_sprites = [spr_ms_pmc_aegis_visor, spr_ms_pmc_colossus_forge, spr_ms_pmc_stratos_vector];
+    var _lin_names   = ["Aegis Visor Doctrine", "Colossus Heavy Forge Doctrine", "Stratos Vector Doctrine"];
+    var _lin_types   = ["ironclad", "ironclad", "aero"];
+    var _chosen_spr  = _lin_sprites[foundry_lineage];
+
+    if (variable_instance_exists(id, "player_commander") && is_struct(player_commander)) {
+        player_commander.foundry_lineage = foundry_lineage;
+        player_commander.starter_mech_sprite = _chosen_spr;
+        player_commander.starter_mech_type = _lin_types[foundry_lineage];
+        player_commander.starter_mech_name = _lin_names[foundry_lineage] + " [PMC-01]";
+    }
+    if (variable_instance_exists(id, "active_combat_context") && is_struct(active_combat_context)) {
+        active_combat_context.commander_mech_sprite = _chosen_spr;
+        active_combat_context.commander_mech_type = _lin_types[foundry_lineage];
+    }
+
+    // Standard-Issue Starter Trio: Type-90 MG + Type-1 Heat Axe + Type-1 Ballistic Buckler
+    foundry_starter_kit = ["wp_starter_mg_90", "wp_heat_hawk", "sld_ballistic_buckler"];
+
+    if (instance_exists(obj_DebugManager)) {
+        obj_DebugManager.builder_lineage_idx = foundry_lineage;
+    }
 };
 
 has_completed_intro = false;
@@ -1085,6 +1115,71 @@ inventory = {
     ]
 };
 
+// 5b. Battlefield Salvage & Foreign Chassis Reverse-Engineering
+chassis_salvage_progress = {};
+unlocked_foreign_chassis = {};
+
+record_chassis_salvage = function(_chassis_key, _display_name) {
+    if (!is_string(_chassis_key) || _chassis_key == "") return { count: 0, unlocked: false, newly_unlocked: false };
+    var _cur = variable_struct_exists(chassis_salvage_progress, _chassis_key) ? variable_struct_get(chassis_salvage_progress, _chassis_key) : 0;
+    var _was_unlocked = variable_struct_exists(unlocked_foreign_chassis, _chassis_key) && variable_struct_get(unlocked_foreign_chassis, _chassis_key);
+    _cur = min(3, _cur + 1);
+    variable_struct_set(chassis_salvage_progress, _chassis_key, _cur);
+    var _newly = false;
+    if (_cur >= 3 && !_was_unlocked) {
+        variable_struct_set(unlocked_foreign_chassis, _chassis_key, true);
+        _newly = true;
+    }
+    return { count: _cur, unlocked: (_cur >= 3), newly_unlocked: _newly, name: _display_name };
+};
+
+repair_deployable_mech = function(_mech_idx) {
+    if (!variable_struct_exists(inventory, "deployable_mechs")) return false;
+    var _mechs = inventory.deployable_mechs;
+    if (_mech_idx < 0 || _mech_idx >= array_length(_mechs)) return false;
+    var _m = _mechs[_mech_idx];
+    if (!is_struct(_m)) return false;
+    var _cond = variable_struct_exists(_m, "current_condition_pct") ? _m.current_condition_pct : 1.0;
+    if (_cond >= 0.99) return false;
+
+    var _dmg_pct = clamp(1.0 - _cond, 0.01, 1.0);
+    var _cred_cost = max(2500, floor(_dmg_pct * 45000));
+    var _tung_cost = max(2, ceil(_dmg_pct * 18));
+    var _cur_tung = variable_struct_exists(inventory.raw_materials, "mat_tungsten") ? inventory.raw_materials.mat_tungsten : 0;
+    if (funds < _cred_cost || _cur_tung < _tung_cost) return false;
+
+    funds -= _cred_cost;
+    inventory.raw_materials.mat_tungsten = max(0, _cur_tung - _tung_cost);
+    _m.current_condition_pct = 1.0;
+    _m.status = "READY";
+    return true;
+};
+
+selected_sortie_indices = [0, 1, 2, 3];
+
+get_sortie_slot = function(_mech_idx) {
+    for (var i = 0; i < array_length(selected_sortie_indices); i++) {
+        if (selected_sortie_indices[i] == _mech_idx) return i;
+    }
+    return -1;
+};
+
+toggle_sortie_mech = function(_mech_idx) {
+    var _slot = get_sortie_slot(_mech_idx);
+    if (_slot != -1) {
+        if (array_length(selected_sortie_indices) > 1) {
+            array_delete(selected_sortie_indices, _slot, 1);
+            return false;
+        }
+        return true;
+    }
+    if (array_length(selected_sortie_indices) >= 4) {
+        array_delete(selected_sortie_indices, 0, 1);
+    }
+    array_push(selected_sortie_indices, _mech_idx);
+    return true;
+};
+
 // 6. Base Facility Upgrades & Roster (docs/07_base_management.md)
 facilities = {
     crucible_tier: 1,             // Tier 1: Max 3000°C, 2000 PSI; Tier 2: Max 6000°C, 10,000 PSI
@@ -1576,7 +1671,7 @@ end_turn = function() {
     // 5b. Daily Sovereign Territory Tribute & Raw Material Logistics (docs/12, docs/39)
     if (instance_exists(obj_FactionManager)) {
         var _fm = obj_FactionManager;
-        scr_territory_process_turn_economy();
+        scr_territory_process_daily_logistics();
         var _pmc_pct = _fm.territory_control.pmc_pct;
         if (_pmc_pct > 0 && !variable_struct_exists(_fm, "territory_database")) {
             var _tribute = _pmc_pct * 3500;

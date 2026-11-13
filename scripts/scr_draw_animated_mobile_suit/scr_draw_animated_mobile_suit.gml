@@ -81,6 +81,42 @@ function scr_get_chassis_sockets(_chassis_type) {
     return variable_struct_get(_socket_db, _key) ?? _socket_db.biped;
 }
 
+/// @function scr_get_mech_barrel_socket(_suit_data, _x, _y, _scale, _facing)
+/// @description Returns exact world/screen barrel muzzle & shell ejection coordinates anchored to foot (_x, _y).
+function scr_get_mech_barrel_socket(_suit_data, _x, _y, _scale = 1.0, _facing = 1) {
+    var _sid = "";
+    if (is_struct(_suit_data)) {
+        _sid = string_lower(string(variable_struct_get(_suit_data, "id") ?? (variable_struct_get(_suit_data, "mech_type") ?? "")));
+    } else if (is_string(_suit_data)) {
+        _sid = string_lower(_suit_data);
+    }
+
+    var _mx_off = 52;
+    var _my_off = -82;
+    var _ex_off = 22;
+    var _ey_off = -88;
+
+    if (string_pos("ironclad", _sid) > 0 || string_pos("centurion", _sid) > 0 || string_pos("colossus", _sid) > 0 || string_pos("behemoth", _sid) > 0 || string_pos("siegebreaker", _sid) > 0) {
+        _mx_off = 56; _my_off = -82; _ex_off = 24; _ey_off = -88;
+    } else if (string_pos("aether", _sid) > 0 || string_pos("stratos", _sid) > 0 || string_pos("kamaitachi", _sid) > 0 || string_pos("muramasa", _sid) > 0 || string_pos("zephyr", _sid) > 0) {
+        _mx_off = 58; _my_off = -86; _ex_off = 20; _ey_off = -92;
+    } else if (string_pos("tread", _sid) > 0 || string_pos("gorgon", _sid) > 0 || string_pos("ballista", _sid) > 0) {
+        _mx_off = 54; _my_off = -76; _ex_off = 18; _ey_off = -82;
+    }
+
+    if (is_struct(_suit_data) && variable_struct_exists(_suit_data, "overlay_primary_offset") && is_struct(_suit_data.overlay_primary_offset)) {
+        _mx_off += _suit_data.overlay_primary_offset.x * 0.5;
+        _my_off += _suit_data.overlay_primary_offset.y * 0.35;
+    }
+
+    return {
+        muzzle_x: _x + (_mx_off * _facing * _scale),
+        muzzle_y: _y + (_my_off * _scale),
+        eject_x:  _x + (_ex_off * _facing * _scale),
+        eject_y:  _y + (_ey_off * _scale)
+    };
+}
+
 /// @function scr_draw_custom_mobile_suit(_suit_data, _x, _y, _scale, _facing, _state, _subimg_override, _custom_blend, _perspective)
 /// @description Multi-pass depth-sorted composite renderer for player-forged custom mobile suits with metallurgy alloy finishes.
 function scr_draw_custom_mobile_suit(_suit_data, _x, _y, _scale = 1.0, _facing = 1, _state = "idle", _subimg_override = -1, _custom_blend = c_white, _perspective = "front") {
@@ -598,10 +634,10 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
             _tint = merge_color(_tint, make_color_rgb(45, 45, 48), 0.75);
         }
     } else if (string_pos("fire", _state) > 0) {
-        // Dynamic procedural weapon recoil (pulsing kickback matching animation timer)
+        // Dynamic procedural weapon recoil & raise tilt (stronger raise when using idle-frame fallback)
         var _kick = (sin((_subimg_override >= 0 ? _subimg_override : current_time * 0.015) * pi * 2.0) * 0.5 + 0.5) * 6.0 * _scale;
         _draw_x -= (_kick * _facing);
-        _draw_angle = (1.5 * _scale) * _facing;
+        _draw_angle = ((_action_spr == -1) ? 4.5 : 1.5) * _facing;
     } else if (_state == "melee") {
         // Forward lunge dash
         var _lunge = (sin((_subimg_override >= 0 ? _subimg_override : current_time * 0.012) * pi * 2.0) * 0.5 + 0.5) * 14.0 * _scale;
@@ -641,12 +677,36 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
     // Pass 1: Background Secondary Weapon / Shield (Only on CUSTOM_MECH to prevent double-weapons on military suits)
     if (!_is_back && _is_custom && _wpn_sec_spr != -1) {
         var _sec_sub = _sub % sprite_get_number(_wpn_sec_spr);
-        draw_sprite_ext(_wpn_sec_spr, _sec_sub, _draw_x, _draw_y, _scale * _facing, _scale, _draw_angle, c_white, 1.0);
+        var _sh_ox = 28;
+        var _sh_oy = -54;
+        if (is_struct(_suit_id) && variable_struct_exists(_suit_id, "overlay_shield_offset") && is_struct(_suit_id.overlay_shield_offset)) {
+            _sh_ox = _suit_id.overlay_shield_offset.x;
+            _sh_oy = _suit_id.overlay_shield_offset.y;
+        }
+        if (sprite_get_yoffset(_wpn_sec_spr) == 80) {
+            draw_sprite_ext(_wpn_sec_spr, _sec_sub, _draw_x + (_sh_ox * _facing * _scale), _draw_y + (_sh_oy * _scale), 0.50 * _scale * _facing, 0.50 * _scale, _draw_angle, _tint, 1.0);
+        } else {
+            draw_sprite_ext(_wpn_sec_spr, _sec_sub, _draw_x, _draw_y, _scale * _facing, _scale, _draw_angle, c_white, 1.0);
+        }
     }
 
     // 9. Render Main 2D Base Chassis Frame
     if (sprite_exists(_spr)) {
         draw_sprite_ext(_spr, _sub, _draw_x, _draw_y, _scale * _facing, _scale, _draw_angle, _tint, 1.0);
+    }
+
+    // Fallback Muzzle Flash Flare at exact barrel socket when unit lacks a bespoke firing sprite
+    if (!_is_back && string_pos("fire", _state) > 0 && _action_spr == -1) {
+        var _bsock = scr_get_mech_barrel_socket(_suit_id, _draw_x, _draw_y, _scale, _facing);
+        var _fl_pulse = 0.5 + 0.5 * sin(current_time * 0.045);
+        var _fl_col = (_state == "fire_beam") ? make_color_rgb(0, 240, 255) : make_color_rgb(255, 190, 60);
+        draw_set_alpha(0.75 * _fl_pulse + 0.2);
+        draw_set_color(_fl_col);
+        draw_circle(_bsock.muzzle_x, _bsock.muzzle_y, (7 + 4 * _fl_pulse) * _scale, false);
+        draw_triangle(_bsock.muzzle_x, _bsock.muzzle_y - 5 * _scale, _bsock.muzzle_x, _bsock.muzzle_y + 5 * _scale, _bsock.muzzle_x + (22 * _facing * _scale), _bsock.muzzle_y, false);
+        draw_set_color(c_white);
+        draw_circle(_bsock.muzzle_x, _bsock.muzzle_y, 3.5 * _scale, false);
+        draw_set_alpha(1.0);
     }
 
     // Radiant Plasma Energy Sheen on Lance / Blade during Melee Thrust
@@ -682,7 +742,17 @@ function scr_draw_animated_mobile_suit(_suit_id, _x, _y, _scale = 1.0, _facing =
         if (string_pos("fire", _state) > 0 || _state == "melee") {
             _prim_sub = 3 % sprite_get_number(_wpn_prim_spr);
         }
-        draw_sprite_ext(_wpn_prim_spr, _prim_sub, _draw_x, _draw_y, _scale * _facing, _scale, _draw_angle, c_white, 1.0);
+        var _pr_ox = -22;
+        var _pr_oy = -48;
+        if (is_struct(_suit_id) && variable_struct_exists(_suit_id, "overlay_primary_offset") && is_struct(_suit_id.overlay_primary_offset)) {
+            _pr_ox = _suit_id.overlay_primary_offset.x;
+            _pr_oy = _suit_id.overlay_primary_offset.y;
+        }
+        if (sprite_get_yoffset(_wpn_prim_spr) == 80) {
+            draw_sprite_ext(_wpn_prim_spr, _prim_sub, _draw_x + (_pr_ox * _facing * _scale), _draw_y + (_pr_oy * _scale), 0.52 * _scale * _facing, 0.52 * _scale, _draw_angle, c_white, 1.0);
+        } else {
+            draw_sprite_ext(_wpn_prim_spr, _prim_sub, _draw_x, _draw_y, _scale * _facing, _scale, _draw_angle, c_white, 1.0);
+        }
     }
 
     // 10. Backpack Thruster Vernier Plumes (ONLY on REAR perspective)

@@ -31,6 +31,11 @@ if (instance_exists(obj_DebugManager) && obj_DebugManager.is_open) {
     exit;
 }
 
+// Foundry Activation Prologue: Prompt Commander to calibrate USN-X Hephaestus lineage after prologue
+if (instance_exists(obj_GameManager) && obj_GameManager.has_completed_prologue && !obj_GameManager.has_calibrated_foundry && !scr_vn_is_active() && !intro_active && !show_commander_modal) {
+    scr_vn_start_episode("ep_foundry_calibration");
+}
+
 // 4. Global Hotkey Shortcuts (docs/09)
 if (keyboard_check_pressed(vk_f5)) {
     scr_save_game();

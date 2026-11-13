@@ -672,16 +672,16 @@ get_comprehensive_stats = function(_bp) {
     else if (string_pos("susanoo", string_lower(_code)) > 0) _prop = 190;
     else if (string_pos("seraphim", string_lower(_code)) > 0) _prop = 170;
 
-    // Terrain Adaptability (Ground, Space, Urban, Trench)
-    var _ter = { ground: "A", space: "B", urban: "A", trench: "C" };
+    // Gihren's Greed 5-Theater Terrain Adaptability (Land, Mountain, Water, Air, Space) + Legacy Aliases
+    var _ter = { land: "A", mountain: "B", water: "C", air: "B", space: "B", ground: "A", space_legacy: "B", urban: "A", trench: "C" };
     if (_fac == "faction_colony") {
-        _ter = { ground: "B", space: "S", urban: "B", trench: "B" };
+        _ter = { land: "B", mountain: "C", water: "D", air: "A", space: "S", ground: "B", urban: "B", trench: "B" };
     } else if (_fac == "faction_zaibatsu") {
-        _ter = { ground: "A", space: "S", urban: "S", trench: "C" };
+        _ter = { land: "A", mountain: "B", water: "C", air: "S", space: "S", ground: "A", urban: "S", trench: "C" };
     } else if (_fac == "faction_syndicate") {
-        _ter = { ground: "A", space: "A", urban: "S", trench: "B" };
+        _ter = { land: "A", mountain: "A", water: "B", air: "B", space: "A", ground: "A", urban: "S", trench: "B" };
     }
-    if (string_pos("susanoo", string_lower(_code)) > 0) _ter = { ground: "S", space: "S", urban: "S", trench: "A" };
+    if (string_pos("susanoo", string_lower(_code)) > 0) _ter = { land: "S", mountain: "A", water: "B", air: "S", space: "S", ground: "S", urban: "S", trench: "A" };
 
     // Prometheus Flux / ECM Particle Dispersion %
     var _ecm = 25;

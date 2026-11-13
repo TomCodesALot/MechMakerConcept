@@ -1081,7 +1081,7 @@ swap_unit_chassis = function(_unit_idx, _chassis_data) {
     _u.squad_max_count = _u.squad_members_count;
     _u.accuracy = clamp(floor(_chassis_data.speed * 0.12), 65, 92);
     _u.evasion = clamp(floor(_chassis_data.speed * 0.08), 25, 75);
-    _u.components.torso.max = floor(_chassis_data.armor * 0.40);
+    _u.components.torso.max = max(250, floor(_chassis_data.armor * 0.55));
     _u.components.torso.cur = _u.components.torso.max;
     _u.components.arm_left.max = floor(_chassis_data.armor * 0.22);
     _u.components.arm_left.cur = _u.components.arm_left.max;
@@ -2099,11 +2099,45 @@ if (instance_exists(obj_GameManager)) {
     // Sync Allied Units with Player Commissioned Deployable Mechs & Pedigree
     if (variable_struct_exists(_gm, "inventory") && variable_struct_exists(_gm.inventory, "deployable_mechs")) {
         var _dmechs = _gm.inventory.deployable_mechs;
-        for (var m = 0; m < min(array_length(_dmechs), 4); m++) {
-            var _dm = _dmechs[m];
+        var _sortie_list = (variable_instance_exists(_gm, "selected_sortie_indices") && is_array(_gm.selected_sortie_indices) && array_length(_gm.selected_sortie_indices) > 0) ? _gm.selected_sortie_indices : [0, 1, 2, 3];
+        for (var m = 0; m < min(array_length(_sortie_list), 4); m++) {
+            var _dm_idx = _sortie_list[m];
+            if (_dm_idx < 0 || _dm_idx >= array_length(_dmechs)) continue;
+            var _dm = _dmechs[_dm_idx];
             var _au = units[m];
             if (is_struct(_dm) && variable_struct_exists(_dm, "name") && _dm.name != "") {
                 _au.callsign = _dm.callsign;
+                if (variable_struct_exists(_dm, "id")) _au.linked_mech_id = _dm.id;
+
+                // Pillar 2: Sintered Alloy Combat Traits (Movement / AP)
+                var _alloy_id = variable_struct_exists(_dm, "alloy_id") ? _dm.alloy_id : "alloy_vanguard_comp";
+                _au.alloy_id = _alloy_id;
+                if (variable_struct_exists(_dm, "terrain") && is_struct(_dm.terrain)) {
+                    _au.terrain = _dm.terrain;
+                }
+                if (_alloy_id == "alloy_aerosteel_flux") {
+                    _au.move_range += 1;
+                    add_log("[ALLOY PASSIVE] " + _au.callsign + " Aerosteel Flux Frame (+1 Move Range)");
+                } else if (_alloy_id == "alloy_tachyon_superalloy") {
+                    _au.max_ap += 1;
+                    _au.current_ap += 1;
+                    add_log("[ALLOY PASSIVE] " + _au.callsign + " Tachyon Superalloy Overdrive (+1 AP)");
+                }
+
+                // Pillar 3: Pre-Battle Hull Attrition Sync
+                var _cond_pct = variable_struct_exists(_dm, "current_condition_pct") ? clamp(_dm.current_condition_pct, 0.25, 1.0) : 1.0;
+                if (_cond_pct < 0.99 && variable_struct_exists(_au, "components")) {
+                    var _parts = ["torso", "arm_left", "arm_right", "legs", "head"];
+                    for (var p = 0; p < array_length(_parts); p++) {
+                        var _pname = _parts[p];
+                        if (variable_struct_exists(_au.components, _pname)) {
+                            var _comp = variable_struct_get(_au.components, _pname);
+                            _comp.cur = max(1, floor(_comp.max * _cond_pct));
+                        }
+                    }
+                    add_log("[HULL ATTRITION] " + _au.callsign + " deployed at " + string(floor(_cond_pct * 100)) + "% structural integrity.");
+                }
+
                 if (variable_struct_exists(_dm, "combat_pedigree") && is_struct(_dm.combat_pedigree)) {
                     var _tele = _dm.combat_pedigree.telemetry_bonus;
                 // S-Grade Masterwork AP Tuning (Goal D)
@@ -2497,10 +2531,18 @@ calculate_hit_chance = function(_atk, _def, _dist, _wpn = undefined) {
     var _ecm_jamming = (_def[$ "ecm_dispersion_pct"] ?? 20) * 0.20;
     _base -= _ecm_jamming;
 
-    // Terrain Adaptability Modifiers
-    var _def_ter = _def[$ "terrain"] ?? { ground: "A" };
-    if (_def_ter[$ "ground"] == "S") _eva += 12;
-    else if (_def_ter[$ "ground"] == "C") _eva -= 10;
+    // Gihren's Greed 5-Theater Terrain Adaptability Modifiers (Land, Mountain, Water, Air, Space)
+    var _atk_rank = get_unit_tile_terrain_rank(_atk, _atk.grid_c, _atk.grid_r);
+    var _def_rank = get_unit_tile_terrain_rank(_def, _def.grid_c, _def.grid_r);
+    if (_atk_rank == "S") _base += 8;
+    else if (_atk_rank == "A") _base += 3;
+    else if (_atk_rank == "C") _base -= 10;
+    else if (_atk_rank == "D") _base -= 20;
+
+    if (_def_rank == "S") _eva += 12;
+    else if (_def_rank == "A") _eva += 5;
+    else if (_def_rank == "C") _eva -= 10;
+    else if (_def_rank == "D") _eva -= 20;
 
     if (_def.braced) _eva += 35;
     if (!_atk.components.head.intact) _base -= 40;
@@ -2539,6 +2581,20 @@ calculate_hit_chance = function(_atk, _def, _dist, _wpn = undefined) {
 };
 
 // 10. Recompute Movement Tiles for Selected Unit with Dynamic Terrain Costs
+get_unit_tile_terrain_rank = function(_u, _c, _r) {
+    var _ter = _u[$ "terrain"] ?? { land: "A", mountain: "B", water: "C", air: "B", space: "B" };
+    if (map_definitions[current_map_id].theater == "SPACE") {
+        return _ter[$ "space"] ?? "B";
+    }
+    if ((_u[$ "move_type"] ?? "biped") == "aero") {
+        return _ter[$ "air"] ?? "A";
+    }
+    var _t = grid_terrain[_c][_r];
+    if (_t == 3) return _ter[$ "water"] ?? "C";
+    if (_t == 2 || _t == 4 || _t == 5 || grid_elev[_c][_r] >= 2) return _ter[$ "mountain"] ?? "B";
+    return _ter[$ "land"] ?? (_ter[$ "ground"] ?? "A");
+};
+
 get_terrain_move_cost = function(_u, _from_c, _from_r, _to_c, _to_r) {
     if (_to_c < 0 || _to_c >= grid_cols || _to_r < 0 || _to_r >= grid_rows) return 999;
     var _terr = grid_terrain[_to_c][_to_r];
@@ -2582,6 +2638,11 @@ get_terrain_move_cost = function(_u, _from_c, _from_r, _to_c, _to_r) {
     if (map_definitions[current_map_id].theater == "SPACE" && _m_type != "aero" && !_sp_adapt) {
         _base_cost += 1;
     }
+
+    var _dest_rank = get_unit_tile_terrain_rank(_u, _to_c, _to_r);
+    if (_dest_rank == "S" && _base_cost > 1) _base_cost = max(1, _base_cost - 1);
+    else if (_dest_rank == "C") _base_cost += 1;
+    else if (_dest_rank == "D") _base_cost += 2;
 
     return _base_cost;
 };
@@ -2708,18 +2769,8 @@ resolve_combat_impact = function(_atk, _def, _wpn, _hit_chance) {
         _def.anim_state = "hit";
         _def.anim_timer = 25;
 
-        // Front Mission Aimed Shot Precision or Random Limb Dispersion
+        // Single Unified HP Bar (Gihren's Greed / SRW style): all hits damage the unit's main hull
         var _hit_part = "torso";
-        if (_atk.is_aimed_shot && _atk.targeted_limb != "") {
-            _hit_part = _atk.targeted_limb;
-        } else {
-            var _part_roll = irandom_range(1, 100);
-            if (_part_roll <= 40) _hit_part = "torso";
-            else if (_part_roll <= 55) _hit_part = "arm_left";
-            else if (_part_roll <= 70) _hit_part = "arm_right";
-            else if (_part_roll <= 90) _hit_part = "legs";
-            else _hit_part = "head";
-        }
 
         var _limb = _def.components[$ _hit_part];
 
@@ -3220,23 +3271,12 @@ start_battle_cinematic = function(_atk, _def, _wpn, _return_state = COMBAT_STATE
 
     var _dist = calculate_distance(_atk.grid_c, _atk.grid_r, _def.grid_c, _def.grid_r);
     var _hit_chance = calculate_hit_chance(_atk, _def, _dist, _wpn);
-    if (variable_struct_exists(_atk, "is_aimed_shot") && _atk.is_aimed_shot) _hit_chance = max(10, _hit_chance - 15);
 
     var _roll = irandom_range(1, 100);
     var _is_hit = (_roll <= _hit_chance);
 
-    // Hit Part Selection (Front Mission 5-Part Mechanics)
+    // Single Unified HP Bar: all hits route to main hull ("torso")
     var _hit_part = "torso";
-    if (variable_struct_exists(_atk, "is_aimed_shot") && _atk.is_aimed_shot && _atk.targeted_limb != "") {
-        _hit_part = _atk.targeted_limb;
-    } else {
-        var _part_roll = irandom_range(1, 100);
-        if (_part_roll <= 40) _hit_part = "torso";
-        else if (_part_roll <= 55) _hit_part = "arm_left";
-        else if (_part_roll <= 70) _hit_part = "arm_right";
-        else if (_part_roll <= 90) _hit_part = "legs";
-        else _hit_part = "head";
-    }
 
     // Platoon Volley Scaling: 100% at 3/3, 75% at 2/3, 50% at 1/3
     var _squad_mult = 1.0;
@@ -3268,10 +3308,29 @@ start_battle_cinematic = function(_atk, _def, _wpn, _return_state = COMBAT_STATE
         _elev_tag = "[HIGH GROUND +" + string(_elev_diff * 15) + "%]";
     }
 
+    // Pillar 2: Sintered Alloy Combat Passives & Water Beam Attenuation
+    var _wpn_type = (is_struct(_wpn) && variable_struct_exists(_wpn, "type")) ? string_upper(_wpn.type) : "BALLISTIC";
+    if ((_wpn_type == "ENERGY" || _wpn_type == "BEAM" || _wpn_type == "PLASMA") && (grid_terrain[_atk.grid_c][_atk.grid_r] == 3 || grid_terrain[_def.grid_c][_def.grid_r] == 3)) {
+        _raw_dmg = floor(_raw_dmg * 0.75);
+        add_log("[WATER DISPERSION] Beam/Energy attenuated -25% by aquatic vapor!");
+    }
+    var _atk_alloy = variable_struct_exists(_atk, "alloy_id") ? _atk.alloy_id : "";
+    if ((_atk_alloy == "alloy_hyperion_matrix" || _atk_alloy == "alloy_tachyon_superalloy") && (_wpn_type == "ENERGY" || _wpn_type == "BEAM" || _wpn_type == "PLASMA")) {
+        _raw_dmg = floor(_raw_dmg * 1.15);
+    } else if ((_atk_alloy == "alloy_depleted_actinide" || _atk_alloy == "alloy_solar_crimson") && (_wpn_type == "BALLISTIC" || _wpn_type == "MELEE" || _wpn_type == "ORDNANCE")) {
+        _raw_dmg = floor(_raw_dmg * 1.15);
+    }
+
     // Mitigation Calculation with Brace Stance & Vanguard Screening (Refined Combat System)
     var _limb = variable_struct_get(_def.components, _hit_part);
     var _is_braced = variable_struct_exists(_def, "braced") && _def.braced;
     var _mitigated_dmg = max(15, _raw_dmg - _limb.armor);
+    var _def_alloy = variable_struct_exists(_def, "alloy_id") ? _def.alloy_id : "";
+    if ((_def_alloy == "alloy_chobham_reactive" || _def_alloy == "alloy_adamantine_carbide") && (_wpn_type == "BALLISTIC" || _wpn_type == "ORDNANCE")) {
+        _mitigated_dmg = max(10, floor(_mitigated_dmg * 0.80));
+    } else if (_def_alloy == "alloy_vanguard_comp" || _def_alloy == "alloy_scrapper_slag") {
+        _mitigated_dmg = max(10, _mitigated_dmg - 12);
+    }
     if (_is_braced) {
         _mitigated_dmg = max(10, floor(_mitigated_dmg * 0.60));
     }
@@ -3561,10 +3620,11 @@ update_battle_cinematic = function() {
                 battle_cinematic.atk_radio_bark = "Full rotary battery hot! Suppressing target position!";
             }
 
-            // Eject Spent Shell Casing for Ballistics
+            // Eject Spent Shell Casing & Resolve Barrel Socket
+            var _bm_sock = scr_get_mech_barrel_socket(battle_cinematic.attacker, 310, 505, 1.40, 1);
             if (battle_cinematic.weapon_class == "BALLISTIC") {
                 array_push(battle_cinematic.casings, {
-                    x: 340, y: 470, vx: random_range(-5.5, -3.0), vy: random_range(-5.0, -2.5),
+                    x: _bm_sock.eject_x, y: _bm_sock.eject_y, vx: random_range(-5.5, -3.0), vy: random_range(-5.0, -2.5),
                     angle: irandom(360), spin: random_range(-18, 18), life: 75
                 });
             }
@@ -3573,8 +3633,8 @@ update_battle_cinematic = function() {
             if (battle_cinematic.weapon_class != "MELEE") {
                 array_push(battle_cinematic.projectiles, {
                     type: battle_cinematic.weapon.proj_type,
-                    x1: 375, y1: 460, x2: 1010, y2: 465,
-                    cur_x: 375, cur_y: 460, t: 0.0, speed: (battle_cinematic.weapon_class == "ENERGY" ? 0.065 : 0.038),
+                    x1: _bm_sock.muzzle_x, y1: _bm_sock.muzzle_y, x2: 1010, y2: 465,
+                    cur_x: _bm_sock.muzzle_x, cur_y: _bm_sock.muzzle_y, t: 0.0, speed: (battle_cinematic.weapon_class == "ENERGY" ? 0.065 : 0.038),
                     trail: battle_cinematic.weapon.proj_type
                 });
             }
@@ -3663,10 +3723,11 @@ update_battle_cinematic = function() {
         if (battle_cinematic.weapon.proj_type == "ROTARY_VULCAN" && (_t == 25 || _t == 29 || _t == 34 || _t == 39)) {
             battle_cinematic.atk_recoil_x = -8;
             scr_audio_play_weapon(battle_cinematic.weapon.short_name);
+            var _bm_vsock = scr_get_mech_barrel_socket(battle_cinematic.attacker, 310, 505, 1.40, 1);
             array_push(battle_cinematic.projectiles, {
                 type: "ROTARY_VULCAN",
-                x1: 375, y1: 455 + irandom_range(-6, 6), x2: 1010, y2: 460 + irandom_range(-15, 15),
-                cur_x: 375, cur_y: 455, t: 0.0, speed: 0.065, trail: "tracer"
+                x1: _bm_vsock.muzzle_x, y1: _bm_vsock.muzzle_y + irandom_range(-6, 6), x2: 1010, y2: 460 + irandom_range(-15, 15),
+                cur_x: _bm_vsock.muzzle_x, cur_y: _bm_vsock.muzzle_y, t: 0.0, speed: 0.065, trail: "tracer"
             });
         }
 
@@ -3873,6 +3934,20 @@ update_battle_cinematic = function() {
                             scr_research_award_salvage_intel("WEAPONS", 25);
                         }
 
+                        // 3b. Pillar 1: Battlefield Salvage -> Raw Scrap & Foreign Chassis Reverse-Engineering
+                        if (_def.team == "HOSTILE" && instance_exists(obj_GameManager)) {
+                            obj_GameManager.add_raw_material("mat_tungsten", 3);
+                            obj_GameManager.add_raw_material("mat_silica_carb", 1);
+                            if (variable_instance_exists(obj_GameManager, "record_chassis_salvage")) {
+                                var _def_chassis = variable_struct_exists(_def, "chassis_id") ? _def.chassis_id : (variable_struct_exists(_def, "mech_type") ? _def.mech_type : "ironclad");
+                                var _salv = obj_GameManager.record_chassis_salvage(_def_chassis, _def.callsign);
+                                add_log("[SALVAGE] +3 Tungsten, +1 Silica | " + string_upper(_def_chassis) + " Wreck Core (" + string(_salv.count) + "/3)");
+                                if (_salv.newly_unlocked) {
+                                    add_log("[FOUNDRY UNLOCK] " + string_upper(_def_chassis) + " chassis reverse-engineered for Foundry fabrication!");
+                                }
+                            }
+                        }
+
                         // 4. Boss Defeat & Victory Path 4 Trigger (Goal G)
                         if (variable_struct_exists(_def, "is_boss") && _def.is_boss) {
                             crisis_defeated = true;
@@ -4067,6 +4142,18 @@ skip_battle_cinematic = function() {
                         var _vic_c = variable_struct_get(_def, "chassis_id") ?? (variable_struct_get(_def, "mech_type") ?? "ironclad");
                         var _atk_c = variable_struct_get(_atk, "chassis_id") ?? (variable_struct_get(_atk, "mech_type") ?? "ironclad");
                         obj_BlueprintManager.record_suit_casualty(_vic_c, _atk_c);
+                    }
+                    if (_def.team == "HOSTILE" && instance_exists(obj_GameManager)) {
+                        obj_GameManager.add_raw_material("mat_tungsten", 3);
+                        obj_GameManager.add_raw_material("mat_silica_carb", 1);
+                        if (variable_instance_exists(obj_GameManager, "record_chassis_salvage")) {
+                            var _def_chassis_2 = variable_struct_exists(_def, "chassis_id") ? _def.chassis_id : (variable_struct_exists(_def, "mech_type") ? _def.mech_type : "ironclad");
+                            var _salv_2 = obj_GameManager.record_chassis_salvage(_def_chassis_2, _def.callsign);
+                            add_log("[SALVAGE] +3 Tungsten, +1 Silica | " + string_upper(_def_chassis_2) + " Wreck Core (" + string(_salv_2.count) + "/3)");
+                            if (_salv_2.newly_unlocked) {
+                                add_log("[FOUNDRY UNLOCK] " + string_upper(_def_chassis_2) + " chassis reverse-engineered for Foundry fabrication!");
+                            }
+                        }
                     }
                     if (instance_exists(obj_NemesisManager)) {
                         var _vic_id = variable_struct_get(_def, "character_id") ?? variable_struct_get(_def, "pilot_name") ?? _def.id;

@@ -23,8 +23,8 @@ if (_toggle) {
 
 if (!is_open && !clash_cinematic.active) exit;
 
-// 2. Escape closes debug panel or finishes cinematic clash
-if (keyboard_check_pressed(vk_escape)) {
+// 2. Escape closes debug panel or finishes cinematic clash (unless editing callsign)
+if (keyboard_check_pressed(vk_escape) && !builder_editing_callsign) {
     if (clash_cinematic.active) {
         clash_cinematic.active = false;
         scr_audio_play_ui("cancel");
@@ -35,8 +35,8 @@ if (keyboard_check_pressed(vk_escape)) {
     keyboard_clear(vk_escape);
 }
 
-// Global Tab Switching Hotkeys (1-4 & Tab)
-if (!clash_cinematic.active && is_open) {
+// Global Tab Switching Hotkeys (1-4 & Tab) — skip while typing callsign
+if (!clash_cinematic.active && is_open && !builder_editing_callsign) {
     if (keyboard_check_pressed(ord("1"))) { active_debug_tab = 0; scr_audio_play_ui("tab"); }
     else if (keyboard_check_pressed(ord("2"))) { active_debug_tab = 1; scr_audio_play_ui("tab"); }
     else if (keyboard_check_pressed(ord("3"))) { active_debug_tab = 2; scr_audio_play_ui("tab"); }
@@ -47,6 +47,56 @@ if (!clash_cinematic.active && is_open) {
 // TAB 1: MECH BUILDER & FORGE STEP CONTROLS
 if (!clash_cinematic.active && is_open && active_debug_tab == 1) {
     builder_subimg += 0.15;
+
+    // Inline Callsign Editing Mode (locks single-letter hotkeys until Enter/Esc)
+    if (builder_editing_callsign) {
+        var _clean_str = "";
+        for (var ci = 1; ci <= string_length(keyboard_string); ci++) {
+            var _ch = string_char_at(keyboard_string, ci);
+            var _ord = ord(string_upper(_ch));
+            if ((_ord >= ord("A") && _ord <= ord("Z")) || (_ord >= ord("0") && _ord <= ord("9")) || _ch == "-" || _ch == "_" || _ch == " ") {
+                if (string_length(_clean_str) < 18) _clean_str += string_upper(_ch);
+            }
+        }
+        keyboard_string = _clean_str;
+        builder_custom_name = (_clean_str != "") ? _clean_str : "HEPHAESTUS-X1";
+        if (keyboard_check_pressed(vk_enter) || keyboard_check_pressed(vk_escape)) {
+            builder_editing_callsign = false;
+            keyboard_clear(vk_enter);
+            keyboard_clear(vk_escape);
+            scr_audio_play_ui("click");
+        }
+    } else {
+        // Gantry QA Hotkeys: R=Front/Rear, B=BBox/Origin, U=Socket QA Mode
+        if (keyboard_check_pressed(ord("R"))) {
+            builder_perspective = (builder_perspective == "front") ? "rear" : "front";
+            scr_audio_play_ui("click");
+            show_toast("GANTRY VIEW: " + string_upper(builder_perspective), c_aqua);
+        } else if (keyboard_check_pressed(ord("B"))) {
+            builder_qa_bbox = !builder_qa_bbox;
+            scr_audio_play_ui("click");
+            show_toast("ORIGIN & BBOX OVERLAY: " + (builder_qa_bbox ? "ON" : "OFF"), c_aqua);
+        } else if (keyboard_check_pressed(ord("U"))) {
+            builder_socket_mode = (builder_socket_mode + 1) % 3;
+            scr_audio_play_ui("click");
+        }
+
+        // Socket Offset Nudger (I/K/J/M, Shift for 5px)
+        if (builder_socket_mode > 0) {
+            var _step_px = keyboard_check(vk_shift) ? 5 : 1;
+            var _ndx = (keyboard_check_pressed(ord("M")) ? _step_px : 0) - (keyboard_check_pressed(ord("J")) ? _step_px : 0);
+            var _ndy = (keyboard_check_pressed(ord("K")) ? _step_px : 0) - (keyboard_check_pressed(ord("I")) ? _step_px : 0);
+            if (_ndx != 0 || _ndy != 0) {
+                if (builder_socket_mode == 1) {
+                    builder_overlay_primary_off.x += _ndx;
+                    builder_overlay_primary_off.y += _ndy;
+                } else {
+                    builder_overlay_shield_off.x += _ndx;
+                    builder_overlay_shield_off.y += _ndy;
+                }
+                scr_audio_play_ui("click");
+            }
+        }
 
     // Subtab switching via Q/E
     if (keyboard_check_pressed(ord("Q"))) {
@@ -64,6 +114,7 @@ if (!clash_cinematic.active && is_open && active_debug_tab == 1) {
         // Toggle Foundry Lineage (L key)
         if (keyboard_check_pressed(ord("L"))) {
             builder_lineage_idx = (builder_lineage_idx + 1) % 3;
+            if (instance_exists(obj_GameManager)) obj_GameManager.set_foundry_lineage(builder_lineage_idx);
             scr_audio_play_ui("click");
             show_toast("FOUNDRY LINEAGE: " + builder_lineage_badges[builder_lineage_idx], c_aqua);
         }
@@ -144,6 +195,7 @@ if (!clash_cinematic.active && is_open && active_debug_tab == 1) {
         builder_anim_state = _poses[(_cur_p_idx + 1) % array_length(_poses)];
         scr_audio_play_ui("click");
     }
+    } // end !builder_editing_callsign
 }
 
 // TAB 2: ASTEROID MINING & EXTRACTION STEP CONTROLS
@@ -299,12 +351,18 @@ if (clash_cinematic.active) {
             } else {
                 clash_cinematic.atk_anim_state = "fire_rifle";
                 clash_cinematic.atk_recoil_x = -18;
-                var _muzzle_x = 360 + 70;
-                var _muzzle_y = 480 - 125;
-                var _def_target_y = 480 - 90;
+                var _atk_sock = scr_get_mech_barrel_socket(clash_cinematic.attacker, 360, 480, 1.30, 1);
+                var _muzzle_x = _atk_sock.muzzle_x;
+                var _muzzle_y = _atk_sock.muzzle_y;
+                var _def_target_y = 480 - 85;
                 array_push(clash_cinematic.projectiles, {
                     x1: _muzzle_x, y1: _muzzle_y, x2: 1010, y2: _def_target_y,
-                    cur_x: _muzzle_x, cur_y: _muzzle_y, speed: 32, type: "BALLISTIC"
+                    cur_x: _muzzle_x, cur_y: _muzzle_y, speed: 32, type: _w_class
+                });
+                array_push(clash_cinematic.casings, {
+                    x: _atk_sock.eject_x, y: _atk_sock.eject_y,
+                    vx: random_range(-4.0, -2.0), vy: random_range(-6.5, -4.0),
+                    angle: random(360), rot_spd: random_range(18, 32)
                 });
             }
 
@@ -698,8 +756,9 @@ if (clash_cinematic.active) {
                     clash_cinematic.atk_recoil_x = -6 + random_range(-2, 2);
                     clash_cinematic.screen_shake = max(clash_cinematic.screen_shake, 4.0);
 
-                    var _mx = 360 + 75;
-                    var _my = 480 - 100 + random_range(-4, 4);
+                    var _atk_v_sock = scr_get_mech_barrel_socket(clash_cinematic.attacker, 360 + clash_cinematic.atk_recoil_x, 480, 1.30, 1);
+                    var _mx = _atk_v_sock.muzzle_x;
+                    var _my = _atk_v_sock.muzzle_y + random_range(-4, 4);
                     var _target_y = 480 - 90 + random_range(-14, 14);
 
                     array_push(clash_cinematic.projectiles, {
@@ -709,7 +768,7 @@ if (clash_cinematic.active) {
 
                     // Spent 35mm brass casing tumbling from breach
                     array_push(clash_cinematic.casings, {
-                        x: 360 + 40 + random_range(-3, 3), y: 480 - 110 + random_range(-3, 3),
+                        x: _atk_v_sock.eject_x + random_range(-3, 3), y: _atk_v_sock.eject_y + random_range(-3, 3),
                         vx: random_range(-4.5, -2.5), vy: random_range(-7.0, -4.5),
                         angle: random(360), rot_spd: random_range(20, 36)
                     });
@@ -790,6 +849,7 @@ if (clash_cinematic.active) {
     else if (clash_cinematic.phase == 2) {
         if (_t >= 155) {
             clash_cinematic.phase = 3;
+            clash_cinematic.applied_counter_hit = false;
             if (clash_cinematic.has_counter && clash_cinematic.def_hp > 0) {
                 var _def_w_class = (variable_struct_exists(clash_cinematic.defender, "weapon_class")) ? clash_cinematic.defender.weapon_class : "BALLISTIC";
                 if (_def_w_class == "ROTARY_VULCAN") {
@@ -798,28 +858,56 @@ if (clash_cinematic.active) {
                 } else if (_def_w_class == "BEAM_PULSE") {
                     clash_cinematic.def_anim_state = "fire_beam";
                     scr_audio_play_weapon("BEAM_PULSE");
+                } else if (_def_w_class == "MELEE" || _def_w_class == "BEAM_LANCE") {
+                    clash_cinematic.def_anim_state = "melee";
+                    scr_audio_play_weapon("blade");
                 } else {
                     clash_cinematic.def_anim_state = "fire_rifle";
                     scr_audio_play_weapon("BALLISTIC");
                 }
-                clash_cinematic.def_recoil_x = 12;
-                clash_cinematic.atk_recoil_x = -14;
-                clash_cinematic.atk_anim_state = "damaged";
-                clash_cinematic.atk_hp = max(0, clash_cinematic.atk_hp - clash_cinematic.counter_damage);
-
-                array_push(clash_cinematic.popups, {
-                    x: 360, y: 410,
-                    text: "- " + string(clash_cinematic.counter_damage) + " COUNTER",
-                    col: make_color_rgb(0, 240, 255),
-                    timer: 70, vy: -1.2
+                clash_cinematic.def_recoil_x = 14;
+                var _def_sock = scr_get_mech_barrel_socket(clash_cinematic.defender, 1010, 480, 1.30, -1);
+                array_push(clash_cinematic.projectiles, {
+                    x1: _def_sock.muzzle_x, y1: _def_sock.muzzle_y, x2: 360, y2: 480 - 85,
+                    cur_x: _def_sock.muzzle_x, cur_y: _def_sock.muzzle_y, speed: -34, type: _def_w_class
                 });
-
-                scr_audio_play_impact(_def_w_class, false);
+                if (_def_w_class == "BALLISTIC" || _def_w_class == "ROTARY_VULCAN") {
+                    array_push(clash_cinematic.casings, {
+                        x: _def_sock.eject_x, y: _def_sock.eject_y,
+                        vx: random_range(2.0, 4.5), vy: random_range(-6.5, -4.0),
+                        angle: random(360), rot_spd: random_range(18, 32)
+                    });
+                }
             }
         }
     }
-    // Phase 3: Resolution & Exit Preparation (t: 155 to 220)
+    // Phase 3: Counter Impact & Resolution (t: 155 to 220)
     else if (clash_cinematic.phase == 3) {
+        if (_t >= 175 && clash_cinematic.has_counter && clash_cinematic.def_hp > 0 && !(variable_struct_exists(clash_cinematic, "applied_counter_hit") && clash_cinematic.applied_counter_hit)) {
+            clash_cinematic.applied_counter_hit = true;
+            var _def_w_class_imp = (variable_struct_exists(clash_cinematic.defender, "weapon_class")) ? clash_cinematic.defender.weapon_class : "BALLISTIC";
+            clash_cinematic.screen_shake = 12.0;
+            clash_cinematic.atk_recoil_x = -14;
+            clash_cinematic.atk_anim_state = "damaged";
+            clash_cinematic.atk_hp = max(0, clash_cinematic.atk_hp - clash_cinematic.counter_damage);
+            for (var cp = 0; cp < 6; cp++) {
+                array_push(clash_cinematic.particles, {
+                    x: 360 + random_range(-25, 25),
+                    y: 450 + random_range(-25, 25),
+                    sprite: spr_fx_explosion,
+                    frame: 0.0, spd: 0.28,
+                    scale: random_range(0.9, 1.5),
+                    alpha: 1.0
+                });
+            }
+            array_push(clash_cinematic.popups, {
+                x: 360, y: 410,
+                text: "- " + string(clash_cinematic.counter_damage) + " COUNTER",
+                col: make_color_rgb(0, 240, 255),
+                timer: 70, vy: -1.2
+            });
+            scr_audio_play_impact(_def_w_class_imp, false);
+        }
         if (_t >= 220) {
             clash_cinematic.phase = 4;
         }
@@ -836,7 +924,7 @@ if (clash_cinematic.active) {
     for (var i = array_length(clash_cinematic.projectiles) - 1; i >= 0; i--) {
         var _pj = clash_cinematic.projectiles[i];
         _pj.cur_x += _pj.speed;
-        if (_pj.cur_x >= _pj.x2) {
+        if ((_pj.speed >= 0 && _pj.cur_x >= _pj.x2) || (_pj.speed < 0 && _pj.cur_x <= _pj.x2)) {
             array_delete(clash_cinematic.projectiles, i, 1);
         }
     }

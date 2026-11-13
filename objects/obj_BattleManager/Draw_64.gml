@@ -392,33 +392,10 @@ if (_dr_x < _gw - 30) {
                 scr_draw_snes_button(_det_btn_x, _det_btn_y, _det_btn_w, 22, "DETACH", _dethov, false, make_color_rgb(100, 220, 255));
             }
 
-            // Aimed Shot Precision Limb Toggle [AIM: OFF / TORSO / ARMS / LEGS]
-            var _aim_btn_w = 64;
-            var _aim_btn_x = _card_x + _card_w - _aim_btn_w - 6;
-            var _aim_btn_y = _card_y + 36;
-            var _aimhov = (_mx >= _aim_btn_x && _mx <= _aim_btn_x + _aim_btn_w && _my >= _aim_btn_y && _my <= _aim_btn_y + 20);
-            if (_aimhov && _click) {
-                if (!variable_struct_exists(_su, "is_aimed_shot") || !_su.is_aimed_shot) {
-                    _su.is_aimed_shot = true;
-                    _su.targeted_limb = "torso";
-                } else if (_su.targeted_limb == "torso") {
-                    _su.targeted_limb = "arm_right";
-                } else if (_su.targeted_limb == "arm_right") {
-                    _su.targeted_limb = "legs";
-                } else {
-                    _su.is_aimed_shot = false;
-                    _su.targeted_limb = "";
-                }
-                scr_audio_play_ui("click");
-                add_log("[AIM OVERRIDE] " + _su.callsign + " target: " + (_su.is_aimed_shot ? string_upper(_su.targeted_limb) : "AUTO"));
-            }
-            var _aim_lbl = (!variable_struct_exists(_su, "is_aimed_shot") || !_su.is_aimed_shot) ? "AIM:OFF" : ("AIM:" + string_upper(string_copy(_su.targeted_limb, 1, 4)));
-            scr_draw_snes_button(_aim_btn_x, _aim_btn_y, _aim_btn_w, 20, _aim_lbl, _aimhov, (variable_struct_exists(_su, "is_aimed_shot") && _su.is_aimed_shot), (variable_struct_exists(_su, "is_aimed_shot") && _su.is_aimed_shot) ? make_color_rgb(255, 140, 40) : make_color_rgb(120, 140, 160));
-
             // Manual Weapon Override Button
             var _wpn_btn_w = 64;
             var _wpn_btn_x = _card_x + _card_w - _wpn_btn_w - 6;
-            var _wpn_btn_y = _card_y + 58;
+            var _wpn_btn_y = _card_y + 48;
             var _wpnhov = (_mx >= _wpn_btn_x && _mx <= _wpn_btn_x + _wpn_btn_w && _my >= _wpn_btn_y && _my <= _wpn_btn_y + 20);
             if (_wpnhov && _click && array_length(_su.weapons) > 1) {
                 if (!variable_struct_exists(_su, "manual_weapon_idx")) _su.manual_weapon_idx = 0;
@@ -640,6 +617,23 @@ if (state == COMBAT_STATE.VICTORY_AAR || state == COMBAT_STATE.DEFEAT_AAR) {
                             _plt.sorties = (variable_struct_exists(_plt, "sorties") ? _plt.sorties : 0) + 1;
                             _plt.fatigue = min(5, (variable_struct_exists(_plt, "fatigue") ? _plt.fatigue : 0) + 1);
                             obj_GameManager.pilot_add_xp(_plt.id, _xp_reward);
+                        }
+                    }
+                }
+                // Pillar 3: Post-Battle Hull Attrition Sync back to Hangar
+                if (variable_struct_exists(obj_GameManager, "inventory") && variable_struct_exists(obj_GameManager.inventory, "deployable_mechs")) {
+                    var _dmechs = obj_GameManager.inventory.deployable_mechs;
+                    for (var u = 0; u < array_length(units); u++) {
+                        var _bu = units[u];
+                        if (_bu.team == "ALLIED" && variable_struct_exists(_bu, "linked_mech_id")) {
+                            var _hp_pct = _bu.is_destroyed ? 0.15 : clamp(_bu.components.torso.cur / max(1, _bu.components.torso.max), 0.15, 1.0);
+                            for (var m = 0; m < array_length(_dmechs); m++) {
+                                if (is_struct(_dmechs[m]) && variable_struct_exists(_dmechs[m], "id") && _dmechs[m].id == _bu.linked_mech_id) {
+                                    _dmechs[m].current_condition_pct = _hp_pct;
+                                    _dmechs[m].status = (_hp_pct < 0.99) ? "DAMAGED" : "READY";
+                                    break;
+                                }
+                            }
                         }
                     }
                 }

@@ -368,21 +368,7 @@ switch (state) {
 
         var _cur_u = units[selected_unit_idx];
 
-        // Aimed Shot Hotkeys: [Z] Toggle Aimed Shot, [T] Cycle Targeted Limb
-        if (keyboard_check_pressed(ord("Z"))) {
-            _cur_u.is_aimed_shot = !_cur_u.is_aimed_shot;
-            add_log("[AIMED SHOT] " + (_cur_u.is_aimed_shot ? ("Precision lock: " + string_upper(_cur_u.targeted_limb)) : "Auto scatter mode."));
-        }
-        if (keyboard_check_pressed(ord("T"))) {
-            var _parts = ["torso", "arm_left", "arm_right", "legs", "head"];
-            var _p_idx = 0;
-            for (var p = 0; p < array_length(_parts); p++) {
-                if (_parts[p] == _cur_u.targeted_limb) { _p_idx = (p + 1) % array_length(_parts); break; }
-            }
-            _cur_u.targeted_limb = _parts[_p_idx];
-            _cur_u.is_aimed_shot = true;
-            add_log("[AIMED SHOT LOCK] Designated component -> " + string_upper(_cur_u.targeted_limb));
-        }
+        // Single Unified HP Bar: legacy aimed-shot keys disabled for streamlined accessibility
 
         // Auto-update target_unit_idx when hovering over enemy
         for (var u = 0; u < array_length(units); u++) {

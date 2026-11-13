@@ -489,6 +489,33 @@ for (var i = 0; i < _len; i++) {
             }
         };
 
+        var _draw_unit_overlays = function(_ux, _uy, _usx, _usy, _u_struct, _u_alpha, _is_shield_pass) {
+            if (_u_struct.is_destroyed) return;
+            var _ov_key = _is_shield_pass ? "weapon_overlay_secondary" : "weapon_overlay_primary";
+            if (!variable_struct_exists(_u_struct, _ov_key)) return;
+            var _ov_name = _u_struct[$ _ov_key];
+            if (!is_string(_ov_name) || _ov_name == "") return;
+            var _ov_spr = asset_get_index(_ov_name);
+            if (_ov_spr == -1 || !sprite_exists(_ov_spr)) return;
+            var _f_sign = (_usx >= 0) ? 1 : -1;
+            var _sc_abs = abs(_usy);
+            if (sprite_get_yoffset(_ov_spr) == 80) {
+                var _ox_base = _is_shield_pass ? 28 : -22;
+                var _oy_base = _is_shield_pass ? -54 : -48;
+                var _off_key = _is_shield_pass ? "overlay_shield_offset" : "overlay_primary_offset";
+                if (variable_struct_exists(_u_struct, _off_key) && is_struct(_u_struct[$ _off_key])) {
+                    _ox_base = _u_struct[$ _off_key].x;
+                    _oy_base = _u_struct[$ _off_key].y;
+                }
+                var _ox = _ox_base * _f_sign * _sc_abs;
+                var _oy = _oy_base * _sc_abs;
+                var _osc = _is_shield_pass ? 0.50 : 0.52;
+                draw_sprite_ext(_ov_spr, 0, _ux + _ox, _uy + _oy, _usx * _osc, _usy * _osc, 0, _is_shield_pass ? _u_struct.image_blend : c_white, _u_alpha);
+            } else {
+                draw_sprite_ext(_ov_spr, 0, _ux, _uy, _usx, _usy, 0, c_white, _u_alpha);
+            }
+        };
+
         // 1. Standard Ground Infantry Squads (Combined-Arms Squad on Tile)
         if (_u_is_inf) {
             _draw_env_contact(_vx, _vy, 22 * zoom, 8 * zoom, _u_terr, _is_space_env, _u_is_hover, _u_is_air, _u_c, _u_r, _facing_sign);
@@ -535,7 +562,9 @@ for (var i = 0; i < _len; i++) {
 
             // Lead Mech Sprite
             if (sprite_exists(_spr)) {
+                _draw_unit_overlays(_vx, _lead_y, _xscale, _yscale, _u, _alpha, true);
                 draw_sprite_ext(_spr, floor(_u.anim_frame), _vx, _lead_y, _xscale, _yscale, 0, _u.image_blend, _alpha);
+                _draw_unit_overlays(_vx, _lead_y, _xscale, _yscale, _u, _alpha, false);
             }
             _draw_env_overlay(_vx, _vy, _lead_y, _u_terr, _is_space_env, _u_is_hover, _u_is_air, _u_c, _u_r, _facing_sign, _u.is_destroyed);
         } else {
@@ -553,7 +582,9 @@ for (var i = 0; i < _len; i++) {
 
             // Lead Ace Sprite
             if (sprite_exists(_spr)) {
+                _draw_unit_overlays(_vx, _ace_y, _xscale * _ace_scale, _yscale * _ace_scale, _u, _alpha, true);
                 draw_sprite_ext(_spr, floor(_u.anim_frame), _vx, _ace_y, _xscale * _ace_scale, _yscale * _ace_scale, 0, _u.image_blend, _alpha);
+                _draw_unit_overlays(_vx, _ace_y, _xscale * _ace_scale, _yscale * _ace_scale, _u, _alpha, false);
             }
             _draw_env_overlay(_vx, _vy, _ace_y, _u_terr, _is_space_env, _u_is_hover, _u_is_air, _u_c, _u_r, _facing_sign, _u.is_destroyed);
         }

@@ -223,6 +223,34 @@ if (_sort_hov && _click && room_exists(rm_combat)) {
 draw_set_color(_sort_hov ? make_color_rgb(80, 50, 10) : make_color_rgb(38, 24, 8));
 draw_rectangle(_sort_x + _sx, _d_y + _sy, _sort_x + _sort_w + _sx, _d_y + _d_h + _sy, false);
 draw_set_color(_sort_hov ? make_color_rgb(255, 210, 60) : make_color_rgb(210, 150, 40));
+
+// --- CAMPAIGN DIRECTIVE TRACKER STRIP (Bottom HUD) ---
+if (!is_undefined(_gm)) {
+    var _dir_txt = "DIRECTIVE: Expand Hangar Fleet, review Contract Theaters, and press SORTIE when ready.";
+    var _has_custom = (variable_struct_exists(_gm, "inventory") && variable_struct_exists(_gm.inventory, "deployable_mechs") && array_length(_gm.inventory.deployable_mechs) > 4);
+    var _has_damaged = false;
+    if (variable_struct_exists(_gm, "inventory") && variable_struct_exists(_gm.inventory, "deployable_mechs")) {
+        for (var dm_i = 0; dm_i < array_length(_gm.inventory.deployable_mechs); dm_i++) {
+            var _dm_c = _gm.inventory.deployable_mechs[dm_i];
+            if (is_struct(_dm_c) && (variable_struct_get(_dm_c, "current_condition_pct") ?? 1.0) < 0.99) {
+                _has_damaged = true; break;
+            }
+        }
+    }
+    if (_has_damaged) {
+        _dir_txt = "DIRECTIVE: Damaged unit in Hangar! Open HANGAR ARCHIVE to REPAIR HULL or swap Sortie Slots before combat.";
+    } else if (!_has_custom) {
+        _dir_txt = "DIRECTIVE: Open MECH FOUNDRY [F2] to forge a custom Mobile Suit tuned for Land, Water, Mountain, Air, or Space.";
+    } else if (instance_exists(obj_FactionManager) && array_length(obj_FactionManager.active_contracts) == 0) {
+        _dir_txt = "DIRECTIVE: Visit CONTRACTS & AI INTEL to accept a theater mission, then deploy your 4-suit Sortie Squad.";
+    }
+    draw_set_color(make_color_rgb(8, 14, 22));
+    draw_rectangle(16, 740, 1350, 764, false);
+    draw_set_color(make_color_rgb(35, 80, 120));
+    draw_rectangle(16, 740, 1350, 764, true);
+    draw_set_color(make_color_rgb(100, 230, 255));
+    draw_text_transformed(26, 745, _dir_txt, 0.80, 0.80, 0);
+}
 draw_rectangle(_sort_x + _sx, _d_y + _sy, _sort_x + _sort_w + _sx, _d_y + _d_h + _sy, true);
 if (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "tutorial_step") && obj_GameManager.tutorial_step == 3) {
     var _spulse = 0.5 + 0.5 * sin(current_time * 0.008);
@@ -4187,7 +4215,8 @@ else if (rd_subtab == 1) {
 
             var _code = variable_struct_get(_item, "model_code") ?? (variable_struct_get(_item, "callsign") ?? _item.name);
             var _iname = variable_struct_get(_item, "name") ?? "Mobile Suit";
-            var _sub = (bp_archive_source == 0) ? ("Status: " + string(variable_struct_get(_item, "status") ?? "READY")) : ("Role: " + string(variable_struct_get(_item, "role") ?? "Assault"));
+            var _hull_pct = floor((variable_struct_get(_item, "current_condition_pct") ?? 1.0) * 100);
+            var _sub = (bp_archive_source == 0) ? ("HULL: " + string(_hull_pct) + "% | " + string(variable_struct_get(_item, "status") ?? "READY")) : ("Role: " + string(variable_struct_get(_item, "role") ?? "Assault"));
 
             draw_set_color(_i_sel ? c_white : make_color_rgb(220, 220, 220));
             draw_text(_col1_x + 16, _iy + 8, string_copy(_code + " // " + _iname, 1, 24));
@@ -4463,8 +4492,14 @@ else if (rd_subtab == 1) {
                 if (!is_undefined(_c_stats)) {
                     draw_set_color(make_color_rgb(255, 215, 80));
                     draw_text(_rx, _content_y + 104, "* Pilot Limit (Genkai): " + string(_c_stats.pilot_limit_pct) + "% | Propellant: " + string(_c_stats.propellant_max) + " EN");
+                    var _disp_ter = (variable_struct_exists(_active_suit, "terrain") && is_struct(_active_suit.terrain)) ? _active_suit.terrain : _c_stats.terrain;
+                    var _tl = variable_struct_exists(_disp_ter, "land") ? _disp_ter.land : (_disp_ter[$ "ground"] ?? "A");
+                    var _tm = variable_struct_exists(_disp_ter, "mountain") ? _disp_ter.mountain : (_disp_ter[$ "trench"] ?? "B");
+                    var _tw = variable_struct_exists(_disp_ter, "water") ? _disp_ter.water : "C";
+                    var _ta = variable_struct_exists(_disp_ter, "air") ? _disp_ter.air : "B";
+                    var _ts = variable_struct_exists(_disp_ter, "space") ? _disp_ter.space : "B";
                     draw_set_color(make_color_rgb(100, 220, 255));
-                    draw_text(_rx, _content_y + 124, "* Terrains: G:" + _c_stats.terrain.ground + " S:" + _c_stats.terrain.space + " U:" + _c_stats.terrain.urban + " T:" + _c_stats.terrain.trench + " | ECM: " + string(_c_stats.ecm_dispersion_pct) + "%");
+                    draw_text(_rx, _content_y + 124, "* Theaters: LND:" + _tl + " MTN:" + _tm + " WTR:" + _tw + " AIR:" + _ta + " SPC:" + _ts + " | ECM: " + string(_c_stats.ecm_dispersion_pct) + "%");
                 }
 
                 var _arms_y = _content_y + 150;
@@ -4486,6 +4521,65 @@ else if (rd_subtab == 1) {
                     for (var v = 0; v < min(4, array_length(_vars)); v++) {
                         draw_set_color(make_color_rgb(180, 210, 240));
                         draw_text(_rx + 10, _var_y + 20 + v * 18, "[+] " + string(_vars[v]));
+                    }
+                }
+
+                // Pillar 3: Field Repair Bay & Alloy Passive Readout for Hangar Fleet
+                if (bp_archive_source == 0) {
+                    var _rep_y = _var_y + 100;
+                    var _cond_pct = variable_struct_get(_active_suit, "current_condition_pct") ?? 1.0;
+                    var _cond_int = floor(_cond_pct * 100);
+                    var _alloy_tag = variable_struct_get(_active_suit, "alloy_id") ?? "alloy_vanguard_comp";
+                    draw_set_color(make_color_rgb(130, 215, 255));
+                    draw_text(_rx, _rep_y, "CHASSIS ALLOY: " + string_upper(_alloy_tag));
+                    draw_set_color(_cond_pct < 0.99 ? make_color_rgb(255, 165, 80) : make_color_rgb(100, 255, 140));
+                    draw_text(_rx, _rep_y + 18, "STRUCTURAL INTEGRITY: " + string(_cond_int) + "%");
+
+                    // Sortie Deployment Squad Toggle (4-Slot Picker)
+                    if (instance_exists(obj_GameManager) && variable_instance_exists(obj_GameManager, "get_sortie_slot")) {
+                        var _s_slot = obj_GameManager.get_sortie_slot(bp_archive_selected_idx);
+                        var _sbx1 = _rx + 332;
+                        var _sby1 = _rep_y + 40;
+                        var _sbx2 = _sbx1 + 170;
+                        var _sby2 = _sby1 + 28;
+                        var _s_hov = point_in_rectangle(_mx, _my, _sbx1, _sby1, _sbx2, _sby2);
+                        var _in_sortie = (_s_slot != -1);
+                        draw_set_color(_in_sortie ? (_s_hov ? make_color_rgb(40, 110, 170) : make_color_rgb(20, 70, 120)) : (_s_hov ? make_color_rgb(60, 75, 90) : make_color_rgb(30, 38, 48)));
+                        draw_rectangle(_sbx1, _sby1, _sbx2, _sby2, false);
+                        draw_set_color(_in_sortie ? make_color_rgb(100, 220, 255) : make_color_rgb(150, 170, 190));
+                        draw_rectangle(_sbx1, _sby1, _sbx2, _sby2, true);
+                        draw_text(_sbx1 + 8, _sby1 + 6, _in_sortie ? ("SORTIE: SLOT #" + string(_s_slot + 1)) : "+ ASSIGN SORTIE");
+                        if (_s_hov && mouse_check_button_pressed(mb_left)) {
+                            obj_GameManager.toggle_sortie_mech(bp_archive_selected_idx);
+                            scr_audio_play_ui("click");
+                        }
+                    }
+
+                    if (_cond_pct < 0.99 && instance_exists(obj_GameManager)) {
+                        var _dmg_pct = clamp(1.0 - _cond_pct, 0.01, 1.0);
+                        var _cred_cost = max(2500, floor(_dmg_pct * 45000));
+                        var _tung_cost = max(2, ceil(_dmg_pct * 18));
+                        var _cur_tung = variable_struct_exists(obj_GameManager.inventory.raw_materials, "mat_tungsten") ? obj_GameManager.inventory.raw_materials.mat_tungsten : 0;
+                        var _can_rep = (obj_GameManager.funds >= _cred_cost && _cur_tung >= _tung_cost);
+
+                        var _rbx1 = _rx;
+                        var _rby1 = _rep_y + 40;
+                        var _rbx2 = _rx + 320;
+                        var _rby2 = _rby1 + 28;
+                        var _r_hov = point_in_rectangle(_mx, _my, _rbx1, _rby1, _rbx2, _rby2);
+                        draw_set_color(_can_rep ? (_r_hov ? make_color_rgb(45, 130, 80) : make_color_rgb(25, 80, 50)) : make_color_rgb(55, 30, 30));
+                        draw_rectangle(_rbx1, _rby1, _rbx2, _rby2, false);
+                        draw_set_color(_can_rep ? make_color_rgb(100, 255, 150) : make_color_rgb(200, 90, 90));
+                        draw_rectangle(_rbx1, _rby1, _rbx2, _rby2, true);
+                        draw_text(_rbx1 + 10, _rby1 + 6, "REPAIR HULL (" + string(_cred_cost) + " Cr + " + string(_tung_cost) + " Tungsten)");
+
+                        if (_r_hov && mouse_check_button_pressed(mb_left) && _can_rep) {
+                            if (obj_GameManager.repair_deployable_mech(bp_archive_selected_idx)) {
+                                if (variable_instance_exists(id, "show_toast")) {
+                                    show_toast("Hull restored to 100% combat readiness!", c_lime);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -5820,8 +5914,9 @@ else if (active_tab == 2) {
                 draw_set_color(make_color_rgb(160, 190, 220));
                 draw_text_ext_transformed(_cb_x + 12, _cy + 24, _cnt.briefing, 13, floor((_cw - 140) / 0.78), 0.78, 0.78, 0);
 
+                var _c_theater = variable_struct_exists(_cnt, "theater") ? string_upper(_cnt.theater) : ((string_pos("ORBIT", string_upper(_cnt.title + _cnt.briefing)) > 0 || string_pos("COLONY", string_upper(_cnt.title + _cnt.briefing)) > 0) ? "SPACE" : ((string_pos("CANAL", string_upper(_cnt.title + _cnt.briefing)) > 0 || string_pos("SEA", string_upper(_cnt.title + _cnt.briefing)) > 0) ? "WATER" : "LAND"));
                 draw_set_color(make_color_rgb(100, 255, 140));
-                draw_text_transformed(_cb_x + 12, _cy + 50, "Payout: " + string(_cnt.payout_credits) + " Cr | Standing: +" + string(_cnt.reputation_gain) + " | Deadline: " + string(_cnt.deadline_days) + " Days", 0.82, 0.82, 0);
+                draw_text_transformed(_cb_x + 12, _cy + 50, "[" + _c_theater + "] Payout: " + string(_cnt.payout_credits) + " Cr | Standing: +" + string(_cnt.reputation_gain) + " | Deadline: " + string(_cnt.deadline_days) + " Days", 0.82, 0.82, 0);
 
                 // Accept Button
                 var _ab_w = 110;

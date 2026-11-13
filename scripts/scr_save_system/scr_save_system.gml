@@ -31,7 +31,11 @@ function scr_save_game(_slot_name = "pmc_save_slot_1.json") {
                 has_completed_intro: obj_GameManager.has_completed_intro,
                 has_completed_tutorial: (variable_instance_exists(obj_GameManager, "has_completed_tutorial") ? obj_GameManager.has_completed_tutorial : false),
                 tutorial_step: (variable_instance_exists(obj_GameManager, "tutorial_step") ? obj_GameManager.tutorial_step : 0),
-                tutorial_active: (variable_instance_exists(obj_GameManager, "tutorial_active") ? obj_GameManager.tutorial_active : true)
+                tutorial_active: (variable_instance_exists(obj_GameManager, "tutorial_active") ? obj_GameManager.tutorial_active : true),
+                foundry_lineage: (variable_instance_exists(obj_GameManager, "foundry_lineage") ? obj_GameManager.foundry_lineage : 0),
+                has_calibrated_foundry: (variable_instance_exists(obj_GameManager, "has_calibrated_foundry") ? obj_GameManager.has_calibrated_foundry : false),
+                chassis_salvage_progress: (variable_instance_exists(obj_GameManager, "chassis_salvage_progress") ? obj_GameManager.chassis_salvage_progress : {}),
+                unlocked_foreign_chassis: (variable_instance_exists(obj_GameManager, "unlocked_foreign_chassis") ? obj_GameManager.unlocked_foreign_chassis : {})
             };
         }
 
@@ -120,6 +124,13 @@ function scr_load_game(_slot_name = "pmc_save_slot_1.json") {
             if (variable_struct_exists(_gs, "has_completed_tutorial")) obj_GameManager.has_completed_tutorial = _gs.has_completed_tutorial;
             if (variable_struct_exists(_gs, "tutorial_step")) obj_GameManager.tutorial_step = _gs.tutorial_step;
             if (variable_struct_exists(_gs, "tutorial_active")) obj_GameManager.tutorial_active = _gs.tutorial_active;
+            if (variable_struct_exists(_gs, "foundry_lineage")) obj_GameManager.foundry_lineage = _gs.foundry_lineage;
+            if (variable_struct_exists(_gs, "has_calibrated_foundry")) obj_GameManager.has_calibrated_foundry = _gs.has_calibrated_foundry;
+            if (variable_struct_exists(_gs, "chassis_salvage_progress") && is_struct(_gs.chassis_salvage_progress)) obj_GameManager.chassis_salvage_progress = _gs.chassis_salvage_progress;
+            if (variable_struct_exists(_gs, "unlocked_foreign_chassis") && is_struct(_gs.unlocked_foreign_chassis)) obj_GameManager.unlocked_foreign_chassis = _gs.unlocked_foreign_chassis;
+            if (instance_exists(obj_DebugManager) && variable_instance_exists(obj_GameManager, "foundry_lineage")) {
+                obj_DebugManager.builder_lineage_idx = obj_GameManager.foundry_lineage;
+            }
         }
 
         // 2. Unpack into obj_FactionManager

@@ -272,7 +272,7 @@ scr_draw_snes_button(_t1_x, _win_y + 8, _tab_w, _tab_h, "2. MECH BUILDER & FORGE
 var _t2_x = _t1_x + _tab_w + 10;
 var _t2_hov = (_mx >= _t2_x && _mx <= _t2_x + _tab_w && _my >= _win_y + 8 && _my <= _win_y + 8 + _tab_h);
 if (_t2_hov && _click) { active_debug_tab = 2; scr_audio_play_ui("tab"); }
-scr_draw_snes_button(_t2_x, _win_y + 8, _tab_w, _tab_h, "3. ASTEROID MINING & DRILL", _t2_hov || (active_debug_tab == 2), (active_debug_tab == 2), (active_debug_tab == 2) ? make_color_rgb(0, 240, 255) : c_white);
+scr_draw_snes_button(_t2_x, _win_y + 8, _tab_w, _tab_h, "3. ASTEROID MINING", _t2_hov || (active_debug_tab == 2), (active_debug_tab == 2), (active_debug_tab == 2) ? make_color_rgb(0, 240, 255) : c_white);
 
 var _t3_x = _t2_x + _tab_w + 10;
 var _t3_hov = (_mx >= _t3_x && _mx <= _t3_x + _tab_w && _my >= _win_y + 8 && _my <= _win_y + 8 + _tab_h);
@@ -391,11 +391,11 @@ if (active_debug_tab == 0) {
     var _atk_era_str = variable_struct_exists(_cur_atk, "era") ? (" [GEN " + string(_cur_atk.era) + "]") : "";
     draw_text(_col1_x + 22, _col1_y + 250, "FACTION: " + _cur_atk.faction_id + _atk_era_str);
     draw_text(_col1_x + 22, _col1_y + 274, "CATEGORY: " + _cur_atk.category);
-    var _atk_doc_str = (variable_struct_exists(_cur_atk, "doctrine") && _cur_atk.doctrine != "") ? string_copy(_cur_atk.doctrine, 1, 24) : string_upper(_cur_atk.chassis);
+    var _atk_doc_str = (variable_struct_exists(_cur_atk, "doctrine") && _cur_atk.doctrine != "") ? string_copy(_cur_atk.doctrine, 1, 18) : string_upper(_cur_atk.chassis);
     draw_text(_col1_x + 22, _col1_y + 298, "DOCTRINE: " + _atk_doc_str);
     var _atk_alloy_str = variable_struct_exists(_cur_atk, "alloy") ? _cur_atk.alloy : (variable_struct_exists(_cur_atk, "alloy_id") ? _cur_atk.alloy_id : "Vanguard Composite");
-    draw_text(_col1_x + 22, _col1_y + 322, "ALLOY: " + string(_atk_alloy_str));
-    draw_text(_col1_x + 22, _col1_y + 346, "WEAPON: " + _cur_atk.weapon_name);
+    draw_text(_col1_x + 22, _col1_y + 322, "ALLOY: " + string_copy(string(_atk_alloy_str), 1, 20));
+    draw_text(_col1_x + 22, _col1_y + 346, "WEAPON: " + string_copy(_cur_atk.weapon_name, 1, 19));
     draw_text(_col1_x + 22, _col1_y + 370, "HULL: " + string(_cur_atk.hp) + " HP");
     draw_text(_col1_x + 22, _col1_y + 394, "ARMOR: " + string(_cur_atk.armor) + " RATING");
 
@@ -480,11 +480,11 @@ if (active_debug_tab == 0) {
     var _def_era_str = variable_struct_exists(_cur_def, "era") ? (" [GEN " + string(_cur_def.era) + "]") : "";
     draw_text(_col3_x + 22, _col3_y + 250, "FACTION: " + _cur_def.faction_id + _def_era_str);
     draw_text(_col3_x + 22, _col3_y + 274, "CATEGORY: " + _cur_def.category);
-    var _def_doc_str = (variable_struct_exists(_cur_def, "doctrine") && _cur_def.doctrine != "") ? string_copy(_cur_def.doctrine, 1, 24) : string_upper(_cur_def.chassis);
+    var _def_doc_str = (variable_struct_exists(_cur_def, "doctrine") && _cur_def.doctrine != "") ? string_copy(_cur_def.doctrine, 1, 18) : string_upper(_cur_def.chassis);
     draw_text(_col3_x + 22, _col3_y + 298, "DOCTRINE: " + _def_doc_str);
     var _def_alloy_str = variable_struct_exists(_cur_def, "alloy") ? _cur_def.alloy : (variable_struct_exists(_cur_def, "alloy_id") ? _cur_def.alloy_id : "Vanguard Composite");
-    draw_text(_col3_x + 22, _col3_y + 322, "ALLOY: " + string(_def_alloy_str));
-    draw_text(_col3_x + 22, _col3_y + 346, "WEAPON: " + _cur_def.weapon_name);
+    draw_text(_col3_x + 22, _col3_y + 322, "ALLOY: " + string_copy(string(_def_alloy_str), 1, 20));
+    draw_text(_col3_x + 22, _col3_y + 346, "WEAPON: " + string_copy(_cur_def.weapon_name, 1, 19));
     draw_text(_col3_x + 22, _col3_y + 370, "HULL: " + string(_cur_def.hp) + " HP");
     draw_text(_col3_x + 22, _col3_y + 394, "ARMOR: " + string(_cur_def.armor) + " RATING");
 
@@ -492,7 +492,7 @@ if (active_debug_tab == 0) {
     draw_set_color(make_color_rgb(255, 80, 80));
     draw_text(_col3_x + 14, _col3_y + 474, "TARGET STATUS: LOCK ACQUIRED");
     draw_set_color(make_color_rgb(255, 140, 40));
-    draw_text(_col3_x + 14, _col3_y + 524, "STANCE: DEFENDER TARGET (FACING LEFT)");
+    draw_text(_col3_x + 14, _col3_y + 524, "STANCE: DEFENDER (FACING LEFT)");
 
     // ---------------------------------------------------------------------
     // C. CENTER COLUMN: VISUAL STAGE & CLASH CONTROLS (w: 646)
@@ -759,25 +759,127 @@ else if (active_debug_tab == 1) {
     draw_rectangle(_hng_x + 24, _gcy - 80, _hng_x + 48, _gcy + 80, true);
     draw_rectangle(_hng_x + _hng_w - 48, _gcy - 80, _hng_x + _hng_w - 24, _gcy + 80, true);
 
-    // Live Render Mobile Suit
+    // Live Render Mobile Suit + Modular Weapon/Shield Overlays
+    var _is_rear = (builder_perspective == "rear");
     var _draw_spr = _t.preview_sprite;
-    if (builder_anim_state == "fire") _draw_spr = _t.primary_wpn.sprite;
-    else if (builder_anim_state == "melee") _draw_spr = _t.melee_wpn.sprite;
-    else if (builder_anim_state == "boost") {
-        if (variable_struct_exists(_t.sprites, "boost") && _t.sprites.boost != -1) _draw_spr = _t.sprites.boost;
-        else _draw_spr = spr_ms_aether_boost;
+    var _using_unarmed_base = (_draw_spr == spr_ms_pmc_aegis_visor || _draw_spr == spr_ms_pmc_colossus_forge || _draw_spr == spr_ms_pmc_stratos_vector);
+    if (_is_rear && _using_unarmed_base && variable_struct_exists(_t, "preview_back_sprite") && sprite_exists(_t.preview_back_sprite)) {
+        _draw_spr = _t.preview_back_sprite;
+    }
+    var _active_wpn_ov = (builder_anim_state == "melee") ? _t.overlay_melee : _t.overlay_primary;
+
+    if (!_using_unarmed_base) {
+        if (builder_anim_state == "fire") _draw_spr = _t.primary_wpn.sprite;
+        else if (builder_anim_state == "melee") _draw_spr = _t.melee_wpn.sprite;
+        else if (builder_anim_state == "boost") {
+            if (variable_struct_exists(_t.sprites, "boost") && _t.sprites.boost != -1) _draw_spr = _t.sprites.boost;
+            else _draw_spr = spr_ms_aether_boost;
+        }
     }
 
+    var _px = _gcx;
+    var _py = _gcy + 45;
+    if (_using_unarmed_base && builder_anim_state == "boost") {
+        _py += sin(current_time * 0.01) * 4.0;
+    }
+
+    // Background Forearm Shield Overlay (Left Arm Socket) — front view only
+    if (!_is_rear && _using_unarmed_base && _t.overlay_shield != -1 && sprite_exists(_t.overlay_shield)) {
+        draw_sprite_ext(_t.overlay_shield, 0, _px + (builder_overlay_shield_off.x * builder_preview_scale), _py + (builder_overlay_shield_off.y * builder_preview_scale), 0.50 * builder_preview_scale, 0.50 * builder_preview_scale, 0, _t.tint, 1.0);
+    }
+
+    var _sub = 0;
+    var _nframes = 1;
     if (sprite_exists(_draw_spr)) {
-        var _sub = floor(builder_subimg) % sprite_get_number(_draw_spr);
+        _nframes = max(1, sprite_get_number(_draw_spr));
+        _sub = floor(builder_subimg) % _nframes;
         // Base Sprite with Sintered Material Alloy Tint
-        draw_sprite_ext(_draw_spr, _sub, _gcx, _gcy + 45, builder_preview_scale, builder_preview_scale, 0, _t.tint, 1.0);
+        draw_sprite_ext(_draw_spr, _sub, _px, _py, builder_preview_scale, builder_preview_scale, 0, _t.tint, 1.0);
 
         // Radiant Singularity Masterwork Sheen (S-Tier or Tachyon)
         if (builder_quality_idx == 3 || builder_alloy_idx == 5) {
             gpu_set_blendmode(bm_add);
-            draw_sprite_ext(_draw_spr, _sub, _gcx, _gcy + 45, builder_preview_scale, builder_preview_scale, 0, _t.glow, 0.22 + 0.14 * sin(current_time * 0.005));
+            draw_sprite_ext(_draw_spr, _sub, _px, _py, builder_preview_scale, builder_preview_scale, 0, _t.glow, 0.22 + 0.14 * sin(current_time * 0.005));
             gpu_set_blendmode(bm_normal);
+        }
+    }
+
+    // Foreground Weapon Overlay (Right Hand Socket) — front view only
+    if (!_is_rear && _using_unarmed_base && _active_wpn_ov != -1 && sprite_exists(_active_wpn_ov)) {
+        var _recoil_dx = (builder_anim_state == "fire") ? (abs(sin(current_time * 0.03)) * 3) : 0;
+        var _wx_off = builder_overlay_primary_off.x + _recoil_dx;
+        var _wy_off = builder_overlay_primary_off.y + ((builder_anim_state == "melee") ? -10 : 0);
+        var _w_ang  = (builder_anim_state == "melee") ? (-22 + sin(current_time * 0.02) * 14) : 0;
+        draw_sprite_ext(_active_wpn_ov, 0, _px + (_wx_off * builder_preview_scale), _py + (_wy_off * builder_preview_scale), 0.52 * builder_preview_scale, 0.52 * builder_preview_scale, _w_ang, c_white, 1.0);
+    }
+
+    // QA Bounding Box & Origin Crosshair Overlay ([B])
+    if (builder_qa_bbox && sprite_exists(_draw_spr)) {
+        var _ox = sprite_get_xoffset(_draw_spr) * builder_preview_scale;
+        var _oy = sprite_get_yoffset(_draw_spr) * builder_preview_scale;
+        var _sw = sprite_get_width(_draw_spr) * builder_preview_scale;
+        var _sh = sprite_get_height(_draw_spr) * builder_preview_scale;
+        draw_set_color(c_lime);
+        draw_rectangle(_px - _ox, _py - _oy, _px - _ox + _sw, _py - _oy + _sh, true);
+        draw_set_color(c_yellow);
+        draw_line(_px - 16, _py, _px + 16, _py);
+        draw_line(_px, _py - 16, _px, _py + 16);
+        draw_text(_hng_x + 26, _hng_y + 40, "SPR: " + sprite_get_name(_draw_spr) + " | FRAME " + string(_sub + 1) + "/" + string(_nframes) + " | ORIGIN (" + string(sprite_get_xoffset(_draw_spr)) + "," + string(sprite_get_yoffset(_draw_spr)) + ")");
+    }
+
+    // Gantry QA Toolbar (Top-Right of Gantry Canvas)
+    var _qa_y = _hng_y + 38;
+    var _vw_hov = (_mx >= _hng_x + _hng_w - 384 && _mx <= _hng_x + _hng_w - 266 && _my >= _qa_y && _my <= _qa_y + 24);
+    if (_vw_hov && _click) {
+        builder_perspective = _is_rear ? "front" : "rear";
+        scr_audio_play_ui("click");
+    }
+    scr_draw_snes_button(_hng_x + _hng_w - 384, _qa_y, 118, 24, (_is_rear ? "VIEW: REAR [R]" : "VIEW: FRONT [R]"), _vw_hov || _is_rear, _is_rear, _is_rear ? c_yellow : c_aqua);
+
+    var _bb_hov = (_mx >= _hng_x + _hng_w - 260 && _mx <= _hng_x + _hng_w - 152 && _my >= _qa_y && _my <= _qa_y + 24);
+    if (_bb_hov && _click) {
+        builder_qa_bbox = !builder_qa_bbox;
+        scr_audio_play_ui("click");
+    }
+    scr_draw_snes_button(_hng_x + _hng_w - 260, _qa_y, 108, 24, "BBOX/ORG [B]", _bb_hov || builder_qa_bbox, builder_qa_bbox, builder_qa_bbox ? c_lime : c_white);
+
+    var _sk_lbls = ["SOCKET: OFF [U]", "SOCKET: WPN [U]", "SOCKET: SHD [U]"];
+    var _sk_hov = (_mx >= _hng_x + _hng_w - 146 && _mx <= _hng_x + _hng_w - 22 && _my >= _qa_y && _my <= _qa_y + 24);
+    if (_sk_hov && _click) {
+        builder_socket_mode = (builder_socket_mode + 1) % 3;
+        scr_audio_play_ui("click");
+    }
+    scr_draw_snes_button(_hng_x + _hng_w - 146, _qa_y, 124, 24, _sk_lbls[builder_socket_mode], _sk_hov || (builder_socket_mode > 0), (builder_socket_mode > 0), (builder_socket_mode > 0) ? make_color_rgb(255, 180, 50) : c_white);
+
+    // Socket Offset Nudger Bar (when active)
+    if (builder_socket_mode > 0) {
+        var _ny = _hng_y + 436;
+        draw_set_color(make_color_rgb(14, 24, 38));
+        draw_rectangle(_hng_x + 22, _ny, _hng_x + _hng_w - 22, _ny + 30, false);
+        draw_set_color(make_color_rgb(255, 180, 50));
+        draw_rectangle(_hng_x + 22, _ny, _hng_x + _hng_w - 22, _ny + 30, true);
+        draw_text(_hng_x + 30, _ny + 7, "WPN(" + string(builder_overlay_primary_off.x) + "," + string(builder_overlay_primary_off.y) + ") SHD(" + string(builder_overlay_shield_off.x) + "," + string(builder_overlay_shield_off.y) + ") [I/J/K/M]");
+
+        var _nbtns = ["-X", "+X", "-Y", "+Y", "RST"];
+        var _ndxs = [-1, 1, 0, 0, 0];
+        var _ndys = [0, 0, -1, 1, 0];
+        for (var nb = 0; nb < 5; nb++) {
+            var _nbx = _hng_x + _hng_w - 245 + nb * 44;
+            var _nb_hov = (_mx >= _nbx && _mx <= _nbx + 40 && _my >= _ny + 3 && _my <= _ny + 27);
+            if (_nb_hov && _click) {
+                if (nb == 4) {
+                    builder_overlay_primary_off = { x: -22, y: -48 };
+                    builder_overlay_shield_off = { x: 28, y: -54 };
+                } else if (builder_socket_mode == 1) {
+                    builder_overlay_primary_off.x += _ndxs[nb];
+                    builder_overlay_primary_off.y += _ndys[nb];
+                } else {
+                    builder_overlay_shield_off.x += _ndxs[nb];
+                    builder_overlay_shield_off.y += _ndys[nb];
+                }
+                scr_audio_play_ui("click");
+            }
+            scr_draw_snes_button(_nbx, _ny + 3, 40, 24, _nbtns[nb], _nb_hov, false, c_yellow);
         }
     }
 
@@ -806,12 +908,33 @@ else if (active_debug_tab == 1) {
         scr_draw_snes_button(_stx, _st_y + 20, 150, 32, _st_names[st], _st_hov || _st_act, _st_act, _st_act ? make_color_rgb(0, 240, 255) : c_white);
     }
 
-    // Callsign Banner & Quality Tier Badge
+    // Callsign Banner (Click to Edit) + Reroll & Quality Tier Badge
     var _ban_y = _hng_y + 540;
     draw_set_color(make_color_rgb(140, 170, 200));
-    draw_text(_hng_x + 20, _ban_y, "CUSTOM CALLSIGN:");
+    draw_text(_hng_x + 20, _ban_y, "CALLSIGN:");
+    var _cs_x = _hng_x + 100;
+    var _cs_w = 180;
+    var _cs_hov = (_mx >= _cs_x && _mx <= _cs_x + _cs_w && _my >= _ban_y - 3 && _my <= _ban_y + 19);
+    if (_cs_hov && _click) {
+        builder_editing_callsign = true;
+        keyboard_string = builder_custom_name;
+        scr_audio_play_ui("click");
+    }
+    draw_set_color(builder_editing_callsign ? make_color_rgb(24, 42, 64) : make_color_rgb(14, 24, 38));
+    draw_rectangle(_cs_x, _ban_y - 3, _cs_x + _cs_w, _ban_y + 19, false);
+    draw_set_color(builder_editing_callsign ? c_yellow : make_color_rgb(55, 95, 135));
+    draw_rectangle(_cs_x, _ban_y - 3, _cs_x + _cs_w, _ban_y + 19, true);
     draw_set_color(make_color_rgb(255, 220, 80));
-    draw_text(_hng_x + 165, _ban_y, builder_custom_name);
+    var _cs_disp = builder_custom_name + ((builder_editing_callsign && (floor(current_time / 350) % 2 == 0)) ? "_" : "");
+    draw_text(_cs_x + 6, _ban_y, _cs_disp);
+
+    var _rr_hov = (_mx >= _cs_x + _cs_w + 6 && _mx <= _cs_x + _cs_w + 66 && _my >= _ban_y - 3 && _my <= _ban_y + 19);
+    if (_rr_hov && _click) {
+        builder_editing_callsign = false;
+        builder_custom_name = builder_callsign_pool[irandom(array_length(builder_callsign_pool) - 1)];
+        scr_audio_play_ui("click");
+    }
+    scr_draw_snes_button(_cs_x + _cs_w + 6, _ban_y - 3, 60, 22, "REROLL", _rr_hov, false, c_aqua);
 
     draw_set_color(make_color_rgb(140, 170, 200));
     draw_text(_hng_x + 360, _ban_y, "QUALITY TIER:");
@@ -878,6 +1001,7 @@ else if (active_debug_tab == 1) {
         var _lin_hov = (_mx >= _eng_x + 18 && _mx <= _eng_x + _eng_w - 18 && _my >= _deck_y && _my <= _deck_y + 24);
         if (_lin_hov && _click) {
             builder_lineage_idx = (builder_lineage_idx + 1) % 3;
+            if (instance_exists(obj_GameManager)) obj_GameManager.set_foundry_lineage(builder_lineage_idx);
             scr_audio_play_ui("click");
             show_toast("FOUNDRY LINEAGE: " + builder_lineage_badges[builder_lineage_idx], _lin_col);
         }
@@ -926,6 +1050,21 @@ else if (active_debug_tab == 1) {
 
         // Prev & Next Chassis Buttons
         var _pbtn_y = _cc_y + 175;
+        // Preset Loadout Bar (Quick Archetypes & Randomize)
+        var _pre_y = _pbtn_y + 52;
+        draw_set_color(make_color_rgb(140, 180, 220));
+        draw_text(_eng_x + 18, _pre_y, "QUICK ARCHETYPE PRESETS:");
+        var _pre_names = ["BRAWLER", "SKIRMISHER", "FIRE SUPP", "RANDOMIZE"];
+        var _pre_pw = (_eng_w - 36 - 18) / 4;
+        for (var pr = 0; pr < 4; pr++) {
+            var _prx = _eng_x + 18 + pr * (_pre_pw + 6);
+            var _pr_hov = (_mx >= _prx && _mx <= _prx + _pre_pw && _my >= _pre_y + 20 && _my <= _pre_y + 48);
+            if (_pr_hov && _click) {
+                apply_builder_preset(pr);
+            }
+            scr_draw_snes_button(_prx, _pre_y + 20, _pre_pw, 28, _pre_names[pr], _pr_hov, false, (pr == 3) ? c_yellow : c_aqua);
+        }
+
         var _cp_hov = (_mx >= _eng_x + 18 && _mx <= _eng_x + 260 && _my >= _pbtn_y && _my <= _pbtn_y + 40);
         var _cn_hov = (_mx >= _eng_x + 280 && _mx <= _eng_x + _eng_w - 18 && _my >= _pbtn_y && _my <= _pbtn_y + 40);
 
@@ -1113,21 +1252,42 @@ else if (active_debug_tab == 1) {
     // SUBTAB 3: TELEMETRY & FLEET ROLLOUT
     // =====================================================================
     else if (builder_subtab == 3) {
+        if (is_undefined(builder_baseline_telemetry)) {
+            compute_stock_baseline_telemetry();
+        }
+        var _base = builder_baseline_telemetry;
+
         draw_set_color(make_color_rgb(0, 240, 255));
-        draw_text(_eng_x + 20, _deck_y, "LIVE ENGINEERING TELEMETRY & ROLLOUT:");
+        draw_text(_eng_x + 20, _deck_y, "TELEMETRY VS: " + _base.label);
+        var _rb_hov = (_mx >= _eng_x + _eng_w - 140 && _mx <= _eng_x + _eng_w - 20 && _my >= _deck_y - 3 && _my <= _deck_y + 19);
+        if (_rb_hov && _click) {
+            compute_stock_baseline_telemetry();
+            scr_audio_play_ui("click");
+            show_toast("BASELINE RESET TO STOCK CHASSIS", c_aqua);
+        }
+        scr_draw_snes_button(_eng_x + _eng_w - 140, _deck_y - 3, 120, 22, "RESET BASE", _rb_hov, false, c_aqua);
+
+        var _draw_delta = function(_dx, _dy, _val, _unit, _higher_is_better) {
+            if (_val == 0) return;
+            var _good = _higher_is_better ? (_val > 0) : (_val < 0);
+            draw_set_color(_good ? c_lime : make_color_rgb(255, 95, 95));
+            draw_text(_dx, _dy, "(" + (_val > 0 ? "+" : "") + string(_val) + _unit + ")");
+        };
 
         var _ty = _deck_y + 30;
 
         draw_set_color(make_color_rgb(0, 240, 255));
         draw_text(_eng_x + 28, _ty, "ARMOR INTEGRITY:");
         draw_set_color(c_white);
-        draw_text(_eng_x + 280, _ty, string(_t.total_armor) + " HP");
+        draw_text(_eng_x + 250, _ty, string(_t.total_armor) + " HP");
+        _draw_delta(_eng_x + 370, _ty, _t.total_armor - _base.total_armor, " HP", true);
 
         _ty += 28;
         draw_set_color(make_color_rgb(0, 240, 255));
         draw_text(_eng_x + 28, _ty, "TOTAL CHASSIS MASS:");
         draw_set_color(_t.mass_overloaded ? c_red : c_white);
-        draw_text(_eng_x + 280, _ty, string(_t.total_mass) + " t / " + string(_t.max_capacity) + " t Limit");
+        draw_text(_eng_x + 250, _ty, string(_t.total_mass) + "t / " + string(_t.max_capacity) + "t");
+        _draw_delta(_eng_x + 390, _ty, _t.total_mass - _base.total_mass, "t", false);
 
         // Capacity Bar
         _ty += 22;
@@ -1139,21 +1299,24 @@ else if (active_debug_tab == 1) {
 
         _ty += 26;
         draw_set_color(make_color_rgb(0, 240, 255));
-        draw_text(_eng_x + 28, _ty, "REACTOR OUTPUT BALANCE:");
+        draw_text(_eng_x + 28, _ty, "REACTOR OUTPUT:");
         draw_set_color(_t.reactor_overloaded ? c_red : c_lime);
-        draw_text(_eng_x + 280, _ty, (_t.net_power >= 0 ? "+" : "") + string(_t.net_power) + " MW (Core: " + string(_t.power_output) + " MW)");
+        draw_text(_eng_x + 250, _ty, (_t.net_power >= 0 ? "+" : "") + string(_t.net_power) + " MW");
+        _draw_delta(_eng_x + 370, _ty, _t.net_power - _base.net_power, " MW", true);
 
         _ty += 28;
         draw_set_color(make_color_rgb(0, 240, 255));
         draw_text(_eng_x + 28, _ty, "CALCULATED SPEED:");
         draw_set_color(c_white);
-        draw_text(_eng_x + 280, _ty, string(_t.walk_speed) + " km/h (Boost: " + string(_t.boost_speed) + " km/h)");
+        draw_text(_eng_x + 250, _ty, string(_t.boost_speed) + " km/h");
+        _draw_delta(_eng_x + 370, _ty, _t.boost_speed - _base.boost_speed, " km/h", true);
 
         _ty += 28;
         draw_set_color(make_color_rgb(0, 240, 255));
         draw_text(_eng_x + 28, _ty, "COMBAT RATING (OSS):");
         draw_set_color(make_color_rgb(255, 220, 80));
-        draw_text(_eng_x + 280, _ty, string(_t.combat_rating) + " [SUPERIOR]");
+        draw_text(_eng_x + 250, _ty, string(_t.combat_rating));
+        _draw_delta(_eng_x + 370, _ty, _t.combat_rating - _base.combat_rating, "", true);
 
         _ty += 28;
         draw_set_color(make_color_rgb(0, 240, 255));
@@ -1161,8 +1324,23 @@ else if (active_debug_tab == 1) {
         draw_set_color(c_white);
         draw_text(_eng_x + 280, _ty, _t.weight_class);
 
+        // Propulsion Kit Selector + 5-Theater Terrain Rank Strip
+        _ty += 28;
+        draw_set_color(make_color_rgb(0, 240, 255));
+        draw_text(_eng_x + 28, _ty, "PROPULSION:");
+        var _pk_hov = (_mx >= _eng_x + 150 && _mx <= _eng_x + _eng_w - 28 && _my >= _ty - 4 && _my <= _ty + 20);
+        if (_pk_hov && _click) {
+            builder_propulsion_idx = (builder_propulsion_idx + 1) % array_length(builder_propulsion_kits);
+            scr_audio_play_ui("click");
+        }
+        scr_draw_snes_button(_eng_x + 150, _ty - 4, _eng_w - 178, 24, _t.propulsion_kit + " [CYCLE]", _pk_hov, false, make_color_rgb(100, 220, 255));
+
+        _ty += 26;
+        draw_set_color(make_color_rgb(160, 200, 230));
+        draw_text(_eng_x + 28, _ty, "THEATERS:  LND:" + _t.terrain.land + "   MTN:" + _t.terrain.mountain + "   WTR:" + _t.terrain.water + "   AIR:" + _t.terrain.air + "   SPC:" + _t.terrain.space);
+
         // Quality Tier Selector
-        _ty += 30;
+        _ty += 26;
         draw_set_color(make_color_rgb(0, 240, 255));
         draw_text(_eng_x + 28, _ty, "SELECT FORGE CRUCIBLE PURITY / QUALITY TIER:");
         _ty += 22;
