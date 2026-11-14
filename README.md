@@ -31,14 +31,15 @@ Full context, state machine specifications, test scripts, and architectural road
    * Unified Single HP Bar (*Gihren's Greed* style), **5-Theater Terrain Ranks (`S/A/B/C/D`: Land, Mountain, Water, Air, Space)** + Propulsion Kits + 4-Slot Sortie Picker, Battlefield Salvage (`3/3` foreign chassis unlock), Sintered Alloy combat passives, and Post-Battle Field Repair Bay.
    * Fixed `.yy` resource linking, missing `centurion` layer PNGs, `scr_territory_process_daily_logistics` crash, and `obj_DebugManager.is_open = false` startup state.
 
-### 🎯 Immediate Next Tasks (Where to Resume):
-1. **Batch 3 — Complete Remaining Animation States & Faction Roster**:
-   * Generate/import `boost`, `hit`, and `destroyed` strips for the 3 PMC Foundry Lineages (`pmc_aegis_visor`, `pmc_colossus_forge`, `pmc_stratos_vector`).
-   * Clean up remaining `[PINHOLES]` / `[WHITE HALO]` issues flagged by `python tools/audit_sprites.py` across existing faction suits (`centurion`, `aether`, `ironclad`, `bloodhound`, `ballista`, `chronos`) and expand bespoke `fire_*` / `attack_melee` coverage.
-2. **In-Engine Barrel Socket QA (`F7` Proving Lab -> `[U]`)**:
-   * Launch in GameMaker, test `fire_rifle` / `attack_melee` + 2-phase retaliation for all 3 PMC Foundry Lineages, and fine-tune `scr_get_mech_barrel_socket` muzzle offsets if needed.
-3. **Foundry Selection Prologue Cutscene**:
-   * Wire the 3-lineage starting choice into the campaign onboarding event in `obj_HQTerminal`.
+### 🎯 Immediate Next Tasks (Where to Resume after Image API Quota Reset — 5:20 PM EST / `22:20:02Z`):
+1. **GHA-07 Ironclad Master Base Reference & Core Animation Pass:**
+   * Natively generate the clean **Master Base Reference** (`gha07_ironclad_master_reference`) with an **all-metal FN FAL–inspired compact battle rifle** and **large 3D box magazine seated flush into the magwell** (per the new Firearm Anatomy rules in `.agents/rules/concept-artist.md` and `.agents/rules/art-asset-analyst.md`).
+   * Once approved, animate Ironclad's core kit directly from that locked reference: `idle`, `fire_rifle` (including aim-raise anticipation frames), `attack_melee` (mace + shield), `boost`, `hit_kinetic`, and `destroyed` (chaingun/missiles not needed for this base combatant).
+   * Reference GIFs & contact sheet from this session are saved in [`exports/ironclad_gifs/`](exports/ironclad_gifs/).
+2. **Fix GML Ballistic Barrel/Recoil Desync (`obj_DebugManager/Step_0.gml`):**
+   * Replace hardcoded `360 + 70, 480 - 125` ballistic burst spawn coordinates with `scr_get_mech_barrel_socket(...)` offset by `atk_recoil_x`.
+3. **Batch 3 — Remaining PMC & Faction Roster States:**
+   * Add `boost`, `hit`, and `destroyed` strips for the 3 PMC Foundry Lineages (`pmc_aegis_visor`, `pmc_colossus_forge`, `pmc_stratos_vector`), clean up remaining `[PINHOLES]` / `[WHITE HALO]` items in `python tools/audit_sprites.py`, and run `SOCKET QA [U]` in-engine (`F7`).
 
 ---
 

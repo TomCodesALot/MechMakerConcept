@@ -11,6 +11,10 @@ trigger: always_on
    - If a mobile suit is firing a weapon (rifle, vulcan, cannon, beam), the **entire weapon must be clearly visible, drawn, and held in hand/arm**.
    - **Never hide the weapon behind a shield** such that muzzle flashes or bullets look like they are emerging from the shield. The shield must be swung aside, braced low, or held in reserve so the weapon is in the foreground aiming cleanly at the target.
    - Muzzle flashes, projectile tracers, and ejecting brass must align with mathematical precision to the actual barrel bore and ejection port.
+   - **Firearm Mechanical Integrity Gate:**
+     - Reject any rifle/cannon where the magazine appears detached, floating below the receiver, or skewed off-axis from the barrel.
+     - Magazines must be **proportionally large, box-shaped with 3D depth planes, and seated flush into the magwell** forward of the trigger guard.
+     - Verify consistent weapon anatomy across every frame (stock, railed receiver, magwell/magazine, handguard, barrel).
    - **Rotary Vulcan / Chain Gun Verification Gate**:
      - For any multi-barrel weapon (Chain Vulcan, Gatling, Rotary Cannon), the barrel assembly **must visibly rotate** across frames (barrels shifting positions around the central spindle with rotational depth shading).
      - Firing loops must **never end abruptly on an explosion or muzzle blast**. Firing cycles must smoothly transition into a dedicated barrel spin-down phase with cooling muzzle heat gradients and dissipating propellant smoke.

@@ -41,10 +41,11 @@ Every Mobile Suit model must support the following states (no unit may freeze in
 
 ---
 
-## 3. Barrel Bore & Ejection Port Socket Registry
+## 3. Barrel Bore, Ejection Port & Firearm Anatomy Standard
 - Every Mobile Suit + weapon combination defines `{ muzzle_x, muzzle_y, eject_x, eject_y }` relative to `(80, 145)`.
 - Projectiles, tracers, muzzle flashes, and spent brass casings **must** spawn at the exact barrel bore coordinates (calibrated via `SOCKET QA [U]` in the Foundry).
 - Rotary/Chain guns must visibly rotate barrels across frames and end with a barrel spin-down & cooling smoke phase.
+- **Firearm Anatomy & Magazine Seating:** Rifles must maintain consistent receiver, handguard, stock, and magwell geometry across all frames. Box magazines must be proportionally large, box-shaped (with 3D depth planes), seated **flush inside the receiver magwell** forward of the trigger guard, and aligned perpendicular to the barrel axis.
 
 ---
 
@@ -63,9 +64,9 @@ Every Mobile Suit model must support the following states (no unit may freeze in
 ## 5. Production Rollout & Batch Progress
 - **Batch 1 (Complete):** Animation Bible v1.0, `tools/audit_sprites.py`, `spr_ms_ironclad_fire_rifle` clean regeneration, `scr_get_mech_barrel_socket` + modular weapon-raise fallback in `scr_draw_animated_mobile_suit.gml`, and 2-phase barrel-socket retaliation in `obj_DebugManager` / `obj_BattleManager`.
 - **Batch 2 (Complete):** Bespoke `fire_rifle` (4 frames @ 10 FPS) & `attack_melee` (4 frames @ 12 FPS) imported, QA-approved, and registered in `MechMakerConcept.yyp` for all 3 Player PMC Foundry Lineages (`spr_ms_pmc_aegis_visor_*`, `spr_ms_pmc_colossus_forge_*`, `spr_ms_pmc_stratos_vector_*`) with 0 audit issues.
-- **Batch 3 (Next):**
-  1. Add `boost`, `hit`, and `destroyed` states for the 3 PMC Foundry Lineages.
-  2. Resolve remaining `[PINHOLES]` / `[WHITE HALO]` audit findings on legacy faction sprites and expand `fire_*` / `attack_melee` coverage across the faction roster.
-  3. Run in-engine `SOCKET QA [U]` in `obj_DebugManager` (`F7`) to fine-tune barrel bore coordinates for the 3 PMC Lineages.
+- **Batch 3 (In Progress — Resuming after Image API Quota Reset at `2026-11-14T22:20:02Z` / 5:20 PM EST):**
+  1. **GHA-07 Ironclad Master Base Reference & Core Suite:** Generate clean Master Base Reference (no white halo, FN FAL–inspired all-metal battle carbine with large 3D box magazine seated flush into magwell, curved buckler shield), get Director sign-off, and animate Ironclad's core kit (`idle`, `fire_rifle` with aim-raise anticipation frames, `attack_melee` mace, `boost`, `hit_kinetic`, `destroyed` — dropping chaingun/missiles).
+  2. **GML Barrel/Recoil Sync:** Snap `obj_DebugManager/Step_0.gml` 3-round ballistic burst projectile/casing spawns to `scr_get_mech_barrel_socket` + `atk_recoil_x`.
+  3. **PMC Foundry & Roster Completion:** Add `boost`, `hit`, `destroyed` for the 3 PMC Foundry Lineages and resolve remaining legacy `[PINHOLES]` / `[WHITE HALO]` audit findings.
 
 
